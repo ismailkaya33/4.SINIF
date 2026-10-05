@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>İlgi, İhtiyaç ve Yeteneğimi Tanıyorum</title>
+<style>
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#22252a; --muted:#5c6470;
+  --accent:#3d6b52; --accent-ink:#ffffff; --good:#2e7d46; --bad:#b3413a;
+  --line:#e2ddd2; --chip:#eef0e6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1c1e22; --card:#26292f; --ink:#eceff1; --muted:#a3abb5;
+    --accent:#7fbf9d; --accent-ink:#12241b; --good:#7fbf9d; --bad:#e08a83;
+    --line:#3a3e46; --chip:#31353c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1c1e22; --card:#26292f; --ink:#eceff1; --muted:#a3abb5;
+  --accent:#7fbf9d; --accent-ink:#12241b; --good:#7fbf9d; --bad:#e08a83;
+  --line:#3a3e46; --chip:#31353c;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  min-height:100vh;
+}
+#app{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.25rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.badge{display:inline-block;background:var(--chip);color:var(--muted);font-size:.72rem;padding:3px 9px;border-radius:99px;margin-bottom:10px}
+.prompt{font-size:1.05rem;line-height:1.5;margin-bottom:16px}
+.opts{display:flex;flex-direction:column;gap:8px}
+button.opt{
+  text-align:left;padding:12px 14px;border-radius:10px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font-size:.98rem;cursor:pointer;
+}
+button.opt:active{transform:scale(.99)}
+button.opt.sel{border-color:var(--accent)}
+button.opt.correct{background:var(--good);border-color:var(--good);color:#fff}
+button.opt.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:.92rem}
+.msg.bad{background:rgba(179,65,58,.12);color:var(--bad)}
+.msg.good{background:rgba(46,125,70,.12);color:var(--good)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.col{flex:1;min-width:130px;display:flex;flex-direction:column;gap:8px}
+.chipbtn{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);font-size:.9rem;cursor:pointer;text-align:left}
+.chipbtn.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.chipbtn.locked{background:var(--good);color:#fff;border-color:var(--good);opacity:.9}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.catbtn{flex:1;min-width:100px;padding:10px;border-radius:10px;border:1px dashed var(--muted);background:transparent;color:var(--ink);cursor:pointer;text-align:center;font-size:.88rem}
+.catbtn.active{border-color:var(--accent);background:var(--chip)}
+textarea{width:100%;min-height:90px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px;font-size:.95rem;font-family:inherit}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:16px}
+.navbtn{padding:11px 16px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);font-size:.9rem;cursor:pointer}
+.navbtn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.navbtn:disabled{opacity:.4;cursor:not-allowed}
+.progress{height:6px;background:var(--chip);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.progress > div{height:100%;background:var(--accent)}
+input[type=text]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1rem}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.stat{background:var(--chip);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:1.3rem}
+.stat span{color:var(--muted);font-size:.78rem}
+.reviewitem{border-top:1px solid var(--line);padding:10px 0;font-size:.9rem}
+.reviewitem b{display:block}
+pre{white-space:pre-wrap;background:var(--chip);border-radius:10px;padding:12px;font-size:.82rem;font-family:inherit}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const DATA=[
+ {id:'q1',type:'mc',prompt:'Bir kişinin zorlanmadan, kendiliğinden yapmaktan hoşlandığı ve tekrar tekrar yönelmek istediği şeye ne denir?',opts:[{id:'a',t:'İhtiyaç'},{id:'b',t:'İlgi'},{id:'c',t:'Yetenek'},{id:'d',t:'Kural'}],correct:'b',explain:'İlgi, bir işi yaparken hoşlanma ve kendiliğinden yönelme durumudur.'},
+ {id:'q2',type:'mc',prompt:'Bir işi kolayca ve başarıyla yapabilme gücüne ne denir?',opts:[{id:'a',t:'Yetenek'},{id:'b',t:'İhtiyaç'},{id:'c',t:'Değer'},{id:'d',t:'Alışkanlık'}],correct:'a',explain:'Yetenek, bir alanda kolay ve başarılı olabilme gücüdür.'},
+ {id:'q3',type:'tf',prompt:'İhtiyaç, insanların yaşamlarını sürdürebilmek için mutlaka karşılamaları gereken şeylerdir.',correct:true,explain:'Su, uyku, güvenlik gibi ihtiyaçlar yaşamın devamı için zorunludur.'},
+ {id:'q4',type:'tf',prompt:'Bir kişi, henüz yetenekli olmadığı bir alana da ilgi duyabilir.',correct:true,explain:'İlgi duymak için o alanda hemen yetenekli olmak gerekmez; yetenek zamanla gelişebilir.'},
+ {id:'q5',type:'match',prompt:'Aşağıdaki durumları doğru kavramla eşleştir.',pairs:[
+   {id:'m1',l:'Her gün resim çizmekten çok keyif alması',r:'İlgi'},
+   {id:'m2',l:'Susadığında mutlaka su içmesi gerekmesi',r:'İhtiyaç'},
+   {id:'m3',l:'Çok hızlı ve uzun mesafe koşabilmesi',r:'Yetenek'}]},
+ {id:'q6',type:'classify',prompt:'Aşağıdaki okul etkinliklerini doğru türe yerleştir.',cats:['Sportif','Sanatsal','Bilimsel'],items:[
+   {id:'c1',t:'Basketbol turnuvası',cat:'Sportif'},
+   {id:'c2',t:'Yüzme kulübü',cat:'Sportif'},
+   {id:'c3',t:'Resim sergisi',cat:'Sanatsal'},
+   {id:'c4',t:'Halk oyunları gösterisi',cat:'Sanatsal'},
+   {id:'c5',t:'Bilim fuarı',cat:'Bilimsel'},
+   {id:'c6',t:'Doğa gözlem kulübü',cat:'Bilimsel'}]},
+ {id:'q7',type:'mc',prompt:"Mehmet, doğada yürüyüş yapmayı ve bitkileri incelemeyi çok seviyor. Mehmet'in ilgisine en uygun okul kulübü hangisidir?",opts:[{id:'a',t:'Basketbol Kulübü'},{id:'b',t:'Doğa ve Çevre Kulübü'},{id:'c',t:'Satranç Kulübü'},{id:'d',t:'Tiyatro Kulübü'}],correct:'b',explain:'Doğayla ilgilenen biri için Doğa ve Çevre Kulübü ilgisine en uygun seçenektir.'},
+ {id:'q8',type:'mc',prompt:'Aşağıdaki cümlelerden hangisinde "ilgi" kavramı yanlış kullanılmıştır?',opts:[{id:'a',t:"Ayşe'nin müzik dinlemeye ilgisi var."},{id:'b',t:'Su içmek benim ilgimdir.'},{id:'c',t:"Ali'nin resim yapmaya ilgisi var."},{id:'d',t:"Zeynep'in kitap okumaya ilgisi var."}],correct:'b',explain:'Su içmek bir ihtiyaçtır, ilgi değildir.'},
+ {id:'q9',type:'mc',prompt:"Elif hem şarkı söylemeyi çok seviyor hem de sesi çok güzel. Elif'in hem ilgisine hem yeteneğine en uygun seçenek hangisidir?",opts:[{id:'a',t:'Satranç Kulübü'},{id:'b',t:'Koro Kulübü'},{id:'c',t:'Basketbol Kulübü'},{id:'d',t:'Bilim Kulübü'}],correct:'b',explain:"Elif'in hem ilgisi hem yeteneği koro kulübüne uygundur; bu görev ilgi ve yetenek kavramlarını birlikte kullanmanı gerektirdi."},
+ {id:'q10',type:'reflect',prompt:'Senin en çok ilgini çeken etkinlik nedir? Neden bu etkinlikten hoşlanıyorsun?'},
+ {id:'q11',type:'reflect',prompt:'Bu ilgini geliştirmek için okulunda veya yakın çevrende katılabileceğin bir etkinlik yaz.'}
+];
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let ST;
+function freshState(){
+ return{idx:0,name:'',started:false,start:null,end:null,
+  tasks:DATA.map(d=>({id:d.id,status:'pending',attempts:0,wrong:0,firstTry:null,skipped:false,answer:null,text:'',
+    order: d.type==='mc'?shuffle(d.opts.map(o=>o.id)):null,
+    left: d.type==='match'?shuffle(d.pairs.map(p=>({id:p.id,txt:p.l}))):null,
+    right: d.type==='match'?shuffle(d.pairs.map(p=>({id:p.id,txt:p.r}))):null,
+    matched: d.type==='match'?new Set():null, sel:null,
+    pool: d.type==='classify'?shuffle(d.items.map(i=>i.id)):null,
+    placed: d.type==='classify'?{}:null, selItem:null}))};
+}
+ST=freshState();
+function T(i){return ST.tasks[i];}
+function D(i){return DATA[i];}
+function el(html){const d=document.createElement('div');d.innerHTML=html;return d;}
+function render(){
+ const app=document.getElementById('app');
+ if(!ST.started){app.innerHTML=intro();bind();return;}
+ if(ST.idx>=DATA.length){app.innerHTML=report();bind();return;}
+ app.innerHTML=taskView();bind();
+}
+function intro(){
+ return `<h1>İlgi, İhtiyaç ve Yeteneğimi Tanıyorum</h1>
+ <div class="sub">SB.4.1.3 — 4. Sınıf Rehberlik Etkinliği</div>
+ <div class="card">
+  <div class="prompt">Bu etkinlikte ilgi, ihtiyaç ve yetenek kavramlarını tanıyacak, örnekler üzerinde karar verecek ve kendi ilgi alanını keşfedeceksin. Yaklaşık 10 dakika sürer.</div>
+  <label style="font-size:.9rem;color:var(--muted)">Adını yaz:</label>
+  <input type="text" id="nameInput" placeholder="Adın Soyadın" style="margin-top:6px">
+  <div class="nav"><span></span><button class="navbtn primary" id="startBtn">Başla</button></div>
+ </div>`;
+}
+function progressBar(){
+ const pct=Math.round((ST.idx)/DATA.length*100);
+ return `<div class="progress"><div style="width:${pct}%"></div></div><div class="sub">Görev ${ST.idx+1} / ${DATA.length}</div>`;
+}
+function taskView(){
+ const d=D(ST.idx),t=T(ST.idx);
+ let body='';
+ if(d.type==='mc') body=mcView(d,t);
+ else if(d.type==='tf') body=tfView(d,t);
+ else if(d.type==='match') body=matchView(d,t);
+ else if(d.type==='classify') body=classifyView(d,t);
+ else if(d.type==='reflect') body=reflectView(d,t);
+ const canNext = t.status==='correct'||t.status==='skipped'||(d.type==='reflect'&&t.text.trim().length>0);
+ const isLast = ST.idx===DATA.length-1;
+ const showSkip = t.status==='pending'||t.status==='retry';
+ return `${progressBar()}
+ <div class="card">${body}</div>
+ <div class="nav">
+  <button class="navbtn" id="prevBtn" ${ST.idx===0?'disabled':''}>← Önceki</button>
+  <div style="display:flex;gap:8px">
+   ${showSkip?`<button class="navbtn" id="skipBtn">Soruyu Geç</button>`:''}
+   <button class="navbtn primary" id="nextBtn" ${canNext?'':'disabled'}>${isLast?'Bitir ve Raporu Gör':'Sonraki →'}</button>
+  </div>
+ </div>`;
+}
+function mcView(d,t){
+ const opts=t.order.map(id=>d.opts.find(o=>o.id===id));
+ const rows=opts.map(o=>{
+   let cls='opt';
+   if(t.status==='correct'){ if(o.id===d.correct) cls+=' correct'; }
+   else if(t.answer===o.id && t.status==='retry') cls+=' wrong';
+   return `<button class="${cls}" data-opt="${o.id}" ${t.status==='correct'?'disabled':''}>${o.t}</button>`;
+ }).join('');
+ let msg='';
+ if(t.status==='correct') msg=`<div class="msg good">Doğru! ${d.explain}</div>`;
+ else if(t.status==='retry') msg=`<div class="msg bad">Yanlış, tekrar dene.</div>`;
+ return `<div class="prompt">${d.prompt}</div><div class="opts">${rows}</div>${msg}`;
+}
+function tfView(d,t){
+ const opts=[{id:'true',t:'Doğru'},{id:'false',t:'Yanlış'}];
+ const rows=opts.map(o=>{
+  let cls='opt';
+  const isCorrectOpt=(o.id==='true')===d.correct;
+  if(t.status==='correct'){ if(isCorrectOpt) cls+=' correct'; }
+  else if(t.answer===o.id && t.status==='retry') cls+=' wrong';
+  return `<button class="${cls}" data-opt="${o.id}" ${t.status==='correct'?'disabled':''}>${o.t}</button>`;
+ }).join('');
+ let msg='';
+ if(t.status==='correct') msg=`<div class="msg good">Doğru! ${d.explain}</div>`;
+ else if(t.status==='retry') msg=`<div class="msg bad">Yanlış, tekrar dene.</div>`;
+ return `<div class="prompt">${d.prompt}</div><div class="opts">${rows}</div>${msg}`;
+}
+function matchView(d,t){
+ const L=t.left.map(x=>`<button class="chipbtn ${t.matched.has(x.id)?'locked':(t.sel===x.id?'sel':'')}" data-l="${x.id}" ${t.matched.has(x.id)?'disabled':''}>${x.txt}</button>`).join('');
+ const R=t.right.map(x=>`<button class="chipbtn ${t.matched.has(x.id)?'locked':''}" data-r="${x.id}" ${t.matched.has(x.id)?'disabled':''}>${x.txt}</button>`).join('');
+ let msg = t.status==='correct'?`<div class="msg good">Tüm eşleştirmeler doğru!</div>`
+   : (t.lastWrong?`<div class="msg bad">Yanlış eşleştirme, tekrar dene.</div>`:'');
+ return `<div class="prompt">${d.prompt}</div><div class="row"><div class="col">${L}</div><div class="col">${R}</div></div>${msg}`;
+}
+function classifyView(d,t){
+ const pool=t.pool.map(id=>d.items.find(i=>i.id===id));
+ const poolHtml=pool.map(i=>`<button class="chipbtn ${t.selItem===i.id?'sel':''}" data-item="${i.id}">${i.t}</button>`).join('')||'<span class="sub">Havuz boş — tüm kartlar yerleşti.</span>';
+ const placedHtml=d.cats.map(cat=>{
+   const items=(t.placed[cat]||[]).map(id=>d.items.find(i=>i.id===id).t);
+   return `<div class="catbtn ${t.selItem?'active':''}" data-cat="${cat}"><b>${cat}</b><br>${items.join(', ')||'—'}</div>`;
+ }).join('');
+ let msg = t.status==='correct'?`<div class="msg good">Tüm kartlar doğru yerleştirildi!</div>`
+   : (t.lastWrong?`<div class="msg bad">Yanlış yerleştirme, kart havuza döndü. Tekrar dene.</div>`:'');
+ return `<div class="prompt">${d.prompt}</div><div>${poolHtml}</div><div class="cats">${placedHtml}</div>${msg}`;
+}
+function reflectView(d,t){
+ return `<div class="prompt">${d.prompt}</div><textarea id="reflectBox" placeholder="Buraya yaz...">${t.text}</textarea>
+ <div class="sub" style="margin-top:8px">Bu görev puanlanmaz; öğretmenin görebilmesi için raporun sonunda yer alır.</div>`;
+}
+function report(){
+ const graded=ST.tasks.filter((t,i)=>D(i).type!=='reflect');
+ const total=graded.length;
+ const correct=graded.filter(t=>t.status==='correct').length;
+ const firstTry=graded.filter(t=>t.status==='correct'&&t.firstTry).length;
+ const wrongAttempts=graded.reduce((s,t)=>s+t.wrong,0);
+ const skipped=graded.filter(t=>t.status==='skipped').length;
+ const dur=ST.end-ST.start; const mm=Math.floor(dur/60000),ss=Math.floor((dur%60000)/1000);
+ const wrongList=ST.tasks.map((t,i)=>({t,d:D(i)})).filter(x=>x.d.type!=='reflect'&&x.t.status!=='correct');
+ const reflects=ST.tasks.map((t,i)=>({t,d:D(i)})).filter(x=>x.d.type==='reflect');
+ const reviewHtml=wrongList.length?wrongList.map(x=>`<div class="reviewitem"><b>${x.t.status==='skipped'?'Geçildi':'Yanlış kaldı'}:</b> ${x.d.prompt}${x.d.explain?` — <i>${x.d.explain}</i>`:''}</div>`).join(''):'<div class="sub">Yanlış kalan veya geçilen görev yok.</div>';
+ const reflectHtml=reflects.map(x=>`<div class="reviewitem"><b>${x.d.prompt}</b><br>${x.t.text.trim()||'(boş bırakıldı)'}</div>`).join('');
+ const summary=`SB.4.1.3 Etkinlik Raporu\nÖğrenci: ${ST.name||'(isimsiz)'}\nDoğru: ${correct}/${total} (İlk denemede: ${firstTry})\nYanlış deneme sayısı: ${wrongAttempts}\nGeçilen: ${skipped}\nSüre: ${mm} dk ${ss} sn\n\nYansıtma cevapları:\n${reflects.map(x=>`- ${x.d.prompt}\n  ${x.t.text.trim()||'(boş)'}`).join('\n')}`;
+ return `<h1>Rapor</h1>
+ <div class="card">
+  <div class="statgrid">
+   <div class="stat"><b>${correct}/${total}</b><span>Doğru</span></div>
+   <div class="stat"><b>${firstTry}</b><span>İlk denemede doğru</span></div>
+   <div class="stat"><b>${wrongAttempts}</b><span>Yanlış deneme</span></div>
+   <div class="stat"><b>${skipped}</b><span>Geçilen</span></div>
+   <div class="stat"><b>${mm}:${String(ss).padStart(2,'0')}</b><span>Süre</span></div>
+   <div class="stat"><b>${ST.name||'-'}</b><span>Öğrenci</span></div>
+  </div>
+  <h3>Yansıtma Cevapların</h3>
+  ${reflectHtml}
+  <h3>Yanlış / Geçilen Görevleri İncele</h3>
+  ${reviewHtml}
+  <h3>Öğretmenine Gönder</h3>
+  <div class="sub">Aşağıdaki metni kopyala ve WhatsApp'tan öğretmenine gönder.</div>
+  <pre id="summaryText">${summary}</pre>
+  <div class="nav"><button class="navbtn" id="copyBtn">Panoya Kopyala</button><button class="navbtn primary" id="replayBtn">Baştan Başla</button></div>
+ </div>`;
+}
+function bind(){
+ const startBtn=document.getElementById('startBtn');
+ if(startBtn) startBtn.onclick=()=>{
+   const v=document.getElementById('nameInput').value.trim();
+   ST.name=v; ST.started=true; ST.start=Date.now(); render();
+ };
+ const prevBtn=document.getElementById('prevBtn');
+ if(prevBtn) prevBtn.onclick=()=>{ if(ST.idx>0){ST.idx--; render();} };
+ const nextBtn=document.getElementById('nextBtn');
+ if(nextBtn) nextBtn.onclick=()=>{ ST.idx++; if(ST.idx>=DATA.length) ST.end=Date.now(); render(); };
+ const skipBtn=document.getElementById('skipBtn');
+ if(skipBtn) skipBtn.onclick=()=>{ const t=T(ST.idx); t.status='skipped'; t.skipped=true; ST.idx++; if(ST.idx>=DATA.length) ST.end=Date.now(); render(); };
+ document.querySelectorAll('button[data-opt]').forEach(b=>b.onclick=()=>{
+  const d=D(ST.idx),t=T(ST.idx); if(t.status==='correct') return;
+  const val=b.getAttribute('data-opt'); t.answer=val; t.attempts++;
+  const isCorrect = d.type==='tf' ? ((val==='true')===d.correct) : (val===d.correct);
+  if(isCorrect){ t.status='correct'; if(t.firstTry===null) t.firstTry=true; }
+  else{ t.status='retry'; t.wrong++; if(t.firstTry===null) t.firstTry=false; }
+  render();
+ });
+ document.querySelectorAll('button[data-l]').forEach(b=>b.onclick=()=>{
+  const t=T(ST.idx); const id=b.getAttribute('data-l'); if(t.matched.has(id)) return; t.sel=id; render();
+ });
+ document.querySelectorAll('button[data-r]').forEach(b=>b.onclick=()=>{
+  const t=T(ST.idx); const id=b.getAttribute('data-r'); if(t.matched.has(id)||!t.sel) return;
+  t.attempts++;
+  if(t.sel===id){ t.matched.add(id); t.sel=null; t.lastWrong=false;
+    if(t.matched.size===D(ST.idx).pairs.length){ t.status='correct'; t.firstTry=t.wrong===0; }
+  } else { t.wrong++; t.sel=null; t.lastWrong=true; }
+  render();
+ });
+ document.querySelectorAll('button[data-item]').forEach(b=>b.onclick=()=>{
+  const t=T(ST.idx); t.selItem=b.getAttribute('data-item'); render();
+ });
+ document.querySelectorAll('.catbtn').forEach(b=>b.onclick=()=>{
+  const d=D(ST.idx),t=T(ST.idx); if(!t.selItem) return;
+  const cat=b.getAttribute('data-cat'); const item=d.items.find(i=>i.id===t.selItem);
+  t.attempts++;
+  if(item.cat===cat){
+   t.placed[cat]=t.placed[cat]||[]; t.placed[cat].push(item.id);
+   t.pool=t.pool.filter(x=>x!==item.id); t.selItem=null; t.lastWrong=false;
+   if(t.pool.length===0){ t.status='correct'; t.firstTry=t.wrong===0; }
+  } else { t.wrong++; t.selItem=null; t.lastWrong=true; }
+  render();
+ });
+ const rb=document.getElementById('reflectBox');
+ if(rb) rb.oninput=(e)=>{ T(ST.idx).text=e.target.value; document.getElementById('nextBtn').disabled = e.target.value.trim().length===0; };
+ const copyBtn=document.getElementById('copyBtn');
+ if(copyBtn) copyBtn.onclick=()=>{
+   const txt=document.getElementById('summaryText').textContent;
+   navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{copyBtn.textContent='Kopyalandı ✓';}).catch(()=>{});
+ };
+ const replayBtn=document.getElementById('replayBtn');
+ if(replayBtn) replayBtn.onclick=()=>{ ST=freshState(); render(); };
+}
+render();
+</script>
+</body>
+</html>

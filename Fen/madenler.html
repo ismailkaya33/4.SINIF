@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeoloji Gemisi: Çekirdeğe Yolculuk</title>
+    <style>
+        :root {
+            --surface: #8BC34A;
+            --crust1: #795548;
+            --crust2: #5D4037;
+            --mantle: #E64A19;
+            --core: #FFEB3B;
+            --primary: #2b3e50;
+            --secondary: #00bcd4;
+            --success: #4CAF50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --text-light: #ecf0f1;
+            --text-dark: #333;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+        
+        body { background-color: var(--primary); color: var(--text-dark); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* Game Layout */
+        #game-area { display: flex; flex: 1; height: 100%; }
+
+        /* Left: Visual Game World */
+        #world-container { width: 35%; position: relative; background: linear-gradient(to bottom, var(--surface) 0%, var(--crust1) 15%, var(--crust2) 45%, var(--mantle) 75%, var(--core) 100%); border-right: 5px solid #1a252f; overflow: hidden; display: flex; justify-content: center; }
+        
+        /* Background decorative SVGs */
+        .fossil-bg { position: absolute; opacity: 0.2; width: 60px; height: 60px; }
+        #f1 { top: 20%; left: 10%; transform: rotate(45deg); }
+        #f2 { top: 35%; right: 15%; transform: rotate(-20deg); }
+        #f3 { top: 55%; left: 20%; transform: rotate(110deg); }
+
+        /* The Drill Ship */
+        #drill-ship { position: absolute; top: 2%; width: 80px; height: 120px; transition: top 1.5s cubic-bezier(0.25, 0.1, 0.25, 1); z-index: 10; display: flex; flex-direction: column; align-items: center; }
+        .drill-body { width: 60px; height: 70px; background: #95a5a6; border-radius: 30px 30px 0 0; border: 3px solid #34495e; position: relative; display: flex; justify-content: center; align-items: center; box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); }
+        .drill-window { width: 30px; height: 30px; background: #81d4fa; border-radius: 50%; border: 3px solid #2980b9; }
+        .drill-bit { width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 50px solid #f1c40f; position: relative; animation: none; }
+        .drill-bit::after { content: ''; position: absolute; top: -50px; left: -10px; width: 20px; height: 50px; background: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.2) 5px, rgba(0,0,0,0.2) 10px); }
+        @keyframes spin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
+        .spinning .drill-bit { animation: spin 0.2s linear infinite; }
+
+        .depth-indicator { position: absolute; left: 10px; color: white; font-weight: bold; text-shadow: 1px 1px 2px black; font-size: 1.2rem; top: 10px; }
+
+        /* Right: Task Interface */
+        #task-container { width: 65%; background: #fdfdfd; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
+        
+        #header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #bdc3c7; padding-bottom: 10px; margin-bottom: 20px; }
+        .stats { font-size: 1.2rem; font-weight: bold; color: var(--primary); display: flex; gap: 20px; }
+        .badge { background: var(--secondary); color: white; padding: 5px 10px; border-radius: 15px; font-size: 1rem; }
+
+        #question-area { flex: 1; display: flex; flex-direction: column; }
+        .q-text { font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; line-height: 1.4; color: #2c3e50; }
+        .q-visual { align-self: center; margin-bottom: 15px; max-height: 120px; }
+        
+        /* Option Styles */
+        .btn { padding: 12px 20px; font-size: 1.1rem; border: 2px solid transparent; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: bold; outline: none; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .opt-btn { background: #ecf0f1; color: var(--text-dark); border-color: #bdc3c7; text-align: left; width: 100%; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
+        .opt-btn:hover:not(:disabled) { background: #e0e6e8; border-color: #95a5a6; transform: translateX(5px); }
+        .opt-btn.selected { background: #e1f5fe; border-color: #03a9f4; box-shadow: 0 0 10px rgba(3,169,244,0.3); }
+
+        /* Specialized Interactions */
+        .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .match-item { background: #fff; border: 2px dashed #95a5a6; padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .match-item.selected { border-color: var(--secondary); background: #e0f7fa; transform: scale(1.05); }
+        .match-item.matched { background: var(--surface); color: white; border: 2px solid #388e3c; pointer-events: none; opacity: 0.8; }
+
+        .order-list { display: flex; flex-direction: column; gap: 10px; }
+        .order-item { background: #ecf0f1; padding: 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; border: 2px solid #bdc3c7; }
+        .order-item::before { content: '↕'; margin-right: 15px; color: #7f8c8d; font-size: 1.2rem; font-weight: bold; }
+        .order-item.selected { background: #fff9c4; border-color: #fbc02d; }
+
+        .classify-container { display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        .classify-item { background: var(--primary); color: white; padding: 20px; border-radius: 10px; font-size: 1.2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .classify-targets { display: flex; gap: 15px; width: 100%; }
+        .classify-box { flex: 1; border: 3px dashed #bdc3c7; border-radius: 10px; padding: 20px; text-align: center; background: #f9f9f9; cursor: pointer; transition: 0.2s; }
+        .classify-box:hover { background: #f0f0f0; border-color: #95a5a6; }
+        .classify-box.selected { border-color: var(--warning); background: #fff3e0; }
+
+        .fill-input { width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid #bdc3c7; border-radius: 8px; margin-top: 10px; }
+        .fill-input:focus { border-color: var(--secondary); outline: none; }
+
+        /* Navigation */
+        #controls { display: flex; justify-content: space-between; align-items: center; border-top: 3px solid #bdc3c7; padding-top: 15px; margin-top: auto; }
+        .nav-btn { background: #7f8c8d; color: white; }
+        .action-btn { background: var(--secondary); color: white; font-size: 1.2rem; padding: 15px 30px; box-shadow: 0 4px 0 #0097a7; }
+        .action-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0 0 #0097a7; }
+        .skip-btn { background: var(--warning); color: white; }
+
+        /* Modal */
+        #modal { display: none; position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 500px; padding: 30px; border-radius: 15px; text-align: center; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .modal-title { font-size: 2rem; margin-bottom: 15px; }
+        .modal-desc { font-size: 1.2rem; line-height: 1.5; margin-bottom: 25px; color: #555; }
+        .correct-color { color: var(--success); }
+        .wrong-color { color: var(--danger); }
+
+        /* Report */
+        #report-area { display: none; width: 100%; height: 100%; background: #fdfdfd; padding: 30px; overflow-y: auto; color: var(--text-dark); }
+        .report-header { text-align: center; margin-bottom: 30px; color: var(--primary); }
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: #ecf0f1; padding: 20px; border-radius: 10px; text-align: center; font-size: 1.2rem; border-left: 5px solid var(--secondary); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #bdc3c7; padding: 12px; text-align: left; }
+        th { background: var(--primary); color: white; }
+        .row-wrong { background: #ffebee; }
+        .row-skip { background: #fff8e1; }
+
+        @media (max-width: 768px) {
+            #game-area { flex-direction: column; }
+            #world-container { width: 100%; height: 80px; flex-direction: row; border-right: none; border-bottom: 5px solid #1a252f; align-items: center; }
+            #drill-ship { top: auto; left: 2%; transform: rotate(-90deg); width: 40px; height: 60px; transition: left 1.5s ease; }
+            .drill-body { width: 30px; height: 35px; border-radius: 15px 15px 0 0; border-width: 2px; }
+            .drill-window { width: 15px; height: 15px; border-width: 2px; }
+            .drill-bit { border-left-width: 15px; border-right-width: 15px; border-top-width: 25px; }
+            .drill-bit::after { display: none; }
+            #task-container { width: 100%; height: calc(100vh - 80px); }
+            .match-grid { grid-template-columns: 1fr; }
+            .classify-targets { flex-direction: column; }
+            #controls { flex-wrap: wrap; gap: 10px; justify-content: center; }
+            .action-btn { width: 100%; order: -1; margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-area">
+    <!-- Visual World -->
+    <div id="world-container">
+        <div class="depth-indicator">Derinlik: <span id="depth-text">0</span>m</div>
+        
+        <!-- Background SVG Fossils -->
+        <svg id="f1" class="fossil-bg" viewBox="0 0 100 100"><path d="M50,10 Q60,30 80,50 Q60,70 50,90 Q40,70 20,50 Q40,30 50,10 Z" fill="#000"/></svg>
+        <svg id="f2" class="fossil-bg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#000" stroke-width="5" stroke-dasharray="10 5"/><circle cx="50" cy="50" r="20" fill="none" stroke="#000" stroke-width="5"/></svg>
+        <svg id="f3" class="fossil-bg" viewBox="0 0 100 100"><path d="M20,80 L80,20 M30,80 L80,30 M20,70 L70,20" stroke="#000" stroke-width="5" stroke-linecap="round"/></svg>
+
+        <div id="drill-ship">
+            <div class="drill-body">
+                <div class="drill-window"></div>
+            </div>
+            <div class="drill-bit"></div>
+        </div>
+    </div>
+
+    <!-- Task Interface -->
+    <div id="task-container">
+        <div id="header">
+            <h2>Kayıt: <span id="task-num">1</span>/18</h2>
+            <div class="stats">
+                <span class="badge" title="Puan">🏆 <span id="score-text">0</span></span>
+            </div>
+        </div>
+
+        <div id="question-area">
+            <!-- Dynamic Content -->
+        </div>
+
+        <div id="controls">
+            <button id="btn-prev" class="btn nav-btn" onclick="navigate(-1)">Önceki</button>
+            <button id="btn-skip" class="btn skip-btn" onclick="skipTask()">Geç ⏭</button>
+            <button id="btn-action" class="btn action-btn" onclick="checkAnswer()">Tarama Yap (Kontrol)</button>
+            <button id="btn-next" class="btn nav-btn" onclick="navigate(1)" disabled>Sonraki</button>
+        </div>
+    </div>
+
+    <!-- Report Screen -->
+    <div id="report-area">
+        <h1 class="report-header">Sefer Raporu Tamamlandı</h1>
+        <div class="report-grid">
+            <div class="stat-card">Toplam Soru<br><b>18</b></div>
+            <div class="stat-card">İlk Seferde Doğru<br><b id="rep-first">0</b></div>
+            <div class="stat-card">Hata Sayısı<br><b id="rep-wrong">0</b></div>
+            <div class="stat-card">Geçilenler<br><b id="rep-skip">0</b></div>
+            <div class="stat-card">Toplam Puan<br><b id="rep-score">0</b></div>
+        </div>
+        <h2 style="margin-top: 20px;">İncelenmesi Gereken Kayıtlar</h2>
+        <div id="report-table-container"></div>
+        <button class="btn action-btn" style="margin-top: 30px; width: 100%;" onclick="replayGame()">Yeni Sefer Başlat</button>
+    </div>
+</div>
+
+<!-- Feedback Modal -->
+<div id="modal">
+    <div class="modal-content">
+        <h2 id="modal-title" class="modal-title"></h2>
+        <div id="modal-desc" class="modal-desc"></div>
+        <button id="modal-btn" class="btn action-btn" onclick="closeModal()">Devam</button>
+    </div>
+</div>
+
+<script>
+    /* DATA - 4. Sınıf MEB Kazanımları (Kaynak 3 referans alınarak hazırlanmıştır) */
+    const tasks = [
+        {
+            id: "t1", type: "mcq",
+            q: "Doğada büyük yer tutan, bir veya birden fazla mineralden oluşan kaya ve taş parçalarına ne ad verilir?",
+            opts: [{id:"o1", t:"Kayaç"}, {id:"o2", t:"Magma"}, {id:"o3", t:"Fosil"}, {id:"o4", t:"Maden"}],
+            ans: "o1",
+            exp: "Yer kabuğu kayaçlardan oluşur. Kayaçlar minerallerin birleşmesiyle oluşan büyük kütlelerdir."
+        },
+        {
+            id: "t2", type: "tf",
+            q: "Yer kabuğu sadece karaların bulunduğu yerlerde vardır, okyanus ve denizlerin altında yer kabuğu yoktur.",
+            opts: [{id:"true", t:"Doğru"}, {id:"false", t:"Yanlış"}],
+            ans: "false",
+            exp: "Yer kabuğu okyanus, deniz ve göl gibi su kaynaklarının altında da devam eder. Karalarda kalın, okyanuslarda incedir."
+        },
+        {
+            id: "t3", type: "classify",
+            q: "Aşağıdaki ifadeyi ait olduğu kavramla eşleştir:<br><br><b>'Ekonomik değeri olan, işlenerek pek çok alanda kullanılan kayaçlar.'</b>",
+            item: "Ekonomik değeri olan kayaç",
+            targets: [{id:"c1", t:"Mineral"}, {id:"c2", t:"Maden"}, {id:"c3", t:"Fosil Yakıt"}],
+            ans: "c2",
+            exp: "Yer kabuğunun farklı derinliklerinden çıkarılan ve ekonomik değeri olan kayaçlara 'maden' denir."
+        },
+        {
+            id: "t4", type: "match",
+            q: "Madenleri en bilindik kullanım alanlarıyla eşleştir.",
+            pairs: [
+                {id:"p1", l:"Bor", r:"Roket yakıtı ve temizlik"},
+                {id:"p2", l:"Mermer", r:"Mutfak tezgahı ve inşaat"},
+                {id:"p3", l:"Altın", r:"Mücevher ve uzay sanayisi"}
+            ],
+            exp: "Bor roket yakıtı ve temizlikte; Mermer inşaat ve tezgahlarda; Altın mücevher, elektrik ve uzay sanayisinde kullanılır."
+        },
+        {
+            id: "t5", type: "odd",
+            q: "Madenler ve özellikleri ile ilgili <u>hatalı</u> olan bilgiyi bul.",
+            opts: [
+                {id:"e1", t:"Türkiye, bor madeni açısından dünyada ilk sıralardadır."},
+                {id:"e2", t:"Linyit, ısıyı çok iyi verdiği için evlerde ısınma amaçlı kullanılır."},
+                {id:"e3", t:"Bakır, elektriği iyi ilettiği için kablo yapımında kullanılır."},
+                {id:"e4", t:"Madenler, maden ocağı adı verilen tesislerde çıkarılır."}
+            ],
+            ans: "e2",
+            exp: "Linyit bir kömür çeşididir ancak 'az ısı' verir. Bu yüzden evlerde ısınma amaçlı yaygın kullanılamaz, termik santrallerde elektrik üretiminde kullanılır."
+        },
+        {
+            id: "t6", type: "fill",
+            q: "Rüzgar, yağmur, akarsu ve sıcaklık farkı gibi dış etkenler uzun yıllar içinde kayaçları parçalar. <br><br>Kayaçların parçalanmasıyla oluşan, taşlardan daha küçük taneciklere ne denir?",
+            ans: ["kum", "kum tanecikleri", "çakıl"],
+            exp: "Kayaçlar parçalanarak kayaları, kayalar çakıl ve taşları, taşlar ise ufalanarak kumu oluşturur."
+        },
+        {
+            id: "t7", type: "visual_mcq",
+            q: "Aşağıdaki eşyalardan hangisinin yapımında <b>Mermer</b> madeni <u>kullanılmaz</u>?",
+            opts: [{id:"v1", t:"Mutfak Tezgahı 🪨"}, {id:"v2", t:"Merdiven Basamağı 🪜"}, {id:"v3", t:"Heykel 🗽"}, {id:"v4", t:"Elektrik Kablosu ⚡"}],
+            ans: "v4",
+            exp: "Elektrik kablolarında elektriği iyi ileten ve yumuşak bir maden olan Bakır kullanılır. Mermer inşaat ve heykelcilikte kullanılır."
+        },
+        {
+            id: "t8", type: "mcq",
+            q: "Çok eski zamanlarda yaşamış canlıların sertleşmiş, taşlaşarak bugüne ulaşmış kalıntı ve izlerine ne ad verilir?",
+            opts: [{id:"m1", t:"Mineral"}, {id:"m2", t:"Fosil"}, {id:"m3", t:"Magma"}, {id:"m4", t:"Kayaç"}],
+            ans: "m2",
+            exp: "Milyonlarca yıl öncesine ait canlıların taşlaşmış kalıntılarına 'fosil' denir."
+        },
+        {
+            id: "t9", type: "tf",
+            q: "Ölen her canlı kesinlikle fosilleşir ve günümüze kadar ulaşır.",
+            opts: [{id:"true", t:"Doğru"}, {id:"false", t:"Yanlış"}],
+            ans: "false",
+            exp: "Ölen her canlı fosilleşmez. Fosilleşme için canlı kalıntısının havayla temasının aniden kesilmesi ve uzun yıllar korunması gerekir."
+        },
+        {
+            id: "t10", type: "order",
+            q: "Bir dinozorun fosilleşme aşamalarını baştan sona doğru sırala.",
+            items: [
+                {id:"o1", t:"Canlı ölür ve kalıntıları toprağa veya dibe çöker."},
+                {id:"o2", t:"Üstü kum, çamur ve kaya parçalarıyla örtülür (havayla teması kesilir)."},
+                {id:"o3", t:"Uzun yıllar içinde su ve mineraller dokuların içine dolar."},
+                {id:"o4", t:"Kalıntı sertleşip kayaç haline gelir ve fosil oluşur."}
+            ],
+            exp: "Sıralama: Ölüm -> Üzerinin örtülmesi -> Minerallerin dolması -> Taşlaşma."
+        },
+        {
+            id: "t11", type: "mcq",
+            q: "Fosilleri inceleyen bilim dalına ve bu alanda çalışan bilim insanına sırasıyla ne ad verilir?",
+            opts: [
+                {id:"b1", t:"Arkeoloji - Arkeolog"}, 
+                {id:"b2", t:"Biyoloji - Biyolog"}, 
+                {id:"b3", t:"Paleontoloji - Paleontolog"}, 
+                {id:"b4", t:"Jeoloji - Jeolog"}
+            ],
+            ans: "b3",
+            exp: "Fosilleri inceleyen bilim dalına paleontoloji (fosil bilimi), bilim insanlarına ise paleontolog (fosil bilimci) denir."
+        },
+        {
+            id: "t12", type: "match",
+            q: "Fosiller ile ilgili verilen bilgileri tamamlayan doğru kelimelerle eşleştir.",
+            pairs: [
+                {id:"p1", l:"Fosiller çoğunlukla nerede bulunur?", r:"Kayaçların içinde"},
+                {id:"p2", l:"Reçine içinde kalmış bir böcek nedir?", r:"Fosil örneğidir"},
+                {id:"p3", l:"Kömür, petrol, doğal gaz nedir?", r:"Fosil yakıtlardır"}
+            ],
+            exp: "Fosiller çoğunlukla kayaçlarda, bazen reçine veya buzullarda bulunur. Canlı kalıntılarının fosilleşmesiyle kömür, petrol gibi fosil yakıtlar oluşur."
+        },
+        {
+            id: "t13", type: "odd",
+            q: "Fosiller incelendiğinde o bölge hakkında bazı bilgilere ulaşılır. Aşağıdakilerden hangisi fosillerin bize sağladığı bir bilgi <u>değildir</u>?",
+            opts: [
+                {id:"f1", t:"Geçmişteki iklim özellikleri"},
+                {id:"f2", t:"Gelecekte yaşanacak depremler"},
+                {id:"f3", t:"Nesli tükenmiş canlıların yapısı"},
+                {id:"f4", t:"Yerkürenin geçmiş yaşı"}
+            ],
+            ans: "f2",
+            exp: "Fosiller geçmiş yaşam, iklim ve yeryüzü şekilleri hakkında bilgi verir ancak gelecekteki hava olaylarını veya depremleri tahmin edemezler."
+        },
+        {
+            id: "t14", type: "classify",
+            q: "Verilen tanımı doğru kavram kutusuna gönder:<br><br><b>'Türkiye'de Zonguldak ve çevresinde çıkarılan, ısıyı iyi verdiği için demir-çelik sanayisinde kullanılan maden.'</b>",
+            item: "Zonguldak'tan çıkarılan maden",
+            targets: [{id:"c1", t:"Linyit"}, {id:"c2", t:"Taş Kömürü"}, {id:"c3", t:"Bakır"}],
+            ans: "c2",
+            exp: "Isıyı iyi verdiği için evlerde ve sanayide kullanılan, Zonguldak'ta çıkarılan maden 'Taş Kömürü'dür."
+        },
+        {
+            id: "t15", type: "tf",
+            q: "Madenler, tüketildiğinde hızla yenilenebilen ve asla bitmeyen kaynaklardır.",
+            opts: [{id:"true", t:"Doğru"}, {id:"false", t:"Yanlış"}],
+            ans: "false",
+            exp: "Madenler milyonlarca yılda oluşan ve tüketildiğinde yenilenemeyen doğal kaynaklardır. Bu yüzden israf edilmemelidir."
+        },
+        {
+            id: "t16", type: "fill",
+            q: "Yer kabuğunun altındaki çok sıcak, erimiş kayalardan oluşan ve yanardağlardan yeryüzüne lav olarak çıkan katmana ne ad verilir?",
+            ans: ["magma", "manto", "ateş küre"],
+            exp: "Yer kabuğunun altındaki çok sıcak ve erimiş tabakaya magma (manto/ateş küre) denir. Yeryüzüne çıkınca lav adını alır."
+        },
+        {
+            id: "t17", type: "match",
+            q: "Madenleri çıkarıldıkları yerlerle eşleştir.",
+            pairs: [
+                {id:"p1", l:"Mermer", r:"Afyon"},
+                {id:"p2", l:"Bakır", r:"Artvin, Kastamonu"},
+                {id:"p3", l:"Gümüş", r:"Kütahya, Uşak"}
+            ],
+            exp: "Afyon mermeriyle, Artvin ve Kastamonu bakırıyla, Kütahya (Gümüşköy) gümüşüyle ünlüdür."
+        },
+        {
+            id: "t18", type: "mcq", /* Boss */
+            q: "FİNAL GÖREVİ: Yerin derinliklerinde büyük bir mağaraya ulaştın. Mağara duvarında parlak, elektrik devrelerinde kullanılabilen, paslanmaz, sarı renkli bir damar ve yanında dev bir bitki yaprağının taşa çıkmış izini buldun. Kaptanın seyir defterine hangi iki keşfi yazmalısın?",
+            opts: [
+                {id:"b1", t:"Bor ve Kayaç"},
+                {id:"b2", t:"Altın ve Fosil"},
+                {id:"b3", t:"Bakır ve Magma"},
+                {id:"b4", t:"Gümüş ve Linyit"}
+            ],
+            ans: "b2",
+            exp: "Parlak sarı, paslanmaz ve elektronikte kullanılan değerli maden 'Altın'dır. Bitki yaprağının taşlaşmış izi ise bir 'Fosil'dir. Mükemmel keşif!"
+        }
+    ];
+
+    /* Game State */
+    let state = {
+        current: 0,
+        score: 0,
+        wrong: 0,
+        skipped: 0,
+        history: [], // Stores result of each task
+        interactionData: {} // Holds shuffled data for current task
+    };
+
+    /* Initialization */
+    function init() {
+        state.current = 0;
+        state.score = 0;
+        state.wrong = 0;
+        state.skipped = 0;
+        state.history = tasks.map(t => ({ id: t.id, status: 'pending', attempts: 0, firstTry: true }));
+        
+        document.getElementById('report-area').style.display = 'none';
+        document.getElementById('world-container').style.display = 'flex';
+        document.getElementById('task-container').style.display = 'flex';
+        
+        renderTask();
+    }
+
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    /* Render Task based on type */
+    function renderTask() {
+        const task = tasks[state.current];
+        const res = state.history[state.current];
+        
+        document.getElementById('task-num').innerText = state.current + 1;
+        document.getElementById('score-text').innerText = state.score;
+        
+        const qArea = document.getElementById('question-area');
+        qArea.innerHTML = `<div class="q-text">${task.q}</div>`;
+
+        // Interaction Setup
+        state.interactionData = { selected: null, matches: [], order: [] };
+
+        const isLocked = ['correct', 'skipped'].includes(res.status);
+
+        if (['mcq', 'tf', 'odd', 'visual_mcq'].includes(task.type)) {
+            let opts = [...task.opts];
+            if(task.type !== 'tf') shuffle(opts); // Don't shuffle true/false order usually
+            
+            opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn opt-btn';
+                btn.innerHTML = `<span style="font-size:1.5rem; color:#bdc3c7;">●</span> ${opt.t}`;
+                btn.disabled = isLocked;
+                btn.onclick = () => {
+                    document.querySelectorAll('.opt-btn').forEach(b => {
+                        b.classList.remove('selected');
+                        b.querySelector('span').style.color = '#bdc3c7';
+                    });
+                    btn.classList.add('selected');
+                    btn.querySelector('span').style.color = 'var(--secondary)';
+                    state.interactionData.selected = opt.id;
+                };
+                qArea.appendChild(btn);
+            });
+        } 
+        else if (task.type === 'fill') {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'fill-input';
+            input.placeholder = "Cevabını buraya yaz...";
+            input.disabled = isLocked;
+            input.oninput = (e) => state.interactionData.selected = e.target.value;
+            qArea.appendChild(input);
+        }
+        else if (task.type === 'classify') {
+            const container = document.createElement('div');
+            container.className = 'classify-container';
+            
+            const itemBox = document.createElement('div');
+            itemBox.className = 'classify-item';
+            itemBox.innerHTML = task.item;
+            container.appendChild(itemBox);
+
+            const targets = document.createElement('div');
+            targets.className = 'classify-targets';
+            
+            let tArr = [...task.targets];
+            shuffle(tArr);
+            tArr.forEach(t => {
+                const tBox = document.createElement('div');
+                tBox.className = 'classify-box';
+                tBox.innerText = t.t;
+                if(isLocked) tBox.style.pointerEvents = 'none';
+                tBox.onclick = () => {
+                    document.querySelectorAll('.classify-box').forEach(b => b.classList.remove('selected'));
+                    tBox.classList.add('selected');
+                    state.interactionData.selected = t.id;
+                };
+                targets.appendChild(tBox);
+            });
+            container.appendChild(targets);
+            qArea.appendChild(container);
+        }
+        else if (task.type === 'match') {
+            const grid = document.createElement('div');
+            grid.className = 'match-grid';
+            
+            let lefts = task.pairs.map(p => ({id: p.id, t: p.l, side: 'L'}));
+            let rights = task.pairs.map(p => ({id: p.id, t: p.r, side: 'R'}));
+            shuffle(lefts); shuffle(rights);
+            
+            const colL = document.createElement('div'); colL.style.display='flex'; colL.style.flexDirection='column'; colL.style.gap='10px';
+            const colR = document.createElement('div'); colR.style.display='flex'; colR.style.flexDirection='column'; colR.style.gap='10px';
+            
+            let selL = null, selR = null;
+
+            const handleMatch = (el, item) => {
+                if(isLocked || el.classList.contains('matched')) return;
+                
+                if(item.side === 'L') {
+                    if(selL) selL.el.classList.remove('selected');
+                    selL = {el, item};
+                } else {
+                    if(selR) selR.el.classList.remove('selected');
+                    selR = {el, item};
+                }
+                el.classList.add('selected');
+
+                if(selL && selR) {
+                    if(selL.item.id === selR.item.id) {
+                        selL.el.classList.replace('selected', 'matched');
+                        selR.el.classList.replace('selected', 'matched');
+                        state.interactionData.matches.push(selL.item.id);
+                        selL = null; selR = null;
+                    } else {
+                        // Wrong match handling directly here
+                        setTimeout(() => {
+                            selL.el.classList.remove('selected');
+                            selR.el.classList.remove('selected');
+                            selL = null; selR = null;
+                            showModal("Bağlantı Hatası", "Bu iki bilgi eşleşmiyor. Tekrar dene!", false, true);
+                        }, 300);
+                    }
+                }
+            };
+
+            lefts.forEach(i => {
+                const d = document.createElement('div'); d.className='match-item'; d.innerText = i.t;
+                d.onclick = () => handleMatch(d, i);
+                colL.appendChild(d);
+            });
+            rights.forEach(i => {
+                const d = document.createElement('div'); d.className='match-item'; d.innerText = i.t;
+                d.onclick = () => handleMatch(d, i);
+                colR.appendChild(d);
+            });
+            
+            grid.appendChild(colL); grid.appendChild(colR);
+            qArea.appendChild(grid);
+        }
+        else if (task.type === 'order') {
+            const list = document.createElement('div');
+            list.className = 'order-list';
+            
+            let items = [...task.items];
+            shuffle(items);
+            state.interactionData.order = items;
+
+            let selIdx = null;
+
+            const renderOrder = () => {
+                list.innerHTML = '<p style="font-size:0.9rem; color:#7f8c8d; margin-bottom:10px;">Sırasını değiştirmek için önce birine, sonra diğerine dokun.</p>';
+                state.interactionData.order.forEach((item, idx) => {
+                    const d = document.createElement('div');
+                    d.className = 'order-item';
+                    if(selIdx === idx) d.classList.add('selected');
+                    d.innerText = item.t;
+                    d.onclick = () => {
+                        if(isLocked) return;
+                        if(selIdx === null) {
+                            selIdx = idx;
+                            renderOrder();
+                        } else {
+                            // Swap
+                            let temp = state.interactionData.order[selIdx];
+                            state.interactionData.order[selIdx] = state.interactionData.order[idx];
+                            state.interactionData.order[idx] = temp;
+                            selIdx = null;
+                            renderOrder();
+                        }
+                    };
+                    list.appendChild(d);
+                });
+            };
+            renderOrder();
+            qArea.appendChild(list);
+        }
+
+        // Button States
+        document.getElementById('btn-prev').disabled = state.current === 0;
+        
+        if (isLocked) {
+            document.getElementById('btn-action').disabled = true;
+            document.getElementById('btn-skip').disabled = true;
+            document.getElementById('btn-next').disabled = false;
+        } else {
+            document.getElementById('btn-action').disabled = false;
+            document.getElementById('btn-skip').disabled = false;
+            document.getElementById('btn-next').disabled = true;
+        }
+
+        updateVisuals();
+    }
+
+    /* Core Logic */
+    function checkAnswer() {
+        const task = tasks[state.current];
+        const res = state.history[state.current];
+        const data = state.interactionData;
+        let isCorrect = false;
+
+        res.attempts++;
+
+        if (['mcq', 'tf', 'odd', 'visual_mcq', 'classify'].includes(task.type)) {
+            if (!data.selected) { alert("Lütfen bir seçim yap."); return; }
+            isCorrect = (data.selected === task.ans);
+        } 
+        else if (task.type === 'fill') {
+            const val = (data.selected || "").toLowerCase().trim();
+            if (!val) { alert("Lütfen bir cevap yaz."); return; }
+            isCorrect = task.ans.some(a => val.includes(a.toLowerCase()));
+        }
+        else if (task.type === 'match') {
+            if (data.matches.length !== task.pairs.length) { alert("Tüm eşleşmeleri tamamlamalısın."); return; }
+            isCorrect = true; // Checked during interaction
+        }
+        else if (task.type === 'order') {
+            isCorrect = data.order.every((item, idx) => item.id === task.items[idx].id);
+        }
+
+        if (isCorrect) {
+            // Animate drill
+            document.getElementById('drill-ship').classList.add('spinning');
+            setTimeout(() => document.getElementById('drill-ship').classList.remove('spinning'), 1000);
+
+            if (res.firstTry) {
+                res.status = 'correct';
+                state.score += 10;
+            } else {
+                res.status = 'correct'; // conceptually correct after retry
+                state.score += 5;
+            }
+            
+            updateVisuals();
+            document.getElementById('score-text').innerText = state.score;
+            document.getElementById('btn-action').disabled = true;
+            document.getElementById('btn-skip').disabled = true;
+            document.getElementById('btn-next').disabled = false;
+            
+            showModal("Matkap Aktif! 🟢", "Doğru veri girişi yapıldı. Derinlik artırılıyor!<br><br>" + (task.exp ? `<b>Bilgi Kaydı:</b> ${task.exp}` : ""), true, false);
+        } else {
+            res.firstTry = false;
+            state.wrong++;
+            showModal("Sistem Uyarısı 🔴", `Hatalı işlem tespit edildi.<br><br><b>Sistem Önerisi:</b> ${task.exp}`, false, false);
+            // Reset local selection visuals except for ordering
+            if(task.type !== 'order' && task.type !== 'match') renderTask();
+        }
+    }
+
+    function skipTask() {
+        const res = state.history[state.current];
+        res.status = 'skipped';
+        state.skipped++;
+        navigate(1);
+    }
+
+    function navigate(dir) {
+        state.current += dir;
+        if (state.current >= tasks.length) {
+            state.current = tasks.length - 1;
+            generateReport();
+        } else {
+            renderTask();
+        }
+    }
+
+    /* Modals & Visuals */
+    function showModal(title, desc, isSuccess, isMiniError = false) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-title').className = 'modal-title ' + (isSuccess ? 'correct-color' : 'wrong-color');
+        document.getElementById('modal-desc').innerHTML = desc;
+        
+        const btn = document.getElementById('modal-btn');
+        if(isMiniError) {
+            btn.innerText = "Kapat";
+            btn.onclick = closeModal;
+        } else {
+            btn.innerText = isSuccess ? "Aşağı İn" : "Tekrar Dene";
+            btn.onclick = () => {
+                closeModal();
+                if(isSuccess) navigate(1);
+            };
+        }
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function updateVisuals() {
+        // Calculate depth based on correct answers
+        const correctCount = state.history.filter(r => r.status === 'correct').length;
+        const total = tasks.length;
+        const percent = (correctCount / total) * 90; // max 90% down
+        
+        const drill = document.getElementById('drill-ship');
+        const depthText = document.getElementById('depth-text');
+        
+        // Depth math (Surface 0m to Core 6371km -> let's say 6000m for game context)
+        depthText.innerText = Math.floor((correctCount / total) * 6000);
+
+        if (window.innerWidth > 768) {
+            drill.style.top = (2 + percent) + '%';
+            drill.style.left = 'auto';
+        } else {
+            drill.style.left = (2 + percent) + '%';
+            drill.style.top = 'auto';
+        }
+    }
+
+    /* Reporting */
+    function generateReport() {
+        document.getElementById('world-container').style.display = 'none';
+        document.getElementById('task-container').style.display = 'none';
+        document.getElementById('report-area').style.display = 'block';
+
+        const firstTry = state.history.filter(r => r.status === 'correct' && r.firstTry).length;
+        
+        document.getElementById('rep-first').innerText = firstTry;
+        document.getElementById('rep-wrong').innerText = state.wrong;
+        document.getElementById('rep-skip').innerText = state.skipped;
+        document.getElementById('rep-score').innerText = state.score;
+
+        let tableHtml = `<table><tr><th>Görev</th><th>Durum</th><th>İnceleme Notu</th></tr>`;
+        
+        state.history.forEach((res, i) => {
+            if (!res.firstTry || res.status === 'skipped') {
+                const t = tasks[i];
+                let statText = res.status === 'skipped' ? 'Geçildi' : 'Hata Yapıldı';
+                let rowCls = res.status === 'skipped' ? 'row-skip' : 'row-wrong';
+                
+                tableHtml += `<tr class="${rowCls}">
+                    <td>${i+1}. Soru</td>
+                    <td>${statText}</td>
+                    <td>${t.exp}</td>
+                </tr>`;
+            }
+        });
+        tableHtml += `</table>`;
+
+        const tableCont = document.getElementById('report-table-container');
+        if (state.history.every(r => r.status === 'correct' && r.firstTry)) {
+            tableCont.innerHTML = `<div style="text-align:center; font-size:1.2rem; color:var(--success); padding:20px; border:2px dashed var(--success); border-radius:10px;">Kusursuz bir sefer! Hiç hata yapmadın. Magmanın sırlarını çözdün!</div>`;
+        } else {
+            tableCont.innerHTML = tableHtml;
+        }
+    }
+
+    function replayGame() {
+        init();
+    }
+
+    window.addEventListener('resize', updateVisuals);
+    window.onload = init;
+
+</script>
+</body>
+</html>

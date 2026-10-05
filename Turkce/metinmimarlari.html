@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Metin Mimarları — 4. Sınıf Türkçe</title>
+<style>
+:root{--ink:#18243d;--muted:#637089;--bg:#eef4fb;--card:#fff;--blue:#3157d5;--cyan:#18a7c7;--green:#1d9b6c;--red:#d94f5c;--gold:#f0a43c;--purple:#805ad5;--line:#dbe4ef}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#edf3ff,#f9fcff 55%,#edf9f4);color:var(--ink);min-height:100vh}
+button{font:inherit}.app{max-width:1120px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:12px}.brand{display:flex;align-items:center;gap:11px}.logo{width:52px;height:52px;border-radius:15px;background:var(--ink);display:grid;place-items:center}.logo svg{width:40px}.sub,.small{font-size:12px;color:var(--muted)}h1{font-size:24px;margin:0 0 3px}.stats{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.pill{background:#fff;border:1px solid var(--line);padding:8px 11px;border-radius:999px;font-size:12px;font-weight:800}.progress{height:9px;background:#dce5f0;border-radius:99px;overflow:hidden;margin-bottom:14px}.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:.3s}.screen{display:none}.screen.active{display:block}
+.hero,.task,.result{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 14px 35px #19325812}.hero{padding:27px}.heroGrid{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:center}.kicker{font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}.hero h2{font-size:36px;line-height:1.05;margin:8px 0 12px}.hero p{line-height:1.55;color:#53627a}.cta{border:0;background:var(--blue);color:#fff;border-radius:13px;padding:12px 17px;font-weight:900;cursor:pointer}.cta:hover{filter:brightness(.96)}.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:17px}.rule{background:#f7f9fc;border:1px solid var(--line);border-radius:14px;padding:11px;font-size:12px}.rule b{display:block;margin-bottom:4px}.illustration{background:linear-gradient(160deg,#eef4ff,#eafbf5);border:1px solid var(--line);border-radius:20px;display:grid;place-items:center;min-height:250px}
+.stageHead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:4px 0 11px}.stageHead h2{margin:0;font-size:23px}.stageHead p{margin:4px 0 0;color:var(--muted);font-size:13px}.task{padding:20px}.taskNo{display:inline-flex;background:#edf2ff;color:var(--blue);padding:5px 9px;border-radius:8px;font-size:11px;font-weight:900;margin-bottom:9px}.task h3{margin:0 0 12px;font-size:19px;line-height:1.35}.question{line-height:1.55;margin-bottom:12px}.choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.choice{border:2px solid #e1e8f1;background:#fbfcfe;color:var(--ink);padding:12px;border-radius:13px;text-align:left;cursor:pointer}.choice:hover:not(:disabled){border-color:#99afe7;transform:translateY(-1px)}.choice:disabled{cursor:default}.choice.correct{border-color:var(--green);background:#edfbf5}.choice.wrong{border-color:var(--red);background:#fff1f3}
+.feedback{display:none;margin-top:12px;padding:12px 14px;border-radius:13px;line-height:1.45;font-size:13px}.feedback.show{display:block}.feedback.no{background:#fff2f3;color:#8e2934}.feedback.ok{background:#edfbf5;color:#116347}.hint{font-weight:800;margin-top:5px}.nextRow{display:flex;justify-content:flex-end;margin-top:13px}.next{display:none;border:0;background:var(--ink);color:#fff;border-radius:11px;padding:10px 14px;font-weight:900;cursor:pointer}.next.show{display:inline-block}
+.dragArea{display:grid;grid-template-columns:1fr 1fr;gap:17px}.dropzone{min-height:250px;border:2px dashed #b9c7dc;border-radius:15px;padding:10px;background:#f8fafc}.dropzone.over{background:#eef4ff;border-color:var(--blue)}.dragcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px;margin:7px 0;cursor:grab;box-shadow:0 4px 10px #17335a0b}.dragcard strong{display:block;font-size:12px;margin-bottom:4px}.dragcard span{font-size:12px;color:#56647a}.dragcard.selected{outline:3px solid #f0c36b}.sortActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.secondary{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font-weight:800;cursor:pointer}.missing{background:#f7f9fc;border:1px dashed #abbdd4;border-radius:15px;padding:15px;line-height:1.55;margin:10px 0}.missing em{color:var(--blue);font-style:normal;font-weight:900}.errorText{border:1px solid var(--line);border-radius:14px;overflow:hidden}.par{padding:13px 14px;background:#fff;border-bottom:1px solid #e7edf5;cursor:pointer;line-height:1.5}.par:last-child{border-bottom:0}.par:hover{background:#f7f9ff}.par.selected{outline:3px solid #f0c36b;background:#fff9ed}.retryNote{font-size:12px;color:var(--muted);margin-top:8px}
+.result{padding:24px;text-align:center}.scoreRing{width:130px;height:130px;border-radius:50%;display:grid;place-items:center;margin:12px auto;background:conic-gradient(var(--blue) var(--pct),#e6edf5 0)}.scoreInner{width:99px;height:99px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:900}.reportGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:16px 0}.reportBox{background:#f7f9fc;border:1px solid var(--line);border-radius:13px;padding:11px;font-size:11px}.reportBox b{display:block;font-size:21px;margin-bottom:3px}.badges{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0}.badge{padding:8px 11px;border-radius:999px;background:#eef4ff;color:var(--blue);font-weight:900;font-size:11px}
+@media(max-width:760px){.heroGrid,.dragArea{grid-template-columns:1fr}.rules,.choiceGrid,.reportGrid{grid-template-columns:1fr}.hero h2{font-size:30px}.top{align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start}.app{padding:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand">
+    <div class="logo"><svg viewBox="0 0 60 60" aria-hidden="true"><path d="M12 20h36v25H12z" fill="#fff"/><path d="M17 25h26M17 31h18M17 37h22" stroke="#3157d5" stroke-width="3" stroke-linecap="round"/><path d="M30 11l4 7-4 5-4-5z" fill="#18a7c7"/></svg></div>
+    <div><h1>Metin Mimarları</h1><div class="sub">4. sınıf Türkçe • Metin bölümlerini tanıma</div></div>
+  </div>
+  <div class="stats"><div class="pill" id="stagePill">Başlangıç</div><div class="pill">⭐ <span id="score">0</span></div><div class="pill">Görev <span id="taskCount">0</span>/16</div></div>
+</header>
+<div class="progress"><div id="bar"></div></div>
+
+<section id="start" class="screen active">
+<div class="hero"><div class="heroGrid">
+<div>
+<div class="kicker">Metin Laboratuvarı</div>
+<h2>Kayıp bölümleri yerine yerleştir!</h2>
+<p>Hikâye edici metinlerde <b>serim–düğüm–çözüm</b>, bilgilendirici metinlerde <b>giriş–gelişme–sonuç</b> bölümlerinin görevlerini keşfet. Her yanlışta hemen cevap gösterilmeyecek: hatanı anlayıp ipucuyla yeniden deneyeceksin.</p>
+<button class="cta" id="startBtn">Laboratuvarı Aç →</button>
+<div class="rules">
+<div class="rule"><b>🔎 Tara</b>Bir parçanın işlevini tanı.</div>
+<div class="rule"><b>🧩 Kur</b>Parçaları doğru akışa yerleştir.</div>
+<div class="rule"><b>🛠️ Onar</b>Yanlış etiketi bul ve düzelt.</div>
+</div>
+</div>
+<div class="illustration"><svg viewBox="0 0 330 250" width="100%" height="235" aria-label="Metin laboratuvarı"><rect x="45" y="45" width="240" height="160" rx="18" fill="#fff" stroke="#b9c7dc" stroke-width="3"/><path d="M75 82h180M75 111h145M75 140h165M75 169h120" stroke="#d4deeb" stroke-width="8" stroke-linecap="round"/><circle cx="250" cy="82" r="18" fill="#eef4ff" stroke="#3157d5" stroke-width="3"/><path d="M244 82h12M250 76v12" stroke="#3157d5" stroke-width="3" stroke-linecap="round"/><path d="M125 28h80M165 28v18" stroke="#3157d5" stroke-width="8" stroke-linecap="round"/><circle cx="80" cy="82" r="9" fill="#f0a43c"/><circle cx="80" cy="111" r="9" fill="#1d9b6c"/><circle cx="80" cy="140" r="9" fill="#805ad5"/><text x="165" y="238" text-anchor="middle" font-size="14" font-weight="700" fill="#667085">METİN MOTORU</text></svg></div>
+</div></div>
+</section>
+
+<section id="game" class="screen">
+<div class="stageHead"><div><h2 id="stageTitle"></h2><p id="stageDesc"></p></div><div class="pill" id="stageProgress">1/4</div></div>
+<div id="taskHost"></div>
+</section>
+
+<section id="result" class="screen">
+<div class="result">
+<div class="kicker">Laboratuvar raporu</div><h2 style="margin:7px 0">Metin Motoru Çalıştı! 🎉</h2>
+<div class="scoreRing" id="ring"><div class="scoreInner"><div><span id="pct">0%</span><div class="small">nihai başarı</div></div></div></div>
+<div class="reportGrid">
+<div class="reportBox"><b id="rTotal">0</b>Bağımsız görev</div>
+<div class="reportBox"><b id="rFirst">0</b>İlk denemede doğru</div>
+<div class="reportBox"><b id="rFinal">0</b>Nihai başarı</div>
+<div class="reportBox"><b id="rWrong">0</b>Yanlış deneme</div>
+<div class="reportBox"><b id="rScore">0</b>Puan</div>
+</div>
+<div class="badges" id="badges"></div>
+<p id="reportText" style="line-height:1.6"></p>
+<button class="cta" id="replayBtn">Baştan Oyna ↻</button>
+<p class="small" style="margin-top:16px">Rapor yalnızca bu oyundaki gerçek denemelerden hesaplanır.</p>
+</div>
+</section>
+</div>
+
+<script>
+(()=>{
+"use strict";
+
+const tasks=[
+{stage:1,type:"choice",title:"Metin Tarayıcı • 1",q:"“Bahçedeki küçük serada domates yetiştirmek için önce toprağı hazırladık. Daha sonra fideleri diktik ve düzenli olarak suladık.” Bu parça hikâyede hangi bölümün işini yapıyor?",opts:["Serim","Düğüm","Çözüm","Bilgilendirici metinde sonuç"],ans:0,why:"Başlangıçta olayın ve durumun tanıtılması serimin temel işidir.",hint:"Olayın daha yeni başladığını ve kahramanların/durumun tanıtıldığını düşün."},
+{stage:1,type:"choice",title:"Metin Tarayıcı • 2",q:"“Arılar, çiçeklerden nektar toplarken bitkilerin tozlaşmasına da yardımcı olur. Bu nedenle arılar hem bal üretiminde hem de doğadaki bitki yaşamında önemlidir.” Bu parça hangi bölüme daha uygundur?",opts:["Bilgilendirici metinde giriş","Bilgilendirici metinde gelişme","Bilgilendirici metinde sonuç","Hikâyede serim"],ans:1,why:"Gelişme bölümünde konu ayrıntılar ve açıklamalarla genişletilir.",hint:"Burada konu yalnızca tanıtılmıyor; arıların yaptığı işler ve önemi açıklanıyor."},
+{stage:1,type:"choice",title:"Metin Tarayıcı • 3",q:"“Mert kapının önünde bekledi. Birkaç dakika sonra arkadaşının geldiğini görünce gülümsedi. Birlikte parka doğru yürüdüler.” Bu parça hikâyede hangi bölüme en uygun örnektir?",opts:["Serim","Düğüm","Çözüm","Bilgilendirici metinde gelişme"],ans:1,why:"Düğüm bölümünde olaylar gelişir ve kahramanlar arasındaki durumlar ilerler.",hint:"Başlangıç tanıtımı bitmiş; olayın nasıl ilerlediğine bak."},
+{stage:1,type:"choice",title:"Metin Tarayıcı • 4",q:"“Kısacası, suyu dikkatli kullanmak hem doğayı korur hem de gelecekte su sıkıntısı yaşama riskimizi azaltır.” Bu cümle hangi bölümün tipik işini yapar?",opts:["Bilgilendirici metinde giriş","Bilgilendirici metinde gelişme","Bilgilendirici metinde sonuç","Hikâyede serim"],ans:2,why:"Sonuç bölümü anlatılanları toparlar ve düşünceyi bağlar.",hint:"“Kısacası” sözü, anlatılanları toparlayan bir bölümün ipucudur."},
+
+{stage:2,type:"sort",title:"Metin Kurma • 1",kind:"info",items:[["A","Düzenli uyku, gün içinde daha dinç olmamıza yardımcı olur."],["B","Yeterli uyku; dikkat, öğrenme ve dinlenme açısından önemlidir."],["C","Bu yüzden her gün uygun saatte yatmaya ve yeterince uyumaya özen göstermeliyiz."]],order:["B","A","C"],why:"Bilgilendirici akışta genel bilgi verilir, ayrıntı eklenir ve sonuçla bağlanır.",hint:"Önce konu hakkında genel bir cümle, sonra ayrıntı, en sonda toparlama düşün."},
+{stage:2,type:"sort",title:"Metin Kurma • 2",kind:"story",items:[["A","Efe ve dedesi yağmur başlamadan eve dönmenin yolunu aradılar."],["B","Efe, dedesiyle birlikte ormandaki kulübeye doğru yürüyordu."],["C","Sonunda bir patika bulup güvenle eve ulaştılar."]],order:["B","A","C"],why:"Hikâyede önce durum tanıtılır, sonra sorun gelişir, en sonunda çözülür.",hint:"Önce yürüyüşün başladığını görmelisin; sorun ortaya çıktıktan sonra çözüm gelebilir."},
+{stage:2,type:"sort",title:"Metin Kurma • 3",kind:"info",items:[["A","Kütüphaneler, kitap ve bilgi kaynaklarına ulaşmamızı sağlayan önemli yerlerdir."],["B","Kütüphanede kitapların yanı sıra dergiler, sözlükler ve başka kaynaklar da bulunabilir."],["C","Bu nedenle kütüphanelerden yararlanmak öğrenme yolculuğumuzu destekler."]],order:["A","B","C"],why:"Giriş konuyu tanıtır; gelişme ayrıntı verir; sonuç düşünceyi bağlar.",hint:"“Bu nedenle” ile başlayan cümle genellikle daha önce verilen bilgileri bağlar."},
+{stage:2,type:"sort",title:"Metin Kurma • 4",kind:"story",items:[["A","Zeynep, okul çıkışında kaybolan kediyi fark etti."],["B","Kediyi ararken yağmur bastırdı ve yolun karşısına geçemedi."],["C","Bir süre sonra sahibi geldi; Zeynep kediyi ona teslim etti."]],order:["A","B","C"],why:"Serimde durum tanıtılır, düğümde sorun gelişir, çözümde olay sonuçlanır.",hint:"Önce kedi fark edilmeli; ardından arama sırasında sorun çıkmalı; son olarak olay bağlanmalı."},
+
+{stage:3,type:"missing",title:"Eksik Parça • 1",text:"“Bisiklete binmek için önce kaskımızı takmalıyız. Ardından frenleri ve lastikleri kontrol etmeliyiz. Böylece sürüşe başlamadan önce güvenliğimiz için gerekli hazırlıkları yapmış oluruz.” Eksik bölümün görevini seç.",opts:["Konuya ilk kez genel bilgi vermek","Konuyu ayrıntılarla genişletmek","Anlatılanları toparlayıp sonuca bağlamak","Yeni bir kahraman tanıtmak"],ans:2,why:"Bu bölüm önceki bilgileri toparlayıp düşünceyi bağlıyor.",hint:"“Böylece” ifadesi, önceki bilgilerin sonucunu bağlamaya yardım ediyor."},
+{stage:3,type:"missing",title:"Eksik Parça • 2",text:"“Elif, okul bahçesinde yerde bir anahtar buldu. Anahtarın kime ait olduğunu öğrenmek için öğretmenine gitti. Öğretmeniyle birlikte çevreye baktılar.” Buradan sonra hangi tür bölüm gelmelidir?",opts:["Elif'in okula ilk kez gelmesi","Anahtarın sahibinin bulunması ve olayın sonuçlanması","Bahçenin nasıl göründüğünün uzun uzun anlatılması","Yeni bir sorun çıkması"],ans:1,why:"Hikâyede sorun geliştikten sonra olayın nasıl sonuçlandığını gösteren bölüm gelir.",hint:"Anahtarın kime ait olduğu sorusu henüz çözülmedi; olayın bağlandığı bölümü düşün."},
+{stage:3,type:"missing",title:"Eksik Parça • 3",text:"“Geri dönüşüm, kullanılabilecek bazı atıkların yeniden değerlendirilmesini sağlar. Kâğıt, cam, metal ve bazı plastikler uygun biçimde ayrıştırılabilir.” Bu parçadan önce gelecek bölümün temel görevi nedir?",opts:["Konuyu genel olarak tanıtmak","Hikâyedeki çatışmayı çözmek","Olayı kahramanın gözünden bitirmek","Yeni bir sorun ortaya çıkarmak"],ans:0,why:"Bilgilendirici metinlerde ayrıntılardan önce konuya genel bir giriş yapılır.",hint:"Kâğıt, cam ve metal gibi ayrıntılar verilmeden önce okuyucu konuya hazırlanır."},
+{stage:3,type:"missing",title:"Eksik Parça • 4",text:"“Arda, uçurtmasını uçurmak için parka gitti. Rüzgâr birden hızlanınca ip elinden kaydı. Uçurtma ağacın dallarına takıldı.” Buradan sonra hangi bölümün görevi gelir?",opts:["Arda'nın sabah kahvaltısının anlatılması","Arda'nın sorunu çözmek için bir yol bulması ve olayın sonuçlanması","Uçurtmanın ne olduğu hakkında genel bilgi","Parka gitme kararının en baştan anlatılması"],ans:1,why:"Düğümde sorun ortaya çıktığı için sonraki bölümde olayın çözülmesi beklenir.",hint:"Uçurtma ağaca takıldı: şimdi hikâyedeki sorun nasıl bağlanacak?"},
+
+{stage:4,type:"error",title:"Editör Masası • 1",paras:[["Serim","Deniz, dedesinin evine gitmek için sabah erkenden yola çıktı."],["Çözüm","Tam o sırada yağmur başladı ve Deniz şemsiyesini açmak zorunda kaldı."],["Düğüm","Akşam olduğunda dedesiyle vedalaşıp evine döndü."]],ans:1,why:"Yağmurun başlaması olayın geliştiği noktadır; etiketlerin işlevini metnin akışına göre kontrol et.",hint:"Çözüm, olayın artık bağlandığı ve sonuçlandığı bölümdür. Sorunun ortaya çıktığı cümleyi ara."},
+{stage:4,type:"error",title:"Editör Masası • 2",paras:[["Giriş","Meyveler, sağlıklı beslenmede önemli yeri olan besinlerdir."],["Sonuç","Elma, portakal ve muz gibi meyveler farklı vitamin ve mineraller içerir."],["Gelişme","Meyveleri düzenli ve dengeli tüketmek sağlıklı beslenmeye katkı sağlar."]],ans:1,why:"Vitamin ve mineral örnekleri konuyu ayrıntılandırır; etiketin bölüm işleviyle uyuşup uyuşmadığını kontrol et.",hint:"Giriş genel bilgi verir. Ayrıntı ve örnekler genellikle hangi bölümde yer alır?"},
+{stage:4,type:"error",title:"Editör Masası • 3",paras:[["Serim","Sena, okul çıkışında bahçede arkadaşını bekliyordu."],["Düğüm","Arkadaşı gelmeyince Sena onu aramak için okulun farklı yerlerine baktı."],["Çözüm","Sena o sabah kahvaltıda peynir ve zeytin yemişti."]],ans:2,why:"Çözüm bölümünün olayın sonucunu bağlaması gerekir; ilgisiz bir ayrıntı bu işlevi karşılamaz.",hint:"Son bölümün önceki olayla bağlantısını kontrol et: olay gerçekten burada sonuçlanıyor mu?"},
+{stage:4,type:"error",title:"Editör Masası • 4",paras:[["Giriş","Yağmur, su döngüsünün önemli parçalarından biridir."],["Gelişme","Bulutlarda biriken su damlacıkları ağırlaştığında yağış olarak yeryüzüne düşebilir."],["Sonuç","Yağışların oluşumu, suyun doğadaki dolaşımının önemli bir aşamasıdır."]],ans:null,why:"Bu üç etiket metnin işlevleriyle uyumlu. Bazen iyi editör, hata olmadığını da fark eder.",hint:"Genel tanıtım → ayrıntılı açıklama → toparlama akışını tek tek kontrol et."}
+];
+
+const state={task:0,score:0,wrong:0,firstCorrect:0,finalCorrect:0,history:[],attempts:0,answered:false};
+const $=id=>document.getElementById(id);
+const stageNames=["Metin Tarayıcı","Metin Kurma","Eksik Parça Laboratuvarı","Editör Masası"];
+const stageDescs=["Bir parçanın hangi metin bölümüne ait olduğunu tanı.","Parçaları anlamlı bir metin akışına göre sırala.","Eksik bölümün metindeki görevini düşünerek karar ver.","Bölüm etiketlerinin metnin işleviyle uyuşup uyuşmadığını denetle."];
+
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active")}
+function updateHeader(){let done=Math.min(state.task,16);$("score").textContent=state.score;$("taskCount").textContent=done;$("bar").style.width=(done/16*100)+"%";$("stagePill").textContent=done>=16?"Rapor":stageNames[Math.min(3,Math.floor(done/4))];if($("stageProgress"))$("stageProgress").textContent=((state.task%4)+1)+"/4"}
+function shell(t,inner){$("taskHost").innerHTML=`<div class="task"><div class="taskNo">GÖREV ${state.task+1} / 16</div><h3>${t.title}</h3>${inner}<div id="fb" class="feedback"></div><div class="nextRow"><button id="nextBtn" class="next">Sonraki görev →</button></div></div>`;$("nextBtn").onclick=()=>{state.task++;state.answered=false;state.attempts=0;render()}}
+function feedback(ok,t,firstAttempt){const fb=$("fb");fb.className="feedback show "+(ok?"ok":"no");if(ok){fb.innerHTML=`<b>✓ Doğru!</b> ${t.why}`;$("nextBtn").classList.add("show")}else{state.wrong++;state.attempts++;const hint=state.attempts===1?t.hint:"İkinci ipucu: Cevabın metnin hangi bölümünü gerçekten yaptığını düşün. Etikete değil, bölümün görevine bak.";fb.innerHTML=`<b>✗ Henüz değil.</b> Seçimin metnin bölüm işleviyle uyuşmuyor.<div class="hint">İpucu: ${hint}</div><div class="retryNote">Aynı görevi yeniden çöz. Cevap açılmadı.</div>`}}
+function finish(){let pct=Math.round(state.finalCorrect/16*100);$("pct").textContent=pct+"%";$("ring").style.setProperty("--pct",pct+"%");$("rTotal").textContent=16;$("rFirst").textContent=state.firstCorrect;$("rFinal").textContent=state.finalCorrect;$("rWrong").textContent=state.wrong;$("rScore").textContent=state.score;let b=[];if(state.firstCorrect>=14)b.push("⚡ İlk Denemede Güçlü");if(state.finalCorrect>=14)b.push("🏆 Metin Ustası");if(state.finalCorrect>=10)b.push("🧩 Yapı Kaşifi");$("badges").innerHTML=b.map(x=>`<span class="badge">${x}</span>`).join("");$("reportText").textContent=pct>=85?"Metin bölümlerinin görevlerini çoğunlukla doğru belirledin.":pct>=65?"Temel yapıyı yakaladın; bölümün ne yaptığını düşünerek birkaç örnek daha pekiştirebilirsin.":"Her bölüm için şu soruyu sor: Tanıtıyor mu, ayrıntılandırıyor mu, olay sorununu geliştiriyor mu, yoksa sonucu mu bağlıyor?";updateHeader();show("result")}
+function complete(ok,t){if(state.answered)return;state.answered=true;if(ok){if(state.attempts===0)state.firstCorrect++;state.finalCorrect++;state.score+=state.attempts===0?10:6;state.history.push({task:state.task+1,first:state.attempts===0,final:true});feedback(true,t,state.attempts===0)}else{state.answered=false;feedback(false,t,false)}updateHeader()}
+
+function renderChoice(t){shell(t,`<div class="question">${t.q}</div><div class="choiceGrid">${t.opts.map((x,i)=>`<button class="choice" data-i="${i}">${x}</button>`).join("")}</div>`);document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{if(state.answered)return;const i=+b.dataset.i;document.querySelectorAll(".choice").forEach(x=>x.classList.remove("wrong"));b.classList.toggle("wrong",i!==t.ans);complete(i===t.ans,t)})}
+
+function renderSort(t){
+shell(t,`<div class="small" style="margin-bottom:9px">${t.kind==="story"?"Hikâye: serim → düğüm → çözüm":"Bilgilendirici: giriş → gelişme → sonuç"}</div><div class="dragArea"><div><div class="small">Kartlar</div><div id="cards"></div></div><div><div class="small">Sıralama alanı</div><div id="drop" class="dropzone">Kartları buraya sürükle.</div><div class="sortActions"><button class="secondary" id="checkSort">Sırayı kontrol et</button><button class="secondary" id="resetSort">Sıfırla</button></div></div></div>`);
+const cards=$("cards"),drop=$("drop");[...t.items].sort(()=>Math.random()-.5).forEach(([id,txt])=>{let d=document.createElement("div");d.className="dragcard";d.draggable=true;d.dataset.id=id;d.innerHTML=`<strong>Parça ${id}</strong><span>${txt}</span>`;d.addEventListener("dragstart",e=>e.dataTransfer.setData("text/plain",id));cards.appendChild(d)});
+[...document.querySelectorAll(".dragcard")].forEach(d=>d.addEventListener("click",()=>{if(state.answered)return;document.querySelectorAll(".dragcard").forEach(x=>x.classList.remove("selected"));d.classList.add("selected")}));
+drop.addEventListener("dragover",e=>{e.preventDefault();drop.classList.add("over")});drop.addEventListener("dragleave",()=>drop.classList.remove("over"));drop.addEventListener("drop",e=>{e.preventDefault();drop.classList.remove("over");let id=e.dataTransfer.getData("text/plain"),el=document.querySelector(`.dragcard[data-id="${id}"]`);if(el)drop.appendChild(el)});
+$("resetSort").onclick=()=>{[...drop.querySelectorAll(".dragcard")].forEach(x=>cards.appendChild(x));$("fb").className="feedback"};
+$("checkSort").onclick=()=>{if(state.answered)return;let got=[...drop.querySelectorAll(".dragcard")].map(x=>x.dataset.id);if(got.length!==t.order.length){state.wrong++;state.attempts++;$("fb").className="feedback show no";$("fb").innerHTML=`<b>✗ Sıralama tamamlanmadı.</b> Önce bütün parçaları sıraya yerleştir.<div class="hint">İpucu: ${t.hint}</div>`;return}complete(got.join("")===t.order.join(""),t)}
+}
+
+function renderMissing(t){shell(t,`<div class="missing">${t.text}<br><br><em>Eksik bölümün görevini tamamlayacak seçeneği seç.</em></div><div class="choiceGrid">${t.opts.map((x,i)=>`<button class="choice" data-i="${i}">${x}</button>`).join("")}</div>`);document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{if(state.answered)return;let i=+b.dataset.i;document.querySelectorAll(".choice").forEach(x=>x.classList.remove("wrong"));b.classList.toggle("wrong",i!==t.ans);complete(i===t.ans,t)})}
+
+function renderError(t){
+shell(t,`<div class="small" style="margin-bottom:9px">Yanlış etiketi seç. Hepsi doğruysa “Hata yok”u kullan.</div><div class="errorText">${t.paras.map((p,i)=>`<div class="par" data-i="${i}"><b>${p[0]}</b> — ${p[1]}</div>`).join("")}</div><button id="noError" class="choice" style="width:100%;margin-top:10px;text-align:center">✓ Hata yok</button>`);
+document.querySelectorAll(".par").forEach(p=>p.onclick=()=>{if(state.answered)return;let i=+p.dataset.i;document.querySelectorAll(".par").forEach(x=>x.classList.remove("selected"));p.classList.add("selected");complete(t.ans!==null&&i===t.ans,t)});
+$("noError").onclick=()=>{if(state.answered)return;complete(t.ans===null,t)}
+}
+
+function render(){
+if(state.task>=16){finish();return}
+let t=tasks[state.task],s=Math.floor(state.task/4);$("stageTitle").textContent=stageNames[s];$("stageDesc").textContent=stageDescs[s];updateHeader();
+if(t.type==="choice")renderChoice(t);else if(t.type==="sort")renderSort(t);else if(t.type==="missing")renderMissing(t);else renderError(t)
+}
+function reset(){state.task=0;state.score=0;state.wrong=0;state.firstCorrect=0;state.finalCorrect=0;state.history=[];state.attempts=0;state.answered=false;show("start");updateHeader()}
+$("startBtn").onclick=()=>{show("game");render()};$("replayBtn").onclick=reset;updateHeader();
+})();
+</script>
+</body>
+</html>

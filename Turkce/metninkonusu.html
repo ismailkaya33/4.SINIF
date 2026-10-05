@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Oku, Yakala, Konuyu Bul! – T.4.1.5</title>
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--ink:#1e293b;--muted:#64748b;--primary:#4f46e5;
+  --primary2:#eef2ff;--ok:#15803d;--okbg:#ecfdf5;--bad:#b91c1c;--badbg:#fef2f2;
+  --warn:#b45309;--warnbg:#fffbeb;--line:#dbe3ef;--shadow:0 10px 28px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#eef2ff 0,#f8fafc 34%,#f5f7fb 100%);
+font-family:Arial,Helvetica,sans-serif;color:var(--ink);min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{max-width:1050px;margin:auto;padding:18px}
+header{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:var(--shadow)}
+h1{margin:0 0 6px;font-size:clamp(24px,4vw,38px)}
+.sub{color:var(--muted);line-height:1.5}
+.badge{display:inline-block;background:var(--primary2);color:#3730a3;border-radius:999px;padding:6px 10px;font-weight:700;font-size:13px;margin-bottom:8px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.stat{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.stat b{display:block;font-size:20px}.stat span{font-size:12px;color:var(--muted)}
+.progress{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin-top:16px}
+.progress>div{height:100%;background:var(--primary);width:0%;transition:.25s}
+main{margin-top:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--shadow)}
+.topline{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.stage{color:#4338ca;font-weight:800}.counter{color:var(--muted);font-weight:700}
+h2{font-size:clamp(20px,3vw,28px);margin:14px 0 8px;line-height:1.3}
+.instruction{color:var(--muted);margin-bottom:16px;line-height:1.5}
+.story{background:#f8fafc;border:1px dashed #a5b4fc;border-radius:18px;padding:16px;line-height:1.7;font-size:17px;margin:14px 0;}
+.story em{color:#4338ca;font-style:normal;font-weight:800}
+.options{display:grid;gap:10px;margin-top:14px}
+.option{width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:15px;padding:14px 16px;min-height:54px;font-weight:700}
+.option:hover{border-color:#a5b4fc;background:#fafaff}
+.option.selected{border-color:var(--primary);background:var(--primary2)}
+.option.correct{border-color:var(--ok);background:var(--okbg)}.option.wrong{border-color:var(--bad);background:var(--badbg)}
+.feedback{margin-top:14px;border-radius:14px;padding:13px 15px;line-height:1.5;font-weight:700}
+.feedback.ok{background:var(--okbg);color:var(--ok)}.feedback.bad{background:var(--badbg);color:var(--bad)}
+.feedback.hint{background:var(--warnbg);color:var(--warn)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.matchrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center;margin:10px 0}
+.matchrow select{width:100%;min-height:48px;border:2px solid var(--line);border-radius:12px;padding:8px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.chip{padding:11px 14px;border-radius:13px;border:2px solid var(--line);background:#fff;font-weight:800}
+.chip.sel{border-color:var(--primary);background:var(--primary2)}
+.order{display:flex;flex-wrap:wrap;gap:10px;min-height:60px;padding:12px;background:#f8fafc;border-radius:15px;border:1px dashed var(--line)}
+.drop{min-height:58px;padding:12px;border:2px dashed #94a3b8;border-radius:14px;background:#fff}
+.drop.over{border-color:var(--primary);background:var(--primary2)}
+.feedback ul{margin:8px 0 0 20px}
+.nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+.nav .btn{width:100%}
+.btn{border:0;border-radius:13px;padding:12px 16px;min-height:46px;font-weight:800}
+.primary{background:var(--primary);color:#fff}.secondary{background:#e2e8f0;color:#0f172a}
+.ghost{background:#fff;border:1px solid var(--line);color:#334155}
+.danger{background:#fee2e2;color:#991b1b}.btn:disabled{opacity:.45;cursor:not-allowed}
+.footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0}
+.report{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.report .stat{padding:14px}
+.review{margin-top:18px}.reviewItem{border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0;background:#fafafa}
+.reviewItem h3{margin:0 0 8px;font-size:17px}.reviewItem p{margin:5px 0;line-height:1.45}
+.small{font-size:13px;color:var(--muted)}
+@media(max-width:700px){
+ .app{padding:10px}.stats,.report{grid-template-columns:repeat(2,1fr)}
+ .grid2{grid-template-columns:1fr}.matchrow{grid-template-columns:1fr}
+ .nav{grid-template-columns:1fr}.card{padding:15px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <span class="badge">4. Sınıf Türkçe • T.4.1.5</span>
+  <h1>📖 Oku, Yakala, Konuyu Bul!</h1>
+  <div class="sub">Okuduğun metnin <b>konusunu</b> belirle. Konu, metnin genel olarak ne hakkında olduğudur. Ana fikirle karıştırma.</div>
+  <div class="stats">
+    <div class="stat"><b id="score">0</b><span>Puan</span></div>
+    <div class="stat"><b id="wrong">0</b><span>Yanlış deneme</span></div>
+    <div class="stat"><b id="done">0/16</b><span>Tamamlanan</span></div>
+    <div class="stat"><b id="hintCount">0</b><span>İpucu</span></div>
+  </div>
+  <div class="progress"><div id="bar"></div></div>
+</header>
+<main id="main"></main>
+<div class="footer">İpucu kullanabilirsin. Yanlış cevapta görev bitmez; aynı görevi yeniden denersin.</div>
+</div>
+
+<script>
+const TASKS = [
+{ id:"t01",stage:1,type:"mc",prompt:"Oku ve metnin konusunu seç.",instruction:"Önce metni oku. Sonra metnin genel olarak ne hakkında olduğunu bul.",data:{text:"Okulumuzun bahçesine bu yıl birçok ağaç fidanı dikildi. Öğrenciler sınıflarıyla birlikte fidanları suluyor ve çevresini temiz tutuyor. Böylece bahçemiz daha yeşil ve güzel bir hâle geliyor.",options:["Okul bahçesinde ağaçların bakımı","Öğrencilerin sınıf yarışması","Fidanların nasıl üretildiği","Okulda yapılan spor etkinlikleri"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"Metnin farklı cümleleri okul bahçesindeki fidanların dikilmesi ve bakımı çevresinde birleşiyor. Bu yüzden konu budur.",hint:"Tüm cümleleri içine alan ortak başlığı düşün."},
+{ id:"t02",stage:1,type:"mc",prompt:"Konuyu, ana fikirden ayır.",instruction:"Metni oku. Aşağıdakilerden hangisi metnin konusudur?",data:{text:"Deniz kenarında yaşayan Ece, hafta sonları dedesiyle sahilde yürüyüş yapıyor. Bir gün kıyıda çok sayıda plastik şişe gördüler. Ece ve dedesi çöpleri topladı.",options:["Çevreyi temiz tutmanın herkesin görevi olması","Ece ve dedesinin sahilde yaptığı temizlik","Plastik şişelerin üretimi","Hafta sonlarının nasıl geçirildiği"]},correctAnswer:"opt2",acceptedAnswers:["opt2"],explanation:"“Çevreyi temiz tutmak herkesin görevidir.” bir düşünce/ana fikir olur. Metnin konusu ise Ece ve dedesinin sahilde yaptığı temizliktir.",hint:"Metin en çok hangi olaydan/konudan söz ediyor?"},
+{ id:"t03",stage:1,type:"classify",prompt:"Kartları doğru kutuya yerleştir.",instruction:"Kartları “KONU” veya “ANA FİKİR” kutusuna taşı. Dokunmatik kullanım için karta, sonra hedef kutuya dokunabilirsin.",data:{cards:[["c1","Kitap okuma alışkanlığı"],["c2","Düzenli kitap okumak bilgi ve hayal gücünü geliştirir."],["c3","Okul bahçesinde geri dönüşüm"],["c4","Atıkları ayırmak çevreyi korumaya yardım eder."]],targets:["KONU","ANA FİKİR"]},correctAnswer:{c1:"KONU",c2:"ANA FİKİR",c3:"KONU",c4:"ANA FİKİR"},acceptedAnswers:[],explanation:"Konu, metnin ne hakkında olduğunu; ana fikir ise metnin vermek istediği temel düşünceyi söyler.",hint:"Konu genellikle kısa bir isim grubu gibi söylenebilir."},
+{ id:"t04",stage:1,type:"mc",prompt:"Oku ve en uygun konuyu bul.",instruction:"Metni okuduktan sonra en geniş ama metne uygun seçeneği seç.",data:{text:"Kış gelmeden önce apartmandaki komşularımız sokak kedileri için karton kutulardan küçük yuvalar hazırladı. Yuvaları yağmurdan korunacak yerlere koydular ve yanlarına su bıraktılar.",options:["Kışın sokak hayvanlarına yardım","Karton kutuların özellikleri","Apartmanların yapısı","Kedilerin oyunları"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"Metin, kışın sokak kedileri için yapılan hazırlıkları anlatıyor.",hint:"Metindeki bütün ayrıntıları hangi seçenek kapsıyor?"},
+{ id:"t05",stage:2,type:"match",prompt:"Konuyu metinle eşleştir.",instruction:"Her metni dikkatle oku. Benzer görünen konular arasında metnin tamamını en iyi kapsayanı seç.",data:{rows:[
+["Bir grup öğrenci okul kütüphanesindeki kitapları türlerine göre düzenledi.","Kütüphanede kitap düzenleme",["Kütüphanede kitap düzenleme","Okul kütüphanesinde kitap okuma","Kitap paylaşma ve ödünç alma","Kütüphane kurallarını öğrenme"]],
+["Mahalledeki çocuklar yağmurdan sonra oluşan su birikintilerini gözlemledi.","Yağmur sonrası gözlem",["Yağmur sonrası gözlem","Hava durumunu takip etme","Mahallede doğa gezisi","Su birikintilerinde oyun"]],
+["Ayşe, dedesinden eski çocuk oyunlarını öğrendi.","Geçmişte oynanan çocuk oyunları",["Geçmişte oynanan çocuk oyunları","Aile büyüklerinden anılar dinleme","Geleneksel oyuncakları tanıma","Bahçede çocuk oyunları"]],
+["Sınıfımızda öğrenciler okudukları kitaplardan seçtikleri bölümleri arkadaşlarına anlattı.","Kitaplardan bölümler paylaşma",["Kitaplardan bölümler paylaşma","Kütüphanede kitap düzenleme","Sessiz okuma etkinliği","Kitap seçme kuralları"]]
+]},correctAnswer:{m0:"Kütüphanede kitap düzenleme",m1:"Yağmur sonrası gözlem",m2:"Geçmişte oynanan çocuk oyunları",m3:"Kitaplardan bölümler paylaşma"},acceptedAnswers:[],explanation:"Doğru eşleştirme, metindeki tek bir ayrıntıyı değil metnin tamamındaki ortak içeriği karşılar.",hint:"Metindeki bütün olayları içine alan ifadeyi seç."},
+{ id:"t06",stage:2,type:"mc",prompt:"Aşağıdaki konulardan hangisi fazla dar?",instruction:"Metni oku ve metni kapsayan konuyu seç. Çok dar seçeneğe dikkat et.",data:{text:"Cumartesi günü sınıfımız okulun yakınındaki parka gitti. Öğretmenimiz parkta gördüğümüz ağaçları, çiçekleri ve böcekleri incelememizi istedi. Gözlemlerimizi defterimize not ettik.",options:["Parkta doğa gözlemi","Parktaki böcekleri incelemek","Öğrencilerin cumartesi günü gezmesi","Deftere yazı yazmak"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"Metinde böcekler yalnızca bir ayrıntıdır. Bütün metni kapsayan konu parkta yapılan doğa gözlemidir.",hint:"Metinde ağaç, çiçek ve böcek birlikte geçiyor."},
+{ id:"t07",stage:2,type:"order",prompt:"Okuma sırasında konuyu bulma adımlarını sırala.",instruction:"Kartları doğru sıraya getir.",data:{items:[["a","Metni dikkatle oku"],["b","Tekrarlanan/ortak içeriği fark et"],["c","Bütün metni kapsayan kısa ifadeyi seç"],["d","Seçtiğin ifadenin ana fikir olup olmadığını kontrol et"]]},correctAnswer:["a","b","c","d"],acceptedAnswers:[],explanation:"Önce okur, sonra ortak içeriği bulur, bunu kısa bir konu ifadesine dönüştürür ve ana fikirle karışmadığını kontrol ederiz.",hint:"Okumadan konu bulunmaz; önce metni anlamalısın."},
+{ id:"t08",stage:2,type:"mc",prompt:"Metni oku. Konu olan seçeneği seç.",instruction:"Bu kez konu bir olay değil, bir etkinlik alanı olabilir.",data:{text:"Sınıfımızda her cuma on dakika boyunca sessiz okuma yapıyoruz. Her öğrenci istediği kitabı seçiyor. Süre bitince bazı öğrenciler okudukları bölüm hakkında arkadaşlarına kısa bilgiler veriyor.",options:["Sınıfta sessiz okuma etkinliği","Kitap seçmenin kuralları","Cuma günleri yapılan dersler","Arkadaşlara bilgi verme"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"Metnin bütününde sınıftaki sessiz okuma etkinliği anlatılıyor.",hint:"En çok hangi etkinlikten söz ediliyor?"},
+{ id:"t09",stage:3,type:"mc",prompt:"Bir metin okuyorsun. Konuyu yakala.",instruction:"Metnin verdiği öğütle konuyu karıştırma.",data:{text:"Mahallemizdeki belediye geri dönüşüm kutularını yeniledi. Kâğıt, cam, plastik ve metal için ayrı kutular yerleştirildi. Çocuklar da okulda hangi atığın hangi kutuya atılacağını öğreniyor.",options:["Geri dönüşüm ve atıkların ayrılması","Geri dönüşüm yapmanın herkesin görevi olması","Belediyelerin görevleri","Okulda kutu kullanımı"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"“Herkes geri dönüşüm yapmalıdır.” bir mesaj olabilir. Metnin konusu ise geri dönüşüm ve atıkların ayrılmasıdır.",hint:"Konuyu bir başlık gibi düşün; öğüt cümlesi kurma."},
+{ id:"t10",stage:3,type:"mc",prompt:"Konuyu en iyi ifade eden başlığı seç.",instruction:"Başlık değil, konuya en yakın seçenek aranıyor.",data:{text:"Mert sabah erkenden bisikletiyle yola çıktı. Yol boyunca trafik ışıklarına uydu, yaya geçitlerinde durdu ve kaskını çıkarmadı. Okula güvenli bir şekilde ulaştı.",options:["Bisikletle güvenli yolculuk","Mert'in sabahı","Trafik ışıklarının renkleri","Kaskların üretimi"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"Metnin tamamı bisiklet kullanırken güvenli davranışlar üzerinde duruyor.",hint:"Mert'in yaptığı davranışların ortak yönünü bul."},
+{ id:"t11",stage:3,type:"classify",prompt:"Konu ile ana fikri birbirinden ayır.",instruction:"Önce metni oku. Sonra kartı seçip KONU veya ANA FİKİR düğmesine dokun. Birbirine benzeyen ifadeleri dikkatle karşılaştır.",data:{text:"Okul kütüphanesinde öğrenciler kitapları seçtikten sonra masalarında sessizce okuyor. Okuma bitince kitapları ait oldukları raflara yerleştiriyor ve ödünç aldıkları kitapları zamanında geri getiriyor. Böylece kütüphane düzenli kalıyor ve başka öğrenciler aradıkları kitaplara kolayca ulaşabiliyor.",cards:[["a","Okul kütüphanesinin düzenli kullanılması"],["b","Kütüphaneyi düzenli kullanmak herkesin kitaplara kolayca ulaşmasını sağlar."],["c","Kütüphanede kitap kullanımı ve düzeni"],["d","Kitapları yerine koymak ve zamanında geri getirmek kütüphanenin düzenli kalmasına yardımcı olur."]],targets:["KONU","ANA FİKİR"]},correctAnswer:{a:"KONU",b:"ANA FİKİR",c:"KONU",d:"ANA FİKİR"},acceptedAnswers:[],explanation:"Konu, okunan içeriğin genel olarak ne hakkında olduğunu söyler. Ana fikir ise bu konu hakkında verilmek istenen temel düşünceyi, yani metnin vermek istediği mesajı anlatır. Bu görevde 'kütüphanenin kullanılması/düzeni' konuya; düzenli kullanmanın herkese sağladığı yarar ise ana fikre karşılık gelir.",hint:"Önce 'Bu metin genel olarak ne hakkında?' diye sor. Cevap konuya yakındır. Sonra 'Bu konuda bize ne anlatılmak, hangi düşünceyi vermek isteniyor?' diye düşün. Cevap ana fikre yakındır."},
+{ id:"t12",stage:3,type:"match",prompt:"Metinleri uygun konularla eşleştir.",instruction:"Benzer seçenekleri dikkatle karşılaştır. Her metin için en uygun konuyu seç.",data:{rows:[
+["Bahar gelince okul bahçesindeki çiçeklerin bakımını yaptık.","Okul bahçesinde çiçek bakımı",["Okul bahçesinde çiçek bakımı","Bahar mevsimindeki değişimler","Okul bahçesinde oyun","Çiçekleri tanıma"]],
+["Sınıfımızda eski oyuncaklardan oluşan küçük bir sergi kuruldu.","Oyuncak sergisi",["Oyuncak sergisi","Eski eşyaları koruma","Sınıf panosu hazırlama","Oyuncaklarla oyun oynama"]],
+["Yağmurdan sonra gökyüzünde gökkuşağı oluştu ve herkes bunu gözlemledi.","Gökkuşağı gözlemi",["Gökkuşağı gözlemi","Yağmur sonrası hava değişimi","Gökyüzünü izleme","Renkleri tanıma"]],
+["Öğrenciler okulun bahçesindeki farklı kuşları gözlemleyip özelliklerini not etti.","Okul bahçesinde kuş gözlemi",["Okul bahçesinde kuş gözlemi","Kuşların yuva yapması","Doğa yürüyüşü","Hayvanların beslenmesi"]]
+]},correctAnswer:{m0:"Okul bahçesinde çiçek bakımı",m1:"Oyuncak sergisi",m2:"Gökkuşağı gözlemi",m3:"Okul bahçesinde kuş gözlemi"},acceptedAnswers:[],explanation:"Eşleştirmede doğru seçenek, metnin tamamını kapsayan konu ifadesidir; yalnızca bir ayrıntıyı anlatan seçenekler doğru değildir.",hint:"‘Bu metin genel olarak ne hakkında?’ sorusunu sor."},
+{ id:"t13",stage:4,type:"mc",prompt:"Dedektif görevi: Konuyu bul.",instruction:"Metni oku. Üç seçenek doğru görünebilir; yalnızca biri metnin tamamını kapsar.",data:{text:"Okulumuzda bu ay 'Doğa Dostu Okul' çalışmaları başladı. Öğrenciler sınıflarda gereksiz ışıkları kapatıyor, suyu dikkatli kullanıyor ve kâğıtları geri dönüşüme gönderiyor. Her sınıf yaptığı tasarrufları bir panoda takip ediyor.",options:["Doğa dostu okul çalışmaları","Işıkları kapatmak","Kâğıtları geri dönüşüme göndermek","Sınıf panoları"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"Işık, su, kâğıt ve pano ayrıntıları aynı ortak konu altında birleşiyor: Doğa dostu okul çalışmaları.",hint:"Birden fazla ayrıntıyı tek başlık altında topla."},
+{ id:"t14",stage:4,type:"mc",prompt:"Konu mu, ana fikir mi? Doğru olanı seç.",instruction:"Metni oku ve yalnızca konu olan ifadeyi işaretle.",data:{text:"Bir grup çocuk mahalledeki boş arsayı temizleyip buraya küçük bir oyun alanı yapılmasını istedi. Büyüklerin desteğiyle alan temizlendi ve çocukların oynayabileceği bir bölüm oluşturuldu.",options:["Mahallede oyun alanı oluşturma","Çocukların yaşadıkları yeri güzelleştirmek için birlikte çalışması","Boş arsaların temizlenmesi","Mahalledeki büyükler"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"İkinci seçenek bir düşünce/mesajdır. Konu ise mahallede oyun alanı oluşturulmasıdır.",hint:"“Ne hakkında?” sorusuna cevap ver."},
+{ id:"t15",stage:4,type:"mc",prompt:"Final transfer: Kısa bir olayın konusunu belirle.",instruction:"Aşağıdaki anlatımı oku. Konuyu en doğru biçimde seç.",data:{text:"Bir öğrenci, okul çıkışında yağmur başladığını fark eder. Şemsiyesi olmayan arkadaşına kendi şemsiyesinin bir bölümünü açar. İkisi birlikte durağa kadar yürür. Arkadaşı teşekkür eder.",options:["Yağmurda arkadaşına yardım etme","Şemsiye kullanmanın önemi","Okul çıkışı eve gitmek","Yağmurun oluşması"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"Anlatımın merkezinde öğrencinin yağmurda arkadaşına yardım etmesi var.",hint:"Olayın merkezindeki davranışı düşün."},
+{ id:"t16",stage:4,type:"mc",prompt:"BOSS: Konu dedektifi sensin!",instruction:"Metni dikkatle okuyabilirsin. Konuyu bir başlık gibi, ana fikri ise öğüt/düşünce gibi düşün.",data:{text:"Sınıfımızdaki öğrenciler bir hafta boyunca evlerinde hangi eşyaların yeniden kullanılabileceğini araştırdı. Kavanozlardan kalemlik, karton kutulardan düzenleyici ve eski tişörtlerden bez çanta yaptılar. Sonunda yaptıkları ürünleri sınıfta sergilediler.",options:["Atık malzemelerden yeniden kullanılabilir ürünler yapma","Eski eşyaları çöpe atmamak gerekir","Karton kutulardan düzenleyici yapma","Sınıfta ürün sergileme"]},correctAnswer:"opt1",acceptedAnswers:["opt1"],explanation:"Kavanoz, karton ve tişört örneklerinin hepsi atık malzemeleri yeniden kullanma çalışmasına bağlıdır. Bu nedenle konu budur.",hint:"Üç farklı örneği kapsayan en genel uygun ifadeyi bul."}
+];
+
+const state={currentIndex:0,score:0,energy:100,wrongCount:0,skippedCount:0,hintCount:0,tasks:[],history:[],startedAt:Date.now()};
+function freshTask(t){return {...t,result:{status:"pending",answer:null,attempts:0,firstTry:false,hintUsed:false,lastResult:null,firstWrong:null,rewardGranted:false,locked:false}}}
+function init(){state.tasks=TASKS.map(freshTask);state.history=[];state.currentIndex=0;state.score=0;state.energy=100;state.wrongCount=0;state.skippedCount=0;state.hintCount=0;state.startedAt=Date.now();render()}
+function norm(s){return String(s??"").normalize("NFC").trim().replace(/\s+/g," ").toLocaleLowerCase("tr-TR").replace(/[’‘`´]/g,"'")}
+function doneCount(){return state.tasks.filter(t=>t.result.status!=="pending").length}
+function canNext(){let r=state.tasks[state.currentIndex]?.result;return r&&r.status!=="pending"}
+function current(){return state.tasks[state.currentIndex]}
+function render(){
+ document.getElementById("score").textContent=state.score;
+ document.getElementById("wrong").textContent=state.wrongCount;
+ document.getElementById("done").textContent=doneCount()+"/"+state.tasks.length;
+ document.getElementById("hintCount").textContent=state.hintCount;
+ document.getElementById("bar").style.width=(doneCount()/state.tasks.length*100)+"%";
+ const m=document.getElementById("main");
+ if(doneCount()===state.tasks.length){renderReport(m);return}
+ const t=current(); m.innerHTML="";
+ const card=document.createElement("section");card.className="card";
+ card.innerHTML=`<div class="topline"><div class="stage">Aşama ${t.stage} • ${labelType(t.type)}</div><div class="counter">Görev ${state.currentIndex+1} / ${state.tasks.length}</div></div>
+ <h2>${escapeHTML(t.prompt)}</h2><div class="instruction">${escapeHTML(t.instruction)}</div><div id="taskArea"></div><div id="feedback"></div>`;
+ m.appendChild(card); renderTask(document.getElementById("taskArea"),t);
+ const nav=document.createElement("div");nav.className="nav";
+ nav.innerHTML=`<button class="btn ghost" id="prev">⬅️ Önceki Soru</button><button class="btn secondary" id="skip">⏭️ Soruyu Geç</button><button class="btn primary" id="next">➡️ Sonraki Soru</button>`;
+ m.appendChild(nav);
+ document.getElementById("prev").disabled=state.currentIndex===0;
+ document.getElementById("next").disabled=!canNext();
+ document.getElementById("prev").onclick=()=>navigate(-1);
+ document.getElementById("next").onclick=()=>navigate(1);
+ document.getElementById("skip").onclick=()=>skipTask();
+}
+function labelType(type){return ({mc:"Seç ve düşün",classify:"Sınıflandır",match:"Eşleştir",order:"Sırala"})[type]||"Görev"}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function textBox(text){
+ return `<div class="story">${escapeHTML(text)}</div>`;
+}
+function renderTask(area,t){
+ if(t.type==="mc") renderMC(area,t);
+ if(t.type==="classify") renderClassify(area,t);
+ if(t.type==="match") renderMatch(area,t);
+ if(t.type==="order") renderOrder(area,t);
+}
+function renderMC(area,t){
+ area.innerHTML=textBox(t.data.text)+`<div class="options" id="opts"></div>`;
+ const opts=[...t.data.options].map((text,i)=>({id:"opt"+(i+1),text})).sort(()=>Math.random()-.5);
+ const wrap=area.querySelector("#opts");
+ opts.forEach(o=>{const b=document.createElement("button");b.className="option";b.dataset.id=o.id;b.textContent=o.text;b.onclick=()=>checkMC(t,o.id,b);wrap.appendChild(b)});
+ if(t.result.answer){[...wrap.children].forEach(b=>{if(b.dataset.id===t.result.answer)b.classList.add(t.result.lastResult==="success"?"correct":"wrong")})}
+ addHint(area,t);
+}
+function checkMC(t,id,btn){
+ if(t.result.locked)return;
+ t.result.attempts++;t.result.answer=id;
+ if(id===t.correctAnswer){success(t);btn.classList.add("correct")}else{wrong(t,id);btn.classList.add("wrong")}
+}
+function renderClassify(area,t){
+ area.innerHTML=textBox("Kartları konu ve ana fikir olarak ayır.")+`<div class="grid2"><div><h3>Kartlar</h3><div id="cards" class="chips"></div></div><div><h3>Hedefler</h3><button class="btn ghost targetBtn" data-target="KONU" style="width:100%;margin-bottom:8px">🎯 KONU</button><button class="btn ghost targetBtn" data-target="ANA FİKİR" style="width:100%">💡 ANA FİKİR</button><div id="placed" style="margin-top:12px"></div></div></div><button class="btn primary" id="checkClass" style="margin-top:14px">✓ Kontrol Et</button>`;
+ const cards=area.querySelector("#cards"), placedBox=area.querySelector("#placed");
+ const placed=t.result.answer||{};
+ t.data.cards.forEach(([id,text])=>{
+   if(!placed[id]){
+     const b=document.createElement("button");b.className="chip";b.textContent=text;b.dataset.id=id;
+     if(t.result.selectedCard===id)b.classList.add("sel");
+     b.onclick=()=>{t.result.selectedCard=id;renderTask(area,t)};cards.appendChild(b);
+   }
+ });
+ Object.entries(placed).forEach(([id,target])=>{
+   const found=t.data.cards.find(x=>x[0]===id); if(!found)return;
+   const row=document.createElement("div");row.className="story";row.style.marginBottom="8px";
+   row.innerHTML=`<b>${escapeHTML(target)}</b><br>${escapeHTML(found[1])}<br><button class="btn ghost" style="margin-top:7px;padding:7px 10px;min-height:36px" data-remove="${id}">↩ Geri al</button>`;
+   row.querySelector("button").onclick=()=>{const a={...(t.result.answer||{})};delete a[id];t.result.answer=a;renderTask(area,t)};
+   placedBox.appendChild(row);
+ });
+ area.querySelectorAll(".targetBtn").forEach(btn=>btn.onclick=()=>{
+   if(!t.result.selectedCard){showFeedback("hint","Önce bir kart seç. Sonra bu hedefe dokun.");return;}
+   const a={...(t.result.answer||{})};a[t.result.selectedCard]=btn.dataset.target;t.result.answer=a;t.result.selectedCard=null;renderTask(area,t);
+ });
+ area.querySelector("#checkClass").onclick=()=>checkClass(t);
+ addHint(area,t);
+}
+function checkClass(t){
+ const ans=t.result.answer||{};const keys=Object.keys(t.correctAnswer);
+ if(keys.some(k=>!ans[k])){showFeedback("hint","Tüm kartları bir hedefe yerleştirmen gerekiyor.");return;}
+ t.result.attempts++;const ok=keys.length===Object.keys(ans).length&&keys.every(k=>ans[k]===t.correctAnswer[k]);
+ if(ok)success(t);else wrong(t,JSON.stringify(ans));
+}
+function renderMatch(area,t){
+ area.innerHTML=textBox("Metinleri oku ve her birini konusuyla eşleştir.")+`<div id="match"></div><button class="btn primary" id="checkMatch" style="margin-top:14px">✓ Kontrol Et</button>`;
+ const box=area.querySelector("#match"),r=t.result.answer||{};
+ if(!t.result.optionOrders)t.result.optionOrders={};
+ t.data.rows.forEach((row,i)=>{
+   const d=document.createElement("div");d.className="matchrow";
+   d.innerHTML=`<div class="story"><b>Metin ${i+1}</b><br>${escapeHTML(row[0])}</div><select data-i="${i}"><option value="">Konu seç...</option></select>`;
+   const sel=d.querySelector("select");
+   if(!t.result.optionOrders[i])t.result.optionOrders[i]=[...row[2]].sort(()=>Math.random()-.5);
+   t.result.optionOrders[i].forEach(v=>{const op=document.createElement("option");op.value=v;op.textContent=v;if(r["m"+i]===v)op.selected=true;sel.appendChild(op)});
+   box.appendChild(d);
+ });
+ area.querySelector("#checkMatch").onclick=()=>{
+   const ans={};box.querySelectorAll("select").forEach(s=>ans["m"+s.dataset.i]=s.value);
+   if(Object.values(ans).some(v=>!v)){showFeedback("hint","Önce bütün metinler için bir konu seç.");return;}
+   t.result.answer=ans;t.result.attempts++;const ok=Object.entries(t.correctAnswer).every(([k,v])=>ans[k]===v);
+   if(ok)success(t);else wrong(t,JSON.stringify(ans));
+ };
+ addHint(area,t);
+}
+function renderOrder(area,t){
+ area.innerHTML=textBox("Sıralama görevi: konuyu bulma adımlarını sıraya koy.")+`<div class="order" id="order"></div><button class="btn primary" id="checkOrder" style="margin-top:14px">✓ Kontrol Et</button>`;
+ const box=area.querySelector("#order");let ids=t.result.answer||t.data.items.map(x=>x[0]).sort(()=>Math.random()-.5);t.result.answer=ids;
+ ids.forEach(id=>{const item=t.data.items.find(x=>x[0]===id);const b=document.createElement("button");b.className="chip";b.draggable=true;b.dataset.id=id;b.textContent=item[1];b.ondragstart=e=>e.dataTransfer.setData("text/plain",id);b.ondragover=e=>e.preventDefault();b.ondrop=e=>{e.preventDefault();const from=e.dataTransfer.getData("text/plain"),to=id;const a=[...t.result.answer],i=a.indexOf(from),j=a.indexOf(to);a.splice(i,1);a.splice(j,0,from);t.result.answer=a;renderTask(area,t)};b.onclick=()=>{const idx=t.result.answer.indexOf(id);if(idx>0){const a=[...t.result.answer];[a[idx-1],a[idx]]=[a[idx],a[idx-1]];t.result.answer=a;renderTask(area,t)}};box.appendChild(b)});
+ area.querySelector("#checkOrder").onclick=()=>{t.result.attempts++;let ok=JSON.stringify(t.result.answer)===JSON.stringify(t.correctAnswer);if(ok)success(t);else wrong(t,JSON.stringify(t.result.answer))};
+ addHint(area,t);
+}
+function addHint(area,t){const b=document.createElement("button");b.className="btn ghost";b.style.marginTop="12px";b.textContent=t.result.hintUsed?"💡 İpucu kullanıldı":"💡 İpucu";b.onclick=()=>{if(!t.result.hintUsed){t.result.hintUsed=true;state.hintCount++;showFeedback("hint","İpucu: "+t.hint);render()}};area.appendChild(b)}
+function success(t){
+ if(t.result.locked)return;
+ if(t.result.attempts===1)t.result.firstTry=true;
+ t.result.status="success";t.result.lastResult="success";
+ if(!t.result.rewardGranted){t.result.rewardGranted=true;state.score+=10;t.result.locked=true}
+ document.getElementById("score").textContent=state.score;
+ document.getElementById("done").textContent=doneCount()+"/"+state.tasks.length;
+ document.getElementById("bar").style.width=(doneCount()/state.tasks.length*100)+"%";
+ showFeedback("ok","✓ Doğru! "+t.explanation);
+ document.getElementById("next").disabled=false;
+}
+function wrong(t,answer){
+ t.result.lastResult="wrong";state.wrongCount++;
+ if(t.result.firstWrong===null)t.result.firstWrong=answer;
+ showFeedback("bad","✗ Henüz değil. "+t.explanation+" <br><br>Şimdi aynı görevi yeniden dene.");
+}
+function showFeedback(kind,text){
+ const f=document.getElementById("feedback");if(f){f.className="feedback "+kind;f.innerHTML=text}
+ document.getElementById("next").disabled=!canNext();
+}
+function skipTask(){const t=current();if(t.result.status==="pending"){t.result.status="skipped";t.result.lastResult="skipped";state.skippedCount++;state.history.push({id:t.id,action:"skipped"});navigate(1)}}
+function navigate(dir){let n=state.currentIndex+dir;if(n<0||n>=state.tasks.length)return;if(dir>0&&!canNext())return;state.currentIndex=n;render()}
+function renderReport(m){
+ const elapsed=Math.max(1,Math.round((Date.now()-state.startedAt)/1000));const min=Math.floor(elapsed/60),sec=elapsed%60;
+ const completed=state.tasks.filter(t=>t.result.status==="success").length;
+ const first=state.tasks.filter(t=>t.result.firstTry).length;
+ const skipped=state.tasks.filter(t=>t.result.status==="skipped").length;
+ m.innerHTML=`<section class="card"><span class="badge">Etkinlik Tamamlandı</span><h2>🎉 Okuma Dedektifi Raporu</h2>
+ <div class="report"><div class="stat"><b>${state.tasks.length}</b><span>Toplam görev</span></div><div class="stat"><b>${completed}</b><span>Tamamlanan</span></div><div class="stat"><b>${first}</b><span>İlk denemede doğru</span></div><div class="stat"><b>${state.wrongCount}</b><span>Yanlış deneme</span></div><div class="stat"><b>${skipped}</b><span>Geçilen</span></div><div class="stat"><b>${state.hintCount}</b><span>İpucu</span></div><div class="stat"><b>${state.score}</b><span>Puan</span></div><div class="stat"><b>${min}:${String(sec).padStart(2,"0")}</b><span>Süre</span></div></div>
+ <button class="btn primary" onclick="renderReview()">📋 Yanlış/Geçilen Görevleri İncele</button>
+ <button class="btn secondary" onclick="init()" style="margin-left:8px">🔄 Yeniden Başla</button><div id="review" class="review"></div></section>`;
+}
+function renderReview(){
+ const box=document.getElementById("review");box.innerHTML="<h3>İnceleme</h3>";
+ state.tasks.filter(t=>t.result.status==="skipped"||t.result.firstWrong!==null).forEach(t=>{
+  const div=document.createElement("div");div.className="reviewItem";
+  const ans=t.result.status==="skipped"?"Geçildi":String(t.result.firstWrong||"");
+  let correct=t.type==="mc"?t.data.options[Number(t.correctAnswer.replace("opt",""))-1]:"Görev verisine göre doğru düzenleme";
+  div.innerHTML=`<h3>Görev ${state.tasks.indexOf(t)+1}: ${escapeHTML(t.prompt)}</h3><p><b>Öğrenci cevabı:</b> ${escapeHTML(ans)}</p><p><b>Doğru cevap:</b> ${escapeHTML(correct)}</p><p><b>Neden:</b> ${escapeHTML(t.explanation)}</p><button class="btn ghost" onclick="goTask('${t.id}')">↩ Göreve dön</button>`;
+  box.appendChild(div);
+ });
+ if(!box.children.length)box.innerHTML="<p>İncelenecek yanlış veya geçilen görev yok. Harika!</p>";
+}
+function goTask(id){const i=state.tasks.findIndex(t=>t.id===id);if(i>=0){state.currentIndex=i;render()}}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<!-- Mobil uyumluluk ve otomatik yakınlaştırmayı (zoom) engelleme ayarı -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sürükle-Bırak Türkçe Oyun Seti</title>
+<style>
+    :root {
+        --ink: #1e293b; --paper: #f8fafc; --line: #cbd5e1;
+        --blue: #3b82f6; --green: #10b981; --orange: #f59e0b;
+        --purple: #8b5cf6; --red: #ef4444; --teal: #14b8a6;
+    }
+    
+    * { box-sizing: border-box; }
+    body {
+        margin: 0; background: #e2e8f0; color: var(--ink);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Kaydırmayı kısıtla ki sürüklerken sayfa oynamasın */
+        touch-action: pan-y; 
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .app { max-width: 1250px; margin: auto; padding: 15px; }
+    .top { background: #0f172a; color: white; border-radius: 18px; padding: 18px 25px; display: flex; justify-content: space-between; gap: 15px; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin-bottom: 20px;}
+    h1 { margin: 0; font-size: 24px; }
+    .score-box { font-weight: 800; font-size: 16px; background: #334155; padding: 8px 15px; border-radius: 12px; color: #fbbf24; }
+
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+    .tab { border: 0; border-radius: 12px; padding: 12px 18px; background: white; font-weight: 800; font-size: 15px; cursor: pointer; transition: 0.2s; color: #475569; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .tab:hover { background: #f1f5f9; transform: translateY(-2px); }
+    .tab.active { background: var(--blue); color: white; box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3); }
+
+    .panel { display: none; background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); animation: fadeIn 0.3s ease; min-height: 400px; }
+    .panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+    button.action { border: 0; border-radius: 12px; padding: 12px 20px; color: white; font-weight: 900; font-size: 15px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    button.action:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+    button.green { background: var(--green); }
+    button.blue { background: var(--blue); }
+
+    .question-text { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 20px; color: #334155; }
+    .message { text-align: center; min-height: 30px; font-weight: 800; font-size: 18px; margin: 15px 0; border-radius: 10px; padding: 5px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;}
+
+    /* ORTAK SÜRÜKLE BIRAK STİLLERİ */
+    .draggable { background: var(--blue); color: white; padding: 15px 25px; font-size: 20px; font-weight: 900; border-radius: 12px; cursor: grab; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: transform 0.1s; position: relative; z-index: 10; display: inline-block; touch-action: none; }
+    .draggable:active { cursor: grabbing; }
+    .draggable.dragging { transform: scale(1.1) rotate(-3deg); opacity: 0.9; z-index: 1000 !important; }
+
+    /* SEKME 1: HECE MAKİNESİ */
+    .hece-board { display: flex; justify-content: center; align-items: center; padding: 30px 5px; background: #f8fafc; border: 3px dashed #cbd5e1; border-radius: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+    .letter-box { font-size: 40px; font-weight: 900; color: #0f172a; padding: 0 2px; }
+    .dash-zone { width: 35px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; transition: 0.2s; touch-action: none; }
+    .dash-zone:hover { background: #e2e8f0; }
+    .dash-zone::after { content: ""; width: 8px; height: 8px; background: #cbd5e1; border-radius: 50%; transition: 0.2s; }
+    .dash-zone.active::after { content: "-"; background: transparent; font-size: 45px; font-weight: 900; color: var(--red); transform: translateY(-5px); }
+
+    /* SEKME 2: SÖZLÜK SIRASI */
+    .sira-layout { display: flex; width: 100%; justify-content: space-between; align-items: stretch; gap: 15px; }
+    .sira-side-bank { width: 25%; min-height: 450px; background: #f1f5f9; border: 3px dashed #cbd5e1; border-radius: 16px; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; }
+    .sira-center { width: 50%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .sira-slot { width: 100%; max-width: 450px; height: 65px; background: white; border: 4px dashed #94a3b8; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: 0.2s; padding: 0 15px; position: relative; margin-left: 15px;}
+    .sira-slot::before { content: attr(data-num); position: absolute; left: -20px; top: 12px; background: #e2e8f0; color: #475569; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .sira-slot.drag-over { background: #fef3c7; border-color: var(--orange); transform: scale(1.02); }
+    .sira-slot .placed-item { width: 100%; text-align: center; color: var(--blue); font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.2s; }
+
+    /* SEKME 3: HARF AYRIMI */
+    .harf-word-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; background: #e2e8f0; padding: 15px; border-radius: 16px; border: 3px dashed #94a3b8; min-height: 90px; }
+    .uyum-bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+    .bin { min-height: 200px; background: white; border: 3px dashed #94a3b8; border-radius: 16px; display: flex; flex-direction: column; align-items: center; padding: 10px; transition: 0.2s; }
+    .bin.kalin { border-color: var(--orange); }
+    .bin.ince { border-color: var(--teal); }
+    .bin.unsuz { border-color: var(--purple); }
+    .bin.drag-over { transform: scale(1.05); background: #f1f5f9; }
+    .bin-title { font-size: 16px; font-weight: 900; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; width: 100%; text-align: center; }
+    .kalin .bin-title { color: var(--orange); }
+    .ince .bin-title { color: var(--teal); }
+    .unsuz .bin-title { color: var(--purple); }
+    .bin-items { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; width: 100%; }
+    .bin-items .placed-letter { background: #f1f5f9; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 2px solid var(--line); font-size: 22px; font-weight: 900; color: var(--ink); animation: popIn 0.3s; }
+    
+    @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    footer { text-align: center; color: #64748b; padding: 20px 10px; font-size: 13px; font-weight: 600; }
+
+    /* MOBİL (CEP TELEFONU) OPTİMİZASYONLARI */
+    @media (max-width: 768px) {
+        .top { flex-direction: column; padding: 15px; }
+        .score-box { width: 100%; text-align: center; }
+        .panel { padding: 15px 10px; min-height: auto; }
+        .question-text { font-size: 15px; }
+        .tab { padding: 10px 12px; font-size: 13px; }
+        
+        /* Hece Makinesi Mobil */
+        .letter-box { font-size: 30px; }
+        .dash-zone { width: 25px; height: 40px; }
+        .dash-zone.active::after { font-size: 35px; }
+        
+        /* Sözlük Sırası Mobil */
+        .sira-layout { flex-direction: column; gap: 10px; }
+        .sira-side-bank { width: 100%; min-height: auto; flex-direction: row; flex-wrap: wrap; padding: 15px 10px; }
+        .sira-center { width: 100%; }
+        .sira-slot { height: 55px; margin-left: 10px; width: calc(100% - 20px); }
+        .sira-slot::before { left: -10px; width: 30px; height: 30px; font-size: 15px; top: 12px; }
+        .draggable { padding: 10px 15px; font-size: 16px; }
+        .sira-slot .placed-item { font-size: 16px; }
+        
+        /* Harf Ayrımı Mobil */
+        .harf-word-container { gap: 4px; padding: 10px; }
+        .uyum-bins { gap: 8px; }
+        .bin { min-height: 140px; padding: 5px; }
+        .bin-title { font-size: 13px; margin-bottom: 8px; }
+        .bin-items .placed-letter { width: 30px; height: 30px; font-size: 18px; border-width: 1px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="app">
+    <header class="top">
+        <h1>📚 Türkçe Sınıf İçi Oyun Seti</h1>
+        <div class="score-box">Puan: <span id="score">0</span></div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('hece', this)">✂️ 1. Hece Makinesi</button>
+        <button class="tab" onclick="showTab('siralama', this)">🔤 2. Sözlük Sırası</button>
+        <button class="tab" onclick="showTab('harf', this)">🎯 3. Harf Ayrımı</button>
+    </div>
+
+    <!-- 1. HECE MAKİNESİ -->
+    <section id="hece" class="panel active">
+        <div class="controls">
+            <button class="action green" onclick="yeniHece()">🎲 Yeni Kelime</button>
+            <button class="action blue" onclick="kontrolEtHece()">✅ Kontrol Et</button>
+        </div>
+        <div class="question-text">Kelimeyi hecelemek için harflerin arasına dokun. Sonra "Kontrol Et" butonuna bas!</div>
+        <div class="hece-board" id="heceBoard"></div>
+        <div id="hece-msg" class="message"></div>
+    </section>
+
+    <!-- 2. SÖZLÜK SIRASI -->
+    <section id="siralama" class="panel">
+        <div class="controls">
+            <button class="action green" onclick="yeniSira()">🎲 Yeni Kelimeler</button>
+            <button class="action blue" onclick="kontrolEtSira()">✅ Sıralamayı Kontrol Et</button>
+        </div>
+        <div class="question-text">Kelimeleri sürükleyip 1'den 5'e kadar sırala. <span style="color:#ef4444; font-size: 14px;">(Geri almak için kelimeye çift tıkla)</span></div>
+        
+        <div class="sira-layout">
+            <div id="sira-bank-left" class="sira-side-bank"></div>
+            <div id="sira-slots" class="sira-center"></div>
+            <div id="sira-bank-right" class="sira-side-bank"></div>
+        </div>
+        
+        <div id="sira-msg" class="message"></div>
+    </section>
+
+    <!-- 3. HARF AYRIMI -->
+    <section id="harf" class="panel">
+        <div class="controls">
+            <button class="action green" onclick="yeniHarfSorusu()">🎲 Yeni Kelime</button>
+        </div>
+        <div class="question-text">Kelimedeki harfleri yukarıdan söküp doğru sepete sürükle!</div>
+        
+        <div class="harf-word-container" id="harf-bank"></div>
+        
+        <div class="uyum-bins">
+            <div class="bin kalin" data-type="kalin">
+                <div class="bin-title">🅰️ Kalın Ünlü</div>
+                <div class="bin-items" id="bin-kalin"></div>
+            </div>
+            <div class="bin ince" data-type="ince">
+                <div class="bin-title">📧 İnce Ünlü</div>
+                <div class="bin-items" id="bin-ince"></div>
+            </div>
+            <div class="bin unsuz" data-type="unsuz">
+                <div class="bin-title">🅱️ Ünsüz Harf</div>
+                <div class="bin-items" id="bin-unsuz"></div>
+            </div>
+        </div>
+        <div id="harf-msg" class="message"></div>
+    </section>
+
+    <footer>Mersin - Akıllı Tahta ve Mobil Cihazlara Tam Uyumlu.</footer>
+</div>
+
+<script>
+    let score = 0;
+    let aktifSekme = 'hece';
+    
+    // Ses Efektleri
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playTone(freq, type, dur) {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + dur);
+        osc.stop(audioCtx.currentTime + dur);
+    }
+    function playCorrect() { playTone(600, 'sine', 0.1); setTimeout(() => playTone(800, 'sine', 0.15), 100); }
+    function playWrong() { playTone(200, 'sawtooth', 0.3); }
+
+    function addScore(n) { score += n; if(score < 0) score = 0; document.getElementById('score').textContent = score; }
+    function showTab(id, btn) {
+        document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+        btn.classList.add('active');
+        aktifSekme = id;
+    }
+
+    // --- EVRENSEL SÜRÜKLE-BIRAK ALTYAPISI ---
+    let aktifKart = null;
+    let baslangicX = 0, baslangicY = 0;
+
+    function dragBasla(e) {
+        if(audioCtx.state === 'suspended') audioCtx.resume(); 
+        aktifKart = e.target;
+        let rect = aktifKart.getBoundingClientRect();
+        
+        aktifKart.style.position = 'absolute';
+        aktifKart.style.margin = '0';
+        aktifKart.classList.add('dragging');
+        
+        // e.clientX dokunmatik ve fare için evrenseldir (pointer events)
+        baslangicX = e.clientX - rect.left;
+        baslangicY = e.clientY - rect.top;
+        aktifKart.style.left = (e.clientX - baslangicX) + 'px';
+        aktifKart.style.top = (e.clientY - baslangicY) + 'px';
+        
+        document.addEventListener('pointermove', dragDevam);
+        document.addEventListener('pointerup', dragBitir);
+        aktifKart.setPointerCapture(e.pointerId);
+    }
+
+    function dragDevam(e) {
+        if (!aktifKart) return;
+        // Mobilde sayfanın kaymasını engellemek için preventDefault ekliyoruz
+        e.preventDefault(); 
+        
+        aktifKart.style.left = (e.clientX - baslangicX) + 'px';
+        aktifKart.style.top = (e.clientY - baslangicY) + 'px';
+
+        aktifKart.style.display = 'none';
+        let altindakiEleman = document.elementFromPoint(e.clientX, e.clientY);
+        aktifKart.style.display = 'inline-block';
+
+        document.querySelectorAll('.sira-slot, .bin').forEach(z => z.classList.remove('drag-over'));
+        if (altindakiEleman) {
+            let targetZone = null;
+            if(aktifSekme === 'siralama') targetZone = altindakiEleman.closest('.sira-slot');
+            if(aktifSekme === 'harf') targetZone = altindakiEleman.closest('.bin');
+            if (targetZone) targetZone.classList.add('drag-over');
+        }
+    }
+
+    function dragBitir(e) {
+        if (!aktifKart) return;
+        aktifKart.style.display = 'none';
+        let altindakiEleman = document.elementFromPoint(e.clientX, e.clientY);
+        aktifKart.style.display = 'inline-block';
+
+        let hedefeUlasti = false;
+        if (altindakiEleman) {
+            if(aktifSekme === 'siralama') hedefeUlasti = handleSiraDrop(altindakiEleman);
+            if(aktifSekme === 'harf') hedefeUlasti = handleHarfDrop(altindakiEleman);
+        }
+
+        if (!hedefeUlasti) {
+            aktifKart.style.position = 'relative';
+            aktifKart.style.left = '0';
+            aktifKart.style.top = '0';
+            aktifKart.classList.remove('dragging');
+        }
+
+        document.querySelectorAll('.sira-slot, .bin').forEach(z => z.classList.remove('drag-over'));
+        document.removeEventListener('pointermove', dragDevam);
+        document.removeEventListener('pointerup', dragBitir);
+        aktifKart = null;
+    }
+
+    // --- SEKME 1: HECE MAKİNESİ ---
+    const heceHavuzu = [
+        { word: "HANIMELİ", correct: "HA-NI-ME-Lİ" }, { word: "İLKÖĞRETİM", correct: "İL-KÖĞ-RE-TİM" },
+        { word: "ASLANAĞZI", correct: "AS-LA-NAĞ-ZI" }, { word: "BAŞÖĞRETMEN", correct: "BA-ŞÖĞ-RET-MEN" },
+        { word: "KIZKALESİ", correct: "KIZ-KA-LE-Sİ" }, { word: "BİLGİSAYAR", correct: "BİL-Gİ-SA-YAR" },
+        { word: "MIKNATIS", correct: "MIK-NA-TIS" }, { word: "YERKABUĞU", correct: "YER-KA-BU-ĞU" },
+        { word: "MEZİTLİ", correct: "ME-ZİT-Lİ" }, { word: "TANTUNİ", correct: "TAN-TU-Nİ" },
+        { word: "SÜRPRİZ", correct: "SÜR-PRİZ" }, { word: "SPOR", correct: "SPOR" },
+        { word: "KONTROL", correct: "KONT-ROL" }, { word: "TREN", correct: "TREN" },
+        { word: "KIRKİKİNDİ", correct: "KIR-Kİ-KİN-Dİ" }, { word: "SEMİZOTU", correct: "SE-Mİ-ZO-TU" },
+        { word: "AYAKKABI", correct: "A-YAK-KA-BI" }, { word: "DENİZALTI", correct: "DE-Nİ-ZAL-TI" },
+        { word: "GÖKKUŞAĞI", correct: "GÖK-KU-ŞA-ĞI" }, { word: "KAHVALTI", correct: "KAH-VAL-TI" },
+        { word: "PAZARTESİ", correct: "PA-ZAR-TE-Sİ" }, { word: "CUMARTESİ", correct: "CU-MAR-TE-Sİ" },
+        { word: "PUSULA", correct: "PU-SU-LA" }, { word: "KROKİ", correct: "KRO-Kİ" },
+        { word: "HARİTA", correct: "HA-Rİ-TA" }, { word: "GEZEGEN", correct: "GE-ZE-GEN" },
+        { word: "KARIŞIM", correct: "KA-RI-ŞIM" }, { word: "MADEN", correct: "MA-DEN" },
+        { word: "MERSİN", correct: "MER-SİN" }, { word: "TARSUS", correct: "TAR-SUS" },
+        { word: "TOROSLAR", correct: "TO-ROS-LAR" }, { word: "ÇUKUROVA", correct: "ÇU-KU-RO-VA" },
+        { word: "AKDENİZ", correct: "AK-DE-NİZ" }, { word: "NARENCİYE", correct: "NA-REN-Cİ-YE" },
+        { word: "LİMON", correct: "Lİ-MON" }, { word: "ELEKTRİK", correct: "E-LEK-TRİK" },
+        { word: "TRAKTÖR", correct: "TRAK-TÖR" }, { word: "SANTRAL", correct: "SANT-RAL" },
+        { word: "LABORATUVAR", correct: "LA-BO-RA-TU-VAR" }, { word: "KÜTÜPHANE", correct: "KÜ-TÜP-HA-NE" },
+        { word: "İZCİLİK", correct: "İZ-Cİ-LİK" }, { word: "YAYINEVİ", correct: "YA-YI-NE-Vİ" },
+        { word: "ZÜMRE", correct: "ZÜM-RE" }, { word: "MÜFREDAT", correct: "MÜF-RE-DAT" },
+        { word: "BALIKESİR", correct: "BA-LI-KE-SİR" }
+    ];
+    let aktifHeceListesi = [];
+    let currentHece = null;
+
+    function siradakiHeceKelimesi() {
+        if (aktifHeceListesi.length === 0) aktifHeceListesi = [...heceHavuzu].sort(() => Math.random() - 0.5);
+        return aktifHeceListesi.pop();
+    }
+
+    function yeniHece() {
+        currentHece = siradakiHeceKelimesi();
+        const board = document.getElementById('heceBoard');
+        board.innerHTML = '';
+        document.getElementById('hece-msg').innerHTML = '';
+        
+        let letters = currentHece.word.split('');
+        for(let i = 0; i < letters.length; i++) {
+            let l = document.createElement('div');
+            l.className = 'letter-box';
+            l.innerText = letters[i];
+            board.appendChild(l);
+            
+            if(i < letters.length - 1) {
+                let dash = document.createElement('div');
+                dash.className = 'dash-zone';
+                dash.onclick = function() { 
+                    if(audioCtx.state === 'suspended') audioCtx.resume();
+                    this.classList.toggle('active'); 
+                };
+                board.appendChild(dash);
+            }
+        }
+    }
+
+    function kontrolEtHece() {
+        const board = document.getElementById('heceBoard');
+        let userResult = "";
+        board.childNodes.forEach(node => {
+            if(node.className === 'letter-box') userResult += node.innerText;
+            else if(node.classList.contains('dash-zone') && node.classList.contains('active')) userResult += "-";
+        });
+
+        const msg = document.getElementById('hece-msg');
+        if(userResult === currentHece.correct) {
+            msg.innerHTML = `✅ Harika! Doğru heceledin. <button class="action green" style="padding:8px 15px; font-size:15px;" onclick="yeniHece()">Sonraki ➡️</button>`; 
+            msg.style.color = "var(--green)";
+            addScore(10); playCorrect();
+        } else {
+            msg.innerHTML = `❌ Hatalı. Doğrusu: <b>${currentHece.correct}</b>`; msg.style.color = "var(--red)";
+            addScore(-3); playWrong();
+        }
+    }
+
+    // --- SEKME 2: SÖZLÜK SIRASI ---
+    const siralamaGruplari = [
+        ["MIKNATIS", "MİKROSKOP", "MADEN", "MERCEK", "MOTOR"],
+        ["PUSULA", "PORTAKAL", "PLAN", "PROJE", "PLASTİK"],
+        ["TANTUNİ", "TARIM", "TABLO", "TAVAN", "TAKVİM"],
+        ["MEZİTLİ", "MERSİN", "MERKEZ", "MEKİK", "MESAFE"],
+        ["KROKİ", "KUZEY", "KUTUP", "KASABA", "KUM"],
+        ["KALABALIK", "KALDIRIM", "KALECİ", "KALEMLİK", "KALORİFER"],
+        ["MAKALE", "MAKARA", "MAKAS", "MAKET", "MAKİNE"],
+        ["ÇİÇEK", "ÇİLEK", "ÇİMEN", "ÇİZGİ", "ÇİZME"]
+    ];
+    let aktifSiraListesi = [];
+    let siraMevcutCevap = [];
+
+    function siradakiSiraGrubu() {
+        if (aktifSiraListesi.length === 0) aktifSiraListesi = [...siralamaGruplari].sort(() => Math.random() - 0.5);
+        return aktifSiraListesi.pop();
+    }
+
+    function yeniSira() {
+        siraMevcutCevap = siradakiSiraGrubu().sort(new Intl.Collator("tr-TR").compare);
+        let karisik = [...siraMevcutCevap].sort(() => Math.random() - 0.5);
+        
+        let leftBank = document.getElementById('sira-bank-left');
+        let rightBank = document.getElementById('sira-bank-right');
+        let slots = document.getElementById('sira-slots');
+        
+        leftBank.innerHTML = ''; rightBank.innerHTML = ''; slots.innerHTML = '';
+        document.getElementById('sira-msg').innerHTML = '';
+
+        for(let i=0; i<5; i++) {
+            let slot = document.createElement('div');
+            slot.className = 'sira-slot';
+            slot.dataset.num = i + 1;
+            slots.appendChild(slot);
+        }
+
+        karisik.forEach((kelime, i) => {
+            let kart = document.createElement('div');
+            kart.className = 'draggable';
+            kart.innerText = kelime;
+            kart.dataset.val = kelime;
+            kart.addEventListener('pointerdown', dragBasla);
+            
+            // Mobilde yan yana görünmeleri için dikey dağılım mantığı
+            if (window.innerWidth <= 768) {
+                leftBank.appendChild(kart); // Mobilde sol banka üst banka işlevi görür
+            } else {
+                if (i % 2 === 0) leftBank.appendChild(kart);
+                else rightBank.appendChild(kart);
+            }
+        });
+    }
+
+    function siraGeriAl(el) {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        let kelime = el.innerText;
+        let kart = document.createElement('div');
+        kart.className = 'draggable';
+        kart.innerText = kelime;
+        kart.dataset.val = kelime;
+        kart.addEventListener('pointerdown', dragBasla);
+        
+        let leftBank = document.getElementById('sira-bank-left');
+        let rightBank = document.getElementById('sira-bank-right');
+        if(window.innerWidth <= 768 || leftBank.children.length <= rightBank.children.length) {
+            leftBank.appendChild(kart);
+        } else {
+            rightBank.appendChild(kart);
+        }
+        el.remove();
+        document.getElementById('sira-msg').innerHTML = "";
+    }
+
+    function handleSiraDrop(el) {
+        let slot = el.closest('.sira-slot');
+        if (!slot) return false;
+
+        if (slot.querySelector('.placed-item')) siraGeriAl(slot.querySelector('.placed-item'));
+
+        slot.innerHTML = `<div class="placed-item" ondblclick="siraGeriAl(this)">${aktifKart.dataset.val}</div>`;
+        aktifKart.remove();
+        document.getElementById('sira-msg').innerHTML = "";
+        return true;
+    }
+
+    function kontrolEtSira() {
+        let slots = document.querySelectorAll('.sira-slot');
+        let hataYok = true;
+        let msg = document.getElementById('sira-msg');
+
+        if(document.getElementById('sira-bank-left').children.length > 0 || document.getElementById('sira-bank-right').children.length > 0) {
+            msg.innerHTML = "⚠️ Önce tüm kelimeleri kutulara yerleştirmelisin!"; msg.style.color = "var(--orange)";
+            return;
+        }
+
+        slots.forEach((slot, i) => {
+            if(slot.querySelector('.placed-item').innerText !== siraMevcutCevap[i]) hataYok = false;
+        });
+
+        if(hataYok) {
+            msg.innerHTML = `✅ Kusursuz! <button class="action green" style="padding:8px 15px; font-size:15px;" onclick="yeniSira()">Sonraki ➡️</button>`; 
+            msg.style.color = "var(--green)";
+            addScore(15); playCorrect();
+        } else {
+            msg.innerHTML = "❌ Sıralamada hata var."; msg.style.color = "var(--red)";
+            addScore(-3); playWrong();
+        }
+    }
+
+    // --- SEKME 3: HARF AYRIMI ---
+    const harfKelimeleri = ["İLKÖĞRETİM", "KIZKALESİ", "ÖĞRETMEN", "YERKABUĞU", "MÜFREDAT", "AKDENİZ", "ÇUKUROVA", "BİLGİSAYAR", "PUSULA", "MIKNATIS", "ELEKTRİK"];
+    let aktifHarfKelimeleri = [];
+    const kalinUnluler = ["A", "I", "O", "U"];
+    const inceUnluler = ["E", "İ", "Ö", "Ü"];
+
+    function getLetterType(l) {
+        if(kalinUnluler.includes(l)) return "kalin";
+        if(inceUnluler.includes(l)) return "ince";
+        return "unsuz";
+    }
+
+    function siradakiHarfKelimesi() {
+        if(aktifHarfKelimeleri.length === 0) aktifHarfKelimeleri = [...harfKelimeleri].sort(() => Math.random() - 0.5);
+        return aktifHarfKelimeleri.pop();
+    }
+
+    function yeniHarfSorusu() {
+        let word = siradakiHarfKelimesi();
+        let bank = document.getElementById('harf-bank');
+        bank.innerHTML = '';
+        document.getElementById('bin-kalin').innerHTML = '';
+        document.getElementById('bin-ince').innerHTML = '';
+        document.getElementById('bin-unsuz').innerHTML = '';
+        document.getElementById('harf-msg').innerHTML = '';
+
+        let harfler = word.split('');
+        
+        // Font boyutunu mobil için küçültüyoruz (CSS media query harici inline style)
+        let fSize = window.innerWidth <= 768 ? "20px" : "32px";
+        let pad = window.innerWidth <= 768 ? "10px 15px" : "12px 25px";
+
+        harfler.forEach((h, i) => {
+            let kart = document.createElement('div');
+            kart.className = 'draggable';
+            kart.innerText = h;
+            kart.dataset.type = getLetterType(h);
+            kart.style.padding = pad;
+            kart.style.fontSize = fSize;
+            kart.addEventListener('pointerdown', dragBasla);
+            bank.appendChild(kart);
+        });
+    }
+
+    function handleHarfDrop(el) {
+        let bin = el.closest('.bin');
+        if (!bin) return false;
+
+        let beklenen = bin.dataset.type;
+        let msg = document.getElementById('harf-msg');
+
+        if (aktifKart.dataset.type === beklenen) {
+            bin.querySelector('.bin-items').innerHTML += `<div class="placed-letter">${aktifKart.innerText}</div>`;
+            aktifKart.remove();
+            msg.innerHTML = "✅ Doğru Sepet!"; msg.style.color = "var(--green)";
+            addScore(2); playCorrect();
+            
+            if(document.getElementById('harf-bank').children.length === 0) {
+                msg.innerHTML = `🎉 HARİKA! <button class="action green" style="padding:8px 15px; font-size:15px;" onclick="yeniHarfSorusu()">Sonraki ➡️</button>`;
+                addScore(10);
+            }
+            return true;
+        } else {
+            msg.innerHTML = "❌ Yanlış sepet!"; msg.style.color = "var(--red)";
+            addScore(-1); playWrong();
+            return false;
+        }
+    }
+
+    yeniHece(); yeniSira(); yeniHarfSorusu();
+</script>
+</body>
+</html>

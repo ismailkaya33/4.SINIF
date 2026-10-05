@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SB.4.1.4 Kendimi Onun Yerine Koyuyorum</title>
+<style>
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#22252a; --muted:#5c6470;
+  --accent:#3d6b52; --accent-ink:#ffffff; --good:#2e7d46; --bad:#b3413a;
+  --line:#e2ddd2; --chip:#eef0e6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1c1e22; --card:#26292f; --ink:#eceff1; --muted:#a3abb5;
+    --accent:#7fbf9d; --accent-ink:#12241b; --good:#7fbf9d; --bad:#e08a83;
+    --line:#3a3e46; --chip:#31353c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1c1e22; --card:#26292f; --ink:#eceff1; --muted:#a3abb5;
+  --accent:#7fbf9d; --accent-ink:#12241b; --good:#7fbf9d; --bad:#e08a83;
+  --line:#3a3e46; --chip:#31353c;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  min-height:100vh;
+}
+#app{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.25rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.badge{display:inline-block;background:var(--chip);color:var(--muted);font-size:.72rem;padding:3px 9px;border-radius:99px;margin-bottom:10px}
+.prompt{font-size:1.05rem;line-height:1.5;margin-bottom:16px}
+.opts{display:flex;flex-direction:column;gap:8px}
+button.opt{
+  text-align:left;padding:12px 14px;border-radius:10px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font-size:.98rem;cursor:pointer;
+}
+button.opt:active{transform:scale(.99)}
+button.opt.sel{border-color:var(--accent)}
+button.opt.correct{background:var(--good);border-color:var(--good);color:#fff}
+button.opt.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:.92rem}
+.msg.bad{background:rgba(179,65,58,.12);color:var(--bad)}
+.msg.good{background:rgba(46,125,70,.12);color:var(--good)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.col{flex:1;min-width:130px;display:flex;flex-direction:column;gap:8px}
+.chipbtn{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);font-size:.9rem;cursor:pointer;text-align:left}
+.chipbtn.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.chipbtn.locked{background:var(--good);color:#fff;border-color:var(--good);opacity:.9}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.catbtn{flex:1;min-width:100px;padding:10px;border-radius:10px;border:1px dashed var(--muted);background:transparent;color:var(--ink);cursor:pointer;text-align:center;font-size:.88rem}
+.catbtn.active{border-color:var(--accent);background:var(--chip)}
+textarea{width:100%;min-height:90px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px;font-size:.95rem;font-family:inherit}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:16px}
+.navbtn{padding:11px 16px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);font-size:.9rem;cursor:pointer}
+.navbtn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.navbtn:disabled{opacity:.4;cursor:not-allowed}
+.progress{height:6px;background:var(--chip);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.progress > div{height:100%;background:var(--accent)}
+input[type=text]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1rem}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.stat{background:var(--chip);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:1.3rem}
+.stat span{color:var(--muted);font-size:.78rem}
+.reviewitem{border-top:1px solid var(--line);padding:10px 0;font-size:.9rem}
+.reviewitem b{display:block}
+pre{white-space:pre-wrap;background:var(--chip);border-radius:10px;padding:12px;font-size:.82rem;font-family:inherit}
+
+:root,:root:not([data-theme="light"]),:root[data-theme="dark"]{--bg:#fff7e6;--card:#fff;--ink:#2b2a4c;--muted:#66658a;--accent:#7c4dff;--accent-ink:#fff;--good:#1f9d55;--bad:#e5484d;--line:#eadfca;--chip:#f3ecff}
+body{background:linear-gradient(#fff7e6,#ffeaf1);font-size:17px}
+#app{padding-top:48px}
+h1{font-size:1.5rem;color:var(--accent)}
+.card{border-radius:20px;border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+button.opt,.chipbtn,.catbtn,.navbtn{border-radius:14px;border-width:2px;transition:transform .1s}
+button.opt:hover,.chipbtn:hover{transform:translateY(-2px);border-color:var(--accent)}
+.navbtn{font-weight:600}.navbtn.primary{box-shadow:0 3px 0 #5a35c9}
+.progress{height:12px}.progress>div{background:linear-gradient(90deg,#ff6b8b,#7c4dff);transition:width .4s}
+.mbar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.mbar svg{width:54px;height:50px;flex:none}
+.bubble{background:#fff;border:2px solid var(--line);border-radius:16px;padding:8px 12px;font-size:.92rem}
+.mbar.good svg{animation:bounce .6s}.mbar.bad svg{animation:shake .4s}
+.msg.good,button.opt.correct{animation:pop .35s}
+.msg.bad,button.opt.wrong{animation:shake .4s}
+.intro{text-align:center}.intro svg{width:120px;height:110px;animation:bob 2s ease-in-out infinite}
+#sndBtn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:8px;z-index:9;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;font-size:.8rem;cursor:pointer}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-12px)}}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const DATA=(function(){
+const L='abcd';
+function M(id,p,c,w,e){return{id,type:'mc',prompt:p,opts:[c,...w].map((t,i)=>({id:L[i],t})),correct:'a',explain:e};}
+function F(id,p,c,e){return{id,type:'tf',prompt:p,correct:c,explain:e};}
+function P(id,p,a){return{id,type:'match',prompt:p,pairs:a.map((x,i)=>({id:id+'_'+i,l:x[0],r:x[1]}))};}
+function C(id,p,cats,a){return{id,type:'classify',prompt:p,cats,items:a.map((x,i)=>({id:id+'_'+i,t:x[0],cat:x[1]}))};}
+return[
+M('q1','Empati ne demektir?','Kendimizi karşımızdaki kişinin yerine koyup neler hissettiğini anlamaya çalışmak',['Karşımızdaki kişiyle aynı şeyleri sevmek','Karşımızdaki kişiye acımak','Herkesin bizim gibi düşünmesini istemek'],'Empati, kendimizi karşımızdakinin yerine koyarak duygularını ve düşüncelerini anlamaya çalışmaktır. Onunla aynı şeyleri sevmek ya da ona acımak demek değildir.'),
+F('q2','Bütün insanların yetenekleri, beğenileri ve kişilik özellikleri birbirinin aynısıdır.',false,'Herkesin yetenekleri, sevdiği şeyler ve kişilik özellikleri farklıdır. Bu farklılıklar bizi özel yapar.'),
+C('q3','Kartları doğru kutuya yerleştir.',['Beğeni','Yetenek','Kişilik Özelliği'],[['Pizzayı çok sevmek','Beğeni'],['Çok güzel resim yapabilmek','Yetenek'],['Utangaç olmak','Kişilik Özelliği'],['Müzik dinlemeyi sevmek','Beğeni'],['Hızlı koşabilmek','Yetenek'],['Neşeli olmak','Kişilik Özelliği']]),
+M('q4','Efe resim yapmada çok iyi ama koşuda geri kalıyor. Ada ise çok hızlı koşuyor ama resim yapmakta zorlanıyor. Beden eğitimi dersinde Efe geride kalınca Ada ne yapmalıdır?','Herkesin farklı yetenekleri olduğunu düşünür ve Efe’yi cesaretlendirir',['Efe geride kaldığı için onunla dalga geçer','Efe’yi oyundan çıkarır','Kendi yeteneğinin Efe’den üstün olduğunu söyler'],'Herkes bir alanda iyi, başka bir alanda zorlanabilir. Ada kendini Efe’nin yerine koyarsa onu cesaretlendirir.'),
+P('q5','Her durumu, kişinin büyük olasılıkla hissedeceği duyguyla eşleştir.',[['Teneffüste kimse onu oyuna çağırmadı','Dışlanmış ve yalnız'],['Resim yarışmasında birinci oldu','Gururlu ve sevinçli'],['Sınıfın önünde şiir okuyacak, çok çekiniyor','Heyecanlı ve çekingen'],['Sınavdan beklediğinden düşük not aldı','Hayal kırıklığına uğramış']]),
+F('q6','Tekerlekli sandalye kullanan bir arkadaşımız da katılabilsin diye oyunun kurallarını birlikte değiştirmek empatiye örnektir.',true,'Kendimizi onun yerine koyunca herkesin katılabileceği bir oyun düşünürüz. Böylece hep birlikte eğleniriz.'),
+M('q7','Sınıfınıza görme engelli bir arkadaşınız geldi. Kendini onun yerine koyan bir öğrenci ne yapar?','Nasıl bir yardıma ihtiyacı olduğunu sorar, istediği kadar yardım eder',['Onun yerine her şeyi yapar, kendisine hiçbir şey bırakmaz','Ne diyeceğini bilemediği için onunla hiç konuşmaz','Ona çok acıdığını herkesin duyacağı şekilde söyler'],'Herkesin kendi başına yapabildiği şeyler vardır. Önce ihtiyacını sorar, saygıyla yardım ederiz. Acımak ya da görmezden gelmek doğru değildir.'),
+C('q8','Davranışları doğru kutuya yerleştir.',['Empati Gösteriyor','Empati Göstermiyor'],[['Ağlayan arkadaşına nedenini nazikçe sorar','Empati Gösteriyor'],['Ayakkabısı eski diye arkadaşıyla dalga geçer','Empati Göstermiyor'],['Yeni gelen öğrenciyi oyuna çağırır','Empati Gösteriyor'],['Farklı müzik dinleyen arkadaşının zevkini küçümser','Empati Göstermiyor'],['Arkadaşı konuşurken onu dikkatle dinler','Empati Gösteriyor'],['“Bu benim sorunum değil” deyip uzaklaşır','Empati Göstermiyor']]),
+M('q9','Deniz şöyle düşünüyor: “Tekerlekli sandalye kullanan Ali’ye acıdığım için onu oyunlarımıza katmıyorum. Yorulmasın.” Deniz’in düşüncesindeki hata nedir?','Ali’ye ne istediğini sormadan onun adına karar vermesi',['Hiçbir hata yoktur, Deniz çok düşünceli davranmıştır','Oyunlara herkesin katılması zorunlu değildir','Ali’ye karşı çok nazik davranması'],'Deniz, Ali’nin ne istediğini sormadan onun adına karar vermiş. Doğrusu: Ali’ye oyuna katılmak isteyip istemediğini sormak ve oyunu herkesin katılabileceği hâle getirmektir.'),
+P('q10','Her arkadaşımıza uygun bir destek davranışı seç.',[['Ailesi okul malzemesi almakta zorlanan arkadaş','Malzemelerimizi onu utandırmadan paylaşırız'],['İşitme engelli arkadaş','Yüzüne dönük konuşur, gerekirse yazarak anlatırız'],['Kronik hastalığı nedeniyle sık sık hastaneye giden arkadaş','Gelemediği günlerin ders notlarını ve ödevlerini paylaşırız'],['Devletin koruması ve bakımı altında yaşayan çocuk','Onu dışlamaz, oyunlarımıza ve etkinliklerimize katarız']]),
+{id:'q11',type:'reflect',prompt:'Hayal et: Yeni bir okula başladın ve kimseyi tanımıyorsun. Neler hissederdin? Sınıf arkadaşlarının sana nasıl davranmasını isterdin? Birkaç cümleyle yaz.'},
+M('q12','Mert çok konuşkan ve hareketli, Selin ise sessiz ve kitap okumayı seviyor. Teneffüste Selin bankta kitap okurken Mert onun oyuna katılmadığını fark ediyor. Mert ne yapmalıdır?','Selin’e oyuna katılmak isteyip istemediğini sorar, istemezse kararına saygı duyar',['Selin’i zorla oyuna sokar, çünkü herkes aynı şeyi sevmelidir','Selin’e “Sen çok sıkıcısın” der','Selin’i görmezden gelir'],'Herkesin sevdiği şeyler ve kişiliği farklıdır. Önce sorarız; Selin istemezse bu kararına saygı gösteririz.'),
+F('q13','Empati kurmak için karşımızdaki kişiyle aynı düşünmemiz gerekir.',false,'Farklı düşünsek de kendimizi onun yerine koyup duygularını anlamaya çalışabiliriz. Empati, farklılıklara saygı göstermeyi de içerir.'),
+M('q14','Sınıfa yeni gelen Zeynep işitme cihazı kullanıyor, çok güzel resim yapıyor ama biraz utangaç. Sınıf panosu için resim yapılacak. Zeynep’in hem yeteneğini hem de ihtiyacını gözeten davranış hangisidir?','Onu gruba davet eder, yüzüne bakarak konuşur ve resim yapmak isteyip istemediğini sorar',['Cihaz kullandığı için ona resim işini hiç vermez','Utangaç olduğu için onunla hiç konuşmaz','Resim yaptığı için onu herkesin önüne çıkarıp zorla göstermeye çalışır'],'Zeynep’in yeteneğine (resim), ihtiyacına (yüzüne bakarak konuşma) ve kişiliğine (utangaçlık) birlikte saygı göstermek gerekir. Katılıp katılmayacağına o karar verir.'),
+{id:'q15',type:'reflect',prompt:'Sınıfımızda farklı özelliklere sahip arkadaşlarımız var. Bir arkadaşının yerine kendini koyarak ona nasıl destek olabileceğini bir iki cümleyle yaz.'}
+];})();
+
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let ST;
+function freshState(){
+ return{idx:0,name:'',started:false,start:null,end:null,
+  tasks:DATA.map(d=>({id:d.id,status:'pending',attempts:0,wrong:0,firstTry:null,skipped:false,answer:null,text:'',
+    order: d.type==='mc'?shuffle(d.opts.map(o=>o.id)):null,
+    left: d.type==='match'?shuffle(d.pairs.map(p=>({id:p.id,txt:p.l}))):null,
+    right: d.type==='match'?shuffle(d.pairs.map(p=>({id:p.id,txt:p.r}))):null,
+    matched: d.type==='match'?new Set():null, sel:null,
+    pool: d.type==='classify'?shuffle(d.items.map(i=>i.id)):null,
+    placed: d.type==='classify'?{}:null, selItem:null}))};
+}
+ST=freshState();
+function T(i){return ST.tasks[i];}
+function D(i){return DATA[i];}
+function el(html){const d=document.createElement('div');d.innerHTML=html;return d;}
+function render(){
+ const app=document.getElementById('app');
+ if(!ST.started){app.innerHTML=intro();bind();return;}
+ if(ST.idx>=DATA.length){app.innerHTML=report();bind();return;}
+ app.innerHTML=taskView();bind();
+}
+function intro(){
+ return `<div class="intro">${HEART}<h1>Kendini Onun Yerine Koy!</h1>
+ <div class="sub">Sınıf Rehberlik 4. Sınıf — Farklı Özellikleri Anlıyorum</div>
+ <div class="card"><div class="prompt">Merhaba, ben Kalpik! Bugün kendimizi farklı arkadaşlarımızın yerine koyup onları anlamaya çalışacağız. Sorular küçük hikâyelerden oluşuyor. Yaklaşık 10-12 dakika sürer.</div>
+ <button class="navbtn primary" id="startBtn" style="font-size:1.1rem;padding:12px 28px">Başla!</button></div></div>`;
+}
+function progressBar(){
+ const pct=Math.round((ST.idx)/DATA.length*100);
+ return `<div class="progress"><div style="width:${pct}%"></div></div><div class="sub">Görev ${ST.idx+1} / ${DATA.length}</div>`;
+}
+function taskView(){
+ const d=D(ST.idx),t=T(ST.idx);
+ let body='';
+ if(d.type==='mc') body=mcView(d,t);
+ else if(d.type==='tf') body=tfView(d,t);
+ else if(d.type==='match') body=matchView(d,t);
+ else if(d.type==='classify') body=classifyView(d,t);
+ else if(d.type==='reflect') body=reflectView(d,t);
+ const canNext = t.status==='correct'||t.status==='skipped'||(d.type==='reflect'&&t.text.trim().length>0);
+ const isLast = ST.idx===DATA.length-1;
+ const showSkip = t.status==='pending'||t.status==='retry';
+ return `${progressBar()}${mascotBar(t,d)}
+ <div class="card">${body}</div>
+ <div class="nav">
+  <button class="navbtn" id="prevBtn" ${ST.idx===0?'disabled':''}>← Önceki</button>
+  <div style="display:flex;gap:8px">
+   ${showSkip?`<button class="navbtn" id="skipBtn">Soruyu Geç</button>`:''}
+   <button class="navbtn primary" id="nextBtn" ${canNext?'':'disabled'}>${isLast?'Bitir ve Raporu Gör':'Sonraki →'}</button>
+  </div>
+ </div>`;
+}
+function mcView(d,t){
+ const opts=t.order.map(id=>d.opts.find(o=>o.id===id));
+ const rows=opts.map(o=>{
+   let cls='opt';
+   if(t.status==='correct'){ if(o.id===d.correct) cls+=' correct'; }
+   else if(t.answer===o.id && t.status==='retry') cls+=' wrong';
+   return `<button class="${cls}" data-opt="${o.id}" ${t.status==='correct'?'disabled':''}>${o.t}</button>`;
+ }).join('');
+ let msg='';
+ if(t.status==='correct') msg=`<div class="msg good">Doğru! ${d.explain}</div>`;
+ else if(t.status==='retry') msg=`<div class="msg bad">Yanlış, tekrar dene.</div>`;
+ return `<div class="prompt" style="white-space:pre-line">${d.prompt}</div><div class="opts">${rows}</div>${msg}`;
+}
+function tfView(d,t){
+ const opts=[{id:'true',t:'Doğru'},{id:'false',t:'Yanlış'}];
+ const rows=opts.map(o=>{
+  let cls='opt';
+  const isCorrectOpt=(o.id==='true')===d.correct;
+  if(t.status==='correct'){ if(isCorrectOpt) cls+=' correct'; }
+  else if(t.answer===o.id && t.status==='retry') cls+=' wrong';
+  return `<button class="${cls}" data-opt="${o.id}" ${t.status==='correct'?'disabled':''}>${o.t}</button>`;
+ }).join('');
+ let msg='';
+ if(t.status==='correct') msg=`<div class="msg good">Doğru! ${d.explain}</div>`;
+ else if(t.status==='retry') msg=`<div class="msg bad">Yanlış, tekrar dene.</div>`;
+ return `<div class="prompt" style="white-space:pre-line">${d.prompt}</div><div class="opts">${rows}</div>${msg}`;
+}
+function matchView(d,t){
+ const L=t.left.map(x=>`<button class="chipbtn ${t.matched.has(x.id)?'locked':(t.sel===x.id?'sel':'')}" data-l="${x.id}" ${t.matched.has(x.id)?'disabled':''}>${x.txt}</button>`).join('');
+ const R=t.right.map(x=>`<button class="chipbtn ${t.matched.has(x.id)?'locked':''}" data-r="${x.id}" ${t.matched.has(x.id)?'disabled':''}>${x.txt}</button>`).join('');
+ let msg = t.status==='correct'?`<div class="msg good">Tüm eşleştirmeler doğru!</div>`
+   : (t.lastWrong?`<div class="msg bad">Yanlış eşleştirme, tekrar dene.</div>`:'');
+ return `<div class="prompt">${d.prompt}</div><div class="row"><div class="col">${L}</div><div class="col">${R}</div></div>${msg}`;
+}
+function classifyView(d,t){
+ const pool=t.pool.map(id=>d.items.find(i=>i.id===id));
+ const poolHtml=pool.map(i=>`<button class="chipbtn ${t.selItem===i.id?'sel':''}" data-item="${i.id}">${i.t}</button>`).join('')||'<span class="sub">Havuz boş — tüm kartlar yerleşti.</span>';
+ const placedHtml=d.cats.map(cat=>{
+   const items=(t.placed[cat]||[]).map(id=>d.items.find(i=>i.id===id).t);
+   return `<div class="catbtn ${t.selItem?'active':''}" data-cat="${cat}"><b>${cat}</b><br>${items.join(', ')||'—'}</div>`;
+ }).join('');
+ let msg = t.status==='correct'?`<div class="msg good">Tüm kartlar doğru yerleştirildi!</div>`
+   : (t.lastWrong?`<div class="msg bad">Yanlış yerleştirme, kart havuza döndü. Tekrar dene.</div>`:'');
+ return `<div class="prompt">${d.prompt}</div><div>${poolHtml}</div><div class="cats">${placedHtml}</div>${msg}`;
+}
+function reflectView(d,t){
+ return `<div class="prompt">${d.prompt}</div><textarea id="reflectBox" placeholder="Buraya yaz...">${t.text}</textarea>
+ <div class="sub" style="margin-top:8px">Bu görev puanlanmaz; öğretmenin görebilmesi için raporun sonunda yer alır.</div>`;
+}
+function report(){
+ const graded=ST.tasks.filter((t,i)=>D(i).type!=='reflect');
+ const total=graded.length;
+ const correct=graded.filter(t=>t.status==='correct').length;
+ const firstTry=graded.filter(t=>t.status==='correct'&&t.firstTry).length;
+ const wrongAttempts=graded.reduce((s,t)=>s+t.wrong,0);
+ const skipped=graded.filter(t=>t.status==='skipped').length;
+ const dur=ST.end-ST.start; const mm=Math.floor(dur/60000),ss=Math.floor((dur%60000)/1000);
+ const wrongList=ST.tasks.map((t,i)=>({t,d:D(i)})).filter(x=>x.d.type!=='reflect'&&x.t.status!=='correct');
+ const reflects=ST.tasks.map((t,i)=>({t,d:D(i)})).filter(x=>x.d.type==='reflect');
+ const reviewHtml=wrongList.length?wrongList.map(x=>`<div class="reviewitem"><b>${x.t.status==='skipped'?'Geçildi':'Yanlış kaldı'}:</b> ${x.d.prompt}${x.d.explain?` — <i>${x.d.explain}</i>`:''}</div>`).join(''):'<div class="sub">Yanlış kalan veya geçilen görev yok.</div>';
+ const reflectHtml=reflects.map(x=>`<div class="reviewitem"><b>${x.d.prompt}</b><br>${x.t.text.trim()||'(boş bırakıldı)'}</div>`).join('');
+ const reflectSection = reflects.length ? `<h3>Yansıtma Cevapların</h3>${reflectHtml}` : '';
+ const reflectSummary = reflects.length ? `\n\nYansıtma cevapları:\n${reflects.map(x=>`- ${x.d.prompt}\n  ${x.t.text.trim()||'(boş)'}`).join('\n')}` : '';
+ const mk=(nm)=>`Sınıf Rehberlik 4. Sınıf SB.4.1.4 Etkinlik Raporu\nÖğrenci: ${nm||'(isimsiz)'}\nDoğru: ${correct}/${total} (İlk denemede: ${firstTry})\nYanlış deneme sayısı: ${wrongAttempts}\nGeçilen: ${skipped}\nSüre: ${mm} dk ${ss} sn${reflectSummary}`;window.mkSum=mk;const summary=mk(ST.name);
+ return `<h1>Rapor</h1>
+ <div class="card">
+  <div class="statgrid">
+   <div class="stat"><b>${correct}/${total}</b><span>Doğru</span></div>
+   <div class="stat"><b>${firstTry}</b><span>İlk denemede doğru</span></div>
+   <div class="stat"><b>${wrongAttempts}</b><span>Yanlış deneme</span></div>
+   <div class="stat"><b>${skipped}</b><span>Geçilen</span></div>
+   <div class="stat"><b>${mm}:${String(ss).padStart(2,'0')}</b><span>Süre</span></div>
+   <div class="stat"><b>🏅</b><span>Tebrikler!</span></div>
+  </div>
+  ${reflectSection}
+  <h3>Yanlış / Geçilen Görevleri İncele</h3>
+  ${reviewHtml}
+  <h3>Adını Yaz</h3><input type="text" id="nameInput2" placeholder="Adın Soyadın"><h3>Öğretmenine Gönder</h3>
+  <div class="sub">Aşağıdaki metni kopyala ve WhatsApp'tan öğretmenine gönder.</div>
+  <pre id="summaryText">${summary}</pre>
+  <div class="nav"><button class="navbtn" id="copyBtn">Panoya Kopyala</button><button class="navbtn primary" id="replayBtn">Baştan Başla</button></div>
+ </div>`;
+}
+function bind(){
+ const startBtn=document.getElementById('startBtn');
+ if(startBtn) startBtn.onclick=()=>{
+    ST.started=true; ST.start=Date.now(); render();
+ };
+ const prevBtn=document.getElementById('prevBtn');
+ if(prevBtn) prevBtn.onclick=()=>{ if(ST.idx>0){ST.idx--; render();} };
+ const nextBtn=document.getElementById('nextBtn');
+ if(nextBtn) nextBtn.onclick=()=>{ ST.idx++; if(ST.idx>=DATA.length) ST.end=Date.now(); render(); };
+ const skipBtn=document.getElementById('skipBtn');
+ if(skipBtn) skipBtn.onclick=()=>{ const t=T(ST.idx); t.status='skipped'; t.skipped=true; ST.idx++; if(ST.idx>=DATA.length) ST.end=Date.now(); render(); };
+ document.querySelectorAll('button[data-opt]').forEach(b=>b.onclick=()=>{
+  const d=D(ST.idx),t=T(ST.idx); if(t.status==='correct') return;
+  const val=b.getAttribute('data-opt'); t.answer=val; t.attempts++;
+  const isCorrect = d.type==='tf' ? ((val==='true')===d.correct) : (val===d.correct);
+  if(isCorrect){ t.status='correct'; if(t.firstTry===null) t.firstTry=true; }
+  else{ t.status='retry'; t.wrong++; if(t.firstTry===null) t.firstTry=false; }
+  render();
+ });
+ document.querySelectorAll('button[data-l]').forEach(b=>b.onclick=()=>{
+  const t=T(ST.idx); const id=b.getAttribute('data-l'); if(t.matched.has(id)) return; t.sel=id; render();
+ });
+ document.querySelectorAll('button[data-r]').forEach(b=>b.onclick=()=>{
+  const t=T(ST.idx); const id=b.getAttribute('data-r'); if(t.matched.has(id)||!t.sel) return;
+  t.attempts++;
+  if(t.sel===id){ t.matched.add(id); t.sel=null; t.lastWrong=false;
+    if(t.matched.size===D(ST.idx).pairs.length){ t.status='correct'; t.firstTry=t.wrong===0; }
+  } else { t.wrong++; t.sel=null; t.lastWrong=true; }
+  render();
+ });
+ document.querySelectorAll('button[data-item]').forEach(b=>b.onclick=()=>{
+  const t=T(ST.idx); t.selItem=b.getAttribute('data-item'); render();
+ });
+ document.querySelectorAll('.catbtn').forEach(b=>b.onclick=()=>{
+  const d=D(ST.idx),t=T(ST.idx); if(!t.selItem) return;
+  const cat=b.getAttribute('data-cat'); const item=d.items.find(i=>i.id===t.selItem);
+  t.attempts++;
+  if(item.cat===cat){
+   t.placed[cat]=t.placed[cat]||[]; t.placed[cat].push(item.id);
+   t.pool=t.pool.filter(x=>x!==item.id); t.selItem=null; t.lastWrong=false;
+   if(t.pool.length===0){ t.status='correct'; t.firstTry=t.wrong===0; }
+  } else { t.wrong++; t.selItem=null; t.lastWrong=true; }
+  render();
+ });
+ const rb=document.getElementById('reflectBox');
+ if(rb) rb.oninput=(e)=>{ T(ST.idx).text=e.target.value; document.getElementById('nextBtn').disabled = e.target.value.trim().length===0; };
+ const copyBtn=document.getElementById('copyBtn');
+ if(copyBtn) copyBtn.onclick=()=>{
+   const txt=document.getElementById('summaryText').textContent;
+   navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{copyBtn.textContent='Kopyalandı ✓';}).catch(()=>{});
+ };
+ const n2=document.getElementById('nameInput2');
+ if(n2){n2.value=ST.name;n2.oninput=()=>{ST.name=n2.value.trim();document.getElementById('summaryText').textContent=window.mkSum(ST.name);};}
+ const replayBtn=document.getElementById('replayBtn');
+ if(replayBtn) replayBtn.onclick=()=>{ ST=freshState(); render(); };
+}
+const HEART='<svg viewBox="-2 0 68 60"><path d="M32 56C4 36-2 18 12 8 22 2 30 8 32 14 34 8 42 2 52 8 66 18 60 36 32 56Z" fill="#ff6b8b"/><circle cx="23" cy="26" r="3.5" fill="#2b2a4c"/><circle cx="41" cy="26" r="3.5" fill="#2b2a4c"/><path d="M24 35q8 8 16 0" stroke="#2b2a4c" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="17" cy="32" r="3" fill="#ff9db3"/><circle cx="47" cy="32" r="3" fill="#ff9db3"/></svg>';
+function mascotBar(t,d){
+ let c='',m='Dikkatle oku, sen yaparsın!';
+ if(d.type==='reflect') m='Burada doğru ya da yanlış yok. Kendi düşünceni yaz!';
+ else if(t.status==='correct'){c='good';m='Harika, doğru yaptın!';}
+ else if(t.status==='retry'||t.lastWrong){c='bad';m='Olsun, bir daha dene!';}
+ else if(t.status==='skipped') m='Geçtin. İstersen sonra geri dönebilirsin.';
+ return `<div class="mbar ${c}">${HEART}<div class="bubble">${m}</div></div>`;
+}
+let AC=null,SND=false,LK=null,LW=0;
+function beep(k){ if(!AC)return; const n=AC.currentTime; (k==='good'?[660,880]:[220,180]).forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=k==='good'?'sine':'triangle';o.frequency.value=f;g.gain.setValueAtTime(.15,n+i*.12);g.gain.exponentialRampToValueAtTime(.001,n+i*.12+.2);o.connect(g);g.connect(AC.destination);o.start(n+i*.12);o.stop(n+i*.12+.22);}); }
+function sfxCheck(){
+ if(!SND||!ST.started||ST.idx>=DATA.length) return;
+ const t=T(ST.idx), st=t.status+'|'+t.wrong+'|'+ST.idx;
+ if(LK===null){LK=st;LW=t.wrong;return;}
+ if(st===LK) return;
+ const same=LK.split('|')[2]===String(ST.idx); LK=st;
+ if(same){ if(t.wrong>LW) beep('bad'); else if(t.status==='correct') beep('good'); }
+ LW=t.wrong;
+}
+const _r=render; render=function(){_r();sfxCheck();};
+const sb=document.createElement('button'); sb.id='sndBtn'; sb.textContent='🔊 Ses: Kapalı';
+sb.onclick=()=>{ SND=!SND; if(SND&&!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){SND=false;}} LK=null; sb.textContent=SND?'🔊 Ses: Açık':'🔊 Ses: Kapalı'; if(SND) beep('good'); };
+document.body.appendChild(sb);
+
+render();
+</script>
+</body>
+</html>

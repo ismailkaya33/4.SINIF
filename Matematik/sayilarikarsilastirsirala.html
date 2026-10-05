@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sayı Kaşifleri – 4. Sınıf Matematik</title>
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#64748b;
+  --primary:#4f46e5;--secondary:#0ea5e9;--green:#16a34a;--red:#dc2626;
+  --yellow:#f59e0b;--line:#e2e8f0;--shadow:0 10px 30px rgba(15,23,42,.09);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(135deg,#4338ca,#0284c7);color:white;padding:26px 18px}
+.wrap{max-width:1100px;margin:auto}
+h1{margin:0 0 7px;font-size:clamp(27px,4vw,42px)}
+header p{margin:0;opacity:.92;font-size:17px}
+nav{position:sticky;top:0;z-index:5;background:white;border-bottom:1px solid var(--line);box-shadow:0 3px 12px rgba(0,0,0,.05)}
+.navin{max-width:1100px;margin:auto;display:flex;gap:7px;overflow:auto;padding:9px}
+nav button{border:0;background:#eef2ff;color:#3730a3;border-radius:20px;padding:10px 14px;font-weight:700;white-space:nowrap;cursor:pointer}
+nav button.active{background:var(--primary);color:white}
+main{max-width:1100px;margin:22px auto;padding:0 14px}
+.section{display:none}.section.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:var(--shadow)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.badge{display:inline-block;background:#e0f2fe;color:#0369a1;border-radius:999px;padding:6px 10px;font-size:13px;font-weight:700}
+h2{margin-top:0}.big{font-size:clamp(30px,5vw,54px);font-weight:800;letter-spacing:1px}
+.target-digit{
+  display:inline-block;
+  color:#ffffff;
+  background:#e11d48;
+  border:3px solid #9f1239;
+  border-radius:8px;
+  padding:1px 7px;
+  font-weight:900;
+  text-shadow:0 1px 1px rgba(0,0,0,.25);
+  transform:scale(1.08);
+}
+.rule{border-left:5px solid var(--secondary);padding:14px 16px;background:#f0f9ff;border-radius:12px;line-height:1.55}
+.place{display:flex;justify-content:center;gap:0;margin:15px 0;overflow:auto}
+.digit{min-width:62px;text-align:center;border:1px solid var(--line);background:#f8fafc}
+.digit b{display:block;font-size:30px;padding:8px}.digit small{display:block;padding:7px;color:var(--muted);border-top:1px solid var(--line)}
+.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer;background:var(--primary);color:white}
+.btn.alt{background:#e0f2fe;color:#075985}.btn.green{background:var(--green)}.btn.red{background:var(--red)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px}
+.choice{padding:15px;border:2px solid var(--line);background:white;border-radius:13px;font-size:19px;font-weight:700;cursor:pointer}
+.choice:hover{border-color:#818cf8;background:#eef2ff}
+.choice.correct{border-color:var(--green);background:#dcfce7}.choice.wrong{border-color:var(--red);background:#fee2e2}
+.feedback{margin-top:13px;padding:12px;border-radius:12px;font-weight:700;display:none}.feedback.show{display:block}
+.good{background:#dcfce7;color:#166534}.bad{background:#fee2e2;color:#991b1b}
+.statbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.stat{background:#f8fafc;border:1px solid var(--line);padding:10px 13px;border-radius:12px}
+.progress{height:10px;background:#e5e7eb;border-radius:10px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,#4f46e5,#06b6d4);width:0}
+input[type=text],select{padding:12px;border:2px solid var(--line);border-radius:11px;font-size:18px;width:100%;max-width:300px}
+.order-list{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;min-height:52px}
+.numchip{padding:12px 14px;background:#eef2ff;color:#3730a3;border-radius:12px;font-weight:800;cursor:pointer;border:2px solid transparent}
+.numchip.selected{border-color:#4f46e5}
+.numchip.placed{opacity:.4;cursor:default}
+.dropzone{min-height:70px;border:2px dashed #94a3b8;border-radius:14px;padding:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:600px;margin:auto}
+.mem{height:90px;border:0;border-radius:14px;background:#312e81;color:white;font-size:20px;font-weight:800;cursor:pointer}
+.mem.open{background:#eef2ff;color:#172033}.mem.matched{background:#dcfce7;color:#166534}
+.scenario{font-size:18px;line-height:1.55}
+footer{text-align:center;color:var(--muted);padding:25px}
+@media(max-width:600px){.memory-grid{grid-template-columns:repeat(3,1fr)}.digit{min-width:48px}.digit b{font-size:24px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>🔎 Sayı Kaşifleri</h1>
+<p>4. Sınıf Matematik • Sayıları karşılaştırma, sıralama ve basamak değeri</p>
+</div></header>
+
+<nav><div class="navin">
+<button class="tab active" data-tab="kesfet">🧭 Keşfet</button>
+<button class="tab" data-tab="gunluk">🌍 Günlük Hayat</button>
+<button class="tab" data-tab="karsilastir">⚖️ Karşılaştır</button>
+<button class="tab" data-tab="sirala">🏁 Sırala</button>
+<button class="tab" data-tab="basamak">🔬 Basamak Laboratuvarı</button>
+<button class="tab" data-tab="hafiza">🧠 Hafıza</button>
+<button class="tab" data-tab="test">🏆 Büyük Görev</button>
+</div></nav>
+
+<main>
+<section id="kesfet" class="section active">
+<div class="card">
+<span class="badge">ALTIN KURAL</span>
+<h2>Sayıları nasıl karşılaştırırız?</h2>
+<div class="rule"><b>1.</b> Önce basamak sayılarına bak.<br>
+Basamak sayısı fazla olan doğal sayı <b>daha büyüktür.</b><br><br>
+<b>2.</b> Basamak sayıları aynıysa, <b>en büyük basamaktan</b> başlayarak karşılaştır.<br>
+İlk farklı basamakta rakamı büyük olan sayı daha büyüktür.</div>
+</div>
+<div class="card">
+<h2>🔢 Basamak dedektifi</h2>
+<p><b>583 274</b> sayısını inceleyelim:</p>
+<div class="place">
+<div class="digit"><b>5</b><small>Yüz binler<br>500 000</small></div>
+<div class="digit"><b>8</b><small>On binler<br>80 000</small></div>
+<div class="digit"><b>3</b><small>Binler<br>3 000</small></div>
+<div class="digit"><b>2</b><small>Yüzler<br>200</small></div>
+<div class="digit"><b>7</b><small>Onlar<br>70</small></div>
+<div class="digit"><b>4</b><small>Birler<br>4</small></div>
+</div>
+<p><b>Önemli:</b> Aynı basamaktaki rakamları karşılaştırıyoruz. Örneğin 583 274 ile 579 999 karşılaştırılırken yüz binler eşit (5), on binlerde <b>8 > 7</b> olduğu için ilk sayı büyüktür.</p>
+</div>
+<div class="card">
+<h2>⚡ Mini Isınma</h2>
+<p>Hangisi daha büyük?</p><div class="choices" id="warmChoices"></div>
+<div id="warmFb" class="feedback"></div>
+</div>
+</section>
+
+<section id="gunluk" class="section">
+<div class="card">
+<span class="badge">GERÇEK HAYAT GÖREVLERİ</span>
+<h2>🌍 Sayılar hayatın her yerinde</h2>
+<p class="scenario">Bir stadyum, kütüphane, şehir nüfusu, kitap sayısı, oyun puanı veya mağazadaki ürün sayısı… Sayıları karşılaştırmak karar vermemize yardım eder.</p>
+<div id="dailyBox"></div>
+</div>
+</section>
+
+<section id="karsilastir" class="section">
+<div class="card">
+<h2>⚖️ Karşılaştırma Arenası</h2>
+<div class="statbar"><div class="stat">Tur: <b id="cmpN">0</b>/8</div><div class="stat">Doğru: <b id="cmpScore">0</b></div></div>
+<div class="progress"><i id="cmpProg"></i></div>
+<h3 id="cmpQuestion"></h3>
+<div id="cmpChoices" class="choices"></div>
+<div id="cmpFb" class="feedback"></div>
+<button class="btn alt" id="cmpNext" style="margin-top:12px;display:none">Sonraki ⚡</button>
+</div>
+</section>
+
+<section id="sirala" class="section">
+<div class="card">
+<h2>🏁 Sayı Yarışı</h2>
+<p>Sayıları <b>küçükten büyüğe</b> sıralamak için sayılara sırayla dokun.</p>
+<div class="statbar"><div class="stat">Tur: <b id="ordN">0</b>/5</div><div class="stat">Doğru: <b id="ordScore">0</b></div></div>
+<h3 id="ordQuestion"></h3>
+<div id="ordPool" class="order-list"></div>
+<p><b>Sıralaman:</b></p><div id="ordDrop" class="dropzone"></div>
+<div id="ordFb" class="feedback"></div>
+<button class="btn green" id="ordCheck" style="margin-top:12px">Kontrol Et</button>
+<button class="btn alt" id="ordNext" style="margin-top:12px;display:none">Yeni Tur</button>
+</div>
+</section>
+
+<section id="basamak" class="section">
+<div class="card">
+<h2>🔬 Basamak Değeri Laboratuvarı</h2>
+<p>Bir sayıdaki seçilen rakamın <b>basamak değerini</b> bul.</p>
+<div class="big" id="labNum">482 615</div>
+<p>🔎 <b>Renkli gösterilen rakamın</b> basamak değeri nedir? <span class="badge" id="labDigit">8</span></p>
+<div class="choices" id="labChoices"></div>
+<div id="labFb" class="feedback"></div>
+<button class="btn alt" id="labNext" style="margin-top:12px">Yeni sayı</button>
+</div>
+</section>
+
+<section id="hafiza" class="section">
+<div class="card">
+<h2>🧠 Basamak Hafızası</h2>
+<p>Aynı basamak değerine sahip kart çiftlerini bul. Her eşleşme sana bir ipucu kazandırır.</p>
+<div class="statbar"><div class="stat">Hamle: <b id="memMoves">0</b></div><div class="stat">Eşleşme: <b id="memPairs">0</b>/6</div></div>
+<div class="memory-grid" id="memoryGrid"></div>
+<button class="btn alt" id="memRestart" style="margin-top:15px">Yeniden Karıştır</button>
+<div id="memFb" class="feedback"></div>
+</div>
+</section>
+
+<section id="test" class="section">
+<div class="card">
+<span class="badge">SON GÖREV</span>
+<h2>🏆 Büyük Sayı Kaşifi Değerlendirmesi</h2>
+<p>Karşılaştırma, basamak sayısı, basamak değeri ve sıralama becerilerini karışık olarak kullan.</p>
+<div class="statbar"><div class="stat">Soru: <b id="testN">0</b>/10</div><div class="stat">Doğru: <b id="testScore">0</b></div></div>
+<div class="progress"><i id="testProg"></i></div>
+<h3 id="testQ"></h3>
+<div id="testChoices" class="choices"></div>
+<div id="testFb" class="feedback"></div>
+<button class="btn" id="testNext" style="margin-top:12px;display:none">Sonraki Görev</button>
+<div id="finalReport" style="display:none;margin-top:20px"></div>
+</div>
+</section>
+</main>
+<footer>🎯 Amaç: Sayıyı sadece doğru bulmak değil, <b>neden doğru olduğunu açıklayabilmek.</b></footer>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const fmt=n=>Number(n).toLocaleString('tr-TR');
+function shuffle(a){return a.sort(()=>Math.random()-.5)}
+function goToSection(id){
+  $$('.tab').forEach(x=>x.classList.remove('active'));
+  const tab=document.querySelector(`[data-tab="${id}"]`);
+  if(tab) tab.classList.add('active');
+  $$('.section').forEach(x=>x.classList.remove('active'));
+  const section=$('#'+id);
+  if(section) section.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function addContinue(container, label, target){
+  let b=document.createElement('button');
+  b.className='btn green';
+  b.textContent=label+' →';
+  b.style.marginTop='12px';
+  b.onclick=()=>goToSection(target);
+  container.appendChild(b);
+}
+
+function choiceButtons(el,arr,answer,fb,next){
+ el.innerHTML='';
+ shuffle([...arr]).forEach(x=>{
+   let b=document.createElement('button');b.className='choice';b.textContent=x;
+   b.onclick=()=>{
+     if(el.dataset.done)return;
+     el.dataset.done=1;
+     let ok=String(x)===String(answer);
+     b.classList.add(ok?'correct':'wrong');
+     fb.className='feedback show '+(ok?'good':'bad');
+     fb.textContent=ok?'✅ Harika! Doğru düşünme adımını yakaladın.':'❌ Bir daha düşün: önce basamak sayılarını, eşitse soldan sağa ilk farklı basamağı karşılaştır.';
+     if(next)next.style.display='inline-block'
+   };
+   el.appendChild(b)
+ })
+}
+$$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.section').forEach(s=>s.classList.remove('active'));$('#'+b.dataset.tab).classList.add('active')});
+
+// warm-up
+(function initWarmup(){
+ const area=$('#warmChoices'), fb=$('#warmFb');
+ const question=$('#kesfet .card:last-child p');
+ question.textContent='Hangisi daha büyüktür?';
+ const opts=shuffle(['54 210','542 100','5 421']);
+ area.innerHTML='';
+ opts.forEach(text=>{
+   const b=document.createElement('button');
+   b.className='choice';
+   b.textContent=text;
+   b.onclick=()=>{
+     if(area.dataset.done)return;
+     area.dataset.done='1';
+     $$('.choice',area).forEach(x=>x.disabled=true);
+     const ok=text==='542 100';
+     b.classList.add(ok?'correct':'wrong');
+     fb.className='feedback show '+(ok?'good':'bad');
+     fb.textContent=ok
+       ? '✅ Doğru! 542 100, diğerlerinden daha büyüktür.'
+       : '❌ Tekrar düşün: Önce basamak sayılarını karşılaştır.';
+     if(!$('#warmContinue')){
+       const next=document.createElement('button');
+       next.id='warmContinue';
+       next.className='btn green';
+       next.textContent='Günlük Hayata Geç →';
+       next.style.marginTop='12px';
+       next.onclick=()=>goToSection('gunluk');
+       fb.appendChild(next);
+     }
+   };
+   area.appendChild(b);
+ });
+})();
+const warmFb=$('#warmFb');
+const warmContinue=document.createElement('button');
+warmContinue.className='btn green';
+warmContinue.textContent='Devam Et →';
+warmContinue.style.display='none';
+warmContinue.style.marginTop='12px';
+warmContinue.onclick=()=>goToSection('gunluk');
+warmFb.parentNode.appendChild(warmContinue);
+
+// Mini ısınmada cevap verildiğinde devam butonunu göster
+const oldWarmClick=warmChoices=>{
+  warmChoices.addEventListener('click',e=>{
+    if(e.target.classList.contains('choice')){
+      setTimeout(()=>{warmContinue.style.display='inline-block'},80);
+    }
+  });
+};
+oldWarmClick($('#warmChoices'));
+
+// daily scenarios
+const daily=[
+ ['🏫 Ahmet Hocaoğlu İlkokulu – Kitaplık',
+  'Okul kütüphanesine bir yılda 12 450 kitap kaydı yapıldı. Bir sonraki yılın hedefi 13 200 kitap. Hangi sayı daha büyüktür?',
+  '13 200','12 450',
+  '13 200 daha büyüktür. İki sayı da 5 basamaklıdır; on binler basamağı eşit olduğu için binler basamağında 3 > 2 olur.'],
+
+ ['🏫 Ahmet Hocaoğlu İlkokulu – Spor Etkinliği',
+  'Bir okul spor etkinliğinde A takımının puanı 8 750, B takımının puanı 9 120 oldu. Hangi takımın puanı daha yüksektir?',
+  'B takımı','A takımı',
+  '9 120 daha büyüktür. İki sayı da 4 basamaklıdır; binler basamağında 9 > 8 olduğu için B takımının puanı daha fazladır.'],
+
+ ['🌴 Mezitli – Ağaçlandırma',
+  'Mezitli’deki bir ağaçlandırma etkinliğinde bir ekip 24 600, başka bir ekip 24 060 fidan hedefledi. Hangi ekip daha fazla fidan hedeflemiştir?',
+  '24 600','24 060',
+  '24 600 daha büyüktür. On binler ve binler basamağı eşittir. Yüzler basamağında 6 > 0 olduğu için 24 600 daha büyüktür.'],
+
+ ['🌊 Mersin – Sahil Temizliği',
+  'Bir sahil temizliği etkinliğinde pazartesi 18 450 gram, salı 21 300 gram atık toplandı. Hangi gün daha fazla atık toplandı?',
+  'Salı','Pazartesi',
+  '21 300 daha büyüktür. 21 300 beş basamaklı, 18 450 de beş basamaklıdır; on binler basamağında 2 > 1 olduğu için salı günü daha fazladır.'],
+
+ ['🍊 Mersin – Narenciye Kasaları',
+  'Bir depoda 6 850 kasa portakal, başka bir depoda 7 125 kasa portakal bulunuyor. Hangi depoda daha fazla kasa vardır?',
+  '7 125','6 850',
+  '7 125 daha büyüktür. İki sayı da 4 basamaklıdır; binler basamağında 7 > 6 olduğu için 7 125 daha büyüktür.'],
+
+ ['🏫 Ahmet Hocaoğlu İlkokulu – Okuma Hedefi',
+  'Bir sınıfın okuma hedefi 105 000 sayfa, başka bir sınıfın hedefi 99 500 sayfa. Hangi hedef daha büyüktür?',
+  '105 000','99 500',
+  '105 000 daha büyüktür. 105 000 altı basamaklı, 99 500 beş basamaklıdır. Basamak sayısı fazla olan sayı daha büyüktür.']
+];
+let di=0;
+function dailyRender(){
+ let s=daily[di], box=$('#dailyBox');
+ box.innerHTML=`
+   <h3>${s[0]}</h3>
+   <p class="scenario">${s[1]}</p>
+   <div class="choices"></div>
+   <div class="feedback" id="df"></div>`;
+ let choiceArea=$('.choices',box);
+ let options=shuffle([
+   {text:s[2],correct:true},
+   {text:s[3],correct:false}
+ ]);
+ options.forEach(o=>{
+   let b=document.createElement('button');
+   b.className='choice';
+   b.textContent=o.text;
+   b.onclick=()=>{
+     if(choiceArea.dataset.done)return;
+     choiceArea.dataset.done='1';
+     $$('.choice',box).forEach(x=>x.disabled=true);
+     b.classList.add(o.correct?'correct':'wrong');
+     let df=$('#df',box);
+     df.className='feedback show '+(o.correct?'good':'bad');
+     df.textContent=(o.correct?'✅ Doğru. ':'❌ Tekrar düşün. ')+s[4];
+
+     let next=document.createElement('button');
+     next.className='btn green';
+     next.style.marginTop='12px';
+     next.style.marginLeft='8px';
+     if(di<daily.length-1){
+       next.textContent='Sonraki Problem →';
+       next.onclick=()=>{di++;dailyRender();};
+     }else{
+       next.textContent='Karşılaştırma Arenasına Geç →';
+       next.onclick=()=>{di=0;goToSection('karsilastir');};
+     }
+     df.appendChild(next);
+   };
+   choiceArea.appendChild(b);
+ });
+}
+dailyRender();
+
+// comparison
+let cmp={n:0,score:0,items:[]};
+function makeCmp(){
+ let a=Math.floor(Math.random()*900000)+100000,b=Math.floor(Math.random()*900000)+100000;
+ if(Math.random()<.35){a=Math.floor(Math.random()*90000)+10000;b=Math.floor(Math.random()*900000)+100000}
+ let ans=a>b?'>':a<b?'<':'=';
+ return {a,b,ans};
+}
+function cmpRender(){
+ if(cmp.n>=8){
+  $('#cmpQuestion').textContent=`🏁 Karşılaştırma tamamlandı: ${cmp.score}/8 doğru.`;
+  $('#cmpChoices').innerHTML='';
+  $('#cmpFb').className='feedback show good';
+  $('#cmpFb').textContent='Sıradaki görev: Sayıları küçükten büyüğe sıralama.';
+  if(!$('#cmpContinue')){
+    let b=document.createElement('button');b.id='cmpContinue';b.className='btn green';b.textContent='Sıralama Yarışına Geç →';b.style.marginTop='12px';b.onclick=()=>goToSection('sirala');$('#cmpFb').appendChild(b);
+  }
+  return;
+}
+ cmp.n++;let q=makeCmp();cmp.items.push(q);$('#cmpN').textContent=cmp.n;$('#cmpScore').textContent=cmp.score;$('#cmpProg').style.width=(cmp.n-1)/8*100+'%';$('#cmpQuestion').textContent=`${fmt(q.a)}  ?  ${fmt(q.b)}`;
+ let fb=$('#cmpFb'),next=$('#cmpNext');fb.className='feedback';next.style.display='none';$('#cmpChoices').dataset.done='';
+ choiceButtons($('#cmpChoices'),['>','<','='],q.ans,fb,next);
+ next.onclick=cmpRender;
+ let old=cmp.score; next.onclick=()=>{cmpRender()};
+ // score through wrapping click once
+ $('#cmpChoices').onclick=(e)=>{if(e.target.classList.contains('choice') && !e.target.dataset.counted){e.target.dataset.counted=1;if(e.target.textContent===q.ans){cmp.score++;$('#cmpScore').textContent=cmp.score}}}
+}
+cmpRender();
+
+// ordering
+let ord={n:0,score:0,current:[]};
+function ordNew(){
+ if(ord.n>=5){
+  $('#ordQuestion').textContent=`🏁 Sıralama tamamlandı: ${ord.score}/5 doğru.`;
+  $('#ordPool').innerHTML='';$('#ordDrop').innerHTML='';
+  $('#ordCheck').style.display='none';$('#ordNext').style.display='none';
+  let fb=$('#ordFb');fb.className='feedback show good';fb.textContent='Sıradaki görev: Basamak Değeri Laboratuvarı.';
+  if(!$('#ordContinue')){let b=document.createElement('button');b.id='ordContinue';b.className='btn green';b.textContent='Laboratuvara Geç →';b.style.marginLeft='8px';b.onclick=()=>goToSection('basamak');fb.appendChild(b);}
+  return;
+}
+ ord.n++;$('#ordN').textContent=ord.n;$('#ordScore').textContent=ord.score;
+ let base=Math.floor(Math.random()*800000)+100000;
+ let arr=[base,base+Math.floor(Math.random()*7000)+100,Math.floor(base/10),base+Math.floor(Math.random()*20000)+1000];
+ arr=shuffle([...new Set(arr)]);ord.current=arr;$('#ordQuestion').textContent='Bu sayıları küçükten büyüğe sırala.';
+ let pool=$('#ordPool');pool.innerHTML='';$('#ordDrop').innerHTML='';$('#ordFb').className='feedback';$('#ordCheck').style.display='inline-block';$('#ordNext').style.display='none';
+ arr.forEach((n,i)=>{let b=document.createElement('button');b.className='numchip';b.textContent=fmt(n);b.onclick=()=>{if(b.classList.contains('placed'))return;b.classList.add('placed');let c=b.cloneNode(true);c.classList.remove('placed');c.onclick=null;$('#ordDrop').appendChild(c)};pool.appendChild(b)})
+}
+$('#ordCheck').onclick=()=>{
+ let got=[...$('#ordDrop').children].map(x=>Number(x.textContent.replace(/\./g,'')));
+ let correct=[...ord.current].sort((a,b)=>a-b);
+ let ok=got.length===correct.length&&got.every((x,i)=>x===correct[i]);
+ let fb=$('#ordFb');fb.className='feedback show '+(ok?'good':'bad');fb.textContent=ok?'🎉 Sıralama doğru!':'❌ Sıralamayı soldan başlayarak basamak sayısı ve ilk farklı basamak kuralıyla kontrol et.';
+ if(ok)ord.score++;$('#ordScore').textContent=ord.score;$('#ordCheck').style.display='none';$('#ordNext').style.display='inline-block';
+};$('#ordNext').onclick=ordNew;ordNew();
+
+// laboratory
+let labQ, labCount=0, labScore=0;
+function labNew(){
+ if(labCount>=5){
+   $('#labNum').innerHTML='🏁';
+   $('#labDigit').textContent='Tamamlandı';
+   $('#labChoices').innerHTML='';
+   $('#labFb').className='feedback show good';
+   $('#labFb').textContent=`Laboratuvar tamamlandı: ${labScore}/5 doğru. Sıradaki görev Hafıza Oyunu.`;
+   $('#labNext').style.display='none';
+   if(!$('#labContinue')){let b=document.createElement('button');b.id='labContinue';b.className='btn green';b.textContent='Hafıza Oyununa Geç →';b.style.marginLeft='8px';b.onclick=()=>goToSection('hafiza');$('#labFb').appendChild(b);}
+   return;
+ }
+ labCount++;
+ let n=Math.floor(Math.random()*900000)+100000,s=String(n),pos=Math.floor(Math.random()*s.length),digit=s[pos],val=Number(digit)*10**(s.length-pos-1);
+ labQ={n,digit,val,pos};
+ let highlighted=[...s].map((ch,i)=>i===pos?`<span class="target-digit">${ch}</span>`:ch).join('');
+ $('#labNum').innerHTML=highlighted;
+ $('#labDigit').textContent=digit;
+ $('#labChoices').dataset.counted='';
+ let opts=new Set([val,val/10,val*10,Number(digit)]);while(opts.size<4)opts.add(val*Math.floor(Math.random()*5+2));
+ let arr=shuffle([...opts].map(fmt));let fb=$('#labFb');fb.className='feedback';$('#labChoices').dataset.done='';
+ choiceButtons($('#labChoices'),arr,fmt(val),fb,$('#labNext'));
+}$('#labNext').onclick=labNew;
+$('#labChoices').addEventListener('click',e=>{
+  if(!e.target.classList.contains('choice') || $('#labChoices').dataset.counted) return;
+  $('#labChoices').dataset.counted='1';
+  if(String(e.target.textContent)===fmt(labQ.val)) labScore++;
+});
+labNew();
+
+// memory
+const pairs=[['1 000','1000'],['20 000','20000'],['300','300'],['40','40'],['500 000','500000'],['6','6']];
+function memStart(){
+ let cards=[];pairs.forEach((p,i)=>{cards.push({id:i,text:p[0]});cards.push({id:i,text:p[0]})});shuffle(cards);
+ let grid=$('#memoryGrid');grid.innerHTML='';let open=[];let lock=false,moves=0,matched=0;$('#memMoves').textContent=0;$('#memPairs').textContent=0;$('#memFb').className='feedback';
+ cards.forEach((c,i)=>{let b=document.createElement('button');b.className='mem';b.textContent='?';b.dataset.i=i;b.onclick=()=>{if(lock||b.classList.contains('matched')||open.includes(i))return;b.classList.add('open');b.textContent=c.text;open.push(i);if(open.length===2){moves++;$('#memMoves').textContent=moves;let [x,y]=open;if(cards[x].id===cards[y].id){[x,y].forEach(k=>{let q=grid.children[k];q.classList.add('matched')});matched++;$('#memPairs').textContent=matched;open=[];if(matched===pairs.length){
+  $('#memFb').className='feedback show good';
+  $('#memFb').textContent=`🏆 Harika! ${moves} hamlede tüm basamak değerlerini eşleştirdin.`;
+  if(!$('#memContinue')){let n=document.createElement('button');n.id='memContinue';n.className='btn green';n.textContent='Büyük Göreve Geç →';n.style.marginLeft='8px';n.onclick=()=>goToSection('test');$('#memFb').appendChild(n);}
+}}else{lock=true;setTimeout(()=>{[x,y].forEach(k=>{let q=grid.children[k];q.classList.remove('open');q.textContent='?'});open=[];lock=false},700)}}};grid.appendChild(b)})
+}$('#memRestart').onclick=memStart;memStart();
+
+// test
+let test={n:0,score:0,types:{},q:null};
+function testMake(){
+ let type=Math.floor(Math.random()*4);
+ if(type===0){let a=Math.floor(Math.random()*900000)+100000,b=Math.floor(Math.random()*900000)+100000;return {type,q:`${fmt(a)} ile ${fmt(b)} karşılaştırıldığında hangisi doğrudur?`,opts:[`${fmt(a)} > ${fmt(b)}`,`${fmt(a)} < ${fmt(b)}`,`${fmt(a)} = ${fmt(b)}`],ans:a>b?0:a<b?1:2}}
+ if(type===1){let n=Math.floor(Math.random()*900000)+100000,s=String(n),p=Math.floor(Math.random()*s.length),d=s[p],v=Number(d)*10**(s.length-p-1);return {type,q:`${fmt(n)} sayısında ${d} rakamının basamak değeri nedir?`,opts:[fmt(v),fmt(v/10),fmt(v*10),d],ans:0}}
+ if(type===2){let arr=[Math.floor(Math.random()*90000)+10000,Math.floor(Math.random()*900000)+100000,Math.floor(Math.random()*900000)+100000];let sorted=[...arr].sort((a,b)=>a-b);return {type,q:`Hangisi bu sayıların küçükten büyüğe doğru sıralanışıdır?`,opts:[sorted.map(fmt).join(' < '),shuffle([...arr]).map(fmt).join(' < '),[...arr].sort((a,b)=>b-a).map(fmt).join(' < ')],ans:0}}
+ let a=Math.floor(Math.random()*900000)+100000,b=Math.floor(Math.random()*900000)+100000;let big=a>b?a:b;return {type,q:`${fmt(a)} ve ${fmt(b)} sayılarından büyük olan hangisidir?`,opts:[fmt(big),fmt(Math.min(a,b)),fmt(big+1),fmt(big-1)],ans:0}
+}
+function testRender(){
+ if(test.n>=10){$('#testQ').textContent='🎉 Değerlendirme tamamlandı!';$('#testChoices').innerHTML='';$('#testNext').style.display='none';let pct=Math.round(test.score/10*100);let msg=pct>=90?'Mükemmel!':pct>=70?'Çok iyi!':'Biraz daha pratikle güçlenir.';$('#finalReport').style.display='block';$('#finalReport').innerHTML=`<div class="card"><h2>📊 Performans Raporun</h2><p class="big">${test.score}/10</p><p><b>${pct}% başarı</b></p><p>${msg}</p><p>Tekrar etmen gereken temel nokta: <b>Önce basamak sayısı; eşitse soldan sağa ilk farklı basamak.</b></p></div>`;return}
+ test.n++;$('#testN').textContent=test.n;$('#testScore').textContent=test.score;$('#testProg').style.width=(test.n-1)/10*100+'%';test.q=testMake();
+ $('#testQ').textContent=test.q.q;let fb=$('#testFb'),next=$('#testNext');fb.className='feedback';next.style.display='none';$('#testChoices').dataset.done='';
+ let el=$('#testChoices');el.innerHTML='';
+ let testOptions=test.q.opts.map((text,i)=>({text,correct:i===test.q.ans}));
+ shuffle(testOptions).forEach(o=>{
+   let b=document.createElement('button');b.className='choice';b.textContent=o.text;
+   b.onclick=()=>{
+     if(el.dataset.done)return;
+     el.dataset.done=1;
+     b.classList.add(o.correct?'correct':'wrong');
+     if(o.correct)test.score++;
+     $('#testScore').textContent=test.score;
+     fb.className='feedback show '+(o.correct?'good':'bad');
+     fb.textContent=o.correct?'✅ Doğru!':'❌ Kuralı hatırla: önce basamak sayısı, sonra soldan sağa ilk farklı basamak.';
+     next.style.display='inline-block'
+   };
+   el.appendChild(b)
+ });
+ next.onclick=testRender;
+}
+testRender();
+</script>
+</body>
+</html>

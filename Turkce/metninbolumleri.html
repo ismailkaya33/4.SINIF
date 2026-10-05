@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gizemli Kütüphane: Metin Mimarları</title>
+    <style>
+        :root {
+            --bg-dark: #2c1e16;
+            --panel-bg: #fdf5e6;
+            --primary: #8b0000;
+            --secondary: #d2691e;
+            --text-dark: #3e2723;
+            --text-light: #fff8dc;
+            --success: #2e7d32;
+            --error: #c62828;
+            --gold: #daa520;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at center, #4a3320 0%, #1a100b 100%);
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--panel-bg);
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--primary);
+            color: var(--text-light);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--gold);
+            z-index: 10;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats {
+            font-size: 0.95rem;
+            display: flex;
+            gap: 15px;
+            font-weight: bold;
+        }
+
+        .screen {
+            display: none;
+            flex: 1;
+            padding: 30px 20px;
+            animation: fadeIn 0.4s ease;
+            overflow-y: auto;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-top: 0;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .btn {
+            background: var(--secondary);
+            color: white;
+            border: 2px solid var(--gold);
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+            margin: 10px auto;
+            min-width: 200px;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            border-color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Stage 1: Classification */
+        .scroll-box {
+            background: #fff;
+            border: 2px dashed var(--secondary);
+            padding: 25px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-style: italic;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .choice-btn {
+            background: #fff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .choice-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Stage 2: Definitions */
+        .def-box {
+            background: rgba(218, 165, 32, 0.2);
+            border-left: 5px solid var(--gold);
+            padding: 20px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .term-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .term-btn {
+            background: #fff;
+            border: 2px solid var(--secondary);
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--text-dark);
+        }
+
+        /* Stage 3 & 4: Sequencing */
+        .sequence-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .sequence-card {
+            background: #fff;
+            border: 2px solid #ccc;
+            padding: 15px 15px 15px 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .sequence-card:hover {
+            border-color: var(--secondary);
+        }
+
+        .sequence-card.selected {
+            border-color: var(--primary);
+            background: rgba(139, 0, 0, 0.05);
+        }
+
+        .seq-badge {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ccc;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .sequence-card.selected .seq-badge {
+            background: var(--primary);
+        }
+
+        /* Toast & Report */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--success);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #toast.error {
+            background: var(--error);
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .report-card {
+            background: rgba(218, 165, 32, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--gold);
+        }
+
+        .report-val {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            .term-grid { grid-template-columns: 1fr 1fr; }
+            .choice-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <header>
+        <div class="header-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            Gizemli Kütüphane
+        </div>
+        <div class="stats">
+            <div>Görev: <span id="task-counter">0/18</span></div>
+            <div>Hata: <span id="mistake-counter" style="color: #ffcccc">0</span></div>
+        </div>
+    </header>
+
+    <!-- INTRO SCREEN -->
+    <div id="screen-intro" class="screen active">
+        <h1>Kayıp Metinlerin Sırrı</h1>
+        <p>Merhaba genç mimar! Kütüphanemizdeki eski parşömenlerin yapıları birbirine karıştı. Metinleri oluşturan ögeler yer değiştirmiş durumda.</p>
+        <p>Hikâye edici ve bilgilendirici metinleri birbirinden ayırmalı, giriş, gelişme, sonuç, serim, düğüm ve çözüm bölümlerini ait oldukları yerlere yerleştirmelisin.</p>
+        <p>Kütüphanenin sırrını çözmeye hazır mısın?</p>
+        <button class="btn" onclick="game.startStage1()">Maceraya Başla</button>
+    </div>
+
+    <!-- STAGE 1: CLASSIFICATION -->
+    <div id="screen-stage1" class="screen">
+        <h2>Bölüm 1: Metin Türünü Belirle</h2>
+        <p>Aşağıdaki parçayı oku. Bu metin sence <strong>Hikâye Edici</strong> mi yoksa <strong>Bilgilendirici</strong> mi?</p>
+        
+        <div class="scroll-box" id="s1-text">Yükleniyor...</div>
+        
+        <div class="choice-grid">
+            <button class="choice-btn" onclick="game.checkStage1('hikaye')">Hikâye Edici Metin</button>
+            <button class="choice-btn" onclick="game.checkStage1('bilgi')">Bilgilendirici Metin</button>
+        </div>
+    </div>
+
+    <!-- STAGE 2: DEFINITIONS -->
+    <div id="screen-stage2" class="screen">
+        <h2>Bölüm 2: Ögeleri Tanı</h2>
+        <p>Büyük kütüphane kapısını açmak için metinlerin yapı taşlarını doğru tanımlamalısın. Aşağıdaki tanım hangi bölüme aittir?</p>
+        
+        <div class="def-box" id="s2-def">Yükleniyor...</div>
+        
+        <div class="term-grid">
+            <button class="term-btn" onclick="game.checkStage2('Giriş')">Giriş</button>
+            <button class="term-btn" onclick="game.checkStage2('Gelişme')">Gelişme</button>
+            <button class="term-btn" onclick="game.checkStage2('Sonuç')">Sonuç</button>
+            <button class="term-btn" onclick="game.checkStage2('Serim')">Serim</button>
+            <button class="term-btn" onclick="game.checkStage2('Düğüm')">Düğüm</button>
+            <button class="term-btn" onclick="game.checkStage2('Çözüm')">Çözüm</button>
+        </div>
+    </div>
+
+    <!-- STAGE 3: NARRATIVE SEQUENCING -->
+    <div id="screen-stage3" class="screen">
+        <h2>Bölüm 3: Hikâyeyi İnşa Et</h2>
+        <p>Bir hikâye edici metin <strong>Serim -> Düğüm -> Çözüm</strong> sırasıyla ilerler. Aşağıdaki paragraflara okuma sırasına göre tıkla (1, 2, 3).</p>
+        
+        <div class="sequence-container" id="s3-container">
+            <!-- Cards injected via JS -->
+        </div>
+        
+        <button class="btn" id="s3-btn" onclick="game.checkStage3()" disabled>Sıralamayı Kontrol Et</button>
+    </div>
+
+    <!-- STAGE 4: INFORMATIVE SEQUENCING -->
+    <div id="screen-stage4" class="screen">
+        <h2>Bölüm 4: Bilgiyi İnşa Et</h2>
+        <p>Bir bilgilendirici metin <strong>Giriş -> Gelişme -> Sonuç</strong> sırasıyla ilerler. Aşağıdaki paragraflara okuma sırasına göre tıkla (1, 2, 3).</p>
+        
+        <div class="sequence-container" id="s4-container">
+            <!-- Cards injected via JS -->
+        </div>
+        
+        <button class="btn" id="s4-btn" onclick="game.checkStage4()" disabled>Sıralamayı Kontrol Et</button>
+    </div>
+
+    <!-- REPORT SCREEN -->
+    <div id="screen-report" class="screen">
+        <h2>Kütüphane Kurtarıldı!</h2>
+        <p>Tebrikler Metin Mimarı! Hikâye edici ve bilgilendirici metinlerin yapısını mükemmel bir şekilde analiz ettin ve kütüphanenin düzenini sağladın.</p>
+        
+        <div class="report-grid">
+            <div class="report-card">
+                <div>Tamamlanan Görev</div>
+                <div class="report-val" id="r-tasks">18</div>
+            </div>
+            <div class="report-card">
+                <div>Yapılan Hata</div>
+                <div class="report-val" id="r-mistakes" style="color: var(--error)">0</div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="game.reset()">Yeniden Oyna</button>
+    </div>
+
+</div>
+
+<div id="toast">Harika!</div>
+
+<script>
+class MetinOyunu {
+    constructor() {
+        this.tasksCompleted = 0;
+        this.totalTasks = 18;
+        this.mistakes = 0;
+
+        // --- STAGE 1 DATA ---
+        this.s1Data = [
+            { text: "Güneş, dünyamızı ısıtan ve aydınlatan orta büyüklükte bir yıldızdır.", type: "bilgi" },
+            { text: "Küçük Ali, ormanda yürürken aniden karşısına konuşan bir tavşan çıktı.", type: "hikaye" },
+            { text: "Su, tüm canlılar için temel bir yaşam kaynağıdır. Vücudumuzun büyük bir kısmı sudan oluşur.", type: "bilgi" },
+            { text: "Keloğlan, annesinden izin alıp yollara düşmüş. Az gitmiş uz gitmiş...", type: "hikaye" },
+            { text: "Ülkemizde dört mevsim belirgin olarak yaşanır. Her mevsimin kendine özgü meyveleri vardır.", type: "bilgi" },
+            { text: "Karagöz ile Hacivat perdeye gelir ve atışmaya başlarlar. Herkes gülmekten kırılır.", type: "hikaye" }
+        ];
+        this.s1Index = 0;
+
+        // --- STAGE 2 DATA ---
+        this.s2Data = [
+            { def: "Hikâyede olayların başladığı, kişilerin ve yerin tanıtıldığı ilk bölümdür.", ans: "Serim" },
+            { def: "Bilgilendirici metinlerde konuya giriş yapılan, okuyucunun konuya hazırlandığı ilk bölümdür.", ans: "Giriş" },
+            { def: "Hikâyede olayların karıştığı, heyecanın en yüksek noktaya ulaştığı bölümdür.", ans: "Düğüm" },
+            { def: "Bilgilendirici metinlerde konunun detaylandırıldığı, örneklerin verildiği orta bölümdür.", ans: "Gelişme" },
+            { def: "Hikâyedeki olayların bir sonuca bağlandığı, düğümlerin çözüldüğü son bölümdür.", ans: "Çözüm" },
+            { def: "Bilgilendirici metinlerde anlatılanların özetlendiği ve bir karara bağlandığı son bölümdür.", ans: "Sonuç" }
+        ];
+        this.s2Index = 0;
+
+        // --- STAGE 3 DATA (Narrative) ---
+        this.s3Paragraphs = [
+            { text: "Küçük kaplan Leo, sabah uyandığında ormanın derinliklerinde garip bir ses duydu. Merakla sesin geldiği yöne doğru yürüdü.", type: "serim", id: "s3-1" },
+            { text: "Sesin kaynağına ulaştığında, yavru bir filin çamura saplandığını gördü. Leo onu kurtarmak için dalları kullandı ama kendi de kayıp çamura düştü. İkisi de kurtulmak için çabalamaya başladılar.", type: "düğüm", id: "s3-2" },
+            { text: "O sırada oradan geçen anne fil, ikisini de hortumuyla çekerek kurtardı. Leo ve yavru fil birbirlerine sarılarak çok iyi arkadaş oldular.", type: "çözüm", id: "s3-3" }
+        ];
+        this.s3Order = [];
+
+        // --- STAGE 4 DATA (Informative) ---
+        this.s4Paragraphs = [
+            { text: "Arılar, doğanın en çalışkan ve en faydalı canlılarından biridir. Çiçeklerden topladıkları nektarlarla bal üretirler.", type: "giriş", id: "s4-1" },
+            { text: "Bir arı kovanında binlerce işçi arı görev yapar. Topladıkları nektarları peteklere yerleştirirler. Bu süreçte sadece bal yapmakla kalmaz, bitkilerin tozlaşmasını sağlayarak doğanın dengesini korurlar.", type: "gelişme", id: "s4-2" },
+            { text: "Kısacası arılar, hem sofralarımıza lezzetli bal sunar hem de dünyadaki yaşamın devamlılığı için vazgeçilmez bir rol oynarlar. Bu yüzden onları korumalıyız.", type: "sonuç", id: "s4-3" }
+        ];
+        this.s4Order = [];
+
+        // DOM Caching
+        this.screens = document.querySelectorAll('.screen');
+        this.toastEl = document.getElementById('toast');
+    }
+
+    updateStats() {
+        document.getElementById('task-counter').innerText = `${this.tasksCompleted}/${this.totalTasks}`;
+        document.getElementById('mistake-counter').innerText = this.mistakes;
+    }
+
+    showToast(msg, isError = false) {
+        this.toastEl.innerText = msg;
+        this.toastEl.className = isError ? 'error show' : 'show';
+        setTimeout(() => {
+            this.toastEl.classList.remove('show');
+        }, 1500);
+    }
+
+    switchScreen(id) {
+        this.screens.forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    shuffleArray(array) {
+        let curId = array.length, temp, randId;
+        while (0 !== curId) {
+            randId = Math.floor(Math.random() * curId);
+            curId -= 1;
+            temp = array[curId];
+            array[curId] = array[randId];
+            array[randId] = temp;
+        }
+        return array;
+    }
+
+    // --- STAGE 1 ---
+    startStage1() {
+        this.switchScreen('screen-stage1');
+        this.renderStage1();
+    }
+
+    renderStage1() {
+        if(this.s1Index >= this.s1Data.length) {
+            this.startStage2();
+            return;
+        }
+        document.getElementById('s1-text').innerText = `"${this.s1Data[this.s1Index].text}"`;
+    }
+
+    checkStage1(answer) {
+        if(answer === this.s1Data[this.s1Index].type) {
+            this.showToast("Doğru tespit!");
+            this.tasksCompleted++;
+            this.s1Index++;
+            this.updateStats();
+            this.renderStage1();
+        } else {
+            this.mistakes++;
+            this.updateStats();
+            this.showToast("Yanlış! Tekrar düşün.", true);
+        }
+    }
+
+    // --- STAGE 2 ---
+    startStage2() {
+        this.switchScreen('screen-stage2');
+        this.renderStage2();
+    }
+
+    renderStage2() {
+        if(this.s2Index >= this.s2Data.length) {
+            this.startStage3();
+            return;
+        }
+        document.getElementById('s2-def').innerText = this.s2Data[this.s2Index].def;
+    }
+
+    checkStage2(answer) {
+        if(answer === this.s2Data[this.s2Index].ans) {
+            this.showToast("Öge başarıyla eşleşti!");
+            this.tasksCompleted++;
+            this.s2Index++;
+            this.updateStats();
+            this.renderStage2();
+        } else {
+            this.mistakes++;
+            this.updateStats();
+            this.showToast("Hatalı öge seçimi!", true);
+        }
+    }
+
+    // --- STAGE 3 ---
+    startStage3() {
+        this.switchScreen('screen-stage3');
+        this.s3Order = [];
+        let container = document.getElementById('s3-container');
+        container.innerHTML = "";
+        
+        let shuffled = this.shuffleArray([...this.s3Paragraphs]);
+        
+        shuffled.forEach(p => {
+            let div = document.createElement('div');
+            div.className = "sequence-card";
+            div.id = p.id;
+            div.innerHTML = `<div class="seq-badge"></div>${p.text}`;
+            div.onclick = () => this.toggleS3Card(p.id);
+            container.appendChild(div);
+        });
+        this.updateS3UI();
+    }
+
+    toggleS3Card(id) {
+        let index = this.s3Order.indexOf(id);
+        if(index > -1) {
+            // Deselect
+            this.s3Order.splice(index, 1);
+        } else {
+            // Select if less than 3
+            if(this.s3Order.length < 3) {
+                this.s3Order.push(id);
+            }
+        }
+        this.updateS3UI();
+    }
+
+    updateS3UI() {
+        document.querySelectorAll('#s3-container .sequence-card').forEach(card => {
+            card.classList.remove('selected');
+            card.querySelector('.seq-badge').innerText = "";
+        });
+
+        this.s3Order.forEach((id, index) => {
+            let card = document.getElementById(id);
+            card.classList.add('selected');
+            card.querySelector('.seq-badge').innerText = index + 1;
+        });
+
+        document.getElementById('s3-btn').disabled = this.s3Order.length !== 3;
+    }
+
+    checkStage3() {
+        let correctOrder = ["s3-1", "s3-2", "s3-3"]; // Serim, Düğüm, Çözüm
+        let isCorrect = this.s3Order.every((val, index) => val === correctOrder[index]);
+
+        if(isCorrect) {
+            this.showToast("Hikâye harika bir sıraya girdi!");
+            this.tasksCompleted += 3;
+            this.updateStats();
+            setTimeout(() => this.startStage4(), 1000);
+        } else {
+            this.mistakes++;
+            this.updateStats();
+            this.s3Order = [];
+            this.updateS3UI();
+            this.showToast("Sıralama hatalı. Baştan dene! (İpucu: Serim->Düğüm->Çözüm)", true);
+        }
+    }
+
+    // --- STAGE 4 ---
+    startStage4() {
+        this.switchScreen('screen-stage4');
+        this.s4Order = [];
+        let container = document.getElementById('s4-container');
+        container.innerHTML = "";
+        
+        let shuffled = this.shuffleArray([...this.s4Paragraphs]);
+        
+        shuffled.forEach(p => {
+            let div = document.createElement('div');
+            div.className = "sequence-card";
+            div.id = p.id;
+            div.innerHTML = `<div class="seq-badge"></div>${p.text}`;
+            div.onclick = () => this.toggleS4Card(p.id);
+            container.appendChild(div);
+        });
+        this.updateS4UI();
+    }
+
+    toggleS4Card(id) {
+        let index = this.s4Order.indexOf(id);
+        if(index > -1) {
+            this.s4Order.splice(index, 1);
+        } else {
+            if(this.s4Order.length < 3) {
+                this.s4Order.push(id);
+            }
+        }
+        this.updateS4UI();
+    }
+
+    updateS4UI() {
+        document.querySelectorAll('#s4-container .sequence-card').forEach(card => {
+            card.classList.remove('selected');
+            card.querySelector('.seq-badge').innerText = "";
+        });
+
+        this.s4Order.forEach((id, index) => {
+            let card = document.getElementById(id);
+            card.classList.add('selected');
+            card.querySelector('.seq-badge').innerText = index + 1;
+        });
+
+        document.getElementById('s4-btn').disabled = this.s4Order.length !== 3;
+    }
+
+    checkStage4() {
+        let correctOrder = ["s4-1", "s4-2", "s4-3"]; // Giriş, Gelişme, Sonuç
+        let isCorrect = this.s4Order.every((val, index) => val === correctOrder[index]);
+
+        if(isCorrect) {
+            this.showToast("Bilgilendirici metin başarıyla sıralandı!");
+            this.tasksCompleted += 3;
+            this.updateStats();
+            setTimeout(() => this.showReport(), 1000);
+        } else {
+            this.mistakes++;
+            this.updateStats();
+            this.s4Order = [];
+            this.updateS4UI();
+            this.showToast("Sıralama hatalı. Baştan dene! (İpucu: Giriş->Gelişme->Sonuç)", true);
+        }
+    }
+
+    // --- REPORT ---
+    showReport() {
+        this.switchScreen('screen-report');
+        document.getElementById('r-tasks').innerText = this.tasksCompleted;
+        document.getElementById('r-mistakes').innerText = this.mistakes;
+    }
+
+    reset() {
+        this.tasksCompleted = 0;
+        this.mistakes = 0;
+        this.s1Index = 0;
+        this.s2Index = 0;
+        this.updateStats();
+        this.switchScreen('screen-intro');
+    }
+}
+
+const game = new MetinOyunu();
+</script>
+
+</body>
+</html>

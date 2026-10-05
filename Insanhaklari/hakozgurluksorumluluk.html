@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>İnsan Hakları – Hak, Özgürlük ve Sorumluluklarımız</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f9fd;color:#182b3c;font-family:Arial,Helvetica,sans-serif}
+.app{max-width:1000px;margin:auto;padding:14px}
+header{background:#fff;border:2px solid #b9d9ef;border-radius:22px;padding:18px;margin-bottom:12px}
+h1{margin:0;font-size:clamp(25px,4vw,40px);color:#d92845}
+.subtitle{font-weight:700;margin-top:5px}
+.info{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.info div{background:#eef7ff;border-radius:12px;padding:9px;text-align:center}
+.info b{display:block;font-size:20px;margin-top:3px}
+.progress{height:10px;background:#e1e8ee;border-radius:10px;margin-top:12px;overflow:hidden}
+.progress span{display:block;height:100%;background:#2477d4;width:0}
+.card{background:white;border:2px solid #d6e3ed;border-radius:20px;padding:20px;box-shadow:0 5px 20px rgba(25,55,80,.08)}
+.badge{display:inline-block;background:#e8f3ff;color:#145da7;border-radius:20px;padding:6px 11px;font-weight:800}
+h2{font-size:23px;line-height:1.3;margin:12px 0}
+.instruction{color:#506679;margin-bottom:15px}
+.options{display:grid;gap:10px}
+button{font:inherit;color:#182b3c}
+.option,.nav button,.hintbtn,.restart,.reviewbtn,.cardbtn{border:2px solid #cbd9e4;border-radius:13px;padding:13px;background:#fff;color:#182b3c!important;cursor:pointer;min-height:52px}
+.option{text-align:left;font-weight:700;color:#182b3c!important;background:#ffffff!important}
+.option:hover{border-color:#2477d4;background:#f2f8ff!important;color:#182b3c!important}
+.option:disabled{cursor:default;opacity:.8;color:#182b3c!important;background:#eef2f6!important}
+.feedback{margin-top:14px;padding:13px;border-radius:13px;font-weight:700;line-height:1.45}
+.good{background:#eaf8ef;border:1px solid #91d0a5;color:#14652c}
+.bad{background:#fff0ef;border:1px solid #e9aaa4;color:#a51e17}
+.hint{background:#fff8dc;border:1px solid #e9d06a;color:#6b5500}
+.nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+.prev{background:#eef2f6!important}.next{background:#e4f7e9!important}.skip{background:#fff2d7!important}
+.hintbtn{width:100%;margin-top:9px;background:#fff8dc}
+input,textarea{width:100%;font:inherit;font-size:17px;padding:12px;border:2px solid #cbd9e4;border-radius:12px}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match button{width:100%;margin-bottom:8px;text-align:left}
+.selected{outline:3px solid #2477d4;background:#dceeff!important;color:#102a43!important}
+.sort{display:flex;flex-wrap:wrap;gap:8px}
+.sort button{min-width:170px}
+.boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.box{border:2px dashed #b8cbd9;border-radius:15px;min-height:125px;padding:10px}
+.box h3{margin:0 0 8px}
+.smallcard{display:block;width:100%;margin:5px 0;padding:9px;border:1px solid #cbd9e4;border-radius:9px;background:white;cursor:pointer}
+.reviewItem{border:1px solid #d5e1e9;border-radius:14px;padding:12px;margin-top:10px}
+.report{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.report div{background:#eef7ff;border-radius:12px;padding:12px;text-align:center}
+.report b{display:block;font-size:21px;margin-top:5px}
+.primary{width:100%;background:#2477d4;color:#fff;border:0;border-radius:13px;padding:14px;font-weight:800;cursor:pointer;margin-top:10px}
+@media(max-width:700px){
+ .info,.report{grid-template-columns:repeat(2,1fr)}
+ .nav,.match,.boxes{grid-template-columns:1fr}
+ .app{padding:8px}.card{padding:14px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<h1>İNSAN HAKLARI</h1>
+<div class="subtitle">Hak, Özgürlük ve Sorumluluklarımız • 4. Sınıf</div>
+<div class="info">
+<div>Görev<b id="taskCounter">1 / 15</b></div>
+<div>Puan<b id="score">0</b></div>
+<div>Yanlış<b id="wrong">0</b></div>
+<div>İpucu<b id="hints">0</b></div>
+</div>
+<div class="progress"><span id="progress"></span></div>
+</header>
+<main id="screen"></main>
+</div>
+
+<script>
+"use strict";
+
+const TASKS = [
+{id:"q1",kind:"choice",stage:"1 • Tanıma",title:"Aşağıdakilerden hangisi bir çocuğun temel haklarından biridir?",instruction:"Doğru seçeneğe dokun.",options:["Eğitim görmek","Arkadaşının eşyasını izinsiz almak","Başkalarına zarar vermek","Kuralları istediğin gibi değiştirmek"],answer:"Eğitim görmek",explain:"Eğitim görmek çocukların temel haklarından biridir.",hint:"Okul ve öğrenme ile ilgilidir."},
+{id:"q2",kind:"match",stage:"1 • Tanıma",title:"Kavramları uygun açıklamalarla eşleştir.",instruction:"Soldan bir kavram, sonra sağdan uygun açıklama seç.",left:[["a","Hak"],["b","Özgürlük"],["c","Sorumluluk"]],right:[["1","Sahip olduğumuz ve kullanabileceğimiz yetkiler"],["2","Başkalarına zarar vermeden seçim yapabilme"],["3","Üzerimize düşen görevleri yerine getirme"]],answer:{a:"1",b:"2",c:"3"},explain:"Hak yetkidir, özgürlük başkalarına zarar vermeden seçim yapabilmektir, sorumluluk ise görevleri yerine getirmektir.",hint:"Yetki • seçim • görev anahtar kelimelerini düşün."},
+{id:"q3",kind:"tf",stage:"1 • Tanıma",title:"“Özgürlük, istediğimiz her şeyi başkalarına zarar vererek yapabilmektir.”",instruction:"Doğruysa D, yanlışsa Y seç.",options:["D","Y"],answer:"Y",explain:"Özgürlük başkalarının haklarına zarar vermeden kullanılmalıdır.",hint:"Özgürlüğün bir sınırı var mı?"},
+{id:"q4",kind:"classify",stage:"2 • Uygulama",title:"Örnekleri Hak, Özgürlük ve Sorumluluk başlıklarına yerleştir.",instruction:"Önce kartı seç, sonra hedef kutuya dokun.",cards:[["a","Eğitim görmek"],["b","Düşüncesini saygılı biçimde söylemek"],["c","Derslerine çalışmak"],["d","Sınıfı temiz tutmak"],["e","Oyun oynamak"],["f","Arkadaşının düşüncesini dinlemek"]],buckets:["Hak","Özgürlük","Sorumluluk"],answer:{a:"Hak",b:"Özgürlük",c:"Sorumluluk",d:"Sorumluluk",e:"Hak",f:"Sorumluluk"},explain:"Haklarımızdan yararlanırken özgürlüklerimizi başkalarının haklarına saygılı kullanmalı ve sorumluluklarımızı yerine getirmeliyiz.",hint:"Görev bildiren davranışlar sorumlulukla ilgilidir."},
+{id:"q5",kind:"choice",stage:"2 • Uygulama",title:"Ayşe sınıfta konuşurken arkadaşlarının sözünü sürekli kesiyor. En uygun davranış hangisidir?",instruction:"Hak ve sorumluluk dengesini düşün.",options:["Ayşe istediğini yapabilir, kimseyi dinlemesine gerek yok.","Ayşe düşüncesini ifade edebilir; fakat başkalarının konuşma hakkına da saygı göstermelidir.","Ayşe'nin konuşma hakkı yoktur.","Arkadaşları Ayşe'yi hiç dinlememelidir."],answer:"Ayşe düşüncesini ifade edebilir; fakat başkalarının konuşma hakkına da saygı göstermelidir.",explain:"Düşünceyi ifade etmek bir haktır. Bu hakkı kullanırken başkalarının haklarına saygı göstermek gerekir.",hint:"Kendi hakkını ve arkadaşlarının hakkını birlikte düşün."},
+{id:"q6",kind:"sort",stage:"2 • Uygulama",title:"Görev ve eğlenceyi uygun sıraya koy.",instruction:"Kartlara sırayla dokun. Önce sorumluluklar, sonra eğlence.",items:["Ödevimi yapmak","Çantamı hazırlamak","Kitap okumak","Oyun oynamak"],answer:["Ödevimi yapmak","Çantamı hazırlamak","Kitap okumak","Oyun oynamak"],explain:"Sorumlulukları zamanında yerine getirmek günlük yaşamı düzenler.",hint:"Önce yapılması gereken görevleri düşün."},
+{id:"q7",kind:"choice",stage:"3 • Analiz",title:"Mert hastaneye gidiyor ve sağlık hizmetinden yararlanıyor. Bu durum hangi hakla ilgilidir?",instruction:"Uygun hakkı seç.",options:["Sağlık hakkı","Oyun ve dinlenme hakkı","Barınma hakkı","Düşünce ve ifade özgürlüğü"],answer:"Sağlık hakkı",explain:"Hastaneden sağlık hizmeti almak sağlık hakkıyla ilgilidir.",hint:"Doktor ve hastane kelimelerini düşün."},
+{id:"q8",kind:"tf",stage:"3 • Analiz",title:"“Haklarımızı kullanırken başkalarının haklarına saygı göstermeliyiz.”",instruction:"D veya Y seç.",options:["D","Y"],answer:"D",explain:"Hak ve özgürlükler başkalarının haklarına zarar vermeden kullanılmalıdır.",hint:"Hakların yanında saygı da olmalı."},
+{id:"q9",kind:"text",stage:"3 • Analiz",title:"Bir öğrencinin okul eşyalarını koruması hangi sorumluluğa örnektir?",instruction:"Kısa bir cevap yazıp Gönder'e bas.",answer:["Okul eşyalarını korumak","Okul eşyalarını koruma","Eşyaları korumak"],explain:"Okul eşyalarını korumak öğrencinin sorumluluklarından biridir.",hint:"Cevabında “eşyaları korumak” anlamı bulunmalı."},
+{id:"q10",kind:"choice",stage:"3 • Analiz",title:"Hangisi özgürlüğün doğru kullanımına örnektir?",instruction:"Başkalarının haklarını da düşün.",options:["Arkadaşının eşyasını izinsiz almak","Düşünceni saygılı biçimde ifade etmek","Birine hakaret etmek","Sınıfın düzenini bozmak"],answer:"Düşünceni saygılı biçimde ifade etmek",explain:"Özgürlük, başkalarının haklarına zarar vermeden düşünce ve seçimlerimizi ifade edebilmektir.",hint:"Saygılı davranışı bul."},
+{id:"q11",kind:"match",stage:"4 • Çıkarım",title:"Hak ile günlük yaşam örneğini eşleştir.",instruction:"Soldaki hakkı sağdaki örnekle eşleştir.",left:[["a","Eğitim hakkı"],["b","Sağlık hakkı"],["c","Oyun ve dinlenme hakkı"],["d","Düşünce ve ifade özgürlüğü"]],right:[["1","Doktordan sağlık hizmeti almak"],["2","Düşünceni saygılı biçimde söylemek"],["3","Okula gidip öğrenmek"],["4","Dinlenmek ve oyun oynamak"]],answer:{a:"3",b:"1",c:"4",d:"2"},explain:"Haklar günlük yaşamda somut davranışlarla karşımıza çıkar.",hint:"Okul • doktor • oyun • düşünce anahtarlarını kullan."},
+{id:"q12",kind:"choice",stage:"4 • Çıkarım",title:"Deniz, teneffüste oyun oynarken arkadaşının da oyuna katılmak istediğini görüyor. En uygun davranış hangisidir?",instruction:"Hakların birlikte kullanılabileceği çözümü seç.",options:["Arkadaşını oyundan uzaklaştırmak","Arkadaşının katılmasına uygun bir çözüm bulmak ve birlikte oynamak","Oyunu bırakıp herkese kızmak","Arkadaşının isteğini yok saymak"],answer:"Arkadaşının katılmasına uygun bir çözüm bulmak ve birlikte oynamak",explain:"Kendi oyun hakkımızı kullanırken başkalarının da haklarını gözetmeliyiz.",hint:"İki tarafın hakkını da koruyan seçeneği ara."},
+{id:"q13",kind:"text",stage:"4 • Çıkarım",title:"Sınıfını temiz tutmak neden bir sorumluluktur?",instruction:"Bir cümleyle açıkla.",answer:["Ortak yaşam alanını korumak","Sınıfı temiz tutmak","Ortak alanı korumak","Çevreyi temiz tutmak"],explain:"Sınıf ortak kullanılan bir alandır. Temiz tutmak hem görevimizi yapmak hem de başkalarına saygı göstermektir.",hint:"Ortak alan ve başkalarına saygı ifadelerini düşün."},
+{id:"q14",kind:"choice",stage:"5 • Transfer",title:"Hangi öğrenci hak, özgürlük ve sorumluluk dengesini en iyi kuruyor?",instruction:"En uygun örneği seç.",options:["Efe, arkadaşının sözünü sürekli kesiyor: “Düşüncemi söylemek benim hakkım.”","Deniz, teneffüste arkadaşlarının da oyun hakkı olduğunu düşünerek oyuna katılmalarını sağlıyor.","Can, sınıf eşyalarına zarar veriyor: “Burası benim sınıfım.”","Ela, arkadaşının kitabını izinsiz alıyor: “Özgürüm, istediğimi yaparım.”"],answer:"Deniz, teneffüste arkadaşlarının da oyun hakkı olduğunu düşünerek oyuna katılmalarını sağlıyor.",explain:"Deniz kendi hakkını kullanırken arkadaşlarının hakkını da gözetiyor.",hint:"Kendi hakkını kullanırken başkasının hakkını da koruyan seçeneği bul."},
+{id:"q15",kind:"final",stage:"5 • Transfer",title:"FİNAL: Sınıfta herkesin düşüncesini söyleyebildiği ama kimsenin birbirinin sözünü kesmediği bir ortam için iki kural yaz.",instruction:"İki kısa kural yaz. Sonra Gönder'e bas.",answer:["söz hakkı verildiğinde konuşmak","konuşan kişiyi dinlemek"],explain:"İfade özgürlüğünü kullanırken başkalarının da konuşma ve dinlenilme hakkına saygı göstermek gerekir.",hint:"Bir kural konuşmak, bir kural dinlemekle ilgili olabilir."}
+];
+
+const state={
+ index:0,score:0,wrong:0,hints:0,skipped:0,startedAt:Date.now(),
+ results:TASKS.map(function(t){return {status:"pending",answer:null,attempts:0,firstTry:false,hintUsed:false,firstWrong:null,rewardGranted:false};})
+};
+
+function norm(v){
+ return String(v||"").toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[“”„‟"’‘`´]/g,"'").replace(/\\s+/g," ").trim();
+}
+function esc(v){
+ return String(v??"").replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});
+}
+function current(){return TASKS[state.index]}
+function result(){return state.results[state.index]}
+function render(){
+ const t=current(),r=result();
+ document.getElementById("taskCounter").textContent=(state.index+1)+" / "+TASKS.length;
+ document.getElementById("score").textContent=state.score;
+ document.getElementById("wrong").textContent=state.wrong;
+ document.getElementById("hints").textContent=state.hints;
+ document.getElementById("progress").style.width=(state.index/TASKS.length*100)+"%";
+ if(r.status==="success"){renderCompleted(t,r);return;}
+ let body="";
+ if(t.kind==="choice"||t.kind==="tf") body='<div class="options">'+t.options.map(function(x,i){return '<button class="option" data-choice="'+i+'">'+esc(x)+'</button>';}).join("")+'</div>';
+ if(t.kind==="match") body=renderMatch(t);
+ if(t.kind==="classify") body=renderClassify(t);
+ if(t.kind==="sort") body=renderSort(t);
+ if(t.kind==="text"||t.kind==="final") body='<textarea id="answerBox" rows="4" placeholder="Cevabınızı buraya yazın..."></textarea><button class="primary" id="sendBtn">Cevabı Gönder</button>';
+ document.getElementById("screen").innerHTML=
+ '<section class="card"><div class="badge">'+esc(t.stage)+'</div><h2>'+esc(t.title)+'</h2><div class="instruction">'+esc(t.instruction)+'</div>'+
+ body+'<div id="feedback"></div>'+
+ '<div class="nav"><button class="prev" id="prevBtn">⬅️ Önceki Soru</button><button class="skip" id="skipBtn">⏭️ Soruyu Geç</button><button class="next" id="nextBtn">➡️ Sonraki Soru</button></div>'+
+ '<button class="hintbtn" id="hintBtn">💡 İpucu</button></section>';
+ bind();
+}
+function bind(){
+ const t=current();
+ document.getElementById("prevBtn").onclick=function(){if(state.index>0){state.index--;render();}};
+ document.getElementById("nextBtn").onclick=function(){next()};
+ document.getElementById("skipBtn").onclick=function(){skip()};
+ document.getElementById("hintBtn").onclick=function(){hint()};
+ document.getElementById("prevBtn").disabled=state.index===0;
+ document.getElementById("nextBtn").disabled=!(result().status==="success"||result().status==="skipped");
+ if(t.kind==="choice"||t.kind==="tf") document.querySelectorAll("[data-choice]").forEach(function(b){b.onclick=function(){checkChoice(Number(b.dataset.choice));}});
+ if(t.kind==="match") bindMatch();
+ if(t.kind==="classify") bindClassify();
+ if(t.kind==="sort") bindSort();
+ const send=document.getElementById("sendBtn");
+ if(send)send.onclick=function(){submitText()};
+}
+function checkChoice(i){const t=current();submit(t.options[i],norm(t.options[i])===norm(t.answer));}
+function submitText(){
+ const v=document.getElementById("answerBox").value;
+ const t=current();
+ if(!v.trim()){feedback("Lütfen önce bir cevap yaz.",false,true);return;}
+ if(t.kind==="final"){
+   const n=norm(v);
+   const ok=(n.includes("söz hakk")&&n.includes("konuş"))&&(n.includes("dinle")||n.includes("söz kes"));
+   submit(v,ok); return;
+ }
+ const answers=Array.isArray(t.answer)?t.answer:[t.answer];
+ submit(v,answers.some(function(a){return norm(a)===norm(v)||norm(v).includes(norm(a));}));
+}
+function submit(answer,ok){
+ const t=current(),r=result();
+ if(r.status==="success")return;
+ r.attempts++;r.answer=answer;
+ if(ok){
+   r.status="success";r.firstTry=r.attempts===1;
+   if(!r.rewardGranted){state.score+=10;r.rewardGranted=true;}
+   feedback("✓ Doğru! "+t.explain,true);
+ }else{
+   state.wrong++;
+   if(!r.firstWrong)r.firstWrong=answer;
+   feedback("✗ Henüz doğru değil. "+t.explain+"<br><span style='font-weight:400'>Aynı görevi tekrar dene; doğru cevap hemen gösterilmiyor.</span>",false);
+ }
+ update();
+}
+function feedback(text,ok,hintMode){
+ const f=document.getElementById("feedback");
+ f.className="feedback "+(hintMode?"hint":ok?"good":"bad");
+ f.innerHTML=text;
+ document.getElementById("nextBtn").disabled=!(result().status==="success"||result().status==="skipped");
+}
+function hint(){
+ const r=result(),t=current();
+ if(!r.hintUsed){r.hintUsed=true;state.hints++;}
+ feedback("💡 "+esc(t.hint),false,true);update();
+}
+function skip(){
+ const r=result();
+ if(r.status==="success"){next();return;}
+ r.status="skipped";r.answer=null;state.skipped++;
+ next();
+}
+function next(){
+ if(result().status!=="success"&&result().status!=="skipped")return;
+ if(state.index<TASKS.length-1){state.index++;render();}else{report();}
+}
+function update(){
+ document.getElementById("score").textContent=state.score;
+ document.getElementById("wrong").textContent=state.wrong;
+ document.getElementById("hints").textContent=state.hints;
+ document.getElementById("nextBtn").disabled=!(result().status==="success"||result().status==="skipped");
+}
+function renderCompleted(t,r){
+ document.getElementById("screen").innerHTML='<section class="card"><div class="badge">✓ Tamamlandı</div><h2>'+esc(t.title)+'</h2><div class="feedback good">✓ Bu görev tamamlandı.<br>'+esc(t.explain)+'</div><div class="nav"><button class="prev" id="prevBtn">⬅️ Önceki Soru</button><button class="skip" id="skipBtn">⏭️ Soruyu Geç</button><button class="next" id="nextBtn">➡️ Sonraki Soru</button></div></section>';
+ document.getElementById("prevBtn").disabled=state.index===0;
+ document.getElementById("prevBtn").onclick=function(){state.index--;render()};
+ document.getElementById("nextBtn").onclick=function(){next()};
+ document.getElementById("skipBtn").onclick=function(){next()};
+}
+function renderMatch(t){
+ return '<div class="match"><div><b>Kavramlar</b>'+t.left.map(function(x){return '<button class="option" data-left="'+x[0]+'">'+esc(x[1])+'</button>';}).join("")+'</div><div><b>Açıklamalar</b>'+t.right.map(function(x){return '<button class="option" data-right="'+x[0]+'">'+esc(x[1])+'</button>';}).join("")+'</div></div><p id="matchStatus">Seçim: —</p>';
+}
+function bindMatch(){
+ let left=null;const chosen={};
+ document.querySelectorAll("[data-left]").forEach(function(b){b.onclick=function(){left=b.dataset.left;document.querySelectorAll("[data-left]").forEach(function(x){x.classList.remove("selected")});b.classList.add("selected");}});
+ document.querySelectorAll("[data-right]").forEach(function(b){b.onclick=function(){
+   if(!left)return;
+   chosen[left]=b.dataset.right;
+   b.classList.add("selected");
+   document.getElementById("matchStatus").textContent="Eşleştirme sayısı: "+Object.keys(chosen).length;
+   left=null;
+   if(Object.keys(chosen).length===current().left.length)submit(chosen,JSON.stringify(chosen)===JSON.stringify(current().answer));
+ }});
+}
+function renderClassify(t){
+ return '<div id="cardSource" class="options">'+t.cards.map(function(x){return '<button class="option" data-card="'+x[0]+'">'+esc(x[1])+'</button>';}).join("")+'</div><div class="boxes">'+t.buckets.map(function(x){return '<div class="box" data-box="'+esc(x)+'"><h3>'+esc(x)+'</h3><div></div></div>';}).join("")+'</div><p id="classStatus">Kartı seç → hedefi seç.</p>';
+}
+function bindClassify(){
+ let selected=null;const placed={};
+ document.querySelectorAll("[data-card]").forEach(function(b){b.onclick=function(){selected=b.dataset.card;document.querySelectorAll("[data-card]").forEach(function(x){x.classList.remove("selected")});b.classList.add("selected");}});
+ document.querySelectorAll("[data-box]").forEach(function(box){box.onclick=function(){
+   if(!selected)return;
+   const source=document.querySelector('[data-card="'+selected+'"]');
+   if(!source)return;
+   const c=document.createElement("button");c.className="smallcard";c.textContent=source.textContent;c.disabled=true;
+   box.querySelector("div").appendChild(c);placed[selected]=box.dataset.box;source.remove();selected=null;
+   document.getElementById("classStatus").textContent="Yerleştirilen: "+Object.keys(placed).length+"/"+current().cards.length;
+   if(Object.keys(placed).length===current().cards.length)submit(placed,JSON.stringify(placed)===JSON.stringify(current().answer));
+ }});
+}
+function renderSort(t){
+ return '<div id="sortArea" class="sort">'+t.items.map(function(x,i){return '<button class="option" data-sort="'+i+'">'+esc(x)+'</button>';}).join("")+'</div><p id="sortStatus">Sıranı oluştur: 1. seçimden başla.</p>';
+}
+function bindSort(){
+ const order=[];
+ document.querySelectorAll("[data-sort]").forEach(function(b){b.onclick=function(){
+   if(b.disabled)return;
+   order.push(Number(b.dataset.sort));b.disabled=true;b.textContent=order.length+". "+current().items[Number(b.dataset.sort)];
+   document.getElementById("sortStatus").textContent="Seçim: "+order.length+"/"+current().items.length;
+   if(order.length===current().items.length){
+     const got=order.map(function(i){return current().items[i]});
+     submit(got,JSON.stringify(got)===JSON.stringify(current().answer));
+   }
+ }});
+}
+function report(){
+ const total=TASKS.length;
+ const completed=state.results.filter(function(r){return r.status==="success"}).length;
+ const first=state.results.filter(function(r){return r.firstTry}).length;
+ const skipped=state.results.filter(function(r){return r.status==="skipped"}).length;
+ const minutes=Math.max(1,Math.round((Date.now()-state.startedAt)/60000));
+ document.getElementById("progress").style.width="100%";
+ document.getElementById("screen").innerHTML='<section class="card"><div class="badge">🏁 Final Rapor</div><h2>Çalışmanı tamamladın!</h2><div class="report">'+
+ '<div>Toplam<b>'+total+'</b></div><div>Tamamlanan<b>'+completed+'</b></div><div>İlk deneme<b>'+first+'</b></div><div>Yanlış deneme<b>'+state.wrong+'</b></div>'+
+ '<div>Geçilen<b>'+skipped+'</b></div><div>İpucu<b>'+state.hints+'</b></div><div>Puan<b>'+state.score+'</b></div><div>Süre<b>'+minutes+' dk</b></div></div>'+
+ '<button class="primary" id="reviewBtn">🔎 Yanlış/Geçilen Görevleri İncele</button><button class="primary" id="restartBtn">🔄 Baştan Başla</button><div id="review"></div></section>';
+ document.getElementById("reviewBtn").onclick=showReview;
+ document.getElementById("restartBtn").onclick=function(){location.reload()};
+}
+function showReview(){
+ const box=document.getElementById("review");
+ const arr=[];
+ state.results.forEach(function(r,i){if(r.status==="skipped"||r.firstWrong)arr.push({r:r,i:i});});
+ if(!arr.length){box.innerHTML='<div class="feedback good">✓ Yanlış veya geçilen görev yok.</div>';return;}
+ box.innerHTML=arr.map(function(x){
+   const t=TASKS[x.i];
+   let correct=Array.isArray(t.answer)?t.answer.join(" / "):typeof t.answer==="object"?JSON.stringify(t.answer):t.answer;
+   return '<div class="reviewItem"><b>Görev '+(x.i+1)+': '+esc(t.title)+'</b><p>Öğrenci cevabı: '+(x.r.status==="skipped"?"Geçildi":esc(x.r.answer||""))+'</p><p>İlk yanlış: '+esc(x.r.firstWrong||"—")+'</p><p><b>Doğru cevap:</b> '+esc(correct)+'</p><p>'+esc(t.explain)+'</p><button class="cardbtn" data-review="'+x.i+'">Bu göreve dön</button></div>';
+ }).join("");
+ box.querySelectorAll("[data-review]").forEach(function(b){b.onclick=function(){state.index=Number(b.dataset.review);render();}});
+}
+
+render();
+</script>
+</body>
+</html>

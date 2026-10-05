@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kelimeler Ormanı Gizemi - Eş Sesli Sözcükler</title>
+    <style>
+        :root {
+            --primary: #2d6a4f;
+            --secondary: #40916c;
+            --accent: #d8f3dc;
+            --text: #1b4332;
+            --bg: #f4f1de;
+            --danger: #e07a5f;
+            --success: #81b29a;
+            --warning: #f2cc8f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, #e9edc9 0%, #fefae0 100%);
+            transition: background 1s ease;
+        }
+
+        #app {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            min-height: 90vh;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header & Progress */
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            width: 100%;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--warning);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Story & Game World Banner */
+        #world-banner {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 3px solid var(--primary);
+            transition: all 0.5s;
+        }
+        
+        #world-banner svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--warning);
+        }
+
+        /* Main Content Area */
+        main {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-container {
+            display: none;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        .task-container.active {
+            display: block;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        /* Interaction Styles */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: var(--accent);
+            border: 2px solid var(--secondary);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .option-btn.selected {
+            background: var(--warning);
+            border-color: #d4a373;
+        }
+
+        .option-btn.correct-show {
+            background: var(--success);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Matching & Classification Styles */
+        .match-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .match-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .match-item {
+            background: #fff;
+            border: 2px dashed var(--secondary);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .match-item:hover { background: var(--accent); }
+        .match-item.active { background: var(--warning); border-style: solid; }
+        .match-item.matched { background: var(--success); color: white; border-style: solid; cursor: default; opacity: 0.8;}
+
+        /* Input Styles */
+        .input-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .input-box {
+            padding: 12px;
+            font-size: 1.2em;
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            outline: none;
+        }
+
+        .check-btn {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* Buckets for Classification */
+        .buckets {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .bucket {
+            flex: 1;
+            min-height: 100px;
+            border: 3px solid var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background: var(--accent);
+            cursor: pointer;
+            padding: 10px;
+            text-align: center;
+        }
+        .bucket.highlight { background: var(--warning); }
+
+        /* Navigation */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: #eee;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #btn-prev { background: #adb5bd; color: white; }
+        #btn-skip { background: var(--danger); color: white; }
+        #btn-next { background: var(--primary); color: white; }
+
+        /* Modals */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 80%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal h2 { margin-bottom: 15px; }
+        .modal p { margin-bottom: 20px; font-size: 1.1em; line-height: 1.4; }
+        
+        .modal-btn {
+            padding: 10px 25px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        /* Report Screen */
+        #report-screen { display: none; padding: 20px; }
+        .report-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: var(--accent); padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; border: 1px solid var(--secondary);}
+        .review-list { display: flex; flex-direction: column; gap: 10px; max-height: 40vh; overflow-y: auto; margin-bottom: 20px;}
+        .review-item { background: #fff; border: 1px solid #ccc; padding: 10px; border-radius: 8px; border-left: 5px solid var(--danger);}
+        .review-item.skipped { border-left-color: var(--warning); }
+        .review-item h4 { margin-bottom: 5px; color: var(--primary); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+
+        .shake { animation: shake 0.3s ease-in-out; }
+
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .match-container { flex-direction: column; }
+            .buckets { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <header>
+        <div>Orman Kâşifi</div>
+        <div class="stats">
+            <span id="score-display">Puan: 0</span>
+            <span id="task-counter">Görev: 1/16</span>
+        </div>
+    </header>
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+    <div id="world-banner">
+        <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        <span id="story-text">Gizemli Ormana Giriş Yaptın. Kristalleri bulmak için eş sesli sözcükleri tanı!</span>
+    </div>
+
+    <main id="game-area">
+        <!-- Görevler buraya JS ile yüklenecek -->
+    </main>
+
+    <div id="report-screen">
+        <h2 style="text-align: center; color: var(--primary); margin-bottom: 20px;">Keşif Raporu</h2>
+        <div class="report-stats">
+            <div class="stat-card">Toplam Görev: <span id="r-total"></span></div>
+            <div class="stat-card" style="background: #e9edc9;">Tamamlanan: <span id="r-completed"></span></div>
+            <div class="stat-card" style="background: #c1e1c1;">İlk Denemede Doğru: <span id="r-first"></span></div>
+            <div class="stat-card" style="background: #ffcad4;">Yanlış Denemeler: <span id="r-wrong"></span></div>
+            <div class="stat-card" style="background: #fefae0;">Geçilenler: <span id="r-skipped"></span></div>
+            <div class="stat-card" style="background: #a2d2ff;">Toplam Puan: <span id="r-score"></span></div>
+        </div>
+        <h3 style="margin-bottom: 10px;">Yanlış ve Geçilen Görevleri İncele</h3>
+        <div class="review-list" id="review-list"></div>
+        <button class="check-btn" style="width: 100%;" onclick="restartGame()">Maceraya Yeniden Başla</button>
+    </div>
+
+    <footer id="nav-footer">
+        <button id="btn-prev" class="nav-btn" onclick="prevTask()">Önceki Soru</button>
+        <button id="btn-skip" class="nav-btn" onclick="skipTask()">Soruyu Geç</button>
+        <button id="btn-next" class="nav-btn" onclick="nextTask()">Sonraki Soru</button>
+    </footer>
+
+    <!-- Feedback Modal -->
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal">
+            <h2 id="modal-title"></h2>
+            <p id="modal-desc"></p>
+            <button class="modal-btn" onclick="closeModal()">Devam Et</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 1. VERİ & GÖREV TANIMLARI ---
+    // MEB 4. sınıf düzeyine uygun, "Eş sesli kelimeler sözlüğü.pdf" kaynağından alınmış veriler.
+    const rawTasks = [
+        {
+            id: "t1",
+            type: "mcq",
+            skill: "tanıma",
+            question: "Kelimeler ormanının girişindeki kapıyı açmak için 'Gül' kelimesinin farklı bir anlamda kullanıldığı cümleyi bulmalısın.",
+            options: [
+                "Bana anlattığı fıkraya çok güldüm.",
+                "Dedemin esprilerine hepimiz güleriz.",
+                "Arkadaşım komik bir yüz yapınca güldü.",
+                "Bahçedeki kırmızı güller çok güzel kokuyor."
+            ],
+            correctIndex: 3,
+            explanation: "İlk üç cümlede 'gülmek' eylemi anlatılırken, dördüncü cümlede bir çiçek türü olan 'gül' anlatılmaktadır."
+        },
+        {
+            id: "t2",
+            type: "tf",
+            skill: "hata analizi",
+            question: "Bilge Baykuş şöyle diyor: 'Yüz kelimesinin sadece iki farklı anlamı vardır. Biri sayı, diğeri ise denizde yüzmek.' Baykuş doğru mu söylüyor?",
+            correct: false,
+            explanation: "Yanlış! 'Yüz' kelimesinin sayı ve denizde yüzmek dışında 'surat, çehre' (örneğin: Yüzünü yıkadı) ve 'derisini yüzmek' gibi anlamları da vardır. Eş sesli kelimelerin ikiden fazla anlamı olabilir."
+        },
+        {
+            id: "t3",
+            type: "match",
+            skill: "ilişki kurma",
+            question: "Kayıp kristalleri birleştirmek için 'Dolu' kelimesinin anlamlarını doğru cümlelerle eşleştir.",
+            pairs: [
+                { text: "Bardak ağzına kadar doluydu.", match: "İçi boş olmayan" },
+                { text: "Dün akşam yağan dolu arabalara zarar verdi.", match: "Bir yağış biçimi" }
+            ],
+            explanation: "'Dolu' kelimesi hem 'içi boş olmayan' hem de 'buz parçaları şeklinde yağan yağış' anlamlarına gelir."
+        },
+        {
+            id: "t4",
+            type: "classify",
+            skill: "sınıflandırma",
+            question: "Önündeki tabelaları doğru yönlere yerleştir! 'Kır' kelimesi hangi anlamda kullanılmış?",
+            items: [
+                { text: "Hafta sonu kırlarda koşup oynadık.", category: "Doğa / Alan" },
+                { text: "Bardağı yanlışlıkla kırdım.", category: "Parçalamak" },
+                { text: "Kır saçlı tonton bir amca geldi.", category: "Renk (Beyaz/Siyah karışımı)" }
+            ],
+            categories: ["Doğa / Alan", "Parçalamak", "Renk (Beyaz/Siyah karışımı)"],
+            explanation: "'Kır' kelimesi eş sesli bir sözcüktür. Şehir dışı boş alan, parçalamak ve renk anlamları vardır."
+        },
+        {
+            id: "t5",
+            type: "input",
+            skill: "çıkarım",
+            question: "Sihirli sandığın şifresini bul! Hem 'dereden büyük akarsu' hem de 'demlenerek içilen sıcak içecek' anlamına gelen eş sesli kelime nedir?",
+            correct: ["çay"],
+            explanation: "İstenen eş sesli kelime 'Çay'dır. Hem içtiğimiz çay hem de dereden büyük akarsu anlamına gelir."
+        },
+        {
+            id: "t6",
+            type: "mcq",
+            skill: "uygulama",
+            question: "Aşağıdaki cümlelerin hangisinde 'Ben' kelimesi derideki küçük leke anlamında kullanılmıştır?",
+            options: [
+                "Ben yarın sinemaya gideceğim.",
+                "Bu kitabı ben yazdım.",
+                "Çenesindeki siyah ben ona çok yakışmış.",
+                "Sınıfı ben temizledim."
+            ],
+            correctIndex: 2,
+            explanation: "A, B ve D seçeneklerinde 'Ben' kelimesi kişi (zamir) anlamındayken, C seçeneğinde derideki leke anlamındadır."
+        },
+        {
+            id: "t7",
+            type: "find_error",
+            skill: "karşılaştırma",
+            question: "Köprüden geçmek için eş sesli OLMAYAN kelimeyi bulmalısın. Hangisi eş sesli değildir?",
+            options: ["Yaz", "Kalem", "Gül", "At"],
+            correctIndex: 1,
+            explanation: "'Yaz', 'Gül' ve 'At' kelimelerinin birden çok ve birbirinden tamamen farklı anlamları vardır (Eş seslidir). Ancak 'Kalem' kelimesi eş sesli değildir."
+        },
+        {
+            id: "t8",
+            type: "match",
+            skill: "ilişki kurma",
+            question: "Zaman taşlarını onarmak için 'Yaş' kelimesinin kullanımlarını anlamlarıyla eşleştir.",
+            pairs: [
+                { text: "Yeni doğan kardeşim bir yaşına girdi.", match: "Ömür, geçen zaman" },
+                { text: "Yaş odunlar ateşte iyi yanmadı.", match: "Islak" }
+            ],
+            explanation: "'Yaş' kelimesi hem 'ıslak' hem de 'doğuştan beri geçen zaman (ömür)' anlamına gelen eş sesli bir sözcüktür."
+        },
+        {
+            id: "t9",
+            type: "tf",
+            skill: "tanıma",
+            question: "'Ekmek' kelimesi eş sesli bir sözcüktür. Hem fırından aldığımız yiyecek hem de tohumu toprağa atmak (gömmek) anlamı vardır.",
+            correct: true,
+            explanation: "Harika! 'Ekmek' hem tahıldan yapılan yiyecek (isim) hem de toprağa tohum atmak (fiil) anlamlarına gelir."
+        },
+        {
+            id: "t10",
+            type: "classify",
+            skill: "sınıflandırma",
+            question: "Harita parçalarını birleştir! 'Kara' kelimesinin anlamlarına göre cümlelere dokun, sonra doğru sepete dokun.",
+            items: [
+                { text: "Gemimiz sonunda karaya yanaştı.", category: "Yeryüzü parçası" },
+                { text: "Kara kedi önümden geçti.", category: "Siyah (Renk)" }
+            ],
+            categories: ["Yeryüzü parçası", "Siyah (Renk)"],
+            explanation: "'Kara' kelimesi hem 'siyah' rengi hem de denizle örtülü olmayan yeryüzü bölümünü ifade eder."
+        },
+        {
+            id: "t11",
+            type: "input",
+            skill: "çıkarım",
+            question: "Ormanın bilgesi senden bir kelime istiyor: 'Hem en sıcak mevsimin adı, hem de kalemi kâğıda sürüp harf oluşturma eylemi'. Bu kelime nedir?",
+            correct: ["yaz"],
+            explanation: "Doğru cevap 'Yaz' kelimesidir. Hem mevsim adıdır hem de 'yazmak' eyleminin köküdür."
+        },
+        {
+            id: "t12",
+            type: "mcq",
+            skill: "karşılaştırma",
+            question: "Aşağıdaki eşleştirilmiş eş sesli kelimelerden hangisi YANLIŞTIR?",
+            options: [
+                "Diz : Bacak bölümü / Sıraya koymak",
+                "Kaz : Kümes hayvanı / Toprağı eşmek",
+                "Kitap : Okunan eser / Defter sayfası",
+                "Bin : Sayı / Bir taşıta çıkmak"
+            ],
+            correctIndex: 2,
+            explanation: "'Kitap' kelimesi eş sesli değildir. Diğer seçeneklerdeki kelimelerin yazılışı aynı, anlamları farklıdır."
+        },
+        {
+            id: "t13",
+            type: "match",
+            skill: "uygulama",
+            question: "Kilitli sandığı aç! 'Dil' kelimesinin cümledeki anlamlarını eşleştir.",
+            pairs: [
+                { text: "Sıcak çorba dilimi yaktı.", match: "Tat alma organı" },
+                { text: "Turistler kendi dillerinde konuşuyordu.", match: "Lisan, iletişim aracı" }
+            ],
+            explanation: "'Dil' kelimesi eş seslidir. Hem ağzımızdaki organ hem de insanların anlaştığı lisan anlamındadır."
+        },
+        {
+            id: "t14",
+            type: "find_error",
+            skill: "hata analizi",
+            question: "Aşağıdaki cümlelerin hangisinde 'El' kelimesi 'yabancı' anlamında KULLANILMAMIŞTIR?",
+            options: [
+                "Ellerin memleketinde çok yalnız hissettim.",
+                "Bizi el âlem ne der diye düşünmeye zorladılar.",
+                "Yere düşen çocuğu elinden tutup kaldırdı.",
+                "Elin sözüne bakıp hareket etme."
+            ],
+            correctIndex: 2,
+            explanation: "A, B ve D seçeneklerinde 'El' yabancı, başkası anlamındadır. C seçeneğinde ise organımız olan 'el' kastedilmiştir."
+        },
+        {
+            id: "t15",
+            type: "classify",
+            skill: "sınıflandırma",
+            question: "Sarmaşıkları çöz! 'Bağ' kelimesi hangi anlamlarda kullanılmış?",
+            items: [
+                { text: "Dedem köydeki bağdan üzüm topladı.", category: "Üzüm Bahçesi" },
+                { text: "Ayakkabımın bağı çözülmüş.", category: "Bağlamak için araç/İp" }
+            ],
+            categories: ["Üzüm Bahçesi", "Bağlamak için araç/İp"],
+            explanation: "'Bağ' kelimesi eş seslidir. Hem üzüm bahçesi hem de düğüm atılan ip/araç anlamı taşır."
+        },
+        {
+            id: "t16",
+            type: "boss",
+            skill: "transfer",
+            question: "FİNAL GÖREVİ! Ormanın kalbine ulaştın. 3 Farklı eş sesli kelimenin ikişer anlamını doğru eşleştirerek büyük sihri tamamla!",
+            pairs: [
+                { text: "Ocak", match: "Yılın ilk ayı" },
+                { text: "Ocak", match: "Ateş yakılan yer / Soba" },
+                { text: "Saç", match: "Baştaki kıllar" },
+                { text: "Saç", match: "Etrafına dağıtmak, fırlatmak" },
+                { text: "Zar", match: "İnce deri / Kabuk" },
+                { text: "Zar", match: "Oyun aracı (Küp)" }
+            ],
+            explanation: "Harika! 'Ocak', 'Saç' ve 'Zar' kelimeleri eş seslidir. Tüm anlamlarını başarıyla birleştirdin."
+        }
+    ];
+
+    // --- 2. STATE YÖNETİMİ ---
+    let state = {
+        currentIndex: 0,
+        score: 0,
+        wrongCount: 0,
+        skippedCount: 0,
+        hintCount: 0,
+        startTime: null,
+        tasks: [],
+        results: [],
+        tempMatchSelected: null,
+        tempClassifySelected: null
+    };
+
+    // --- 3. YARDIMCI FONKSİYONLAR ---
+    function shuffleArray(array) {
+        let newArr = [...array];
+        for (let i = newArr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+        }
+        return newArr;
+    }
+
+    function normalizeText(text) {
+        return text.toLocaleLowerCase('tr').replace(/['".,!?;]/g, '').trim();
+    }
+
+    // --- 4. OYUN MOTORU ---
+    function initGame() {
+        state.tasks = JSON.parse(JSON.stringify(rawTasks));
+        state.results = state.tasks.map(t => ({
+            id: t.id,
+            status: 'pending', // pending, correct, skipped
+            attempts: 0,
+            firstTry: true,
+            hintUsed: false
+        }));
+        state.startTime = new Date();
+        updateUI();
+        renderTask();
+    }
+
+    function updateUI() {
+        document.getElementById('score-display').innerText = `Puan: ${state.score}`;
+        document.getElementById('task-counter').innerText = `Görev: ${state.currentIndex + 1}/${state.tasks.length}`;
+        
+        let progress = (state.currentIndex / state.tasks.length) * 100;
+        document.getElementById('progress').style.width = `${progress}%`;
+
+        // Buton durumları
+        document.getElementById('btn-prev').disabled = state.currentIndex === 0;
+        
+        // Eğer görev yapıldıysa ileri butonu aktif
+        const res = state.results[state.currentIndex];
+        document.getElementById('btn-next').disabled = (res.status === 'pending');
+        document.getElementById('btn-skip').style.display = (res.status === 'pending') ? 'inline-block' : 'none';
+
+        // Dünya Banner'ı (Hikaye hissi)
+        const banner = document.getElementById('world-banner');
+        const storyText = document.getElementById('story-text');
+        if(state.currentIndex < 5) {
+            banner.style.backgroundColor = "#40916c";
+            storyText.innerText = "Ormanın Girişi: Kelimelerin ayak izlerini takip et.";
+        } else if(state.currentIndex < 10) {
+            banner.style.backgroundColor = "#2d6a4f";
+            storyText.innerText = "Derin Orman: Sihirli sarmaşıkları çözüyorsun.";
+        } else if(state.currentIndex < 15) {
+            banner.style.backgroundColor = "#1b4332";
+            storyText.innerText = "Bilgeler Vadisi: Gerçek bir kâşif gibi ilerliyorsun!";
+        } else {
+            banner.style.backgroundColor = "#d4a373";
+            storyText.innerText = "Işık Tapınağı: Son görevleri tamamla!";
+        }
+    }
+
+    function renderTask() {
+        const task = state.tasks[state.currentIndex];
+        const res = state.results[state.currentIndex];
+        const container = document.getElementById('game-area');
+        container.innerHTML = '';
+
+        let html = `<div class="task-container active">
+                        <div class="question-text">${task.question}</div>`;
+
+        // Render based on type
+        if (task.type === 'mcq' || task.type === 'find_error') {
+            // Sadece ilk defa render edilirken karıştır
+            if (!task._shuffledOptions) {
+                let opts = task.options.map((opt, idx) => ({text: opt, originalIndex: idx}));
+                task._shuffledOptions = shuffleArray(opts);
+            }
+            
+            html += `<div class="options-grid">`;
+            task._shuffledOptions.forEach((opt, idx) => {
+                let btnClass = 'option-btn';
+                let isBtnDisabled = false;
+                
+                // Eğer daha önceden doğru cevaplandıysa
+                if (res.status === 'correct' && opt.originalIndex === task.correctIndex) {
+                    btnClass += ' correct-show';
+                    isBtnDisabled = true;
+                } else if (res.status === 'correct') {
+                    isBtnDisabled = true;
+                }
+
+                html += `<button class="${btnClass}" ${isBtnDisabled ? 'disabled' : ''} onclick="handleMCQ(${opt.originalIndex}, this)">${opt.text}</button>`;
+            });
+            html += `</div>`;
+        } 
+        else if (task.type === 'tf') {
+            let isBtnDisabled = res.status === 'correct';
+            html += `<div class="options-grid">
+                        <button class="option-btn ${isBtnDisabled && task.correct===true ? 'correct-show':''}" ${isBtnDisabled?'disabled':''} onclick="handleTF(true, this)">Doğru</button>
+                        <button class="option-btn ${isBtnDisabled && task.correct===false ? 'correct-show':''}" ${isBtnDisabled?'disabled':''} onclick="handleTF(false, this)">Yanlış</button>
+                     </div>`;
+        }
+        else if (task.type === 'input') {
+            let val = res.answer || '';
+            let isBtnDisabled = res.status === 'correct';
+            html += `<div class="input-container">
+                        <input type="text" id="input-answer" class="input-box" placeholder="Cevabını buraya yaz..." value="${val}" ${isBtnDisabled?'disabled':''}>
+                        <br>
+                        <button class="check-btn" onclick="handleInput()" ${isBtnDisabled?'style="display:none;"':''}>Kontrol Et</button>
+                     </div>`;
+        }
+        else if (task.type === 'match' || task.type === 'boss') {
+            if (!task._shuffledLeft) {
+                task._shuffledLeft = shuffleArray(task.pairs.map((p,i) => ({text: p.text, id: i})));
+                task._shuffledRight = shuffleArray(task.pairs.map((p,i) => ({text: p.match, id: i})));
+                task._matchedIds = [];
+            }
+            // Geri dönüldüğünde bitmiş mi kontrolü
+            if(res.status === 'correct') {
+                task._matchedIds = task.pairs.map((_,i)=>i);
+            }
+
+            html += `<div class="match-container">
+                        <div class="match-col" id="match-left">`;
+            task._shuffledLeft.forEach(item => {
+                let isMatched = task._matchedIds.includes(item.id);
+                html += `<div class="match-item ${isMatched?'matched':''}" data-id="${item.id}" ${isMatched?'':'onclick="handleMatchClick(this, \'left\')"'} >${item.text}</div>`;
+            });
+            html += `</div><div class="match-col" id="match-right">`;
+            task._shuffledRight.forEach(item => {
+                let isMatched = task._matchedIds.includes(item.id);
+                html += `<div class="match-item ${isMatched?'matched':''}" data-id="${item.id}" ${isMatched?'':'onclick="handleMatchClick(this, \'right\')"'} >${item.text}</div>`;
+            });
+            html += `</div></div>`;
+        }
+        else if (task.type === 'classify') {
+            if (!task._shuffledItems) {
+                task._shuffledItems = shuffleArray(task.items.map((it,i) => ({...it, id:i})));
+                task._placedItems = [];
+            }
+             if(res.status === 'correct') {
+                task._placedItems = task.items.map((_,i)=>i);
+            }
+
+            html += `<div style="text-align:center; margin-bottom:15px; font-style:italic; color:#666;">Önce karta dokun, sonra uygun sepete dokun.</div>`;
+            html += `<div class="options-grid" id="classify-items">`;
+            task._shuffledItems.forEach(item => {
+                if(!task._placedItems.includes(item.id)){
+                    html += `<div class="option-btn" data-cat="${item.category}" data-id="${item.id}" onclick="handleClassifyItemClick(this)">${item.text}</div>`;
+                }
+            });
+            html += `</div><div class="buckets">`;
+            task.categories.forEach(cat => {
+                html += `<div class="bucket" onclick="handleBucketClick('${cat}')">${cat}</div>`;
+            });
+            html += `</div>`;
+        }
+
+        html += `</div>`;
+        container.innerHTML = html;
+        updateUI();
+    }
+
+    // --- 5. ETKİLEŞİM İŞLEYİCİLERİ ---
+    function handleMCQ(selectedIndex, btnElement) {
+        const task = state.tasks[state.currentIndex];
+        processAnswer(selectedIndex === task.correctIndex, btnElement);
+    }
+
+    function handleTF(selectedVal, btnElement) {
+        const task = state.tasks[state.currentIndex];
+        processAnswer(selectedVal === task.correct, btnElement);
+    }
+
+    function handleInput() {
+        const task = state.tasks[state.currentIndex];
+        const val = document.getElementById('input-answer').value;
+        const normalizedVal = normalizeText(val);
+        const isCorrect = task.correct.some(c => normalizeText(c) === normalizedVal);
+        state.results[state.currentIndex].answer = val;
+        processAnswer(isCorrect, document.getElementById('input-answer'));
+    }
+
+    function handleMatchClick(el, side) {
+        if(el.classList.contains('matched')) return;
+        
+        const task = state.tasks[state.currentIndex];
+        const id = el.getAttribute('data-id');
+
+        // Aynı tarafa tıklandıysa seçimi değiştir
+        let currentSideElements = document.querySelectorAll(`#match-${side} .match-item`);
+        currentSideElements.forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+
+        if(!state.tempMatchSelected) {
+            state.tempMatchSelected = { id, side, el };
+        } else {
+            if(state.tempMatchSelected.side === side) {
+                state.tempMatchSelected = { id, side, el };
+            } else {
+                // Karşılaştırma yap
+                if(state.tempMatchSelected.id === id) {
+                    // Doğru eşleşme
+                    el.classList.remove('active');
+                    el.classList.add('matched');
+                    state.tempMatchSelected.el.classList.remove('active');
+                    state.tempMatchSelected.el.classList.add('matched');
+                    task._matchedIds.push(parseInt(id));
+                    state.tempMatchSelected = null;
+
+                    if(task._matchedIds.length === task.pairs.length) {
+                        processAnswer(true, null);
+                    }
+                } else {
+                    // Yanlış eşleşme
+                    el.classList.add('shake');
+                    state.tempMatchSelected.el.classList.add('shake');
+                    setTimeout(() => {
+                        el.classList.remove('shake', 'active');
+                        state.tempMatchSelected.el.classList.remove('shake', 'active');
+                        state.tempMatchSelected = null;
+                        processAnswer(false, null);
+                    }, 400);
+                }
+            }
+        }
+    }
+
+    function handleClassifyItemClick(el) {
+        let items = document.querySelectorAll('#classify-items .option-btn');
+        items.forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        state.tempClassifySelected = el;
+    }
+
+    function handleBucketClick(catName) {
+        if(!state.tempClassifySelected) return;
+
+        const task = state.tasks[state.currentIndex];
+        const correctCat = state.tempClassifySelected.getAttribute('data-cat');
+        const id = parseInt(state.tempClassifySelected.getAttribute('data-id'));
+
+        if(catName === correctCat) {
+            task._placedItems.push(id);
+            state.tempClassifySelected.remove();
+            state.tempClassifySelected = null;
+
+            if(task._placedItems.length === task.items.length) {
+                processAnswer(true, null);
+            }
+        } else {
+            state.tempClassifySelected.classList.add('shake');
+            setTimeout(() => {
+                state.tempClassifySelected.classList.remove('shake', 'selected');
+                state.tempClassifySelected = null;
+                processAnswer(false, null);
+            }, 400);
+        }
+    }
+
+    // --- 6. CEVAP İŞLEME VE DÖNÜT (YANLIŞ CEVAP AKIŞI) ---
+    function processAnswer(isCorrect, element) {
+        const res = state.results[state.currentIndex];
+        const task = state.tasks[state.currentIndex];
+        
+        res.attempts++;
+
+        if (isCorrect) {
+            if(element && element.classList) {
+                element.classList.add('correct-show');
+            }
+            if(res.status !== 'correct') {
+                res.status = 'correct';
+                if(res.firstTry) state.score += 10;
+                else state.score += 5; // İkinci veya sonraki denemede yarım puan
+                showModal("Tebrikler!", "Görev başarıyla tamamlandı. " + (task.explanation || ""), "success");
+            }
+            document.getElementById('btn-next').disabled = false;
+        } else {
+            res.firstTry = false;
+            state.wrongCount++;
+            if(element && element.classList) {
+                element.classList.add('shake');
+                setTimeout(()=>element.classList.remove('shake'), 400);
+            }
+            showModal("Biraz Daha Düşünelim", "Yanlış bir seçim yaptın.<br><br><strong>Neden mi?</strong><br>" + task.explanation + "<br><br>Hadi, tekrar dene!", "error");
+        }
+    }
+
+    // --- 7. MODAL VE NAVİGASYON ---
+    function showModal(title, text, type) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-desc').innerHTML = text;
+        const modalBtn = document.querySelector('.modal-btn');
+        if(type === 'success') {
+            modalBtn.style.background = "var(--success)";
+            modalBtn.innerText = "İlerle";
+        } else {
+            modalBtn.style.background = "var(--danger)";
+            modalBtn.innerText = "Tekrar Dene";
+        }
+        document.getElementById('feedback-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('feedback-modal').style.display = 'none';
+        const res = state.results[state.currentIndex];
+        if(res.status === 'correct') {
+            nextTask();
+        }
+    }
+
+    function skipTask() {
+        const res = state.results[state.currentIndex];
+        res.status = 'skipped';
+        state.skippedCount++;
+        nextTask();
+    }
+
+    function prevTask() {
+        if (state.currentIndex > 0) {
+            state.currentIndex--;
+            state.tempMatchSelected = null;
+            state.tempClassifySelected = null;
+            renderTask();
+        }
+    }
+
+    function nextTask() {
+        if (state.currentIndex < state.tasks.length - 1) {
+            state.currentIndex++;
+            state.tempMatchSelected = null;
+            state.tempClassifySelected = null;
+            renderTask();
+        } else {
+            finishGame();
+        }
+    }
+
+    // --- 8. FİNAL RAPORU VE REPLAY ---
+    function finishGame() {
+        document.getElementById('world-banner').style.display = 'none';
+        document.getElementById('game-area').style.display = 'none';
+        document.getElementById('nav-footer').style.display = 'none';
+        document.getElementById('report-screen').style.display = 'block';
+
+        const total = state.tasks.length;
+        const completed = state.results.filter(r => r.status === 'correct').length;
+        const firstTry = state.results.filter(r => r.status === 'correct' && r.firstTry).length;
+
+        document.getElementById('r-total').innerText = total;
+        document.getElementById('r-completed').innerText = completed;
+        document.getElementById('r-first').innerText = firstTry;
+        document.getElementById('r-wrong').innerText = state.wrongCount;
+        document.getElementById('r-skipped').innerText = state.skippedCount;
+        document.getElementById('r-score').innerText = state.score;
+
+        const reviewList = document.getElementById('review-list');
+        reviewList.innerHTML = '';
+        
+        let hasReviewItems = false;
+        state.results.forEach((res, index) => {
+            if(!res.firstTry || res.status === 'skipped') {
+                hasReviewItems = true;
+                const task = state.tasks[index];
+                let itemClass = res.status === 'skipped' ? 'skipped' : '';
+                let statusText = res.status === 'skipped' ? 'Bu soruyu geçtin.' : 'Hatalı denemeler yapıldı.';
+                
+                reviewList.innerHTML += `
+                    <div class="review-item ${itemClass}">
+                        <h4>Görev ${index + 1}</h4>
+                        <p><strong>Durum:</strong> ${statusText}</p>
+                        <p><strong>Doğrusu / Açıklama:</strong> ${task.explanation}</p>
+                        ${res.status !== 'correct' ? `<button style="margin-top:10px; padding:5px 10px; cursor:pointer;" onclick="jumpToTask(${index})">Şimdi Çöz</button>` : `<span style="color:var(--success); font-weight:bold;">Sonradan Doğru Çözüldü ✓</span>`}
+                    </div>
+                `;
+            }
+        });
+
+        if(!hasReviewItems) {
+            reviewList.innerHTML = '<p style="text-align:center; color:var(--success); font-weight:bold;">Harika! Hiç hatan veya geçtiğin soru yok!</p>';
+        }
+    }
+
+    function jumpToTask(index) {
+        document.getElementById('report-screen').style.display = 'none';
+        document.getElementById('world-banner').style.display = 'flex';
+        document.getElementById('game-area').style.display = 'flex';
+        document.getElementById('nav-footer').style.display = 'flex';
+        state.currentIndex = index;
+        renderTask();
+    }
+
+    function restartGame() {
+        document.getElementById('report-screen').style.display = 'none';
+        document.getElementById('world-banner').style.display = 'flex';
+        document.getElementById('game-area').style.display = 'flex';
+        document.getElementById('nav-footer').style.display = 'flex';
+        state.currentIndex = 0;
+        state.score = 0;
+        state.wrongCount = 0;
+        state.skippedCount = 0;
+        state.hintCount = 0;
+        state.tempMatchSelected = null;
+        state.tempClassifySelected = null;
+        
+        // Remove shuffled cache from raw tasks to force reshuffle
+        rawTasks.forEach(t => {
+            delete t._shuffledOptions;
+            delete t._shuffledLeft;
+            delete t._shuffledRight;
+            delete t._matchedIds;
+            delete t._shuffledItems;
+            delete t._placedItems;
+        });
+
+        initGame();
+    }
+
+    // Oyunu Başlat
+    window.onload = initGame;
+</script>
+
+</body>
+</html>

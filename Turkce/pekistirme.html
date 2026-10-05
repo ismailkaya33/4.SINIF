@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pekiştirme Sözcükleri Macerası</title>
+
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --mor:#7357df;
+  --mor2:#9b7cf4;
+  --pembe:#ff668d;
+  --sari:#ffd75a;
+  --yesil:#4fc486;
+  --mavi:#55b8ef;
+  --turuncu:#ff9c55;
+  --koyu:#303047;
+  --gri:#74738a;
+  --arka:#f5f7ff;
+  --beyaz:#fff;
+  --golge:0 8px 22px rgba(54,45,105,.12);
+}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:"Trebuchet MS","Arial Rounded MT Bold",Arial,sans-serif;
+  color:var(--koyu);
+  background:
+    radial-gradient(circle at 5% 8%,#fff1ad 0 5%,transparent 5.5%),
+    radial-gradient(circle at 96% 10%,#ffdce8 0 6%,transparent 6.5%),
+    linear-gradient(135deg,#f7f8ff,#edf8ff);
+}
+
+body{min-height:100vh;overflow-x:hidden}
+
+button{
+  font-family:inherit;
+  border:0;
+  cursor:pointer;
+}
+
+button:disabled{cursor:default}
+
+.app{
+  width:100%;
+  max-width:1250px;
+  margin:auto;
+  padding:15px;
+}
+
+header{
+  background:rgba(255,255,255,.96);
+  border-radius:25px;
+  padding:14px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  box-shadow:var(--golge);
+  margin-bottom:14px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.logo{
+  width:56px;
+  height:56px;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--mor),var(--mor2));
+  color:#fff;
+  font-size:30px;
+  box-shadow:0 5px 0 #5740b4;
+}
+
+.brand h1{
+  margin:0;
+  font-size:clamp(20px,3vw,29px);
+}
+
+.brand p{
+  margin:3px 0 0;
+  color:var(--gri);
+  font-size:14px;
+}
+
+.score{
+  background:#fff6cb;
+  border:3px solid #ffe28a;
+  border-radius:17px;
+  min-width:110px;
+  text-align:center;
+  padding:7px 15px;
+}
+
+.score small{display:block;color:#806a28}
+.score strong{font-size:25px;color:#c68a00}
+
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+  margin-bottom:15px;
+}
+
+.tab{
+  min-height:57px;
+  background:#fff;
+  border-radius:18px;
+  color:#77758a;
+  font-size:17px;
+  font-weight:bold;
+  box-shadow:var(--golge);
+  transition:.2s;
+}
+
+.tab:hover{transform:translateY(-2px)}
+
+.tab.active{
+  color:white;
+  background:linear-gradient(135deg,var(--mor),var(--mor2));
+  box-shadow:0 5px 0 #5740b4;
+}
+
+.section{display:none;animation:appear .3s ease}
+.section.active{display:block}
+
+@keyframes appear{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.card{
+  background:rgba(255,255,255,.97);
+  border-radius:27px;
+  padding:24px;
+  box-shadow:var(--golge);
+  margin-bottom:17px;
+}
+
+.title{
+  text-align:center;
+  margin-bottom:22px;
+}
+
+.title .emoji{
+  display:block;
+  font-size:48px;
+}
+
+.title h2{
+  margin:5px 0;
+  font-size:clamp(25px,4vw,35px);
+}
+
+.title p{
+  color:var(--gri);
+  margin:6px 0;
+  font-size:17px;
+}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.info{
+  padding:20px;
+  border-radius:22px;
+  min-height:160px;
+}
+
+.info:nth-child(1){background:#e9f5ff;border-top:7px solid var(--mavi)}
+.info:nth-child(2){background:#fff5d6;border-top:7px solid var(--sari)}
+.info:nth-child(3){background:#e8f9ef;border-top:7px solid var(--yesil)}
+
+.info .big{font-size:35px}
+.info h3{margin:7px 0;font-size:21px}
+.info p{margin:0;line-height:1.55;font-size:16px}
+
+.explain{
+  background:linear-gradient(135deg,#f0ebff,#fff0f7);
+  border:3px dashed #a492eb;
+  border-radius:23px;
+  padding:20px;
+  margin-bottom:18px;
+}
+
+.explain h3{
+  margin:0 0 9px;
+  color:var(--mor);
+  font-size:22px;
+}
+
+.explain p{
+  margin:7px 0;
+  line-height:1.65;
+  font-size:17px;
+}
+
+.highlight{
+  background:#fff1a9;
+  padding:2px 7px;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+.why{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.why-box{
+  border-radius:21px;
+  padding:20px;
+  background:#fff;
+  box-shadow:0 4px 14px rgba(60,50,100,.08);
+}
+
+.why-box h3{margin-top:0}
+.why-box p{line-height:1.6}
+
+.formula{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:9px;
+  margin:20px 0;
+}
+
+.formula span{
+  padding:12px 16px;
+  border-radius:15px;
+  font-weight:bold;
+  font-size:19px;
+}
+
+.formula .a{background:#dff1ff;color:#3282bd}
+.formula .b{background:#fff0a8;color:#aa7600}
+.formula .c{background:#def7e9;color:#268b53}
+.formula i{font-size:23px;font-style:normal}
+
+.examples{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.example{
+  text-align:center;
+  padding:18px 8px;
+  border-radius:21px;
+  background:white;
+  box-shadow:0 4px 13px rgba(50,45,90,.08);
+}
+
+.example:nth-child(1){border-top:7px solid var(--sari)}
+.example:nth-child(2){border-top:7px solid var(--mavi)}
+.example:nth-child(3){border-top:7px solid var(--pembe)}
+.example:nth-child(4){border-top:7px solid var(--yesil)}
+
+.example .normal{color:#777;font-size:17px}
+.example .strong{font-size:25px;font-weight:bold;margin-top:8px}
+.example .breakdown{
+  margin-top:8px;
+  font-size:13px;
+  color:#888;
+}
+
+.tip{
+  margin-top:18px;
+  background:#fff7d9;
+  border:3px solid #ffe08a;
+  border-radius:21px;
+  padding:17px;
+  display:flex;
+  gap:12px;
+  line-height:1.55;
+}
+
+.tip b{color:#b97900}
+
+.practice-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
+
+.counter{
+  font-weight:bold;
+  color:#716e86;
+  font-size:17px;
+}
+
+.progress{
+  flex:1;
+  min-width:180px;
+  height:13px;
+  border-radius:20px;
+  overflow:hidden;
+  background:#e8e6f1;
+}
+
+.progress-bar{
+  width:0;
+  height:100%;
+  background:linear-gradient(90deg,var(--yesil),#91dfb1);
+  transition:.35s;
+}
+
+.question{
+  background:linear-gradient(135deg,#f3efff,#fff3f8);
+  border-radius:24px;
+  padding:25px 18px;
+  text-align:center;
+  margin-bottom:18px;
+}
+
+.question .number{
+  color:var(--mor);
+  font-weight:bold;
+  font-size:16px;
+  margin-bottom:8px;
+}
+
+.question h3{
+  margin:0;
+  font-size:clamp(21px,4vw,29px);
+  line-height:1.5;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.option{
+  min-height:68px;
+  border-radius:18px;
+  background:#fff;
+  border:3px solid #e5e2ef;
+  font-size:20px;
+  font-weight:bold;
+  color:var(--koyu);
+  padding:10px;
+  transition:.18s;
+  box-shadow:0 3px 7px rgba(50,45,90,.05);
+}
+
+.option:hover{
+  transform:translateY(-2px);
+  border-color:#aa9be8;
+}
+
+.option:active{transform:scale(.96)}
+
+.option.correct{
+  background:#dff8e9;
+  border-color:var(--yesil);
+  color:#21814c;
+}
+
+.option.wrong{
+  background:#fff0f3;
+  border-color:#ff7188;
+  animation:shake .35s;
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-9px)}
+  75%{transform:translateX(9px)}
+}
+
+.feedback{
+  min-height:34px;
+  text-align:center;
+  margin-top:15px;
+  font-weight:bold;
+  font-size:18px;
+}
+
+.feedback.good{color:#268d54}
+.feedback.bad{color:#df5d74}
+
+.next{
+  display:block;
+  margin:18px auto 0;
+  padding:14px 30px;
+  border-radius:17px;
+  background:linear-gradient(135deg,var(--mor),var(--mor2));
+  color:white;
+  font-size:19px;
+  font-weight:bold;
+  box-shadow:0 5px 0 #5740b4;
+}
+
+.next:active{
+  transform:translateY(3px);
+  box-shadow:0 2px 0 #5740b4;
+}
+
+.next:disabled{opacity:.45}
+
+.match-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.word{
+  min-height:70px;
+  background:white;
+  border:3px solid #e5e2ef;
+  border-radius:18px;
+  font-size:21px;
+  font-weight:bold;
+  transition:.18s;
+}
+
+.word:hover{border-color:#a89be6;transform:scale(1.02)}
+.word.selected{background:#eeeaff;border-color:var(--mor)}
+.word.correct{background:#dff8e9;border-color:var(--yesil);color:#21814c}
+.word.wrong{animation:shake .35s;background:#fff0f3;border-color:#ff7188}
+
+.instructions{
+  background:#eef8ff;
+  border-radius:18px;
+  padding:14px;
+  text-align:center;
+  margin-bottom:15px;
+  color:#4b7898;
+  font-weight:bold;
+}
+
+.fill-input{
+  display:inline-block;
+  min-width:150px;
+  padding:4px 8px;
+  border-bottom:4px dashed var(--mor);
+  color:var(--mor);
+}
+
+.result{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  place-items:center;
+  padding:18px;
+  background:rgba(46,38,88,.68);
+  backdrop-filter:blur(5px);
+}
+
+.result.show{display:grid}
+
+.result-card{
+  width:min(570px,100%);
+  background:white;
+  border-radius:32px;
+  text-align:center;
+  padding:35px 25px;
+  box-shadow:0 20px 55px rgba(20,15,60,.3);
+  animation:pop .45s ease;
+}
+
+@keyframes pop{
+  0%{transform:scale(.5);opacity:0}
+  70%{transform:scale(1.06)}
+  100%{transform:scale(1);opacity:1}
+}
+
+.result-icon{font-size:70px}
+.result-card h2{font-size:34px;color:var(--mor);margin:5px}
+.result-card p{font-size:19px;line-height:1.6;color:#69677c}
+.stars{font-size:38px;letter-spacing:5px}
+
+.restart{
+  padding:15px 28px;
+  border-radius:17px;
+  background:linear-gradient(135deg,var(--mor),var(--mor2));
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  box-shadow:0 5px 0 #5740b4;
+}
+
+.confetti{
+  position:fixed;
+  top:-30px;
+  z-index:200;
+  pointer-events:none;
+  animation:fall linear forwards;
+}
+
+@keyframes fall{
+  to{
+    transform:translateY(110vh) rotate(720deg);
+    opacity:.8;
+  }
+}
+
+@media(max-width:850px){
+  .info-grid{grid-template-columns:1fr}
+  .examples{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:600px){
+  .app{padding:9px}
+  header{padding:11px 13px}
+  .logo{width:46px;height:46px;font-size:24px}
+  .brand p{display:none}
+  .score{min-width:80px}
+  .tabs{grid-template-columns:repeat(2,1fr)}
+  .tab{font-size:15px}
+  .card{padding:17px}
+  .options,.match-grid{grid-template-columns:1fr}
+  .why{grid-template-columns:1fr}
+  .examples{grid-template-columns:1fr 1fr}
+  .formula span{font-size:16px;padding:9px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="brand">
+    <div class="logo">✨</div>
+    <div>
+      <h1>Pekiştirme Sözcükleri</h1>
+      <p>Öğren • Keşfet • Oyna • Ustalaş</p>
+    </div>
+  </div>
+
+  <div class="score">
+    <small>⭐ PUAN</small>
+    <strong id="score">0</strong>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="learn">📚 Konuyu Öğren</button>
+  <button class="tab" data-tab="match">🧩 Eşleştir</button>
+  <button class="tab" data-tab="sentences">🔎 Cümle Avcısı</button>
+  <button class="tab" data-tab="quiz">🧠 Mini Test</button>
+</nav>
+
+<!-- ======================================================
+     1. KONU ANLATIMI
+====================================================== -->
+
+<section id="learn" class="section active">
+
+<div class="card">
+
+  <div class="title">
+    <span class="emoji">🌟</span>
+    <h2>Pekiştirme Sözcüğü Nedir?</h2>
+    <p>Hiç duymadıysan sorun değil. Baştan başlayalım!</p>
+  </div>
+
+  <div class="info-grid">
+
+    <div class="info">
+      <div class="big">📖</div>
+      <h3>Ne demek?</h3>
+      <p>
+        Bir sözcüğün anlamını <b>güçlendirmek</b>, yani onu daha etkili
+        ve daha belirgin anlatmak için kullanılan sözcüklere
+        <b>pekiştirme sözcükleri</b> denir.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="big">💪</div>
+      <h3>Neden kullanırız?</h3>
+      <p>
+        Bir şeyin rengini, temizliğini, hızını, miktarını veya
+        durumunu <b>daha güçlü anlatmak</b> istediğimizde kullanırız.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="big">🗣️</div>
+      <h3>Nerelerde kullanırız?</h3>
+      <p>
+        Günlük konuşmalarımızda, hikâyelerde, şiirlerde ve
+        yazılarımızda anlatımı <b>canlandırmak</b> için kullanabiliriz.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="explain">
+    <h3>🎨 Basit bir örnek</h3>
+
+    <p>
+      “Gökyüzü <span class="highlight">mavi</span>.” dediğimizde
+      gökyüzünün rengini söyleriz.
+    </p>
+
+    <p>
+      “Gökyüzü <span class="highlight">masmavi</span>.” dediğimizde ise
+      rengin <b>çok güçlü ve belirgin bir mavi</b> olduğunu anlatırız.
+    </p>
+
+    <p>
+      Yani <b>mavi → masmavi</b> olduğunda kelimenin anlamı
+      daha güçlü hâle gelir.
+    </p>
+  </div>
+
+  <div class="why">
+
+    <div class="why-box">
+      <h3>🔵 Normal sözcük</h3>
+      <p>
+        “Bahçede yeşil bir çimen var.”
+      </p>
+      <p>
+        Burada sadece çimenin renginin yeşil olduğunu söylüyoruz.
+      </p>
+    </div>
+
+    <div class="why-box">
+      <h3>🟢 Pekiştirilmiş sözcük</h3>
+      <p>
+        “Bahçede <b>yemyeşil</b> çimenler var.”
+      </p>
+      <p>
+        Burada çimenlerin renginin çok canlı ve belirgin olduğunu
+        daha güçlü anlatıyoruz.
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="card">
+
+  <div class="title">
+    <span class="emoji">🔤</span>
+    <h2>Nasıl Oluşturulur?</h2>
+    <p>Şimdi kelimenin nasıl güçlendiğine bakalım.</p>
+  </div>
+
+  <div class="explain">
+
+    <h3>⭐ En sık kullanılan yol</h3>
+
+    <p>
+      Birçok pekiştirme sözcüğünde kelimenin <b>ilk bölümünden</b>
+      yararlanılır ve araya <b>m, p, r veya s</b> harflerinden uygun
+      olanı getirilir.
+    </p>
+
+    <p>
+      Sonra kelimenin tamamı yazılır.
+    </p>
+
+  </div>
+
+  <div class="formula">
+    <span class="a">Kelimenin ilk bölümü</span>
+    <i>+</i>
+    <span class="b">m / p / r / s</span>
+    <i>+</i>
+    <span class="c">Kelimenin tamamı</span>
+  </div>
+
+  <div class="examples">
+
+    <div class="example">
+      <div class="normal">sarı</div>
+      <div>⬇️</div>
+      <div class="strong">sapsarı</div>
+      <div class="breakdown">sap + sarı</div>
+    </div>
+
+    <div class="example">
+      <div class="normal">temiz</div>
+      <div>⬇️</div>
+      <div class="strong">tertemiz</div>
+      <div class="breakdown">ter + temiz</div>
+    </div>
+
+    <div class="example">
+      <div class="normal">mavi</div>
+      <div>⬇️</div>
+      <div class="strong">masmavi</div>
+      <div class="breakdown">mas + mavi</div>
+    </div>
+
+    <div class="example">
+      <div class="normal">bütün</div>
+      <div>⬇️</div>
+      <div class="strong">büsbütün</div>
+      <div class="breakdown">büs + bütün</div>
+    </div>
+
+  </div>
+
+  <div class="tip">
+    <div style="font-size:30px">⚠️</div>
+    <div>
+      <b>Önemli!</b><br>
+      Her kelimede “m, p, r, s” harflerinden birini kendimiz seçip
+      istediğimiz gibi yeni kelime oluşturamayız.
+      Bazı pekiştirme sözcükleri <b>kalıplaşmıştır</b> ve
+      kullanımlarını öğrenmemiz gerekir.
+      <br><br>
+      Örneğin:
+      <b>sırılsıklam, karmakarışık, yapayalnız, çepeçevre, güpegündüz</b>.
+    </div>
+  </div>
+
+</div>
+
+<div class="card">
+
+  <div class="title">
+    <span class="emoji">🧠</span>
+    <h2>Akılda Tutmanın Kolay Yolu</h2>
+  </div>
+
+  <div class="explain">
+
+    <p>
+      💬 <b>“Daha güçlü anlatmak istiyorsam pekiştirme sözcüğü
+      kullanabilirim.”</b>
+    </p>
+
+    <p>
+      🌈 <b>m, p, r, s</b> harfleri birçok pekiştirme sözcüğünün
+      oluşumunda karşımıza çıkar.
+    </p>
+
+    <p>
+      👀 Ama kelimeyi kafamızdan uydurmayız.
+      <b>Doğru kullanılan biçimini öğreniriz.</b>
+    </p>
+
+  </div>
+
+</div>
+
+</section>
+
+
+<!-- ======================================================
+     2. EŞLEŞTİRME
+====================================================== -->
+
+<section id="match" class="section">
+
+<div class="card">
+
+  <div class="title">
+    <span class="emoji">🧩</span>
+    <h2>Kelime Eşleştirme</h2>
+    <p>10 kelime çifti seni bekliyor!</p>
+  </div>
+
+  <div class="instructions">
+    👆 Önce normal sözcüğe, sonra onun pekiştirilmiş hâline dokun.
+  </div>
+
+  <div class="practice-head">
+    <div class="counter">
+      Eşleşme: <span id="matchCount">0</span> / 10
+    </div>
+    <div class="progress">
+      <div class="progress-bar" id="matchProgress"></div>
+    </div>
+  </div>
+
+  <div class="match-grid">
+    <div id="normalWords"></div>
+    <div id="strongWords"></div>
+  </div>
+
+  <div id="matchFeedback" class="feedback"></div>
+
+</div>
+
+</section>
+
+
+<!-- ======================================================
+     3. CÜMLE AVCISI
+====================================================== -->
+
+<section id="sentences" class="section">
+
+<div class="card">
+
+  <div class="title">
+    <span class="emoji">🔎</span>
+    <h2>Cümle Avcısı</h2>
+    <p>10 cümlede doğru pekiştirme sözcüğünü bul!</p>
+  </div>
+
+  <div class="practice-head">
+    <div class="counter">
+      Cümle <span id="sentenceNo">1</span> / 10
+    </div>
+    <div class="progress">
+      <div class="progress-bar" id="sentenceProgress"></div>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="number">CÜMLEYİ DİKKATLİCE OKU 👀</div>
+    <h3 id="sentenceQuestion"></h3>
+  </div>
+
+  <div class="options" id="sentenceOptions"></div>
+
+  <div id="sentenceFeedback" class="feedback"></div>
+
+  <button class="next" id="nextSentence" disabled>
+    Sonraki Cümle ➜
+  </button>
+
+</div>
+
+</section>
+
+
+<!-- ======================================================
+     4. MİNİ TEST
+====================================================== -->
+
+<section id="quiz" class="section">
+
+<div class="card">
+
+  <div class="title">
+    <span class="emoji">🧠</span>
+    <h2>Pekiştirme Ustası Mini Testi</h2>
+    <p>15 farklı soru ile öğrendiklerini göster!</p>
+  </div>
+
+  <div class="practice-head">
+    <div class="counter">
+      Soru <span id="quizNo">1</span> / 15
+    </div>
+    <div class="progress">
+      <div class="progress-bar" id="quizProgress"></div>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="number" id="quizType">SORU</div>
+    <h3 id="quizQuestion"></h3>
+  </div>
+
+  <div class="options" id="quizOptions"></div>
+
+  <div id="quizFeedback" class="feedback"></div>
+
+  <button class="next" id="nextQuiz" disabled>
+    Sonraki Soru ➜
+  </button>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- ======================================================
+     SONUÇ
+====================================================== -->
+
+<div class="result" id="result">
+
+  <div class="result-card">
+
+    <div class="result-icon">🏆</div>
+
+    <div class="stars">⭐⭐⭐⭐⭐</div>
+
+    <h2>Harika İş Çıkardın!</h2>
+
+    <p id="resultText"></p>
+
+    <button class="restart" id="restart">
+      🔄 Baştan Başla
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+"use strict";
+
+/* ======================================================
+   SES
+====================================================== */
+
+let audioContext=null;
+
+function sound(type){
+  try{
+    audioContext=audioContext ||
+      new(window.AudioContext||window.webkitAudioContext)();
+
+    const osc=audioContext.createOscillator();
+    const gain=audioContext.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+
+    const now=audioContext.currentTime;
+
+    if(type==="correct"){
+      osc.frequency.setValueAtTime(550,now);
+      osc.frequency.exponentialRampToValueAtTime(900,now+.12);
+      gain.gain.setValueAtTime(.07,now);
+      gain.gain.exponentialRampToValueAtTime(.001,now+.22);
+      osc.start();
+      osc.stop(now+.22);
+    }else{
+      osc.frequency.setValueAtTime(230,now);
+      osc.frequency.exponentialRampToValueAtTime(150,now+.16);
+      gain.gain.setValueAtTime(.06,now);
+      gain.gain.exponentialRampToValueAtTime(.001,now+.2);
+      osc.start();
+      osc.stop(now+.2);
+    }
+  }catch(e){}
+}
+
+
+/* ======================================================
+   GENEL STATE
+====================================================== */
+
+const state={
+  score:0,
+  match:0,
+  sentence:0,
+  quiz:0,
+  quizCorrect:0
+};
+
+function addScore(n){
+  state.score+=n;
+  document.getElementById("score").textContent=state.score;
+}
+
+
+/* ======================================================
+   SEKME
+====================================================== */
+
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    document.querySelectorAll(".tab")
+      .forEach(x=>x.classList.remove("active"));
+
+    document.querySelectorAll(".section")
+      .forEach(x=>x.classList.remove("active"));
+
+    tab.classList.add("active");
+    document.getElementById(tab.dataset.tab)
+      .classList.add("active");
+  });
+});
+
+
+/* ======================================================
+   EŞLEŞTİRME - 10 SORU
+====================================================== */
+
+const pairs=[
+  ["Sarı","Sapsarı"],
+  ["Yeşil","Yemyeşil"],
+  ["Kırmızı","Kıpkırmızı"],
+  ["Mavi","Masmavi"],
+  ["Beyaz","Bembeyaz"],
+  ["Temiz","Tertemiz"],
+  ["Tatlı","Taptatlı"],
+  ["Hızlı","Hıphızlı"],
+  ["Mor","Mormor"],
+  ["Dolu","Dopdolu"]
+];
+
+let selectedWord=null;
+
+function shuffle(arr){
+  return [...arr].sort(()=>Math.random()-.5);
+}
+
+function setupMatch(){
+
+  const left=document.getElementById("normalWords");
+  const right=document.getElementById("strongWords");
+
+  left.innerHTML="";
+  right.innerHTML="";
+
+  shuffle(pairs).forEach(pair=>{
+    const b=document.createElement("button");
+
+    b.className="word";
+    b.textContent=pair[0];
+    b.dataset.key=pair[0];
+
+    b.addEventListener("click",selectMatch);
+
+    left.appendChild(b);
+  });
+
+  shuffle(pairs).forEach(pair=>{
+    const b=document.createElement("button");
+
+    b.className="word";
+    b.textContent=pair[1];
+    b.dataset.key=pair[0];
+
+    b.addEventListener("click",selectMatch);
+
+    right.appendChild(b);
+  });
+}
+
+function selectMatch(e){
+
+  const btn=e.currentTarget;
+
+  if(btn.classList.contains("correct"))return;
+
+  if(!selectedWord){
+
+    selectedWord=btn;
+    btn.classList.add("selected");
+
+    return;
+  }
+
+  if(selectedWord===btn)return;
+
+  if(selectedWord.dataset.key===btn.dataset.key){
+
+    selectedWord.classList.remove("selected");
+    selectedWord.classList.add("correct");
+
+    btn.classList.add("correct");
+
+    state.match++;
+    addScore(10);
+    sound("correct");
+
+    document.getElementById("matchCount").textContent=state.match;
+
+    document.getElementById("matchProgress").style.width=
+      (state.match/10*100)+"%";
+
+    document.getElementById("matchFeedback").textContent=
+      "🎉 Doğru! Kelime çiftini buldun.";
+
+    document.getElementById("matchFeedback").className=
+      "feedback good";
+
+  }else{
+
+    selectedWord.classList.add("wrong");
+    btn.classList.add("wrong");
+
+    sound("wrong");
+
+    document.getElementById("matchFeedback").textContent=
+      "🤔 Bu ikili eşleşmedi. Tekrar dene!";
+
+    document.getElementById("matchFeedback").className=
+      "feedback bad";
+
+    setTimeout(()=>{
+      selectedWord.classList.remove("wrong","selected");
+      btn.classList.remove("wrong");
+    },450);
+  }
+
+  selectedWord=null;
+}
+
+setupMatch();
+
+
+/* ======================================================
+   CÜMLE AVCISI - 10 SORU
+====================================================== */
+
+const sentenceData=[
+
+ {
+  q:"Güneş o kadar parlaktı ki gökyüzü _____ görünüyordu.",
+  a:"masmavi",
+  o:["masmavi","tertemiz","karmakarışık"]
+ },
+
+ {
+  q:"Yağmur altında kaldığım için _____ oldum.",
+  a:"sırılsıklam",
+  o:["bembeyaz","sırılsıklam","yemyeşil"]
+ },
+
+ {
+  q:"Annem evi temizledi. Her yer _____ oldu.",
+  a:"tertemiz",
+  o:["tertemiz","kıpkırmızı","dopdolu"]
+ },
+
+ {
+  q:"Baharda ağaçların yaprakları _____ oldu.",
+  a:"yemyeşil",
+  o:["yemyeşil","sapsarı","büsbütün"]
+ },
+
+ {
+  q:"Kırmızı elmayı görünce _____ bir renk gördüm.",
+  a:"kıpkırmızı",
+  o:["kıpkırmızı","masmavi","tertemiz"]
+ },
+
+ {
+  q:"Otobüs yolcularla _____ olmuştu.",
+  a:"dopdolu",
+  o:["dopdolu","sapsarı","yapayalnız"]
+ },
+
+ {
+  q:"Odasındaki oyuncaklar her yere dağılmıştı. Oda _____ olmuştu.",
+  a:"karmakarışık",
+  o:["karmakarışık","bembeyaz","tertemiz"]
+ },
+
+ {
+  q:"Kar yağınca bahçe _____ oldu.",
+  a:"bembeyaz",
+  o:["bembeyaz","yemyeşil","kıpkırmızı"]
+ },
+
+ {
+  q:"Çocuk parkta arkadaşlarıyla oynarken _____ eğlendi.",
+  a:"doya doya",
+  o:["doya doya","sapsarı","bembeyaz"]
+ },
+
+ {
+  q:"Küçük çocuk evde tek başına kalınca _____ hissetti.",
+  a:"yapayalnız",
+  o:["yapayalnız","masmavi","tertemiz"]
+ }
+
+];
+
+let sentenceAnswered=false;
+
+function loadSentence(){
+
+  const item=sentenceData[state.sentence];
+
+  document.getElementById("sentenceNo").textContent=
+    state.sentence+1;
+
+  document.getElementById("sentenceProgress").style.width=
+    (state.sentence/10*100)+"%";
+
+  document.getElementById("sentenceQuestion").innerHTML=
+    item.q.replace("_____","<span class='fill-input'>_____</span>");
+
+  const box=document.getElementById("sentenceOptions");
+  box.innerHTML="";
+
+  document.getElementById("sentenceFeedback").textContent="";
+  document.getElementById("sentenceFeedback").className="feedback";
+
+  document.getElementById("nextSentence").disabled=true;
+
+  sentenceAnswered=false;
+
+  shuffle(item.o).forEach(option=>{
+    const b=document.createElement("button");
+    b.className="option";
+    b.textContent=option;
+
+    b.addEventListener("click",()=>{
+      answerSentence(b,option,item.a);
+    });
+
+    box.appendChild(b);
+  });
+}
+
+function answerSentence(btn,selected,answer){
+
+  if(sentenceAnswered)return;
+
+  if(selected===answer){
+
+    sentenceAnswered=true;
+
+    btn.classList.add("correct");
+
+    document.querySelectorAll("#sentenceOptions .option")
+      .forEach(x=>x.disabled=true);
+
+    const q=document.getElementById("sentenceQuestion");
+
+    q.innerHTML=
+      q.innerHTML.replace(
+        "<span class=\"fill-input\">_____</span>",
+        "<span class=\"fill-input\">"+answer+"</span>"
+      );
+
+    state.sentence++;
+    addScore(15);
+    sound("correct");
+
+    document.getElementById("sentenceFeedback").textContent=
+      "🎯 Harika! Cümleye en uygun sözcüğü buldun.";
+
+    document.getElementById("sentenceFeedback").className=
+      "feedback good";
+
+    document.getElementById("nextSentence").disabled=false;
+
+  }else{
+
+    btn.classList.add("wrong");
+    sound("wrong");
+
+    document.getElementById("sentenceFeedback").textContent=
+      "💭 Tekrar düşün. Cümlenin anlamına dikkat et.";
+
+    document.getElementById("sentenceFeedback").className=
+      "feedback bad";
+
+    setTimeout(()=>btn.classList.remove("wrong"),400);
+  }
+}
+
+document.getElementById("nextSentence")
+.addEventListener("click",()=>{
+
+  if(state.sentence<sentenceData.length-1){
+
+    loadSentence();
+
+  }else{
+
+    showResult("sentences");
+  }
+});
+
+loadSentence();
+
+
+/* ======================================================
+   MİNİ TEST - 15 SORU
+====================================================== */
+
+const quizData=[
+
+ {
+  type:"Tanım",
+  q:"Pekiştirme sözcükleri neden kullanılır?",
+  a:"Anlamı güçlendirmek için",
+  o:[
+    "Anlamı güçlendirmek için",
+    "Kelimeyi kısaltmak için",
+    "Cümleyi soru yapmak için",
+    "Kelimeyi yabancılaştırmak için"
+  ]
+ },
+
+ {
+  type:"Doğru Sözcüğü Bul",
+  q:"“Sarı” sözcüğünün pekiştirilmiş hâli hangisidir?",
+  a:"Sapsarı",
+  o:["Samsarı","Sapsarı","Sarsarı","Sasarı"]
+ },
+
+ {
+  type:"Doğru Sözcüğü Bul",
+  q:"“Temiz” sözcüğünün pekiştirilmiş hâli hangisidir?",
+  a:"Tertemiz",
+  o:["Teptertemiz","Tertemiz","Tes temiz","Temtemiz"]
+ },
+
+ {
+  type:"Doğru Sözcüğü Bul",
+  q:"“Mavi” sözcüğünün pekiştirilmiş hâli hangisidir?",
+  a:"Masmavi",
+  o:["Mapmavi","Marmavi","Masmavi","Mamavi"]
+ },
+
+ {
+  type:"Doğru Sözcüğü Bul",
+  q:"“Beyaz” sözcüğünün pekiştirilmiş hâli hangisidir?",
+  a:"Bembeyaz",
+  o:["Bembeyaz","Bepbeyaz","Bersbeyaz","Beybeyaz"]
+ },
+
+ {
+  type:"Anlam",
+  q:"“Yemyeşil çimenler” sözünde anlatılmak istenen nedir?",
+  a:"Çimenlerin çok canlı yeşil olması",
+  o:[
+    "Çimenlerin kuru olması",
+    "Çimenlerin çok canlı yeşil olması",
+    "Çimenlerin beyaz olması",
+    "Çimenlerin hiç olmaması"
+  ]
+ },
+
+ {
+  type:"Kural",
+  q:"Aşağıdaki harflerden hangileri birçok pekiştirme sözcüğünün oluşumunda kullanılır?",
+  a:"m, p, r, s",
+  o:["a, e, i, o","m, p, r, s","b, c, d, f","k, l, n, t"]
+ },
+
+ {
+  type:"Doğru Sözcüğü Bul",
+  q:"“Kırmızı” sözcüğünün pekiştirilmiş hâli hangisidir?",
+  a:"Kıpkırmızı",
+  o:["Kıpkırmızı","Kırmızmı","Kırpkırmızı","Kıkrmızı"]
+ },
+
+ {
+  type:"Kullanım",
+  q:"Pekiştirme sözcükleri nerelerde kullanılabilir?",
+  a:"Konuşma ve yazılarımızda",
+  o:[
+    "Sadece matematikte",
+    "Sadece sözlükte",
+    "Konuşma ve yazılarımızda",
+    "Sadece sayılarda"
+  ]
+ },
+
+ {
+  type:"Dikkat",
+  q:"Aşağıdakilerden hangisi kalıplaşmış bir pekiştirme sözcüğüdür?",
+  a:"Sırılsıklam",
+  o:["Sarısarı","Sırılsıklam","Mavimavi","Temiztemiz"]
+ },
+
+ {
+  type:"Dikkat",
+  q:"Aşağıdakilerden hangisi doğru yazılmıştır?",
+  a:"Karmakarışık",
+  o:["Karmakarışık","Karmpkarışık","Karskarışık","Karmakarışıklar"]
+ },
+
+ {
+  type:"Anlam",
+  q:"“Tertemiz bir oda” sözündeki “tertemiz” neyi anlatır?",
+  a:"Odanın çok temiz olduğunu",
+  o:[
+    "Odanın çok kirli olduğunu",
+    "Odanın çok temiz olduğunu",
+    "Odanın çok küçük olduğunu",
+    "Odanın boş olduğunu"
+  ]
+ },
+
+ {
+  type:"Doğru Sözcüğü Bul",
+  q:"“Tatlı” sözcüğünün doğru pekiştirilmiş hâli hangisidir?",
+  a:"Taptatlı",
+  o:["Tamtatlı","Taptatlı","Tartatlı","Tastatlı"]
+ },
+
+ {
+  type:"Doğru Sözcüğü Bul",
+  q:"“Hızlı” sözcüğünün pekiştirilmiş hâli hangisidir?",
+  a:"Hıphızlı",
+  o:["Hıphızlı","Hızhızlı","Hırhızlı","Hısmızlı"]
+ },
+
+ {
+  type:"Dikkat",
+  q:"Hangisi pekiştirme sözcüğü değildir?",
+  a:"Mavi",
+  o:["Masmavi","Sapsarı","Mavi","Bembeyaz"]
+ }
+
+];
+
+let quizAnswered=false;
+
+function loadQuiz(){
+
+  const item=quizData[state.quiz];
+
+  document.getElementById("quizNo").textContent=
+    state.quiz+1;
+
+  document.getElementById("quizProgress").style.width=
+    (state.quiz/15*100)+"%";
+
+  document.getElementById("quizType").textContent=
+    item.type.toUpperCase();
+
+  document.getElementById("quizQuestion").textContent=
+    item.q;
+
+  const box=document.getElementById("quizOptions");
+
+  box.innerHTML="";
+
+  document.getElementById("quizFeedback").textContent="";
+  document.getElementById("quizFeedback").className="feedback";
+
+  document.getElementById("nextQuiz").disabled=true;
+
+  quizAnswered=false;
+
+  shuffle(item.o).forEach(option=>{
+
+    const b=document.createElement("button");
+
+    b.className="option";
+    b.textContent=option;
+
+    b.addEventListener("click",()=>{
+      answerQuiz(b,option,item.a);
+    });
+
+    box.appendChild(b);
+  });
+}
+
+function answerQuiz(btn,selected,answer){
+
+  if(quizAnswered)return;
+
+  if(selected===answer){
+
+    quizAnswered=true;
+
+    btn.classList.add("correct");
+
+    document.querySelectorAll("#quizOptions .option")
+      .forEach(x=>x.disabled=true);
+
+    state.quizCorrect++;
+    addScore(10);
+    sound("correct");
+
+    document.getElementById("quizFeedback").textContent=
+      "🎉 Doğru cevap!";
+
+    document.getElementById("quizFeedback").className=
+      "feedback good";
+
+    document.getElementById("nextQuiz").disabled=false;
+
+  }else{
+
+    btn.classList.add("wrong");
+    sound("wrong");
+
+    document.getElementById("quizFeedback").textContent=
+      "🤔 Bu cevap değil. Bir kez daha düşün!";
+
+    document.getElementById("quizFeedback").className=
+      "feedback bad";
+
+    setTimeout(()=>btn.classList.remove("wrong"),400);
+  }
+}
+
+document.getElementById("nextQuiz")
+.addEventListener("click",()=>{
+
+  if(state.quiz<quizData.length-1){
+
+    state.quiz++;
+    loadQuiz();
+
+  }else{
+
+    showResult("quiz");
+  }
+});
+
+loadQuiz();
+
+
+/* ======================================================
+   SONUÇ VE KONFETİ
+====================================================== */
+
+function confetti(){
+
+  const icons=["🎉","⭐","✨","🌈","🎊","💫"];
+
+  for(let i=0;i<90;i++){
+
+    const x=document.createElement("div");
+
+    x.className="confetti";
+
+    x.textContent=
+      icons[Math.floor(Math.random()*icons.length)];
+
+    x.style.left=Math.random()*100+"vw";
+    x.style.fontSize=(12+Math.random()*18)+"px";
+    x.style.animationDuration=(2+Math.random()*2)+"s";
+    x.style.animationDelay=Math.random()*.5+"s";
+
+    document.body.appendChild(x);
+
+    setTimeout(()=>x.remove(),5000);
+  }
+}
+
+function showResult(source){
+
+  let title="";
+  let text="";
+
+  if(source==="quiz"){
+
+    const percent=Math.round(
+      state.quizCorrect/15*100
+    );
+
+    if(percent>=90){
+      title="🏆 Pekiştirme Ustası!";
+      text=
+        `15 sorunun ${state.quizCorrect} tanesini doğru yaptın.
+        Konuyu gerçekten kavramışsın!`;
+    }
+    else if(percent>=70){
+      title="🌟 Çok Başarılı!";
+      text=
+        `15 sorunun ${state.quizCorrect} tanesini doğru yaptın.
+        Birkaç küçük tekrar ile daha da güçlenebilirsin.`;
+    }
+    else{
+      title="💪 Güzel Başlangıç!";
+      text=
+        `15 sorunun ${state.quizCorrect} tanesini doğru yaptın.
+        Konu anlatımına tekrar bakıp yeniden deneyebilirsin.`;
+    }
+
+  }else{
+
+    title="🎉 Harika İş Çıkardın!";
+
+    text=
+      `Cümle Avcısı'nı tamamladın.<br>
+       Toplam puanın: <b>${state.score}</b><br><br>
+       Pekiştirme sözcükleriyle artık çok daha güçlüsün!`;
+  }
+
+  document.querySelector(".result-card h2").textContent=title;
+
+  document.getElementById("resultText").innerHTML=text;
+
+  document.getElementById("result").classList.add("show");
+
+  confetti();
+}
+
+
+/* ======================================================
+   YENİDEN BAŞLAT
+====================================================== */
+
+document.getElementById("restart")
+.addEventListener("click",()=>{
+
+  state.score=0;
+  state.match=0;
+  state.sentence=0;
+  state.quiz=0;
+  state.quizCorrect=0;
+
+  document.getElementById("score").textContent="0";
+  document.getElementById("matchCount").textContent="0";
+
+  document.getElementById("matchProgress").style.width="0%";
+
+  setupMatch();
+  loadSentence();
+  loadQuiz();
+
+  document.getElementById("result")
+    .classList.remove("show");
+
+  document.querySelectorAll(".tab")
+    .forEach(x=>x.classList.remove("active"));
+
+  document.querySelectorAll(".section")
+    .forEach(x=>x.classList.remove("active"));
+
+  document.querySelector('[data-tab="learn"]')
+    .classList.add("active");
+
+  document.getElementById("learn")
+    .classList.add("active");
+});
+
+</script>
+
+</body>
+</html>

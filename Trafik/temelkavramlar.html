@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trafik Dedektifleri | TG.4.1.1</title>
+<style>
+:root{
+  --bg:#eef5f7;--panel:#ffffff;--ink:#17324d;--muted:#52697c;--accent:#0b7285;
+  --accent2:#f08c46;--ok:#16794c;--bad:#b42318;--line:#c8d7df;--shadow:0 8px 24px rgba(23,50,77,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;line-height:1.5}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{max-width:1100px;margin:0 auto;padding:18px}
+header{background:#17324d;color:#fff;border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+header h1{margin:0 0 6px;font-size:clamp(24px,4vw,38px)}
+header p{margin:0;color:#eaf3f7}
+.topbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.badge{background:#e6f6f8;color:#164e5b;border-radius:999px;padding:7px 11px;font-weight:700;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.stat b{display:block;font-size:20px}.stat span{font-size:12px;color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.stage{font-weight:800;color:var(--accent);font-size:14px;margin-bottom:6px}
+.prompt{font-size:clamp(20px,3vw,28px);font-weight:800;margin:0 0 10px}
+.instruction{background:#f3f8fa;border-left:5px solid var(--accent);padding:10px 12px;border-radius:10px;color:#24475c}
+.options{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.option{min-height:64px;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:14px;padding:12px 15px;text-align:left;font-weight:700}
+.option:hover,.option:focus-visible{border-color:var(--accent);outline:3px solid #b9e4ea}
+.option.selected{border-color:var(--accent);background:#e6f7fa;box-shadow:inset 0 0 0 2px var(--accent)}
+.option.correct{border-color:var(--ok);background:#eaf8f0;color:#145c3b}
+.option.wrong{border-color:var(--bad);background:#fff0ef;color:#8d1c14}
+.feedback{margin-top:16px;padding:14px;border-radius:14px;border:2px solid}
+.feedback.ok{background:#eaf8f0;border-color:#77c69c;color:#145c3b}
+.feedback.bad{background:#fff0ef;border-color:#e8a19a;color:#8d1c14}
+.feedback strong{display:block;margin-bottom:4px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:800;min-height:46px}
+.btn.primary{background:var(--accent);color:#fff}.btn.secondary{background:#e8eef2;color:#17324d}
+.btn.warn{background:#fff0dd;color:#7a420f}.btn.danger{background:#ffe9e7;color:#8d1c14}
+.btn:disabled{background:#dfe6ea;color:#667784;cursor:not-allowed;opacity:1}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.match-grid,.class-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.match-col,.target{background:#f8fbfc;border:1px dashed var(--line);border-radius:14px;padding:12px}
+.match-item,.sort-card,.class-card{display:block;width:100%;margin:8px 0;background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:12px;text-align:left;font-weight:700;min-height:52px}
+.match-item.selected,.class-card.selected{border-color:var(--accent);background:#e6f7fa}
+.match-item.locked,.class-card.locked{border-color:var(--ok);background:#eaf8f0;color:#145c3b}
+.class-card.placed{opacity:.55}
+.target{min-height:150px}.target h3{margin:0;font-size:16px}
+.target.over{outline:3px solid #b9e4ea}
+.sort-zone{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.sort-zone .target{min-height:180px}
+.hint{margin-top:12px;padding:12px;border-radius:12px;background:#fff7df;border:1px solid #e9c96b;color:#604c0b}
+.progress{height:10px;background:#dce7ec;border-radius:999px;overflow:hidden;margin:14px 0}
+.progress i{display:block;height:100%;background:var(--accent);width:0}
+.footer-note{margin-top:14px;color:var(--muted);font-size:13px}
+.final{display:none}
+.final.show{display:block}
+.report{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.review-item{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;background:#fbfdfe}
+.review-item h3{margin:0 0 6px}
+.small{font-size:13px;color:var(--muted)}
+@media(max-width:700px){
+ .app{padding:10px}.stats,.report{grid-template-columns:repeat(2,1fr)}
+ .options,.match-grid,.class-grid,.sort-zone{grid-template-columns:1fr}
+ .nav{flex-direction:column}.nav .btn{width:100%}
+ .card{padding:16px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <h1>🚦 Trafik Dedektifleri</h1>
+  <p>TG.4.1.1 — Trafikle ilgili temel kavramları tanı.</p>
+  <div class="topbar">
+    <span class="badge">4. Sınıf</span><span class="badge">14 görev</span><span class="badge">4 aşama</span>
+    <span class="badge">Tanı → Ayırt Et → Transfer</span>
+  </div>
+</header>
+
+<div class="stats">
+ <div class="stat"><b id="score">0</b><span>Puan</span></div>
+ <div class="stat"><b id="energy">5</b><span>Enerji</span></div>
+ <div class="stat"><b id="wrong">0</b><span>Yanlış deneme</span></div>
+ <div class="stat"><b id="pos">1 / 14</b><span>Görev</span></div>
+</div>
+
+<div class="progress"><i id="progressBar"></i></div>
+<main id="taskView"></main>
+<section id="final" class="card final"></section>
+</div>
+
+<script>
+const TASKS = [{"id": "t01", "stage": 1, "type": "mc", "prompt": "Yol üzerinde araçların ve yayaların hareket ettiği düzenin adı hangisidir?", "instruction": "Doğru kavramı seç.", "data": {"options": [{"id": "a", "text": "Trafik"}, {"id": "b", "text": "Okul geçidi"}, {"id": "c", "text": "Üst geçit"}, {"id": "d", "text": "Yaya geçidi"}]}, "correctAnswer": "a", "acceptedAnswers": ["a"], "explanation": "Araçların, yayaların ve yolun oluşturduğu hareket ve düzen trafik kavramıyla ifade edilir.", "hint": "Bu kavram yalnızca yayaları değil, trafikteki genel hareketi anlatır."}, {"id": "t02", "stage": 1, "type": "mc", "prompt": "Yayaların güvenli biçimde karşıya geçmesi için trafik işaretleriyle belirlenmiş alan hangisidir?", "instruction": "Doğru kavramı seç.", "data": {"options": [{"id": "a", "text": "Yaya geçidi"}, {"id": "b", "text": "Alt geçit"}, {"id": "c", "text": "Kavşak"}, {"id": "d", "text": "Şerit"}]}, "correctAnswer": "a", "acceptedAnswers": ["a"], "explanation": "Yaya geçidi, yayaların güvenli geçebilmesi için trafik işaretleriyle belirlenen alandır.", "hint": "Adında 'yaya' geçen kavrama dikkat et."}, {"id": "t03", "stage": 1, "type": "tf", "prompt": "Okul çevresinde özellikle öğrencilerin geçmesi için ayrılan ve trafik işaretiyle belirlenen alan 'okul geçidi'dir.", "instruction": "Doğruysa ✓, yanlışsa ✗ seç.", "data": {"options": [{"id": "true", "text": "✓ Doğru"}, {"id": "false", "text": "✗ Yanlış"}]}, "correctAnswer": "true", "acceptedAnswers": ["true"], "explanation": "Okul geçidi, özellikle öğrencilerin geçmesi için belirlenmiş alandır.", "hint": "Kavramın adındaki 'okul' sana ipucu verir."}, {"id": "t04", "stage": 1, "type": "mc", "prompt": "Karayolunun başka bir karayolunu veya demiryolunu ALTTAN geçmesini sağlayan yapı hangisidir?", "instruction": "Doğru kavramı seç.", "data": {"options": [{"id": "a", "text": "Alt geçit"}, {"id": "b", "text": "Üst geçit"}, {"id": "c", "text": "Okul geçidi"}, {"id": "d", "text": "Yaya geçidi"}]}, "correctAnswer": "a", "acceptedAnswers": ["a"], "explanation": "Alt geçit, yolun başka bir yolu veya demiryolunu alttan geçmesini sağlayan yapıdır.", "hint": "'Alt' kelimesi yönü söylüyor."}, {"id": "t05", "stage": 2, "type": "matching", "prompt": "Kavramları doğru açıklamalarıyla eşleştir.", "instruction": "Önce soldaki kavrama, sonra doğru açıklamaya dokun.", "data": {"pairs": [{"id": "yaya", "left": "Yaya geçidi", "right": "Yayaların güvenli geçmesi için belirlenmiş alan"}, {"id": "okul", "left": "Okul geçidi", "right": "Özellikle öğrencilerin geçmesi için belirlenmiş alan"}, {"id": "alt", "left": "Alt geçit", "right": "Yolun başka bir yolu veya demiryolunu alttan geçmesini sağlayan yapı"}, {"id": "ust", "left": "Üst geçit", "right": "Yolun başka bir yolu veya demiryolunu üstten geçmesini sağlayan yapı"}]}, "correctAnswer": "all", "acceptedAnswers": ["all"], "explanation": "Her kavram, görevini veya yapısını anlatan açıklamayla eşleşir.", "hint": "Alt = alttan, üst = üstten. Yaya ve okul geçitlerinde kimin geçişi öne çıkıyor?"}, {"id": "t06", "stage": 2, "type": "sorting", "prompt": "Geçitleri 'yapı olanlar' ve 'geçiş alanı olanlar' şeklinde ayır.", "instruction": "Kartları uygun kutuya taşı. Dokunmatik cihazda karta, sonra hedef kutuya dokunabilirsin.", "data": {"cards": [{"id": "alt", "text": "Alt geçit"}, {"id": "ust", "text": "Üst geçit"}, {"id": "yaya", "text": "Yaya geçidi"}, {"id": "okul", "text": "Okul geçidi"}], "targets": [{"id": "yapi", "text": "Yapı"}, {"id": "alan", "text": "Geçiş alanı"}]}, "correctAnswer": {"alt": "yapi", "ust": "yapi", "yaya": "alan", "okul": "alan"}, "acceptedAnswers": ["exact"], "explanation": "Alt ve üst geçit birer yapıdır; yaya ve okul geçidi ise geçiş için belirlenmiş alanlardır.", "hint": "'Geçit' kelimesine bakmak yetmez; yolun nasıl geçtiğini düşün."}, {"id": "t07", "stage": 2, "type": "mc", "prompt": "Bir çocuk okulun yakınında, öğrencilerin karşıya geçmesi için özel olarak belirlenmiş bir geçit görüyor. Bu hangi kavramdır?", "instruction": "Kavramı seç.", "data": {"options": [{"id": "a", "text": "Okul geçidi"}, {"id": "b", "text": "Üst geçit"}, {"id": "c", "text": "Alt geçit"}, {"id": "d", "text": "Şerit"}]}, "correctAnswer": "a", "acceptedAnswers": ["a"], "explanation": "Okul geçidi, özellikle öğrencilerin geçmesi için belirlenmiş alandır.", "hint": "Yer: okul çevresi. Kullanıcı: özellikle öğrenciler."}, {"id": "t08", "stage": 2, "type": "odd", "prompt": "Hangisi diğerlerinden farklıdır?", "instruction": "Üçü geçitle, biri ise başka bir trafik kavramıyla ilgilidir. Farklı olanı bul.", "data": {"options": [{"id": "a", "text": "Yaya geçidi"}, {"id": "b", "text": "Okul geçidi"}, {"id": "c", "text": "Üst geçit"}, {"id": "d", "text": "Trafik"}]}, "correctAnswer": "d", "acceptedAnswers": ["d"], "explanation": "Yaya geçidi, okul geçidi ve üst geçit 'geçit' kavramlarıdır; trafik daha genel bir kavramdır.", "hint": "Üç seçenekte 'geçit' sözcüğünü görüyorsun."}, {"id": "t09", "stage": 3, "type": "mc", "prompt": "Bir yolun başka bir yolun ÜSTÜNDEN geçtiği yapıyı tanıyorsun. Bu hangisidir?", "instruction": "Doğru kavramı seç.", "data": {"options": [{"id": "a", "text": "Üst geçit"}, {"id": "b", "text": "Alt geçit"}, {"id": "c", "text": "Yaya geçidi"}, {"id": "d", "text": "Okul geçidi"}]}, "correctAnswer": "a", "acceptedAnswers": ["a"], "explanation": "Üst geçit, yolun başka bir yolu veya demiryolunu üstten geçmesini sağlayan yapıdır.", "hint": "ÜST + geçit."}, {"id": "t10", "stage": 3, "type": "classification", "prompt": "Kavramları 'yolun üstünden/alttan geçen yapı' ve 'yayaların geçişi için alan' olarak sınıflandır.", "instruction": "Kartı seçip hedefe dokun.", "data": {"cards": [{"id": "ust", "text": "Üst geçit"}, {"id": "alt", "text": "Alt geçit"}, {"id": "yaya", "text": "Yaya geçidi"}, {"id": "okul", "text": "Okul geçidi"}], "targets": [{"id": "yapi", "text": "Yolun üstünden/alttan geçen yapı"}, {"id": "alan", "text": "Yayaların geçişi için alan"}]}, "correctAnswer": {"ust": "yapi", "alt": "yapi", "yaya": "alan", "okul": "alan"}, "acceptedAnswers": ["exact"], "explanation": "Üst ve alt geçitler yolun seviyesini değiştiren yapılardır. Yaya ve okul geçitleri yayaların geçişi için belirlenmiş alanlardır.", "hint": "'Üst' ve 'alt' kelimeleri yapıların yol seviyesine göre konumunu gösterir."}, {"id": "t11", "stage": 3, "type": "mc", "prompt": "Aşağıdakilerden hangisi trafikle ilgili temel kavramlardan biridir?", "instruction": "MEB programında yer alan kavramlardan birini seç.", "data": {"options": [{"id": "a", "text": "Yaya geçidi"}, {"id": "b", "text": "Hikâye kahramanı"}, {"id": "c", "text": "Bitki kökü"}, {"id": "d", "text": "Mevsim"}]}, "correctAnswer": "a", "acceptedAnswers": ["a"], "explanation": "Yaya geçidi, trafikle ilgili temel kavramlar arasında yer alır.", "hint": "Trafikte yayaların güvenli geçişiyle ilgili olanı ara."}, {"id": "t12", "stage": 3, "type": "mc", "prompt": "Bir kavramı tanırken 'ALTTAN' sözcüğünü görüyorsan hangi kavrama ulaşırsın?", "instruction": "Kavramı seç.", "data": {"options": [{"id": "a", "text": "Alt geçit"}, {"id": "b", "text": "Üst geçit"}, {"id": "c", "text": "Okul geçidi"}, {"id": "d", "text": "Yaya geçidi"}]}, "correctAnswer": "a", "acceptedAnswers": ["a"], "explanation": "Alt geçit, karayolunun başka bir yolu veya demiryolunu alttan geçmesini sağlar.", "hint": "Yön kelimesi doğrudan kavramın içinde."}, {"id": "t13", "stage": 4, "type": "boss", "prompt": "Trafik Dedektifi Finali: Deniz okul yolunda bir alan görüyor. Bu alan özellikle öğrencilerin karşıya geçmesi için ayrılmış ve trafik işaretiyle belirlenmiş. Deniz bu kavramı tanımak istiyor. Hangisini seçmelidir?", "instruction": "Dedektif gibi ipuçlarını birleştir ve doğru kavramı seç.", "data": {"options": [{"id": "a", "text": "Okul geçidi"}, {"id": "b", "text": "Alt geçit"}, {"id": "c", "text": "Üst geçit"}, {"id": "d", "text": "Trafik"}]}, "correctAnswer": "a", "acceptedAnswers": ["a"], "explanation": "İki ipucu birlikte düşünülür: okul çevresi/öğrenciler ve geçiş için belirlenmiş alan. Bu, okul geçididir.", "hint": "İpuçları: öğrenciler + geçiş için ayrılmış alan."}, {"id": "t14", "stage": 4, "type": "boss", "prompt": "Son görev: Bir kavram kartında 'Yayaların güvenli geçebilmesi için trafik işaretleriyle belirlenmiş alan' yazıyor. Kartın başlığı ne olmalı?", "instruction": "Tanımı okuyup kavramı seç.", "data": {"options": [{"id": "a", "text": "Yaya geçidi"}, {"id": "b", "text": "Okul geçidi"}, {"id": "c", "text": "Alt geçit"}, {"id": "d", "text": "Üst geçit"}]}, "correctAnswer": "a", "acceptedAnswers": ["a"], "explanation": "Bu tanım yaya geçidini ifade eder.", "hint": "Tanımda 'yayaların güvenli geçmesi' ifadesi var."}];
+const clone = x => JSON.parse(JSON.stringify(x));
+const shuffle = arr => {
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+};
+function normalize(s){
+ return String(s??"").toLocaleLowerCase("tr-TR").replace(/[’‘`´]/g,"'").replace(/\\s+/g," ").trim();
+}
+let state;
+
+function freshState(){
+ const tasks = clone(TASKS).map(t=>{
+   const r={status:"pending",answer:null,attempts:0,firstTry:false,hintUsed:false,lastResult:null,firstWrong:null,rewardGranted:false,locked:false};
+   if(t.type==="mc"||t.type==="tf"||t.type==="odd"||t.type==="boss") t.data.options=shuffle(t.data.options);
+   if(t.type==="matching") t.data.rightOrder=shuffle(t.data.pairs);
+   if(t.type==="sorting") t.data.cards=shuffle(t.data.cards);
+   if(t.type==="classification") t.data.cards=shuffle(t.data.cards);
+   return {...t,result:r};
+ });
+ return {currentIndex:0,score:0,energy:5,wrongCount:0,skippedCount:0,hintCount:0,tasks,history:[],startedAt:Date.now()};
+}
+function init(){state=freshState(); render(); updateStats()}
+function current(){return state.tasks[state.currentIndex]}
+function updateStats(){
+ document.getElementById("score").textContent=state.score;
+ document.getElementById("energy").textContent=state.energy;
+ document.getElementById("wrong").textContent=state.wrongCount;
+ document.getElementById("pos").textContent=(state.currentIndex+1)+" / "+state.tasks.length;
+ document.getElementById("progressBar").style.width=((state.currentIndex+1)/state.tasks.length*100)+"%";
+}
+function stageName(n){return ["","1 • GÖR VE TANI","2 • EŞLEŞTİR VE AYIRT ET","3 • KAVRAMI ÇÖZ","4 • TRAFİK DEDEKTİFİ FİNALİ"][n]}
+
+function render(){
+ const t=current(), r=t.result;
+ const root=document.getElementById("taskView");
+ root.innerHTML="";
+ const card=document.createElement("section"); card.className="card";
+ card.innerHTML=`<div class="stage">${stageName(t.stage)}</div>
+ <h2 class="prompt">${t.prompt}</h2>
+ <div class="instruction">${t.instruction}</div>`;
+ const body=document.createElement("div");
+ if(t.type==="mc"||t.type==="tf"||t.type==="odd"||t.type==="boss") renderOptions(body,t);
+ if(t.type==="matching") renderMatching(body,t);
+ if(t.type==="sorting") renderClassification(body,t);
+ if(t.type==="classification") renderClassification(body,t);
+ card.appendChild(body);
+ if(r.hintUsed) card.insertAdjacentHTML("beforeend",`<div class="hint">💡 <b>İpucu:</b> ${t.hint}</div>`);
+ if(r.lastResult) card.insertAdjacentHTML("beforeend", feedbackHTML(t));
+ const actions=document.createElement("div"); actions.className="actions";
+ const hintBtn=document.createElement("button"); hintBtn.className="btn warn"; hintBtn.textContent=r.hintUsed?"💡 İpucu kullanıldı":"💡 İpucu"; hintBtn.disabled=r.hintUsed||r.status==="success";
+ hintBtn.onclick=useHint; actions.appendChild(hintBtn);
+ const skip=document.createElement("button"); skip.className="btn secondary"; skip.textContent="⏭️ Soruyu Geç"; skip.disabled=r.status==="success"; skip.onclick=skipTask; actions.appendChild(skip);
+ card.appendChild(actions);
+ const nav=document.createElement("div");nav.className="nav";
+ const prev=document.createElement("button");prev.className="btn secondary";prev.textContent="⬅️ Önceki Soru";prev.disabled=state.currentIndex===0;prev.onclick=()=>go(-1);
+ const next=document.createElement("button");next.className="btn primary";next.textContent="➡️ Sonraki Soru";next.disabled=!(r.status==="success"||r.status==="skipped");next.onclick=()=>go(1);
+ nav.append(prev,next);card.appendChild(nav);
+ const note=document.createElement("div");note.className="footer-note";note.textContent="Yanlış cevap görevi bitirmez. Düzelt ve aynı görevde tekrar dene.";card.appendChild(note);
+ root.appendChild(card);
+ updateStats();
+}
+function feedbackHTML(t){
+ const r=t.result;
+ if(r.lastResult==="success") return `<div class="feedback ok"><strong>✓ Doğru!</strong>${t.explanation}</div>`;
+ return `<div class="feedback bad"><strong>✗ Henüz doğru değil.</strong>İpucunu kullanabilir ve aynı görevde tekrar deneyebilirsin.</div>`;
+}
+function useHint(){const r=current().result;if(r.hintUsed||r.status==="success")return;r.hintUsed=true;state.hintCount++;render()}
+function giveReward(t){
+ const r=t.result;if(r.rewardGranted)return;
+ r.rewardGranted=true;r.locked=true;state.score += r.firstTry ? 10 : 6;
+ if(!state.history.includes(t.id))state.history.push(t.id);
+}
+function markSuccess(t,answer){
+ const r=t.result;
+ if(r.status==="success")return;
+ r.answer=answer;r.status="success";r.lastResult="success";
+ r.firstTry=(r.attempts===1);
+ giveReward(t);render();
+}
+function wrong(t,answer){
+ const r=t.result;r.attempts++;r.lastResult="wrong";
+ if(!r.firstWrong)r.firstWrong=answer;
+ state.wrongCount++;state.energy=Math.max(0,state.energy-1);r.answer=answer;render();
+}
+function submitSimple(t,answer){
+ const r=t.result;if(r.status==="success")return;
+ r.attempts++;
+ const ok=String(answer)===String(t.correctAnswer);
+ if(ok) markSuccess(t,answer); else wrong(t,answer);
+}
+function renderOptions(body,t){
+ const wrap=document.createElement("div");wrap.className="options";
+ t.data.options.forEach(o=>{
+   const b=document.createElement("button");b.className="option";b.textContent=o.text;
+   if(t.result.answer===o.id && t.result.lastResult==="wrong") b.classList.add("wrong");
+   b.onclick=()=>submitSimple(t,o.id);wrap.appendChild(b);
+ });body.appendChild(wrap);
+}
+function renderMatching(body,t){
+ const grid=document.createElement("div");grid.className="match-grid";
+ const left=document.createElement("div");left.className="match-col";
+ const right=document.createElement("div");right.className="match-col";
+ left.innerHTML="<b>Kavramlar</b>";right.innerHTML="<b>Açıklamalar</b>";
+ t.data.pairs.forEach(p=>{
+  const b=document.createElement("button");b.className="match-item";b.textContent=p.left;
+  b.onclick=()=>selectLeft(t,p.id,b);left.appendChild(b);
+ });
+ t.data.rightOrder.forEach(p=>{
+  const b=document.createElement("button");b.className="match-item";b.dataset.id=p.id;b.textContent=p.right;
+  b.onclick=()=>selectRight(t,p.id,b);right.appendChild(b);
+ });
+ grid.append(left,right);body.appendChild(grid);
+}
+let matchSelection=null;
+function selectLeft(t,id,btn){
+ if(t.result.status==="success")return;
+ matchSelection={left:id};document.querySelectorAll(".match-item").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected");
+}
+function selectRight(t,id,btn){
+ if(!matchSelection||t.result.status==="success")return;
+ const leftId=matchSelection.left;matchSelection=null;
+ t.result.answer=t.result.answer||{};
+ t.result.answer[leftId]=id;
+ const all=t.data.pairs.every(p=>t.result.answer[p.id]===p.id);
+ if(all){t.result.attempts++;markSuccess(t,"all")}
+ else{
+   const pairCorrect=t.result.answer[leftId]===leftId;
+   if(pairCorrect){
+     btn.classList.add("locked");
+     document.querySelectorAll(".match-item").forEach(x=>{if(x.textContent===t.data.pairs.find(p=>p.id===leftId).left)x.classList.add("locked")});
+   }else{
+     t.result.attempts++; if(!t.result.firstWrong)t.result.firstWrong(`${leftId} → ${id}`);
+     state.wrongCount++;state.energy=Math.max(0,state.energy-1);t.result.lastResult="wrong";
+     delete t.result.answer[leftId];render();
+   }
+ }
+}
+function renderClassification(body,t){
+ const zone=document.createElement("div");zone.className="class-grid";
+ const pool=document.createElement("div");pool.className="target";pool.dataset.pool="pool";pool.innerHTML="<h3>🃏 Kartlar</h3>";
+ t.data.cards.forEach(c=>{
+   const b=document.createElement("button");b.className="class-card";b.textContent=c.text;b.dataset.card=c.id;
+   b.onclick=()=>placeCard(t,c.id);pool.appendChild(b);
+ });
+ zone.appendChild(pool);
+ t.data.targets.forEach(target=>{
+   const box=document.createElement("div");box.className="target";box.dataset.target=target.id;
+   box.innerHTML=`<h3>📌 ${target.text}</h3>`;
+   const placed=t.result.answer||{};
+   Object.keys(placed).forEach(cid=>{if(placed[cid]===target.id){const c=t.data.cards.find(x=>x.id===cid);if(c){const b=document.createElement("button");b.className="class-card placed";b.textContent=c.text;box.appendChild(b)}}});
+   zone.appendChild(box);
+ });
+ body.appendChild(zone);
+}
+function placeCard(t,id){
+ const r=t.result;if(r.status==="success")return;
+ const target=prompt("Bu kart hangi hedefe ait?\\n"+t.data.targets.map(x=>x.id+" = "+x.text).join("\\n"));
+ if(!target)return;
+ const valid=t.data.targets.some(x=>x.id===target);
+ if(!valid)return;
+ r.answer=r.answer||{};r.answer[id]=target;
+ const all=t.data.cards.every(c=>r.answer[c.id]===t.correctAnswer[c.id]);
+ r.attempts++;
+ if(all)markSuccess(t,"exact");
+ else{
+   const one=t.correctAnswer[id]===target;
+   if(!one){r.firstWrong=r.firstWrong||`${id} → ${target}`;state.wrongCount++;state.energy=Math.max(0,state.energy-1);r.lastResult="wrong";delete r.answer[id];}
+   render();
+ }
+}
+function skipTask(){const t=current(),r=t.result;if(r.status==="success")return;r.status="skipped";r.lastResult="skipped";r.answer=null;go(1)}
+function go(delta){
+ const next=state.currentIndex+delta;
+ if(next<0||next>=state.tasks.length){
+   if(delta>0)showFinal();return;
+ }
+ if(delta>0 && !(current().result.status==="success"||current().result.status==="skipped"))return;
+ state.currentIndex=next;render();
+}
+function showFinal(){
+ document.getElementById("taskView").style.display="none";
+ const f=document.getElementById("final");f.classList.add("show");
+ const completed=state.tasks.filter(t=>t.result.status==="success").length;
+ const first=state.tasks.filter(t=>t.result.firstTry).length;
+ const skipped=state.tasks.filter(t=>t.result.status==="skipped").length;
+ const mins=Math.max(1,Math.round((Date.now()-state.startedAt)/60000));
+ f.innerHTML=`<h2>🏁 Trafik Dedektifi Raporu</h2>
+ <p>Görevleri tamamladın. Rapor aşağıdaki state verilerinden hesaplandı.</p>
+ <div class="report">
+  <div class="stat"><b>${state.tasks.length}</b><span>Toplam görev</span></div>
+  <div class="stat"><b>${completed}</b><span>Tamamlanan</span></div>
+  <div class="stat"><b>${first}</b><span>İlk denemede doğru</span></div>
+  <div class="stat"><b>${state.wrongCount}</b><span>Yanlış deneme</span></div>
+  <div class="stat"><b>${skipped}</b><span>Geçilen</span></div>
+  <div class="stat"><b>${state.hintCount}</b><span>İpucu</span></div>
+  <div class="stat"><b>${state.score}</b><span>Puan</span></div>
+  <div class="stat"><b>${mins} dk</b><span>Süre</span></div>
+ </div>
+ <div class="actions"><button class="btn primary" onclick="review()">🔎 Yanlış/Geçilen Görevleri İncele</button>
+ <button class="btn secondary" onclick="replay()">🔄 Yeniden Başlat</button></div>
+ <div id="review"></div>`;
+}
+function review(){
+ const box=document.getElementById("review");box.innerHTML="<h3>İnceleme</h3>";
+ state.tasks.filter(t=>t.result.status!=="success"||t.result.firstWrong).forEach(t=>{
+   let answer="Geçildi";
+   if(t.result.status==="success" && t.result.answer) answer=typeof t.result.answer==="string"?t.result.answer:"Cevap verildi";
+   if(t.result.status==="pending") answer="Cevaplanmadı";
+   box.insertAdjacentHTML("beforeend",`<div class="review-item"><h3>${t.prompt}</h3>
+   <div><b>Öğrenci cevabı:</b> ${htmlEscape(answer)}</div>
+   <div><b>İlk yanlış cevap:</b> ${htmlEscape(t.result.firstWrong||"Yok")}</div>
+   <div><b>Doğru cevap:</b> ${htmlEscape(correctText(t))}</div>
+   <div><b>Neden doğru?</b> ${t.explanation}</div></div>`);
+ });
+}
+function correctText(t){
+ if(t.type==="mc"||t.type==="tf"||t.type==="odd"||t.type==="boss") return t.data.options.find(o=>o.id===t.correctAnswer)?.text||"";
+ if(t.type==="matching") return t.data.pairs.map(p=>p.left+" → "+p.right).join(" • ");
+ return Object.entries(t.correctAnswer).map(([k,v])=>k+" → "+v).join(" • ");
+}
+function htmlEscape(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function replay(){document.getElementById("taskView").style.display="block";document.getElementById("final").className="card final";init()}
+init();
+</script>
+</body>
+</html>

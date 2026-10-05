@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuvarlama Ustası - 4. Sınıf Matematik</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f7f8fc;color:#18212b}
+.app{max-width:1050px;margin:0 auto;padding:24px}
+.top{background:#fff;border:1px solid #dfe4ea;border-radius:20px;padding:18px;margin-bottom:16px}
+.header{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
+h1{margin:0;font-size:clamp(24px,4vw,38px)}
+.sub{color:#65707c;font-weight:700;margin-top:5px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.pill{border:1px solid #dfe4ea;border-radius:999px;padding:9px 14px;font-weight:800;background:#fff}
+.modes{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.mode,.btn{border:1px solid #ccd4dd;background:#fff;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
+.mode.active,.btn.primary{background:#e9efff;border-color:#7890e8}
+.progress{height:10px;background:#e3e7ec;border-radius:20px;overflow:hidden;margin-top:16px}
+.progress span{display:block;height:100%;width:0;background:#6078d8;transition:.2s}
+.question{background:#fff;border:2px solid #dfe4ea;border-radius:24px;padding:30px;text-align:center}
+.task{font-size:clamp(20px,3vw,30px);font-weight:900}
+.number{font-size:clamp(58px,10vw,100px);font-weight:900;margin:24px 0}
+.choices{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.choice{min-height:72px;border:3px solid #d9dee5;border-radius:16px;background:#fff;font-size:clamp(24px,4vw,36px);font-weight:900;cursor:pointer}
+.choice:hover{border-color:#6078d8}
+.choice.correct{background:#e6f7ed;border-color:#28a269;color:#14663f}
+.choice.wrong{background:#ffe7e7;border-color:#d95656;color:#982b2b}
+.feedback{min-height:55px;margin:15px 0;font-size:clamp(18px,3vw,25px);font-weight:900;display:flex;align-items:center;justify-content:center}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.btn{font-size:17px}
+.btn.primary{padding:14px 22px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.card{background:#fff;border:1px solid #dfe4ea;border-radius:18px;padding:18px}
+.card h3{margin:0 0 8px}
+.result{display:none;text-align:center;margin-top:16px;padding:25px;border-radius:18px;background:#eef7ff;border:1px solid #cfe1f3}
+@media(max-width:700px){
+ .app{padding:12px}.question{padding:18px}
+ .choices{grid-template-columns:repeat(2,1fr)}
+ .info{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="header">
+      <div>
+        <h1>🎯 Yuvarlama Ustası</h1>
+        <div class="sub">4. Sınıf Matematik • En yakın onluk ve yüzlük</div>
+      </div>
+      <div class="stats">
+        <span class="pill" id="score">⭐ 0 puan</span>
+        <span class="pill" id="streak">🔥 Seri: 0</span>
+      </div>
+    </div>
+    <div class="modes">
+      <button class="mode active" data-mode="mixed">🔀 Karışık</button>
+      <button class="mode" data-mode="10">🔟 Onluk</button>
+      <button class="mode" data-mode="100">💯 Yüzlük</button>
+      <button class="mode" id="newRound">🔄 Yeni Tur</button>
+    </div>
+    <div class="progress"><span id="bar"></span></div>
+  </div>
+
+  <div class="question">
+    <div class="task" id="task">En yakın onluğa yuvarla:</div>
+    <div class="number" id="number">—</div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="actions">
+      <button class="btn primary" id="next" disabled>➡️ Sonraki soru</button>
+    </div>
+  </div>
+
+  <div class="info">
+    <div class="card">
+      <h3>🧠 Mini kural</h3>
+      <div id="rule">Onluğa yuvarlarken <b>birler basamağına</b> bak.</div>
+    </div>
+    <div class="card">
+      <h3>💡 Hatırla</h3>
+      <div>0–4 → aşağı<br>5–9 → yukarı</div>
+    </div>
+  </div>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let mode = "mixed", q = 0, score = 0, streak = 0, answered = false, current = null;
+  const total = 20;
+
+  const fmt = n => n.toLocaleString("tr-TR");
+  const roundTo = (n, p) => Math.floor((n + p / 2) / p) * p;
+
+  function randomNumber() {
+    const digits = 3 + Math.floor(Math.random() * 4); // 3,4,5,6 basamak
+    const min = 10 ** (digits - 1);
+    const max = 10 ** digits - 1;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function makeQuestion() {
+    if (q >= total) return finish();
+
+    answered = false;
+    $("next").disabled = true;
+    $("feedback").textContent = "";
+    $("feedback").style.color = "";
+
+    q++;
+    $("bar").style.width = ((q - 1) / total * 100) + "%";
+
+    const place = mode === "mixed" ? (Math.random() < 0.5 ? 10 : 100) : Number(mode);
+    const n = randomNumber();
+    const ans = roundTo(n, place);
+
+    current = { n, place, ans };
+
+    $("number").textContent = fmt(n);
+    $("task").textContent = "En yakın " + (place === 10 ? "onluğa" : "yüzlüğe") + " yuvarla:";
+    $("rule").innerHTML = place === 10
+      ? "Onluğa yuvarlarken <b>birler basamağına</b> bak."
+      : "Yüzlüğe yuvarlarken <b>onlar basamağına</b> bak.";
+
+    const values = new Set([ans]);
+    const step = place;
+
+    while (values.size < 4) {
+      const delta = (Math.floor(Math.random() * 5) + 1) * step;
+      const v = Math.max(step, ans + (Math.random() < 0.5 ? -delta : delta));
+      values.add(v);
+    }
+
+    $("choices").innerHTML = "";
+    [...values].sort(() => Math.random() - 0.5).forEach(v => {
+      const b = document.createElement("button");
+      b.className = "choice";
+      b.textContent = fmt(v);
+      b.dataset.value = v;
+      b.addEventListener("click", () => answer(b, v));
+      $("choices").appendChild(b);
+    });
+
+    $("next").textContent = q === total ? "🏁 Sonucu gör" : "➡️ Sonraki soru";
+    $("result").style.display = "none";
+  }
+
+  function answer(btn, value) {
+    if (answered) return;
+    answered = true;
+
+    const correct = value === current.ans;
+    const buttons = document.querySelectorAll(".choice");
+
+    buttons.forEach(b => {
+      b.disabled = true;
+      if (Number(b.dataset.value) === current.ans) b.classList.add("correct");
+    });
+
+    if (correct) {
+      btn.classList.add("correct");
+      streak++;
+      score += 10 + (streak > 1 ? 5 : 0);
+      $("feedback").textContent =
+        "✅ Doğru! " + fmt(current.n) + " → " + fmt(current.ans) +
+        (streak > 1 ? " 🔥 Seri devam ediyor!" : "");
+      $("feedback").style.color = "#14663f";
+    } else {
+      btn.classList.add("wrong");
+      streak = 0;
+      $("feedback").textContent =
+        "❌ Doğru cevap: " + fmt(current.ans);
+      $("feedback").style.color = "#982b2b";
+    }
+
+    $("score").textContent = "⭐ " + score + " puan";
+    $("streak").textContent = "🔥 Seri: " + streak;
+    $("next").disabled = false;
+  }
+
+  function finish() {
+    $("bar").style.width = "100%";
+    $("choices").innerHTML = "";
+    $("number").textContent = "🏆";
+    $("task").textContent = "Tur tamamlandı!";
+    $("feedback").textContent = "";
+
+    const correctCount = Math.round(score / 10);
+    $("result").style.display = "block";
+    $("result").innerHTML =
+      "<h2>🎉 Tebrikler!</h2>" +
+      "<p>20 soruluk turu tamamladın.</p>" +
+      "<p><strong>" + score + " puan</strong> topladın.</p>" +
+      "<p>Yeni sayılarla tekrar denemek için <b>Yeni Tur</b> düğmesine bas.</p>";
+
+    $("next").disabled = true;
+  }
+
+  $("next").addEventListener("click", makeQuestion);
+
+  $("newRound").addEventListener("click", () => {
+    q = 0;
+    score = 0;
+    streak = 0;
+    $("score").textContent = "⭐ 0 puan";
+    $("streak").textContent = "🔥 Seri: 0";
+    makeQuestion();
+  });
+
+  document.querySelectorAll(".mode").forEach(btn => {
+    if (btn.id === "newRound") return;
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".mode").forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
+      mode = btn.dataset.mode;
+      q = 0;
+      score = 0;
+      streak = 0;
+      $("score").textContent = "⭐ 0 puan";
+      $("streak").textContent = "🔥 Seri: 0";
+      makeQuestion();
+    });
+  });
+
+  makeQuestion();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maden ve Fosil Araştırma Merkezi - Yuvarlama Operasyonu</title>
+<style>
+    :root {
+        --primary: #4caf50;
+        --secondary: #ff9800;
+        --dark: #37474f;
+        --light: #f4f6f8;
+        --danger: #f44336;
+        --info: #00bcd4;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #eceff1;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: var(--dark);
+    }
+
+    #app-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 800px;
+        padding: 30px;
+        box-sizing: border-box;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    #header {
+        margin-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 15px;
+    }
+
+    .header-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--dark);
+        margin-bottom: 15px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        background: #e0e0e0;
+        border-radius: 10px;
+        height: 15px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        background: var(--info);
+        height: 100%;
+        width: 0%;
+        transition: width 0.4s ease;
+    }
+
+    .inventory {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-height: 35px;
+        background: #fcfcfc;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px dashed #ccc;
+    }
+
+    .inventory span {
+        font-size: 1.5rem;
+        animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .task-text {
+        font-size: 1.4rem;
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
+
+    .task-container {
+        min-height: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Drag & Drop Styles */
+    .drag-area {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        width: 100%;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .draggable {
+        cursor: pointer;
+        padding: 15px 25px;
+        background: #fff8e1;
+        border: 3px dashed var(--secondary);
+        border-radius: 15px;
+        font-size: 1.8rem;
+        font-weight: bold;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        user-select: none;
+    }
+
+    .draggable.selected {
+        background: #ffe082;
+        border-style: solid;
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(255, 152, 0, 0.5);
+    }
+
+    .dropzone {
+        width: 140px;
+        height: 140px;
+        border: 3px solid #795548;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        padding-bottom: 15px;
+        font-size: 1.6rem;
+        font-weight: bold;
+        background: #efebe9;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.2s;
+        box-sizing: border-box;
+    }
+
+    .dropzone:hover {
+        transform: translateY(-5px);
+        background: #d7ccc8;
+    }
+
+    /* Button Styles */
+    .button-area {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-option {
+        padding: 15px 35px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        background: var(--info);
+        color: white;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 6px #00838f;
+    }
+
+    .btn-option:hover {
+        background: #00acc1;
+    }
+
+    .btn-option:active {
+        box-shadow: 0 2px #00838f;
+        transform: translateY(4px);
+    }
+
+    /* Input Styles */
+    .input-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .input-field {
+        font-size: 1.8rem;
+        padding: 15px;
+        width: 200px;
+        text-align: center;
+        border: 3px solid #9c27b0;
+        border-radius: 12px;
+        outline: none;
+    }
+    
+    .input-field:focus {
+        border-color: #6a1b9a;
+        box-shadow: 0 0 10px rgba(156, 39, 176, 0.3);
+    }
+
+    .btn-submit {
+        padding: 12px 35px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        background: #9c27b0;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        box-shadow: 0 6px #6a1b9a;
+        transition: all 0.2s;
+    }
+
+    .btn-submit:active {
+        box-shadow: 0 2px #6a1b9a;
+        transform: translateY(4px);
+    }
+
+    /* Error Finding Styles */
+    .error-area {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .error-item {
+        padding: 18px;
+        font-size: 1.2rem;
+        font-weight: 500;
+        background: #e3f2fd;
+        border: 2px solid #2196f3;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+    }
+
+    .error-item:hover {
+        background: #bbdefb;
+        transform: scale(1.02);
+    }
+
+    /* Feedback */
+    .feedback {
+        margin-top: 25px;
+        font-size: 1.3rem;
+        min-height: 40px;
+        color: var(--danger);
+        font-weight: bold;
+    }
+
+    .success-msg {
+        color: var(--primary);
+        font-size: 1.8rem;
+        font-weight: bold;
+        animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+        0% { transform: scale(0.5); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* SVG Helpers */
+    .svg-icon {
+        margin-bottom: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="header" class="hidden">
+        <div class="header-info">
+            <span id="player-display"></span>
+            <span id="stage-text" style="color: #1976d2;"></span>
+        </div>
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <div style="font-size: 0.9rem; color: #777; margin-top: 15px;">Koleksiyon Envanteri:</div>
+        <div id="inventory" class="inventory"></div>
+    </div>
+    
+    <div id="task-text" class="task-text"></div>
+    <div id="task-area" class="task-container"></div>
+    <div id="feedback" class="feedback"></div>
+</div>
+
+<script>
+    let playerName = "";
+    let currentTaskIndex = 0;
+    let correctCount = 0;
+    let errorCount = 0;
+    let hintCount = 0;
+
+    const tasks = [
+        // Aşama 1: Sürükle-Bırak (Onluğa Yuvarlama)
+        { 
+            type: 'drag', 
+            text: 'Sistem uyarısı: Maden ocağından <strong>462 kg Linyit</strong> çıkarıldı. Maden vagonunu yola çıkarmak için bu değeri <strong>en yakın onluğa</strong> yuvarla. Cevheri doğru vagona yükle! <br><span style="font-size:1rem; color:#777;">(Cevheri sürükleyebilir veya önce cevhere sonra vagona tıklayabilirsin)</span>', 
+            number: 462, 
+            options: [460, 470], 
+            answer: 460, 
+            hint: "Birler basamağına bak: 2. Birler basamağı 5'ten küçük olduğu için sayı kendi onluğunda kalmalı." 
+        },
+        { 
+            type: 'drag', 
+            text: 'Kazılarda <strong>815 gram Mermer</strong> parçası bulundu. <strong>En yakın onluğa</strong> yuvarlayarak doğru vagona sürükle.', 
+            number: 815, 
+            options: [810, 820], 
+            answer: 820, 
+            hint: "Birler basamağına bak: 5. Birler basamağı 5 ve 5'ten büyükse sayı bir sonraki onluğa yuvarlanır." 
+        },
+        { 
+            type: 'drag', 
+            text: 'Ülkemizden <strong>2394 ton Bor</strong> madeni çıkarıldı. Taşıma bandı için <strong>en yakın onluğa</strong> yuvarla.', 
+            number: 2394, 
+            options: [2390, 2400], 
+            answer: 2390, 
+            hint: "Birler basamağına bak: 4. Birler basamağı 5'ten küçük olduğu için onluk değişmez." 
+        },
+        { 
+            type: 'drag', 
+            text: 'Kuyumcuda <strong>5078 mg Altın</strong> işlendi. Kasaya kaldırmak için <strong>en yakın onluğa</strong> yuvarla.', 
+            number: 5078, 
+            options: [5070, 5080], 
+            answer: 5080, 
+            hint: "Birler basamağına bak: 8. Birler basamağı 5'ten büyük olduğu için bir sonraki onluğa yuvarlamalısın." 
+        },
+        // Aşama 2: Buton Seçimi (Yüzlüğe Yuvarlama)
+        { 
+            type: 'button', 
+            text: 'Kazı alanında <strong>648 yıllık bir yaprak fosili</strong> bulundu. Veriyi laboratuvara göndermek için <strong>en yakın yüzlüğe</strong> yuvarla.', 
+            number: 648,
+            options: [600, 700], 
+            answer: 600, 
+            hint: "Yüzlüğe yuvarlarken onlar basamağına bak: 4. Onlar basamağı 5'ten küçükse sayı kendi yüzlüğünde kalır." 
+        },
+        { 
+            type: 'button', 
+            text: 'Buzulların içinde <strong>1250 yıllık bir hayvan kalıntısı</strong> bulundu. Raporlamak için <strong>en yakın yüzlüğe</strong> yuvarla.', 
+            number: 1250,
+            options: [1200, 1300], 
+            answer: 1300, 
+            hint: "Yüzlüğe yuvarlarken onlar basamağına bak: 5. Onlar basamağı 5 ve daha büyükse bir sonraki yüzlüğe yuvarlanır." 
+        },
+        { 
+            type: 'button', 
+            text: 'Taşlaşmış bir ağaç reçinesi (kehribar) <strong>8935 metre</strong> derinde bulundu. Çıkarım planı için <strong>en yakın yüzlüğe</strong> yuvarla.', 
+            number: 8935,
+            options: [8900, 9000], 
+            answer: 8900, 
+            hint: "Yüzlüğe yuvarlarken onlar basamağına bak: 3. Onlar basamağı 5'ten küçük olduğu için kendi yüzlüğünde kalır." 
+        },
+        { 
+            type: 'button', 
+            text: 'Paleontologlar <strong>4082 gram</strong> ağırlığında bir kemik fosili buldu. Arşive kaldırmak için <strong>en yakın yüzlüğe</strong> yuvarla.', 
+            number: 4082,
+            options: [4000, 4100], 
+            answer: 4100, 
+            hint: "Yüzlüğe yuvarlarken onlar basamağına bak: 8. Onlar basamağı 5'ten büyük olduğu için bir sonraki yüzlüğe yuvarlanır." 
+        },
+        // Aşama 3: Sayı Girişi (Karışık)
+        { 
+            type: 'input', 
+            text: "Dünya Güneş etrafında dolanırken yörüngesinde yaklaşık <strong>785 saatlik</strong> bir bölümü detaylı inceledik. Bu sayıyı <strong>en yakın onluğa</strong> yuvarlayarak kasanın şifresini çöz.", 
+            answer: 790, 
+            hint: "Onluğa yuvarlamak için birler basamağına bakmalısın (5). Bir sonraki onluğa yuvarlaman gerekiyor." 
+        },
+        { 
+            type: 'input', 
+            text: "Kayaçların sertleşmesi için bulunduğumuz bölgede <strong>3449 yıl</strong> geçti. Bu sayıyı <strong>en yakın yüzlüğe</strong> yuvarlayarak gizli bölmeyi aç.", 
+            answer: 3400, 
+            hint: "Yüzlüğe yuvarlamak için onlar basamağına bakmalısın (4). 5'ten küçük olduğu için kendi yüzlüğünde kalmalı." 
+        },
+        // Aşama 4: Hata Bulma
+        { 
+            type: 'error', 
+            text: 'Aşağıdaki bilim insanlarının notlarından <strong>hatalı yuvarlanmış</strong> olanı bul ve tıkla.', 
+            items: [
+                { text: 'Uzman Almila: "142 kg Bakır, en yakın onluğa yuvarlanırsa 140 kg olur."', isError: false },
+                { text: 'Uzman Melih: "650 metre derindeki magma tabakası, en yakın yüzlüğe yuvarlanırsa 600 metre olur."', isError: true },
+                { text: 'Paleontolog: "895 yıllık fosil, en yakın onluğa yuvarlanırsa 900 olur."', isError: false }
+            ], 
+            hint: "Melih'in notuna dikkat et. Onlar basamağı 5 olan sayılar yüzlüğe yuvarlanırken bir alt yüzlüğe mi yoksa bir üst yüzlüğe mi yuvarlanır?" 
+        },
+        { 
+            type: 'error', 
+            text: 'Aşağıdaki maden raporlarından <strong>hatalı yuvarlanmış</strong> olanı bul ve tıkla.', 
+            items: [
+                { text: '"3499 kg Taş Kömürü ➔ en yakın yüzlüğe 3500 kg olarak kaydedildi."', isError: false },
+                { text: '"704 gram Kuvars ➔ en yakın onluğa 710 gram olarak kaydedildi."', isError: true },
+                { text: '"2550 km kalınlığındaki yer kabuğu katmanı ➔ en yakın yüzlüğe 2600 km olarak kaydedildi."', isError: false }
+            ], 
+            hint: "704 sayısının birler basamağına bak (4). En yakın onluğa yuvarlanırken kendi onluğunda mı kalmalı yoksa sonrakine mi geçmeli?" 
+        }
+    ];
+
+    const DOM = {
+        app: document.getElementById('app-container'),
+        header: document.getElementById('header'),
+        playerDisplay: document.getElementById('player-display'),
+        stageText: document.getElementById('stage-text'),
+        progressFill: document.getElementById('progress-fill'),
+        inventory: document.getElementById('inventory'),
+        taskText: document.getElementById('task-text'),
+        taskArea: document.getElementById('task-area'),
+        feedback: document.getElementById('feedback')
+    };
+
+    function initWelcome() {
+        DOM.header.classList.add('hidden');
+        DOM.taskText.innerHTML = "";
+        DOM.feedback.innerHTML = "";
+        
+        DOM.taskArea.innerHTML = `
+            <h2 style="color: var(--dark); font-size: 2rem; margin-top:0;">Maden ve Fosil Araştırma Merkezine Hoş Geldin!</h2>
+            <p style="font-size: 1.3rem; margin-bottom: 20px;">Bugün doğadaki kaynakları inceleyecek, madenleri vagonlara yükleyecek ve eski fosilleri laboratuvarlara yönlendireceğiz.</p>
+            <p style="font-size: 1.2rem; color: #555; margin-bottom: 30px;">Bunu yaparken sayıları <strong>en yakın onluğa veya yüzlüğe yuvarlama</strong> becerini kullanman gerekecek.</p>
+            <input type="text" id="player-name" class="input-field" placeholder="Adın nedir?" style="width: 250px; margin-bottom: 25px;" autocomplete="off">
+            <br>
+            <button class="btn-option" onclick="startGame()">Maceraya Başla!</button>
+        `;
+        
+        document.getElementById('player-name').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') startGame();
+        });
+    }
+
+    function startGame() {
+        const nameInput = document.getElementById('player-name').value.trim();
+        playerName = nameInput || "Araştırmacı";
+        DOM.playerDisplay.innerText = `👤 ${playerName}`;
+        
+        currentTaskIndex = 0;
+        correctCount = 0;
+        errorCount = 0;
+        hintCount = 0;
+        DOM.inventory.innerHTML = "";
+        
+        DOM.header.classList.remove('hidden');
+        renderTask();
+    }
+
+    function renderTask() {
+        if(currentTaskIndex >= tasks.length) {
+            showFinalReport();
+            return;
+        }
+
+        const task = tasks[currentTaskIndex];
+        DOM.progressFill.style.width = `${(currentTaskIndex / tasks.length) * 100}%`;
+        DOM.feedback.innerHTML = '';
+        DOM.taskText.innerHTML = task.text;
+        DOM.taskArea.innerHTML = '';
+
+        if(currentTaskIndex < 4) DOM.stageText.innerText = "Aşama 1: Maden Ocağı (Onluğa Yuvarlama)";
+        else if(currentTaskIndex < 8) DOM.stageText.innerText = "Aşama 2: Fosil Laboratuvarı (Yüzlüğe Yuvarlama)";
+        else if(currentTaskIndex < 10) DOM.stageText.innerText = "Aşama 3: Kasa Şifreleri (Karışık)";
+        else DOM.stageText.innerText = "Aşama 4: Bilim İnsanı Raporları (Hata Bulma)";
+
+        if(task.type === 'drag') {
+            DOM.taskArea.innerHTML = `
+                <div class="drag-area">
+                    <div class="draggable" draggable="true" data-value="${task.number}">
+                        <svg class="svg-icon" viewBox="0 0 100 100" width="60" height="60">
+                          <polygon points="50,10 90,40 70,90 30,90 10,40" fill="#00bcd4" stroke="#0097a7" stroke-width="4"/>
+                          <polygon points="50,10 30,40 70,40" fill="#b2ebf2" />
+                          <polygon points="30,40 50,90 70,40" fill="#4dd0e1" />
+                          <polygon points="10,40 30,40 50,90 30,90" fill="#00bcd4" />
+                          <polygon points="90,40 70,40 50,90 70,90" fill="#00acc1" />
+                        </svg>
+                        ${task.number}
+                    </div>
+                </div>
+                <div class="drag-area">
+                    ${task.options.map(opt => `
+                        <div class="dropzone" data-value="${opt}">
+                            <svg class="svg-icon" viewBox="0 0 100 100" width="65" height="65">
+                              <path d="M10,30 L90,30 L80,70 L20,70 Z" fill="#795548" stroke="#5d4037" stroke-width="4"/>
+                              <rect x="5" y="25" width="90" height="10" fill="#5d4037"/>
+                              <circle cx="30" cy="80" r="12" fill="#424242"/>
+                              <circle cx="30" cy="80" r="4" fill="#bdbdbd"/>
+                              <circle cx="70" cy="80" r="12" fill="#424242"/>
+                              <circle cx="70" cy="80" r="4" fill="#bdbdbd"/>
+                            </svg>
+                            ${opt}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            setupDragAndDrop(task);
+        } else if (task.type === 'button') {
+            DOM.taskArea.innerHTML = `
+                <div style="font-size:3rem; font-weight:bold; color:var(--primary); margin-bottom:25px;">${task.number}</div>
+                <div class="button-area">
+                    ${task.options.map(opt => `
+                        <button class="btn-option" data-value="${opt}">${opt}</button>
+                    `).join('')}
+                </div>
+            `;
+            document.querySelectorAll('.btn-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    checkAnswer(parseInt(btn.dataset.value), task.answer, task.hint, task);
+                });
+            });
+        } else if (task.type === 'input') {
+            DOM.taskArea.innerHTML = `
+                <div class="input-area">
+                    <svg viewBox="0 0 100 100" width="80" height="80">
+                      <rect x="15" y="20" width="70" height="70" rx="10" fill="#607d8b" />
+                      <circle cx="50" cy="55" r="20" fill="#cfd8dc" stroke="#455a64" stroke-width="4" />
+                      <circle cx="50" cy="55" r="5" fill="#455a64" />
+                      <rect x="48" y="55" width="4" height="12" fill="#455a64" />
+                      <path d="M 30 20 C 30 0, 70 0, 70 20" fill="transparent" stroke="#cfd8dc" stroke-width="8"/>
+                    </svg>
+                    <input type="number" id="task-input" class="input-field" placeholder="Şifre" autocomplete="off" />
+                    <button class="btn-submit" id="btn-submit">Kilidi Aç</button>
+                </div>
+            `;
+            
+            const submitLogic = () => {
+                const val = parseInt(document.getElementById('task-input').value);
+                if(isNaN(val)) {
+                    DOM.feedback.innerHTML = "Lütfen kasayı açmak için bir sayı gir!";
+                    return;
+                }
+                checkAnswer(val, task.answer, task.hint, task);
+            };
+
+            document.getElementById('btn-submit').addEventListener('click', submitLogic);
+            document.getElementById('task-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') submitLogic();
+            });
+
+            setTimeout(() => document.getElementById('task-input').focus(), 100);
+
+        } else if (task.type === 'error') {
+            DOM.taskArea.innerHTML = `
+                <div class="error-area">
+                    ${task.items.map(item => `
+                        <div class="error-item" data-error="${item.isError}">${item.text}</div>
+                    `).join('')}
+                </div>
+            `;
+            document.querySelectorAll('.error-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const isError = item.dataset.error === 'true';
+                    if(isError) {
+                        handleCorrect(task);
+                    } else {
+                        handleWrong(task.hint);
+                    }
+                });
+            });
+        }
+    }
+
+    function setupDragAndDrop(task) {
+        let selectedVal = null;
+        const dragEl = document.querySelector('.draggable');
+        const dropzones = document.querySelectorAll('.dropzone');
+
+        dragEl.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', dragEl.dataset.value);
+        });
+
+        dragEl.addEventListener('click', () => {
+            dragEl.classList.add('selected');
+            selectedVal = parseInt(dragEl.dataset.value);
+            DOM.feedback.innerHTML = "Cevher seçildi! Şimdi yüklemek istediğin vagona tıkla.";
+            DOM.feedback.style.color = "var(--info)";
+        });
+
+        dropzones.forEach(dz => {
+            dz.addEventListener('dragover', e => e.preventDefault());
+            
+            dz.addEventListener('drop', (e) => {
+                e.preventDefault();
+                checkAnswer(parseInt(dz.dataset.value), task.answer, task.hint, task);
+            });
+
+            dz.addEventListener('click', () => {
+                if(selectedVal !== null) {
+                    checkAnswer(parseInt(dz.dataset.value), task.answer, task.hint, task);
+                    selectedVal = null;
+                    dragEl.classList.remove('selected');
+                } else {
+                    DOM.feedback.innerHTML = "Önce taşınacak cevheri seçmelisin!";
+                    DOM.feedback.style.color = "var(--danger)";
+                }
+            });
+        });
+    }
+
+    function checkAnswer(selected, correct, hint, task) {
+        if(selected === correct) {
+            handleCorrect(task);
+        } else {
+            handleWrong(hint);
+        }
+    }
+
+    function handleCorrect(task) {
+        correctCount++;
+        let collectedItem = "";
+        
+        if (currentTaskIndex < 4) collectedItem = "💎";
+        else if (currentTaskIndex < 8) collectedItem = "🦴";
+        else if (currentTaskIndex < 10) collectedItem = "📜";
+        else collectedItem = "✅";
+        
+        DOM.inventory.innerHTML += `<span title="Görev ${currentTaskIndex + 1}">${collectedItem}</span>`;
+        
+        DOM.taskArea.innerHTML = `<div class="success-msg">Harika! Doğru tespit. <br><br><span style="font-size:3rem;">${collectedItem}</span> <br>Koleksiyonuna eklendi!</div>`;
+        DOM.feedback.innerHTML = '';
+        
+        setTimeout(() => {
+            currentTaskIndex++;
+            renderTask();
+        }, 1800);
+    }
+
+    function handleWrong(hint) {
+        errorCount++;
+        hintCount++;
+        DOM.feedback.style.color = "var(--danger)";
+        DOM.feedback.innerHTML = `⚠️ Hata! İpucu: ${hint}`;
+    }
+
+    function showFinalReport() {
+        DOM.header.classList.add('hidden');
+        const total = tasks.length;
+        const accuracy = Math.round((correctCount / (correctCount + errorCount)) * 100) || 100;
+        
+        let message = accuracy >= 80 
+            ? `Harika bir iş çıkardın ${playerName}! Sen bir yuvarlama uzmanısın!` 
+            : `Madenleri ve fosilleri inceledik ${playerName}. Biraz daha pratik yaparak çok daha iyi olabilirsin!`;
+
+        DOM.taskArea.innerHTML = `
+            <h2 style="color: var(--primary); font-size: 2.5rem; margin-top:0;">Görev Tamamlandı!</h2>
+            <p style="font-size: 1.4rem;">${message}</p>
+            
+            <div style="text-align: left; background: #f0f4c3; padding: 25px; border-radius: 15px; margin: 25px 0; font-size:1.3rem; display: inline-block;">
+                <p style="margin: 10px 0;">🎯 <strong>Doğru Tamamlanan Görev:</strong> ${total}</p>
+                <p style="margin: 10px 0;">❌ <strong>Yapılan Hata Sayısı:</strong> ${errorCount}</p>
+                <p style="margin: 10px 0;">💡 <strong>Kullanılan İpucu:</strong> ${hintCount}</p>
+                <p style="margin: 10px 0;">📊 <strong>Başarı Oranı:</strong> %${accuracy}</p>
+            </div>
+            <br>
+            <div style="font-size: 1.8rem; letter-spacing: 5px; margin-bottom:20px;">${DOM.inventory.innerHTML}</div>
+            <button class="btn-option" onclick="initWelcome()">Tekrar Oyna</button>
+        `;
+        DOM.taskText.innerHTML = "";
+        DOM.feedback.innerHTML = "";
+    }
+
+    // Initialize the app
+    initWelcome();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İkileme Dedektifi</title>
+    <style>
+        :root {
+            --primary: #1B263B; /* Koyu Mavi */
+            --secondary: #415A77; 
+            --accent: #F4D03F; /* Sarı */
+            --accent-hover: #F1C40F;
+            --bg-color: #E0E1DD; /* Açık Gri/Mavi */
+            --text-dark: #1A1A1A;
+            --text-light: #FFFFFF;
+            --success: #27AE60;
+            --error: #E74C3C;
+            --card-bg: #FFFFFF;
+            --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        #app {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 900px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header {
+            background-color: var(--primary);
+            color: var(--text-light);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 15px;
+            border-radius: 12px;
+        }
+
+        .content {
+            padding: 2rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        button {
+            font-family: var(--font-main);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--primary);
+            box-shadow: 0 4px 0 #D4AC0D;
+        }
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-nav {
+            background-color: var(--secondary);
+            color: var(--text-light);
+        }
+        .btn-nav:hover:not(:disabled) {
+            background-color: #2c3e50;
+        }
+
+        .btn-skip {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-left: 5px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .feedback-box {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            display: none;
+            font-weight: bold;
+            animation: fadeIn 0.3s;
+        }
+        .feedback-success {
+            background-color: #e8f8f5;
+            color: #1e8449;
+            border: 2px solid #2ecc71;
+            display: flex;
+        }
+        .feedback-error {
+            background-color: #fdedec;
+            color: #c0392b;
+            border: 2px solid #e74c3c;
+            display: flex;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .option-btn {
+            background-color: white;
+            border: 2px solid var(--secondary);
+            color: var(--primary);
+            text-align: left;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: #f1f5f9;
+        }
+        .option-btn.selected {
+            background-color: var(--secondary);
+            color: white;
+        }
+        .option-btn.correct {
+            background-color: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        .option-btn.wrong {
+            background-color: var(--error);
+            border-color: var(--error);
+            color: white;
+        }
+
+        .find-text {
+            font-size: 1.3rem;
+            line-height: 2;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .find-word {
+            display: inline-block;
+            padding: 0 5px;
+            margin: 2px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .find-word:hover { background: #e2e8f0; }
+        .find-word.selected {
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: bold;
+            border-color: #D4AC0D;
+        }
+
+        .pool-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            min-height: 80px;
+        }
+        .draggable-item {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid var(--secondary);
+            cursor: pointer;
+            font-weight: bold;
+            user-select: none;
+        }
+        .draggable-item.selected {
+            background: var(--accent);
+            border-color: #D4AC0D;
+            transform: scale(1.05);
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .categories-grid { grid-template-columns: 1fr; }
+        }
+        .category-box {
+            border: 3px dashed var(--secondary);
+            border-radius: 12px;
+            padding: 15px;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .category-box h3 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .match-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .match-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .match-item {
+            padding: 12px;
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            background: white;
+            font-weight: bold;
+        }
+        .match-item.selected { background: var(--accent); border-color: #D4AC0D; }
+        .match-item.matched { background: var(--success); color: white; border-color: var(--success); cursor: default; }
+        
+        .input-box {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 3px solid var(--secondary);
+            border-radius: 12px;
+            outline: none;
+            text-align: center;
+            margin: 10px 0;
+            font-family: var(--font-main);
+        }
+        .input-box:focus { border-color: var(--accent); }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Report Styles */
+        .report-item {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .report-item.wrong-item { border-left: 5px solid var(--error); }
+        .report-item.skipped-item { border-left: 5px solid #95a5a6; }
+        
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- Content will be injected here by JS -->
+    </div>
+
+    <script>
+        const INITIAL_STATE = {
+            currentIndex: -1, 
+            score: 0,
+            wrongCount: 0,
+            skippedCount: 0,
+            startedAt: null,
+            isReviewMode: false, // Final ekrandan geri dönüldüğünde aktif olur
+            tasks: [] // Will be populated from rawData
+        };
+
+        let state = JSON.parse(JSON.stringify(INITIAL_STATE));
+
+        // Görev Veritabanı
+        const RAW_TASKS = [
+            // AŞAMA 1 - KEŞFET
+            {
+                id: 1, stage: "KEŞFET", type: "choice",
+                prompt: "İkilemeler, anlatımı güçlendirmek için kelimelerin yan yana kullanılmasıyla oluşur. Hangisi 'aynı sözcüğün tekrarıyla' oluşmuş bir ikilemedir?",
+                instruction: "Doğru seçeneğe tıkla.",
+                data: { options: ["Eski püskü", "Yavaş yavaş", "Ufak tefek", "Eğri büğrü"] },
+                correctAnswer: "Yavaş yavaş",
+                explanation: "'Yavaş yavaş' aynı kelimenin iki kez yazılmasıyla oluşur ve cümleye anlam gücü katar.",
+                hint: "Aynı kelimenin tıpatıp aynısının tekrar edildiği seçeneği bul."
+            },
+            {
+                id: 2, stage: "KEŞFET", type: "choice",
+                prompt: "Bazı ikilemeler zıt (karşıt) anlamlı sözcüklerin bir araya gelmesiyle oluşur. Hangisi buna örnektir?",
+                instruction: "Doğru seçeneğe tıkla.",
+                data: { options: ["Şırıl şırıl", "Abur cubur", "Aşağı yukarı", "Güçlü kuvvetli"] },
+                correctAnswer: "Aşağı yukarı",
+                explanation: "Aşağı ve yukarı zıt anlamlı kelimelerdir. Bir araya gelerek 'yaklaşık' anlamında bir ikileme oluştururlar.",
+                hint: "Seçeneklerdeki iki kelimenin birbirinin zıttı olup olmadığına bak."
+            },
+            {
+                id: 3, stage: "KEŞFET", type: "find",
+                prompt: "Dedektif, aşağıdaki cümlede saklanan ikilemeyi bulabilir misin?",
+                instruction: "İkilemeyi oluşturan kelimelerin üzerine tıkla ve 'Kontrol Et' butonuna bas.",
+                data: { text: "Minik kedi sobanın yanında mırıl mırıl uyuyordu." },
+                correctAnswer: "mırıl mırıl",
+                explanation: "'mırıl mırıl' yansıma sözcüklerin tekrarıyla oluşmuş bir ikilemedir.",
+                hint: "Kedilerin çıkardığı sese benzeyen, tekrarlanan kelimeleri bul."
+            },
+            {
+                id: 4, stage: "KEŞFET", type: "tf",
+                prompt: "İkilemeler cümleden çıkarıldığında cümlenin anlamı tamamen bozulur ve cümle anlamsızlaşır.",
+                instruction: "Doğru mu Yanlış mı?",
+                data: {},
+                correctAnswer: "Yanlış",
+                explanation: "İkilemeler cümleden çıkarıldığında cümlenin anlamı daralır veya zayıflar ama cümle tamamen anlamsız olmaz. Sadece pekiştirme etkisi kaybolur.",
+                hint: "'Hızlı hızlı yürüdü' cümlesinden ikilemeyi çıkarıp 'Yürüdü' dersek cümle hala anlamlı mıdır?"
+            },
+            // AŞAMA 2 - AYIRT ET
+            {
+                id: 5, stage: "AYIRT ET", type: "choice",
+                prompt: "Hangisi bir ikileme DEĞİLDİR?",
+                instruction: "İkileme olmayan seçeneği bul.",
+                data: { options: ["Eş dost", "Uzun boylu", "Doğru dürüst", "İleri geri"] },
+                correctAnswer: "Uzun boylu",
+                explanation: "'Uzun boylu' bir sıfat tamlamasıdır, ikileme kurallarına göre oluşmamıştır.",
+                hint: "İkilemeler tekrarla, eş, zıt veya anlamsız kelimelerle oluşur. Hangisi sadece bir özelliği anlatıyor?"
+            },
+            {
+                id: 6, stage: "AYIRT ET", type: "tf",
+                prompt: "'Mavi mavi gözleri vardı.' cümlesindeki 'mavi mavi' bir ikilemedir.",
+                instruction: "Doğru mu Yanlış mı?",
+                data: {},
+                correctAnswer: "Doğru",
+                explanation: "Evet! Aynı sıfatın art arda kullanılmasıyla oluşmuş bir ikilemedir ve anlamı kuvvetlendirir.",
+                hint: "Aynı sözcük tekrar edilmiş ve anlamı güçlendirmiş mi?"
+            },
+            {
+                id: 7, stage: "AYIRT ET", type: "categorize",
+                prompt: "Verilen sözcük gruplarını 'İkileme' ve 'İkileme Değil' olarak ayır.",
+                instruction: "Önce yukarıdaki bir kelimeye tıkla, sonra yerleştirmek istediğin kutuya tıkla.",
+                data: {
+                    items: ["Büyük küçük", "Kırmızı elma", "Soğuk hava", "Eski püskü", "Tatlı tatlı"],
+                    categories: ["İkileme", "İkileme Değil"]
+                },
+                correctAnswer: {
+                    "İkileme": ["Büyük küçük", "Eski püskü", "Tatlı tatlı"],
+                    "İkileme Değil": ["Kırmızı elma", "Soğuk hava"]
+                },
+                explanation: "Sıradan tamlamalar (kırmızı elma, soğuk hava) ikileme değildir.",
+                hint: "Sıradan isim-sıfat ikililerini 'İkileme Değil' kutusuna koy."
+            },
+            {
+                id: 8, stage: "AYIRT ET", type: "match",
+                prompt: "Yarım kalan ikilemeleri tamamlamak için kelimeleri eşleştir.",
+                instruction: "Önce soldaki bir kelimeye, sonra sağdaki eşine tıkla.",
+                data: {
+                    left: ["Yalan", "Ufak", "Yarım", "Abur"],
+                    right: ["Cubur", "Tefek", "Yamalak", "Yanlış"]
+                },
+                correctAnswer: {"Yalan": "Yanlış", "Ufak": "Tefek", "Yarım": "Yamalak", "Abur": "Cubur"},
+                explanation: "Bu kelimeler bir araya gelerek kalıplaşmış ikilemeleri oluşturur.",
+                hint: "Yalan ... (ne olabilir?), Ufak ... (ne olabilir?)"
+            },
+            // AŞAMA 3 - SINIFLANDIR
+            {
+                id: 9, stage: "SINIFLANDIR", type: "choice",
+                prompt: "'Kılık kıyafet' ikilemesi nasıl oluşmuştur?",
+                instruction: "Doğru oluşum biçimini seç.",
+                data: { options: [
+                    "Aynı kelimenin tekrarıyla", 
+                    "Zıt anlamlı kelimelerle", 
+                    "Eş veya yakın anlamlı kelimelerle", 
+                    "İkisi de anlamsız kelimelerle"
+                ]},
+                correctAnswer: "Eş veya yakın anlamlı kelimelerle",
+                explanation: "Kılık ve kıyafet aynı/yakın anlama gelen kelimelerdir.",
+                hint: "Kılık ve kıyafet kelimelerinin anlamları birbirine zıt mı, benzer mi?"
+            },
+            {
+                id: 10, stage: "SINIFLANDIR", type: "categorize",
+                prompt: "İkilemeleri oluşum şekillerine göre sınıflandır.",
+                instruction: "Kelimeyi seçip doğru kutuya tıkla.",
+                data: {
+                    items: ["Koşa koşa", "İyi kötü", "Az çok", "Uzun uzun"],
+                    categories: ["Aynı Sözcük Tekrarı", "Zıt Anlamlı"]
+                },
+                correctAnswer: {
+                    "Aynı Sözcük Tekrarı": ["Koşa koşa", "Uzun uzun"],
+                    "Zıt Anlamlı": ["İyi kötü", "Az çok"]
+                },
+                explanation: "Koşa ve uzun kelimeleri tekrar etmiş; iyi-kötü ve az-çok ise birbirinin zıttıdır.",
+                hint: "Kelimeler birbirinin aynısı mı, tersi mi?"
+            },
+            {
+                id: 11, stage: "SINIFLANDIR", type: "choice",
+                prompt: "Aşağıdaki ikilemelerden hangisinin İKİ KELİMESİ DE tek başına anlamsızdır?",
+                instruction: "Doğru seçeneği işaretle.",
+                data: { options: ["Eski püskü", "Eğri büğrü", "Mırın kırın", "Doğru dürüst"] },
+                correctAnswer: "Mırın kırın",
+                explanation: "'Mırın' veya 'kırın' kelimeleri tek başlarına kullanıldıklarında bir anlam ifade etmezler.",
+                hint: "Seçeneklerdeki kelimeleri tek tek düşün. Hangilerinde iki kelime de sözlükte bulunmaz?"
+            },
+            {
+                id: 12, stage: "SINIFLANDIR", type: "match",
+                prompt: "İkilemeleri oluşum şekilleriyle eşleştir.",
+                instruction: "Soldaki ikilemeyi sağdaki oluşum kuralıyla eşleştir.",
+                data: {
+                    left: ["Tıkır tıkır", "Güçlü kuvvetli", "Geceli gündüzlü"],
+                    right: ["Zıt Anlam", "Yakın Anlam", "Yansıma Sözcük"]
+                },
+                correctAnswer: {"Tıkır tıkır": "Yansıma Sözcük", "Güçlü kuvvetli": "Yakın Anlam", "Geceli gündüzlü": "Zıt Anlam"},
+                explanation: "Tıkır (ses - yansıma), Güçlü-kuvvetli (yakın anlam), Gece-gündüz (zıt anlam).",
+                hint: "Doğadaki sesleri taklit edenlere 'yansıma' denir."
+            },
+            // AŞAMA 4 - CÜMLEDE KULLAN
+            {
+                id: 13, stage: "CÜMLEDE KULLAN", type: "input",
+                prompt: "Cümledeki boşluğa 'pırıl' kelimesini kullanarak uygun bir ikileme yaz.\n\n'Annemin temizlediği camlar ____ ____ parlıyordu.'",
+                instruction: "İkilemeyi kutuya yaz ve Kontrol Et'e bas.",
+                data: {},
+                correctAnswer: "pırıl pırıl",
+                acceptedAnswers: ["pırıl pırıl", "pırılpırıl"],
+                explanation: "Aynı sözcüğün tekrarıyla 'pırıl pırıl' ikilemesi oluşur.",
+                hint: "'pırıl' kelimesini tekrar etmen gerekiyor."
+            },
+            {
+                id: 14, stage: "CÜMLEDE KULLAN", type: "choice",
+                prompt: "'Çok hızlı, aceleyle' anlamı katmak için cümleye hangi ikileme gelmelidir?\n\n'Haberi duyunca evden ______ çıktı.'",
+                instruction: "Uygun ikilemeyi seç.",
+                data: { options: ["yavaş yavaş", "apar topar", "ufak tefek", "iyi kötü"] },
+                correctAnswer: "apar topar",
+                explanation: "'Apar topar', aceleyle ve telaşla yapılan işleri anlatmak için kullanılır.",
+                hint: "Çok acele bir şekilde çıkmayı anlatan seçeneği bul."
+            },
+            {
+                id: 15, stage: "CÜMLEDE KULLAN", type: "find",
+                prompt: "Aşağıdaki metindeki ikilemeyi bul.",
+                instruction: "İkileme olan kelimelere tıkla.",
+                data: { text: "Yolda yürürken birden yağmur başladı. İnsanlar sırılsıklam olmamak için sağa sola kaçışıyordu." },
+                correctAnswer: "sağa sola",
+                explanation: "'Sağa sola', zıt anlamlı kelimelerden oluşan bir ikilemedir.",
+                hint: "Zıt yönleri belirten iki kelime yan yana kullanılmış."
+            },
+            {
+                id: 16, stage: "CÜMLEDE KULLAN", type: "input",
+                prompt: "Cümleyi 'düşmek' ve 'kalkmak' fiillerini kullanarak bir ikilemeyle tamamla.\n\n'Buzlu yolda ______ ______ ilerlemeye çalıştık.'",
+                instruction: "Araya sadece boşluk bırakarak kelimeleri yaz.",
+                data: {},
+                correctAnswer: "düşe kalka",
+                acceptedAnswers: ["düşe kalka", "düşekalka"],
+                explanation: "Zıt anlamlı fiillerin '-e, -a' ekleri alarak birleşmesiyle 'düşe kalka' ikilemesi oluşur.",
+                hint: "Düş ve kalk kelimelerine '-e' veya '-a' eki getirip yan yana yaz."
+            },
+            // AŞAMA 5 - USTA İŞİ
+            {
+                id: 17, stage: "USTA İŞİ", type: "error",
+                prompt: "Dedektif, bu cümlede YANLIŞ kullanılmış bir ikileme var! Doğrusu ne olmalıdır?\n\n'Ali defterine eğri güzel çizgiler çizmişti.'",
+                instruction: "Yanlış yazılan ikilemenin doğrusunu seç.",
+                data: { options: ["eğri doğru", "eğri büğrü", "yamuk yumuk", "güzel çirkin"] },
+                correctAnswer: "eğri büğrü",
+                explanation: "'Eğri' kelimesiyle kalıplaşan ikileme 'eğri büğrü'dür.",
+                hint: "'Eğri' kelimesinden sonra tek başına anlamsız olan uyumlu bir kelime gelmeli."
+            },
+            {
+                id: 18, stage: "USTA İŞİ", type: "choice",
+                prompt: "Hangi cümlede 'ikisi de tek başına anlamı olmayan' kelimelerden oluşan bir ikileme vardır?",
+                instruction: "Doğru cümleyi seç.",
+                data: { options: [
+                    "Çocuklar uslu uslu oturuyor.",
+                    "Sabahtan beri abuk sabuk konuşuyor.",
+                    "Eşyaları eski püskü olmuştu.",
+                    "Yazılarını inci gibi yazardı."
+                ]},
+                correctAnswer: "Sabahtan beri abuk sabuk konuşuyor.",
+                explanation: "'Abuk' ve 'sabuk' kelimelerinin ikisi de tek başlarına anlamsızdır.",
+                hint: "'Eski püskü' cümlesinde 'eski' anlamlıdır. İkisinin de anlamsız olduğu cümleyi bul."
+            },
+            {
+                id: 19, stage: "USTA İŞİ", type: "input",
+                prompt: "'Çok kalabalık' veya 'gruplar halinde' anlamını güçlendirecek bir ikileme yaz.\n\n'Maçtan sonra taraftarlar stadyumdan ____ ____ ayrıldı.'",
+                instruction: "Sadece iki kelimelik ikilemeyi yaz.",
+                data: {},
+                correctAnswer: "akın akın",
+                acceptedAnswers: ["akın akın", "dalga dalga", "bölük pörçük", "yavaş yavaş", "grup grup", "küme küme"],
+                explanation: "'Akın akın', 'grup grup', 'dalga dalga' gibi ikilemeler kalabalık grupların hareketini anlatır.",
+                hint: "'akın' veya 'grup' kelimelerini tekrar etmeyi dene."
+            },
+            {
+                id: 20, stage: "USTA İŞİ", type: "error",
+                prompt: "Bu cümlede anlama uymayan bir ikileme kullanılmış. Yerine hangisi gelmelidir?\n\n'Kaplumbağa yolda hızlı hızlı yürüyordu.'",
+                instruction: "Cümlenin anlamına uygun ikilemeyi seç.",
+                data: { options: ["koşa koşa", "yavaş yavaş", "düşe kalka", "apar topar"] },
+                correctAnswer: "yavaş yavaş",
+                explanation: "Kaplumbağalar yavaş hayvanlar olduğu için 'hızlı hızlı' yerine 'yavaş yavaş' veya 'ağır ağır' kullanılmalıdır.",
+                hint: "Kaplumbağanın hızını düşün."
+            }
+        ];
+
+        function initApp() {
+            // Setup tasks with dynamic state properties
+            state.tasks = RAW_TASKS.map(task => ({
+                ...JSON.parse(JSON.stringify(task)),
+                status: "pending",
+                attempts: 0,
+                firstTry: true,
+                hintUsed: false,
+                answer: null,
+                locked: false,
+                rewardGranted: false,
+                internalState: {} // For categorize/match state
+            }));
+            state.currentIndex = -1;
+            state.score = 0;
+            state.wrongCount = 0;
+            state.skippedCount = 0;
+            state.startedAt = new Date();
+            state.isReviewMode = false;
+            
+            render();
+        }
+
+        function playSound(type) {
+            // Opsiyonel ses efekti fonksiyonu (Harici dosya istenmediği için boş bırakıyoruz, sadece yapı olarak duruyor)
+        }
+
+        // Ana Render Fonksiyonu
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = ''; // Clear
+
+            if (state.currentIndex === -1) {
+                app.appendChild(createIntroScreen());
+            } else if (state.currentIndex >= 0 && state.currentIndex < state.tasks.length) {
+                app.appendChild(createTaskScreen());
+            } else {
+                app.appendChild(createFinalScreen());
+            }
+        }
+
+        function createIntroScreen() {
+            const div = document.createElement('div');
+            div.className = 'content';
+            div.style.textAlign = 'center';
+            
+            div.innerHTML = `
+                <div style="background: var(--primary); padding: 40px 20px; color: white; border-radius: 16px; margin-bottom: 30px;">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 10px;">🕵️‍♂️ İkileme Dedektifi</h1>
+                    <p style="font-size: 1.2rem; color: var(--accent);">Kelimelerin Gizemini Çözmeye Hazır Mısın?</p>
+                </div>
+                
+                <h2 style="margin-bottom: 20px;">İkileme Nedir?</h2>
+                <div class="info-card">
+                    <p>Anlamı güçlendirmek, pekiştirmek veya güzelleştirmek için aynı kelimenin, yakın, zıt veya anlamsız kelimelerin <b>yan yana kullanılmasına</b> ikileme denir.</p>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; text-align: left;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow); border-top: 4px solid var(--success);">
+                        <b>Aynı Sözcükle:</b><br>yavaş yavaş, koşa koşa
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow); border-top: 4px solid var(--accent);">
+                        <b>Zıt Anlamlıyla:</b><br>az çok, iyi kötü
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: var(--shadow); border-top: 4px solid var(--error);">
+                        <b>Biri veya İkisi Anlamsızla:</b><br>eski püskü, abur cubur
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="font-size: 1.3rem; padding: 15px 40px;" onclick="startGame()">
+                    🔍 Dedektiflik Macerasına Başla!
+                </button>
+            `;
+            return div;
+        }
+
+        function startGame() {
+            state.currentIndex = 0;
+            state.startedAt = new Date();
+            render();
+        }
+
+        function createTaskScreen() {
+            const task = state.tasks[state.currentIndex];
+            const wrapper = document.createElement('div');
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.height = '100%';
+
+            // HEADER
+            const header = document.createElement('div');
+            header.className = 'header';
+            
+            const progressPct = ((state.currentIndex) / state.tasks.length) * 100;
+            
+            header.innerHTML = `
+                <div>
+                    <h1>🕵️ ${task.stage} <span style="font-size: 1rem; font-weight: normal; margin-left: 10px;">(Görev ${state.currentIndex + 1}/${state.tasks.length})</span></h1>
+                    <div class="progress-bar"><div class="progress-fill" style="width: ${progressPct}%"></div></div>
+                </div>
+                <div class="stats">
+                    <span title="Puan">🏆 ${state.score}</span>
+                    <span title="Hata">❌ ${state.wrongCount}</span>
+                </div>
+            `;
+            wrapper.appendChild(header);
+
+            // CONTENT
+            const content = document.createElement('div');
+            content.className = 'content';
+            content.id = 'task-content';
+            
+            // Prompt & Instruction
+            const promptBox = document.createElement('div');
+            promptBox.innerHTML = `
+                <h2 style="margin-bottom: 10px; color: var(--primary);">${task.prompt.replace(/\n/g, '<br>')}</h2>
+                <p style="color: #666; font-weight: bold; margin-bottom: 20px;">👉 ${task.instruction}</p>
+            `;
+            content.appendChild(promptBox);
+
+            // Interaction Area
+            const interactionArea = document.createElement('div');
+            interactionArea.id = 'interaction-area';
+            buildInteraction(task, interactionArea);
+            content.appendChild(interactionArea);
+
+            // Feedback Box
+            const feedbackBox = document.createElement('div');
+            feedbackBox.id = 'feedback-box';
+            feedbackBox.className = 'feedback-box';
+            content.appendChild(feedbackBox);
+
+            wrapper.appendChild(content);
+
+            // FOOTER NAV
+            const footer = document.createElement('div');
+            footer.className = 'footer';
+            
+            const btnPrev = document.createElement('button');
+            btnPrev.className = 'btn-nav';
+            btnPrev.innerHTML = '⬅️ Önceki';
+            btnPrev.disabled = state.currentIndex === 0 && !state.isReviewMode;
+            btnPrev.onclick = () => {
+                if(state.isReviewMode) {
+                    state.isReviewMode = false;
+                    state.currentIndex = state.tasks.length;
+                } else {
+                    state.currentIndex--;
+                }
+                render();
+            };
+
+            const btnSkip = document.createElement('button');
+            btnSkip.className = 'btn-nav btn-skip';
+            btnSkip.innerHTML = '⏭️ Geç';
+            // Eğer görev zaten success ise 'Geç' yerine 'İleri' yeterli, disable the skip logically
+            btnSkip.disabled = task.status === 'success' || state.isReviewMode;
+            btnSkip.onclick = () => {
+                if (task.status !== 'success') {
+                    task.status = 'skipped';
+                    if(!task.locked) state.skippedCount++;
+                    task.locked = true;
+                }
+                goNext();
+            };
+
+            const btnNext = document.createElement('button');
+            btnNext.className = 'btn-nav';
+            btnNext.id = 'btn-next';
+            
+            if(state.isReviewMode) {
+                btnNext.innerHTML = '📋 Sonuçlara Dön';
+                btnNext.className = 'btn-primary';
+                btnNext.onclick = () => {
+                    state.isReviewMode = false;
+                    state.currentIndex = state.tasks.length;
+                    render();
+                };
+            } else {
+                btnNext.innerHTML = 'Sonraki ➡️';
+                btnNext.disabled = task.status === 'pending';
+                btnNext.onclick = goNext;
+            }
+
+            footer.appendChild(btnPrev);
+            footer.appendChild(btnSkip);
+            footer.appendChild(btnNext);
+            
+            wrapper.appendChild(footer);
+
+            // Eğer görev daha önceden çözülmüşse UI'ı ona göre güncelle
+            setTimeout(() => {
+                if (task.status === 'success') {
+                    showFeedback(true, `Tebrikler! ${task.explanation}`);
+                } else if (task.status === 'skipped') {
+                    showFeedback(false, "Bu görevi geçmiştin. Tekrar deneyebilirsin.");
+                }
+            }, 50);
+
+            return wrapper;
+        }
+
+        function goNext() {
+            state.currentIndex++;
+            render();
+        }
+
+        function buildInteraction(task, container) {
+            container.innerHTML = '';
+            
+            if (task.type === 'choice' || task.type === 'error') {
+                const grid = document.createElement('div');
+                grid.className = 'options-grid';
+                task.data.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = opt;
+                    if(task.answer === opt) btn.classList.add('selected');
+                    
+                    if(task.locked) {
+                        btn.disabled = true;
+                        if(opt === task.correctAnswer && task.status === 'success') btn.classList.add('correct');
+                        if(opt === task.answer && task.status !== 'success') btn.classList.add('wrong');
+                    } else {
+                        btn.onclick = () => handleAnswer(task, opt, btn);
+                    }
+                    grid.appendChild(btn);
+                });
+                container.appendChild(grid);
+            } 
+            else if (task.type === 'tf') {
+                const grid = document.createElement('div');
+                grid.className = 'options-grid';
+                grid.style.gridTemplateColumns = '1fr 1fr';
+                ['Doğru', 'Yanlış'].forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.style.textAlign = 'center';
+                    btn.style.fontSize = '1.3rem';
+                    btn.innerHTML = opt === 'Doğru' ? '✅ Doğru' : '❌ Yanlış';
+                    if(task.answer === opt) btn.classList.add('selected');
+                    
+                    if(task.locked) {
+                        btn.disabled = true;
+                        if(opt === task.correctAnswer && task.status === 'success') btn.classList.add('correct');
+                    } else {
+                        btn.onclick = () => handleAnswer(task, opt, btn);
+                    }
+                    grid.appendChild(btn);
+                });
+                container.appendChild(grid);
+            }
+            else if (task.type === 'find') {
+                const textDiv = document.createElement('div');
+                textDiv.className = 'find-text';
+                const words = task.data.text.split(' ');
+                
+                // State initialization for find
+                if(!task.internalState.selectedWords) task.internalState.selectedWords = [];
+
+                words.forEach((word, idx) => {
+                    const span = document.createElement('span');
+                    span.className = 'find-word';
+                    span.textContent = word;
+                    
+                    const cleanWord = word.replace(/[.,!?]/g, '').trim(); // for matching logic later
+
+                    if(task.internalState.selectedWords.includes(idx)) {
+                        span.classList.add('selected');
+                    }
+
+                    if(!task.locked) {
+                        span.onclick = () => {
+                            span.classList.toggle('selected');
+                            if(span.classList.contains('selected')) {
+                                task.internalState.selectedWords.push(idx);
+                            } else {
+                                task.internalState.selectedWords = task.internalState.selectedWords.filter(i => i !== idx);
+                            }
+                        };
+                    }
+                    textDiv.appendChild(span);
+                    textDiv.appendChild(document.createTextNode(' '));
+                });
+                container.appendChild(textDiv);
+
+                const checkBtn = document.createElement('button');
+                checkBtn.className = 'btn-primary';
+                checkBtn.style.marginTop = '15px';
+                checkBtn.style.width = '100%';
+                checkBtn.innerHTML = 'Kontrol Et';
+                checkBtn.disabled = task.locked;
+                checkBtn.onclick = () => {
+                    // Reconstruct selected string
+                    const selectedSpans = textDiv.querySelectorAll('.selected');
+                    const selectedText = Array.from(selectedSpans).map(s => s.textContent.replace(/[.,!?]/g, '').trim()).join(' ');
+                    handleAnswer(task, selectedText, null);
+                };
+                container.appendChild(checkBtn);
+            }
+            else if (task.type === 'input') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'input-box';
+                input.placeholder = 'Cevabını buraya yaz...';
+                if(task.answer) input.value = task.answer;
+                input.disabled = task.locked;
+                container.appendChild(input);
+
+                const checkBtn = document.createElement('button');
+                checkBtn.className = 'btn-primary';
+                checkBtn.style.marginTop = '10px';
+                checkBtn.style.width = '100%';
+                checkBtn.innerHTML = 'Kontrol Et';
+                checkBtn.disabled = task.locked;
+                checkBtn.onclick = () => handleAnswer(task, input.value, null);
+                container.appendChild(checkBtn);
+            }
+            else if (task.type === 'categorize') {
+                // Initialize internal state
+                if(!task.internalState.placements) {
+                    task.internalState.placements = {}; 
+                    task.data.categories.forEach(c => task.internalState.placements[c] = []);
+                    task.internalState.pool = [...task.data.items];
+                }
+
+                let selectedItem = null;
+
+                const renderCategorizeUI = () => {
+                    container.innerHTML = '';
+                    
+                    const poolDiv = document.createElement('div');
+                    poolDiv.className = 'pool-container';
+                    poolDiv.innerHTML = task.internalState.pool.length === 0 ? '<span style="color:#999;">Tüm kelimeler yerleştirildi.</span>' : '';
+                    
+                    task.internalState.pool.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'draggable-item';
+                        div.textContent = item;
+                        if(!task.locked) {
+                            div.onclick = (e) => {
+                                document.querySelectorAll('.draggable-item').forEach(el => el.classList.remove('selected'));
+                                div.classList.add('selected');
+                                selectedItem = item;
+                            };
+                        }
+                        poolDiv.appendChild(div);
+                    });
+                    container.appendChild(poolDiv);
+
+                    const catGrid = document.createElement('div');
+                    catGrid.className = 'categories-grid';
+                    task.data.categories.forEach(cat => {
+                        const box = document.createElement('div');
+                        box.className = 'category-box';
+                        box.innerHTML = `<h3>${cat}</h3>`;
+                        
+                        task.internalState.placements[cat].forEach(item => {
+                            const itemDiv = document.createElement('div');
+                            itemDiv.className = 'draggable-item';
+                            itemDiv.style.borderColor = 'var(--primary)';
+                            itemDiv.textContent = item;
+                            if(!task.locked) {
+                                itemDiv.onclick = (e) => {
+                                    e.stopPropagation();
+                                    // Move back to pool
+                                    task.internalState.placements[cat] = task.internalState.placements[cat].filter(i => i !== item);
+                                    task.internalState.pool.push(item);
+                                    renderCategorizeUI();
+                                };
+                            }
+                            box.appendChild(itemDiv);
+                        });
+
+                        if(!task.locked) {
+                            box.onclick = () => {
+                                if(selectedItem) {
+                                    task.internalState.pool = task.internalState.pool.filter(i => i !== selectedItem);
+                                    task.internalState.placements[cat].push(selectedItem);
+                                    selectedItem = null;
+                                    renderCategorizeUI();
+                                }
+                            };
+                        }
+                        catGrid.appendChild(box);
+                    });
+                    container.appendChild(catGrid);
+
+                    if(task.internalState.pool.length === 0) {
+                        const checkBtn = document.createElement('button');
+                        checkBtn.className = 'btn-primary';
+                        checkBtn.style.marginTop = '20px';
+                        checkBtn.style.width = '100%';
+                        checkBtn.innerHTML = 'Kontrol Et';
+                        checkBtn.disabled = task.locked;
+                        checkBtn.onclick = () => {
+                            // Validate
+                            handleAnswer(task, task.internalState.placements, null);
+                        };
+                        container.appendChild(checkBtn);
+                    }
+                };
+                renderCategorizeUI();
+            }
+            else if (task.type === 'match') {
+                if(!task.internalState.matches) task.internalState.matches = {};
+                
+                let selectedLeft = null;
+                let selectedRight = null;
+
+                const renderMatchUI = () => {
+                    container.innerHTML = '';
+                    const matchContainer = document.createElement('div');
+                    matchContainer.className = 'match-container';
+                    
+                    const leftCol = document.createElement('div'); leftCol.className = 'match-col';
+                    const rightCol = document.createElement('div'); rightCol.className = 'match-col';
+
+                    task.data.left.forEach(l => {
+                        const item = document.createElement('div');
+                        item.className = 'match-item';
+                        item.textContent = l;
+                        if(task.internalState.matches[l]) {
+                            item.classList.add('matched');
+                            item.textContent += ' ↔️ ' + task.internalState.matches[l];
+                        } else if(selectedLeft === l) {
+                            item.classList.add('selected');
+                        }
+
+                        if(!task.locked && !task.internalState.matches[l]) {
+                            item.onclick = () => {
+                                selectedLeft = l;
+                                renderMatchUI();
+                                checkPair();
+                            };
+                        }
+                        leftCol.appendChild(item);
+                    });
+
+                    task.data.right.forEach(r => {
+                        const item = document.createElement('div');
+                        item.className = 'match-item';
+                        item.textContent = r;
+                        
+                        // Check if matched
+                        let isMatched = Object.values(task.internalState.matches).includes(r);
+                        if(isMatched) {
+                            item.classList.add('matched');
+                        } else if(selectedRight === r) {
+                            item.classList.add('selected');
+                        }
+
+                        if(!task.locked && !isMatched) {
+                            item.onclick = () => {
+                                selectedRight = r;
+                                renderMatchUI();
+                                checkPair();
+                            };
+                        }
+                        rightCol.appendChild(item);
+                    });
+
+                    matchContainer.appendChild(leftCol);
+                    matchContainer.appendChild(rightCol);
+                    container.appendChild(matchContainer);
+
+                    function checkPair() {
+                        if(selectedLeft && selectedRight) {
+                            // Check if they are correct pair
+                            if(task.correctAnswer[selectedLeft] === selectedRight) {
+                                task.internalState.matches[selectedLeft] = selectedRight;
+                                selectedLeft = null; selectedRight = null;
+                                renderMatchUI();
+                                
+                                // Check if all matched
+                                if(Object.keys(task.internalState.matches).length === Object.keys(task.correctAnswer).length) {
+                                    handleAnswer(task, task.internalState.matches, null);
+                                }
+                            } else {
+                                // Wrong pair
+                                const fb = document.getElementById('feedback-box');
+                                fb.innerHTML = `❌ Hatalı eşleştirme. ${task.hint}`;
+                                fb.className = 'feedback-box feedback-error';
+                                fb.style.display = 'block';
+                                setTimeout(() => {
+                                    selectedLeft = null; selectedRight = null;
+                                    fb.style.display = 'none';
+                                    renderMatchUI();
+                                }, 1500);
+                            }
+                        }
+                    }
+                };
+                renderMatchUI();
+            }
+        }
+
+        function handleAnswer(task, userAnswer, elementBtn) {
+            if (task.locked) return; // Prevent double click
+            
+            task.answer = userAnswer;
+            let isCorrect = false;
+
+            // Validation Logic based on type
+            if (task.type === 'choice' || task.type === 'tf' || task.type === 'error') {
+                isCorrect = (userAnswer === task.correctAnswer);
+            } 
+            else if (task.type === 'find') {
+                isCorrect = (userAnswer === task.correctAnswer);
+            }
+            else if (task.type === 'input') {
+                const normalizedUser = userAnswer.trim().toLocaleLowerCase('tr-TR');
+                const accepted = task.acceptedAnswers ? task.acceptedAnswers.map(a => a.toLocaleLowerCase('tr-TR')) : [task.correctAnswer.toLocaleLowerCase('tr-TR')];
+                isCorrect = accepted.includes(normalizedUser);
+            }
+            else if (task.type === 'categorize') {
+                // deep compare
+                isCorrect = true;
+                for(let cat in task.correctAnswer) {
+                    const expected = [...task.correctAnswer[cat]].sort();
+                    const actual = [...userAnswer[cat]].sort();
+                    if(expected.join('|') !== actual.join('|')) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+            }
+            else if (task.type === 'match') {
+                isCorrect = true; // match handles correctness internally pair by pair, if it reaches here it's full correct.
+            }
+
+            task.attempts++;
+
+            if (isCorrect) {
+                task.status = 'success';
+                task.locked = true;
+                if (!task.rewardGranted) {
+                    if (task.firstTry) {
+                        state.score += 10;
+                    } else {
+                        state.score += 5; // Less points on retry
+                    }
+                    task.rewardGranted = true;
+                }
+                showFeedback(true, `✅ Tebrikler! ${task.explanation}`);
+                
+                // Visual update for buttons
+                if(elementBtn) {
+                    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+                    elementBtn.classList.add('correct');
+                }
+                
+                const nextBtn = document.getElementById('btn-next');
+                if(nextBtn) nextBtn.disabled = false;
+            } else {
+                task.firstTry = false;
+                task.hintUsed = true;
+                if(task.attempts === 1) state.wrongCount++; // only count wrong once per task for final stats
+                
+                if (task.type === 'categorize') {
+                    // Reset categorize on wrong answer
+                    task.internalState.placements = {}; 
+                    task.data.categories.forEach(c => task.internalState.placements[c] = []);
+                    task.internalState.pool = [...task.data.items];
+                    buildInteraction(task, document.getElementById('interaction-area'));
+                }
+
+                showFeedback(false, `❌ Tekrar düşün! İpucu: ${task.hint}`);
+                
+                if(elementBtn) {
+                    elementBtn.classList.add('wrong');
+                    setTimeout(() => elementBtn.classList.remove('wrong'), 1000);
+                }
+            }
+            
+            // Update Header Stats
+            document.querySelector('.stats').innerHTML = `
+                <span title="Puan">🏆 ${state.score}</span>
+                <span title="Hata">❌ ${state.wrongCount}</span>
+            `;
+        }
+
+        function showFeedback(isSuccess, message) {
+            const fb = document.getElementById('feedback-box');
+            fb.innerHTML = message;
+            fb.className = 'feedback-box ' + (isSuccess ? 'feedback-success' : 'feedback-error');
+            fb.style.display = 'block';
+        }
+
+        function createFinalScreen() {
+            const div = document.createElement('div');
+            div.className = 'content';
+            
+            const endTime = new Date();
+            const timeDiff = Math.floor((endTime - state.startedAt) / 1000);
+            const minutes = Math.floor(timeDiff / 60);
+            const seconds = timeDiff % 60;
+
+            let correctCount = state.tasks.filter(t => t.status === 'success').length;
+
+            div.innerHTML = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="font-size: 2.5rem; color: var(--primary);">🎉 Görev Tamamlandı Dedektif!</h1>
+                    <p style="font-size: 1.2rem; color: #666;">Dosya kapandı. İşte başarı raporun:</p>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; text-align: center;">
+                    <div style="background: var(--primary); color: white; padding: 20px; border-radius: 12px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">${state.score}</div>
+                        <div>Toplam Puan</div>
+                    </div>
+                    <div style="background: #27AE60; color: white; padding: 20px; border-radius: 12px;">
+                        <div style="font-size: 2rem; font-weight: bold;">${correctCount}/${state.tasks.length}</div>
+                        <div>Doğru Çözülen</div>
+                    </div>
+                    <div style="background: #E74C3C; color: white; padding: 20px; border-radius: 12px;">
+                        <div style="font-size: 2rem; font-weight: bold;">${state.wrongCount}</div>
+                        <div>Hatalı Deneme</div>
+                    </div>
+                    <div style="background: #95a5a6; color: white; padding: 20px; border-radius: 12px;">
+                        <div style="font-size: 2rem; font-weight: bold;">${minutes}d ${seconds}s</div>
+                        <div>Geçen Süre</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <button class="btn-primary" onclick="initApp()">🔄 Tekrar Oyna (Sıfırla)</button>
+                </div>
+                
+                <h3 style="color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid #ddd; padding-bottom: 10px;">📋 Hatalı ve Geçilen Görevleri İncele</h3>
+                <div id="review-list"></div>
+            `;
+
+            // Append Review List
+            const reviewList = div.querySelector('#review-list');
+            const issues = state.tasks.filter(t => t.status !== 'success' || (t.status === 'success' && !t.firstTry));
+            
+            if (issues.length === 0) {
+                reviewList.innerHTML = '<p style="color: var(--success); font-weight: bold; text-align:center;">Harika! Hiçbir görevi atlamadın ve hepsini ilk seferde bildin.</p>';
+            } else {
+                issues.forEach((t, idx) => {
+                    const item = document.createElement('div');
+                    item.className = 'report-item ' + (t.status === 'skipped' ? 'skipped-item' : 'wrong-item');
+                    
+                    let statusText = t.status === 'skipped' ? 'Bunu Geçtin' : 'Yanlış Yapıldı/Düzeltildi';
+                    let answerDisplay = typeof t.correctAnswer === 'object' ? 'Eşleştirme/Sınıflandırma' : t.correctAnswer;
+                    
+                    item.innerHTML = `
+                        <div>
+                            <div style="font-weight: bold; color: var(--primary);">${t.id}. ${t.stage}</div>
+                            <div style="font-size: 0.9rem; color: #555; margin-bottom: 5px;">${t.prompt.substring(0, 50)}...</div>
+                            <div style="font-size: 0.85rem;"><span style="color:${t.status==='skipped'?'#95a5a6':'var(--error)'}; font-weight:bold;">${statusText}</span> | Doğru Cevap: <span style="color:var(--success); font-weight:bold;">${answerDisplay}</span></div>
+                        </div>
+                        <button class="btn-nav" style="font-size:0.9rem; padding: 8px 15px;" onclick="goToTask(${state.tasks.indexOf(t)})">Dön ve Çöz</button>
+                    `;
+                    reviewList.appendChild(item);
+                });
+            }
+
+            return div;
+        }
+
+        function goToTask(index) {
+            state.currentIndex = index;
+            state.isReviewMode = true; // Review modunu aç
+            render();
+        }
+
+        window.onload = initApp;
+
+    </script>
+</body>
+</html>

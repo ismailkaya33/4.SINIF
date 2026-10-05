@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paleontolog Macerası: Fosillerin Sırrı</title>
+<style>
+  :root {
+    --primary: #2C3E50;
+    --secondary: #18BC9C;
+    --accent: #F39C12;
+    --bg: #ECF0F1;
+    --text: #34495E;
+    --white: #FFFFFF;
+    --error: #E74C3C;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .app-container {
+    background: var(--white);
+    width: 100%;
+    max-width: 800px;
+    min-height: 550px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header {
+    background: var(--primary);
+    color: var(--white);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+  }
+
+  .header h1 {
+    margin: 10px 0 5px 0;
+    font-size: 1.6rem;
+  }
+
+  .header-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 5px;
+  }
+
+  .progress-container {
+    background: #34495E;
+    height: 8px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .progress-bar {
+    background: var(--secondary);
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  .zone-title {
+    background: #E8F8F5;
+    color: #117A65;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-bottom: 2px solid #D1F2EB;
+    margin: 0;
+  }
+
+  .content {
+    padding: 30px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .question-text {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 25px;
+  }
+
+  /* Etkileşim 1: Standart Butonlar */
+  .options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .option-btn {
+    background: var(--white);
+    border: 2px solid #BDC3C7;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--secondary);
+    background: #F4FAF9;
+  }
+
+  /* Etkileşim 2: Izgara Kartları */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .option-card {
+    background: var(--white);
+    border: 2px solid #BDC3C7;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90px;
+    font-weight: 500;
+  }
+
+  .option-card:hover:not(:disabled) {
+    border-color: var(--secondary);
+    background: #F4FAF9;
+  }
+
+  /* Etkileşim 3: Doğru/Yanlış Hap Butonları */
+  .tf-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .tf-btn {
+    background: var(--white);
+    border: 2px solid #BDC3C7;
+    padding: 15px 45px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tf-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: #F8F9F9;
+  }
+
+  /* Doğru/Yanlış Durumları */
+  .correct-ans {
+    background: var(--secondary) !important;
+    color: var(--white) !important;
+    border-color: var(--secondary) !important;
+  }
+
+  .wrong-ans {
+    background: var(--error) !important;
+    color: var(--white) !important;
+    border-color: var(--error) !important;
+  }
+
+  /* Etkileşim 4: Sıralama */
+  .sequence-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .sequence-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #F8F9F9;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 2px solid #BDC3C7;
+    font-weight: 500;
+  }
+
+  .seq-buttons {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+    margin-left: 15px;
+  }
+
+  .seq-buttons button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+
+  .seq-buttons button:hover:not(:disabled) {
+    background: #1A252F;
+  }
+
+  .seq-buttons button:disabled {
+    background: #BDC3C7;
+    cursor: not-allowed;
+  }
+
+  .action-btn {
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    align-self: center;
+    margin-top: 25px;
+    transition: background 0.2s;
+  }
+
+  .action-btn:hover {
+    background: #D68910;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 350px;
+    margin: 30px auto 0 auto;
+  }
+
+  .input-group input {
+    padding: 15px;
+    border: 2px solid #BDC3C7;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .feedback {
+    margin-top: auto;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 1.1rem;
+  }
+
+  .feedback.show {
+    opacity: 1;
+    margin-top: 25px;
+  }
+
+  .feedback.success {
+    background: #D5F5E3;
+    color: #27AE60;
+    border: 1px solid #ABEBC6;
+  }
+
+  .feedback.error {
+    background: #FADBD8;
+    color: #C0392B;
+    border: 1px solid #F5B7B1;
+  }
+
+  .report-card {
+    text-align: center;
+  }
+
+  .stats-list {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .stats-list li {
+    background: #F8F9F9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #BDC3C7;
+    font-size: 1.1rem;
+  }
+
+  .stats-list li strong {
+    display: block;
+    color: var(--primary);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  .summary-text {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #7F8C8D;
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 600px) {
+    .options-grid { grid-template-columns: 1fr; }
+    .stats-list { grid-template-columns: 1fr; }
+    .tf-container { flex-direction: column; }
+    .tf-btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header">
+    <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <h1>Paleontolog Macerası</h1>
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+  </div>
+  <h2 class="zone-title" id="zoneTitle">Yükleniyor...</h2>
+  <div class="content">
+    <div id="taskContainer"></div>
+    <div id="feedback" class="feedback"></div>
+  </div>
+</div>
+
+<script>
+  const appData = {
+    studentName: "",
+    score: 0,
+    mistakes: 0,
+    hintsUsed: 0,
+    zones: [
+      {
+        title: "1. Aşama: Doğa Gözlemi (Durum Analizi)",
+        type: "decision",
+        tasks: [
+          {
+            question: "Bir ağaç yaprağı rüzgarla yere düştü ve üzeri hızla kalın bir çamur tabakasıyla kaplandı. Havayla teması tamamen kesildi. Bu yaprak ileride fosilleşebilir mi?",
+            options: ["Evet, fosilleşebilir", "Hayır, fosilleşemez"],
+            correct: 0,
+            hint: "Fosilleşmenin en önemli şartı canlı kalıntısının havayla temasının kesilmesidir. Çamur tabakası bunu sağlar."
+          },
+          {
+            question: "Kumsalda ölen bir deniz yıldızı günlerce güneşin, rüzgarın ve havanın altında kaldı. Fosilleşebilir mi?",
+            options: ["Evet, fosilleşebilir", "Hayır, fosilleşemez"],
+            correct: 1,
+            hint: "Havayla temas eden canlı kalıntıları kısa sürede çürüyerek yok olur, taşlaşamaz."
+          },
+          {
+            question: "Bir karınca, çam ağacından akan yapışkan reçinenin içine düştü ve reçine donarak onu tamamen içine hapsetti. Fosilleşebilir mi?",
+            options: ["Evet, fosilleşebilir", "Hayır, fosilleşemez"],
+            correct: 0,
+            hint: "Bitki reçineleri (kehribar) havayla teması keserek canlının bozulmadan kalmasını sağlayan mükemmel ortamlardır."
+          }
+        ]
+      },
+      {
+        title: "2. Aşama: Oluşum Simülatörü",
+        type: "sequence",
+        question: "Fosil oluşum aşamaları birbirine karışmış! Sağdaki okları kullanarak aşamaları doğru sıraya diz ve simülasyonu başlat.",
+        items: [
+          "Zamanla dokuların içine su ve mineraller dolar.",
+          "Canlı ölür ve kalıntıları toprağa, kuma veya çamura gömülür.",
+          "Kalıntı sertleşerek kayaç halini alır ve fosil oluşur.",
+          "Üst üste gelen taş ve toprak tabakaları kalıntının üzerini tamamen örter ve havayla teması kesilir."
+        ],
+        correctOrder: [1, 3, 0, 2],
+        hint: "Her şey canlının ölümüyle başlar. Sonra üzeri örtülmeli ve en son adımda taşlaşmalıdır."
+      },
+      {
+        title: "3. Aşama: Paleontoloji Laboratuvarı",
+        type: "deduction",
+        tasks: [
+          {
+            question: "Laboratuvarın girişindeki tabelada 'Fosilleri inceleyen bilim dalı' yazıyor. Tabelaya hangi ismi yazmalıyız?",
+            options: ["Arkeoloji", "Paleontoloji", "Biyoloji", "Jeoloji"],
+            correct: 1,
+            hint: "Bu kelime 'Paleo' (eski) kelimesi ile başlar."
+          },
+          {
+            question: "Peki senin gibi fosiller hakkında bilgi toplayıp bu alanda çalışan bilim insanlarına ne ad verilir?",
+            options: ["Paleontolog", "Astronot", "Mimar", "Biyolog"],
+            correct: 0,
+            hint: "Paleontoloji bilimi ile uğraşan uzman kişilere verilen isimdir."
+          },
+          {
+            question: "Ekranda devasa ve keskin dişleri olan bir kafatası fosili var. Günümüzde böyle bir canlı yaşamıyor. Bu fosil bize neyi kanıtlar?",
+            options: ["O canlıların ormanların derinliklerinde hala yaşadığını", "Geçmişte yaşamış ancak nesli tükenmiş canlıların olduğunu"],
+            correct: 1,
+            hint: "Günümüzde yaşamadıklarına göre, bu canlıların soyu ne olmuş olabilir?"
+          },
+          {
+            question: "İncelediğimiz bir kayacın içinde tropikal eğrelti otu fosili bulduk. Ancak bu taşı bulduğumuz yer şu an çok soğuk ve kurak. Bu durum bize neyi gösterir?",
+            options: ["O bölgenin geçmişteki ikliminin çok sıcak ve nemli olduğunu", "Eğrelti otlarının soğuk havayı ve karı çok sevdiğini"],
+            correct: 0,
+            hint: "Fosiller, bulundukları bölgenin bugünkü değil, 'geçmişteki' iklim özellikleri hakkında bilgi verir."
+          },
+          {
+            question: "Araştırma ekibimiz yüksek bir dağın zirvesinde deniz kabuğu ve balık fosilleri buldu. Bu şaşırtıcı durumun bilimsel açıklaması ne olabilir?",
+            options: ["Eskiden balıkların dağlara tırmanabildiği", "O dağın bulunduğu bölgenin milyonlarca yıl önce deniz suları altında olduğu"],
+            correct: 1,
+            hint: "Fosiller yeryüzü şekillerinin zaman içindeki değişimi hakkında kanıt sunar. Deniz canlılarının yaşam alanı neresidir?"
+          }
+        ]
+      },
+      {
+        title: "4. Aşama: Müze Arşivi (Kanıt Doğrulama)",
+        type: "truefalse",
+        tasks: [
+          {
+            question: "Müze rehberi diyor ki: 'Fosiller sadece kayaçların (taşların) içinde bulunabilir.' Bu bilgi doğru mu?",
+            options: ["Doğru", "Yanlış"],
+            correct: 1,
+            hint: "Sadece kayaçlarda değil; buzulların içinde veya bitki reçinelerinde hapsolmuş fosiller de vardır."
+          },
+          {
+            question: "Müze rehberi diyor ki: 'Kömür, petrol ve doğal gaz gibi yakıtlar, milyonlarca yıl önce yaşamış canlı kalıntılarının fosilleşmesiyle oluşmuştur.' Bu bilgi doğru mu?",
+            options: ["Doğru", "Yanlış"],
+            correct: 0,
+            hint: "Bu yakıtlara tam da bu yüzden 'Fosil Yakıtlar' diyoruz."
+          },
+          {
+            question: "Müze rehberi diyor ki: 'Fosiller sayesinde dünyamızın (yerkürenin) yaşını hesaplayabiliriz.' Bu bilgi doğru mu?",
+            options: ["Doğru", "Yanlış"],
+            correct: 0,
+            hint: "Kayaç katmanlarındaki fosillerin yaşını ölçmek, o kayacın ve Dünya'nın geçmişi hakkında ipucu verir."
+          },
+          {
+            question: "Müze rehberi diyor ki: 'Sadece kemikli hayvanların fosili olur, bitkilerin fosili asla oluşmaz.' Bu bilgi doğru mu?",
+            options: ["Doğru", "Yanlış"],
+            correct: 1,
+            hint: "Yaprak izleri veya ağaç gövdeleri de zamanla taşlaşarak günümüze ulaşabilir."
+          }
+        ]
+      }
+    ]
+  };
+
+  let currentZone = 0;
+  let currentSubTask = 0;
+  let sequenceState = [];
+  let isTaskLocked = false;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    initApp();
+  });
+
+  function initApp() {
+    const container = document.getElementById("taskContainer");
+    document.getElementById("progressBar").style.width = "0%";
+    document.getElementById("zoneTitle").innerText = "Paleontolog Akademisine Hoş Geldin!";
+    document.getElementById("feedback").className = "feedback";
+    document.getElementById("feedback").innerHTML = "";
+    
+    let html = `
+      <div style="text-align:center;">
+        <h2 style="margin-top:0;">Fosillerin Sırrını Çözmeye Hazır mısın?</h2>
+        <p style="font-size:1.1rem; color:#7F8C8D; margin-bottom: 30px;">
+          Milyonlarca yıl öncesine gidip kayaların arasındaki sırları ortaya çıkaracağız. Eğitime başlamak için adını gir:
+        </p>
+        <div class="input-group">
+          <input type="text" id="studentName" placeholder="Adın nedir?" autocomplete="off" maxlength="20" />
+          <button class="action-btn" onclick="startActivity()">Maceraya Başla</button>
+        </div>
+      </div>
+    `;
+    container.innerHTML = html;
+  }
+
+  function startActivity() {
+    const nameInput = document.getElementById("studentName").value.trim();
+    appData.studentName = nameInput === "" ? "Genç Paleontolog" : nameInput;
+    renderCurrentTask();
+  }
+
+  function updateProgress() {
+    let totalTasks = 13; // 3 + 1 + 5 + 4
+    let completed = 0;
+    
+    for(let i = 0; i < currentZone; i++) {
+       if(appData.zones[i].type === 'sequence') {
+          completed += 1;
+       } else {
+          completed += appData.zones[i].tasks.length;
+       }
+    }
+    
+    if(appData.zones[currentZone] && appData.zones[currentZone].type !== 'sequence') {
+       completed += currentSubTask;
+    }
+    
+    const pct = (completed / totalTasks) * 100;
+    document.getElementById("progressBar").style.width = pct + "%";
+  }
+
+  function renderCurrentTask() {
+    isTaskLocked = false;
+    const zone = appData.zones[currentZone];
+    document.getElementById("zoneTitle").innerText = zone.title;
+    const container = document.getElementById("taskContainer");
+    
+    document.getElementById("feedback").className = "feedback";
+    document.getElementById("feedback").innerHTML = "";
+
+    updateProgress();
+
+    if (zone.type === "sequence") {
+       renderSequence(container, zone);
+    } else {
+       renderChoice(container, zone.tasks[currentSubTask], currentZone);
+    }
+  }
+
+  function renderSequence(container, zone) {
+    if(sequenceState.length === 0) {
+       // Başlangıçta kasıtlı olarak karışık bir sıra ayarlıyoruz.
+       sequenceState = [
+         {id: 0, text: zone.items[0]}, 
+         {id: 1, text: zone.items[1]}, 
+         {id: 2, text: zone.items[2]}, 
+         {id: 3, text: zone.items[3]}  
+       ];
+    }
+    
+    let html = `<p class="question-text">${zone.question}</p>`;
+    html += `<div class="sequence-list">`;
+    sequenceState.forEach((item, index) => {
+       html += `
+         <div class="sequence-item">
+           <span>${item.text}</span>
+           <div class="seq-buttons">
+             <button onclick="moveSeq(${index}, -1)" ${index === 0 ? 'disabled' : ''}>▲</button>
+             <button onclick="moveSeq(${index}, 1)" ${index === sequenceState.length - 1 ? 'disabled' : ''}>▼</button>
+           </div>
+         </div>
+       `;
+    });
+    html += `</div>`;
+    html += `<div style="text-align:center;"><button class="action-btn" onclick="checkSequence()">Sıralamayı Kontrol Et</button></div>`;
+    container.innerHTML = html;
+  }
+
+  function moveSeq(index, dir) {
+    if(isTaskLocked) return;
+    const target = index + dir;
+    if(target >= 0 && target < sequenceState.length) {
+      const temp = sequenceState[index];
+      sequenceState[index] = sequenceState[target];
+      sequenceState[target] = temp;
+      renderCurrentTask();
+    }
+  }
+
+  function checkSequence() {
+    if(isTaskLocked) return;
+    const zone = appData.zones[currentZone];
+    let isCorrect = true;
+    for(let i=0; i<zone.correctOrder.length; i++) {
+      if(sequenceState[i].id !== zone.correctOrder[i]) {
+         isCorrect = false; 
+         break;
+      }
+    }
+    
+    if(isCorrect) {
+       isTaskLocked = true;
+       showFeedback("Harika! Fosilleşme aşamalarını doğru sıraya dizdin.", true);
+       setTimeout(() => {
+          currentZone++;
+          currentSubTask = 0;
+          renderCurrentTask();
+       }, 2000);
+    } else {
+       appData.mistakes++;
+       appData.hintsUsed++;
+       showFeedback("Sıralamada hata var. İpucu: " + zone.hint, false);
+    }
+  }
+
+  function renderChoice(container, task, zoneIndex) {
+    let html = `<p class="question-text">${task.question}</p>`;
+    
+    if (zoneIndex === 2) {
+      html += `<div class="options-grid">`;
+      task.options.forEach((opt, index) => {
+         html += `<button class="option-card" onclick="checkChoice(${index}, this)">${opt}</button>`;
+      });
+      html += `</div>`;
+    } else if (zoneIndex === 3) {
+      html += `<div class="tf-container">`;
+      task.options.forEach((opt, index) => {
+         html += `<button class="tf-btn" onclick="checkChoice(${index}, this)">${opt}</button>`;
+      });
+      html += `</div>`;
+    } else {
+      html += `<div class="options-container">`;
+      task.options.forEach((opt, index) => {
+         html += `<button class="option-btn" onclick="checkChoice(${index}, this)">${opt}</button>`;
+      });
+      html += `</div>`;
+    }
+    container.innerHTML = html;
+  }
+
+  function checkChoice(selectedIndex, btnElement) {
+    if(isTaskLocked) return;
+    
+    const zone = appData.zones[currentZone];
+    const task = zone.tasks[currentSubTask];
+    
+    if(selectedIndex === task.correct) {
+       isTaskLocked = true;
+       appData.score++;
+       btnElement.classList.add("correct-ans");
+       showFeedback("Doğru tespit!", true);
+       
+       setTimeout(() => {
+          if(currentSubTask < zone.tasks.length - 1) {
+             currentSubTask++;
+             renderCurrentTask();
+          } else {
+             currentZone++;
+             currentSubTask = 0;
+             if(currentZone < appData.zones.length) {
+                renderCurrentTask();
+             } else {
+                showFinalReport();
+             }
+          }
+       }, 1500);
+    } else {
+       appData.mistakes++;
+       appData.hintsUsed++;
+       btnElement.classList.add("wrong-ans");
+       showFeedback("Tekrar düşün. İpucu: " + task.hint, false);
+       setTimeout(() => {
+         btnElement.classList.remove("wrong-ans");
+       }, 2000);
+    }
+  }
+
+  function showFeedback(msg, isSuccess) {
+    const fb = document.getElementById("feedback");
+    fb.innerText = msg;
+    fb.className = "feedback show " + (isSuccess ? "success" : "error");
+  }
+
+  function showFinalReport() {
+    document.getElementById("progressBar").style.width = "100%";
+    const container = document.getElementById("taskContainer");
+    document.getElementById("zoneTitle").innerText = "Görev Tamamlandı!";
+    document.getElementById("feedback").className = "feedback";
+    document.getElementById("feedback").innerHTML = "";
+    
+    let totalTasks = 13; 
+    let feedbackText = "";
+    
+    if(appData.mistakes === 0) {
+      feedbackText = "Kusursuz bir çalışma! Gerçek bir paleontolog gibi tüm kanıtları doğru değerlendirdin.";
+    } else if (appData.mistakes <= 3) {
+      feedbackText = "Çok başarılı! Ufak tefek hatalar yapsan da fosillerin dünyasını çok iyi anlamışsın.";
+    } else {
+      feedbackText = "Görevleri tamamladın! Ancak bazı konularda ipuçlarına ihtiyaç duydun. Fosilleşme şartlarını ve fosillerin bize ne anlattığını günlük hayatında gözlemlemeye devam et.";
+    }
+    
+    let html = `
+      <div class="report-card">
+        <h2 style="margin-top:0;">Tebrikler ${appData.studentName}!</h2>
+        <p class="summary-text">${feedbackText}</p>
+        <ul class="stats-list">
+          <li><strong>Akademik Görevler:</strong> ${totalTasks}</li>
+          <li><strong>Doğru Kararlar:</strong> ${totalTasks}</li>
+          <li><strong>Yapılan Hata:</strong> ${appData.mistakes}</li>
+          <li><strong>Kullanılan İpucu:</strong> ${appData.hintsUsed}</li>
+        </ul>
+        <button class="action-btn" onclick="resetApp()">Tekrar Oyna</button>
+      </div>
+    `;
+    container.innerHTML = html;
+  }
+
+  function resetApp() {
+    appData.score = 0;
+    appData.mistakes = 0;
+    appData.hintsUsed = 0;
+    currentZone = 0;
+    currentSubTask = 0;
+    sequenceState = [];
+    isTaskLocked = false;
+    initApp();
+  }
+</script>
+
+</body>
+</html>

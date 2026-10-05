@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<!-- Mobil uyumluluk ve otomatik yakınlaştırmayı (zoom) engelleme ayarı -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sayı Yapbozu — Bölük, Basamak, Çözümleme ve Tablo</title>
+<style>
+:root {
+  --ink: #17202a; --paper: #fffdf7; --line: #d9dee5;
+  --blue: #2563eb; --green: #16a34a; --orange: #f59e0b; --purple: #7c3aed; --red: #dc2626;
+  --p0: #22c55e; --p1: #06b6d4; --p2: #3b82f6; --p3: #8b5cf6; --p4: #f59e0b; --p5: #ef4444;
+}
+
+* { box-sizing: border-box; } 
+body { 
+  margin: 0; background: #eef2f7; color: var(--ink); 
+  font-family: Arial, Helvetica, sans-serif; 
+  touch-action: pan-y; 
+  user-select: none; 
+  -webkit-user-select: none;
+}
+
+.app { max-width: 1250px; margin: auto; padding: 18px; }
+.top { background: #111827; color: white; border-radius: 18px; padding: 18px 22px; display: flex; justify-content: space-between; gap: 15px; align-items: center; }
+h1 { margin: 0; font-size: 28px; }
+.sub { opacity: .8; margin-top: 5px; }
+.score { font-weight: 700; font-size: 18px; background: #374151; padding: 8px 15px; border-radius: 12px; }
+
+.tabs { display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap; justify-content: center; }
+.tab { border: 0; border-radius: 12px; padding: 12px 16px; background: white; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);}
+.tab:hover { background: #f1f5f9; transform: translateY(-2px); }
+.tab.active { background: var(--blue); color: white; box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3); }
+
+.panel { display: none; background: var(--paper); border-radius: 18px; padding: 20px; box-shadow: 0 4px 18px #00000010; animation: fadeIn 0.3s ease; }
+.panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; justify-content: center; }
+button.action { border: 0; border-radius: 11px; padding: 11px 15px; background: #17202a; color: white; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+button.action:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+button.green { background: #16a34a; }
+button.blue { background: #2563eb; }
+
+.message { min-height: 28px; font-weight: 700; margin: 8px 0 15px; color: #475569; text-align: center; }
+
+/* İLK 4 SEKME İÇİN STİLLER */
+.board { display: flex; justify-content: center; gap: 0; overflow-x: auto; padding: 20px 5px; }
+.place { min-width: 130px; text-align: center; }
+.place .name { font-size: 14px; font-weight: 700; margin-bottom: 7px; }
+.digit { font-size: 34px; font-weight: 900; border: 3px solid var(--line); background: white; padding: 12px 8px; border-radius: 12px 12px 0 0; }
+.value { font-size: 19px; font-weight: 800; background: #f3f4f6; border: 3px solid var(--line); border-top: 0; padding: 9px 5px; border-radius: 0 0 12px 12px; }
+
+.group { margin: 0 5px; border-left: 5px dashed #94a3b8; }
+.group:first-child { border-left: 0; }
+.groupLabel { font-size: 14px; font-weight: 800; color: #475569; text-align: center; margin-bottom: 6px; padding: 5px; background: #e2e8f0; border-radius: 8px; margin: 0 10px 10px; }
+
+.cards { display: flex; justify-content: center; align-items: flex-end; min-height: 200px; position: relative; overflow-x: auto; padding: 30px 10px 10px; }
+.arrow { height: 82px; min-width: 155px; background: white; border: 3px solid #111827; border-radius: 8px 0 0 8px; position: relative; margin-left: -48px; box-shadow: 0 3px 0 #111827; cursor: pointer; transition: 0.2s ease; opacity: 1 !important; }
+.arrow:first-child { margin-left: 0; }
+.arrow:hover { transform: translateY(-3px); z-index: 10; }
+.arrow:after { content: ""; position: absolute; right: -42px; top: -3px; border-top: 41px solid transparent; border-bottom: 41px solid transparent; border-left: 42px solid white; filter: drop-shadow(3px 0 0 #111827); }
+
+.arrow.revealed { z-index: 15; }
+.arrow .num { font-size: 38px; font-weight: 900; position: relative; z-index: 2; padding: 12px 0 0 25px; color: #17202a; }
+.arrow .placeSmall { font-size: 12px; font-weight: 900; padding-left: 25px; color: #475569; position: absolute; bottom: 5px; }
+
+/* BASAMAK DEĞERİ POPUP ANİMASYONU */
+.value-popup { position: absolute; top: 10px; left: 15px; font-size: 24px; font-weight: 900; background: white; color: #111827; border: 3px solid #111827; border-radius: 8px; padding: 4px 10px; opacity: 0; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; z-index: 20; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.arrow.revealed .value-popup { opacity: 1; transform: translateY(-65px); }
+
+.solution { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 16px 0; align-items: center; }
+.term { padding: 10px 14px; border-radius: 10px; background: #e0e7ff; font-size: 22px; font-weight: 900; }
+.question { font-size: 25px; font-weight: 800; text-align: center; margin: 10px; }
+.bigNumber { text-align: center; font-size: 58px; font-weight: 900; letter-spacing: 5px; margin: 15px; color: #0f172a; }
+
+.choiceGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 720px; margin: 15px auto; }
+.choice { background: white; border: 3px solid var(--line); border-radius: 12px; padding: 15px; font-size: 22px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+.choice:hover { border-color: var(--blue); background: #eff6ff; }
+.tag { display: inline-block; padding: 7px 10px; border-radius: 9px; background: #e2e8f0; font-weight: 800; margin: 3px; font-size: 14px; }
+
+.place.p0 .digit, .place.p0 .value { border-color: var(--p0); }
+.place.p1 .digit, .place.p1 .value { border-color: var(--p1); }
+.place.p2 .digit, .place.p2 .value { border-color: var(--p2); }
+.place.p3 .digit, .place.p3 .value { border-color: var(--p3); }
+.place.p4 .digit, .place.p4 .value { border-color: var(--p4); }
+.place.p5 .digit, .place.p5 .value { border-color: var(--p5); }
+.arrow.p0 { background: #dcfce7; border-color: var(--p0); box-shadow: 0 3px 0 var(--p0); }
+.arrow.p1 { background: #cffafe; border-color: var(--p1); box-shadow: 0 3px 0 var(--p1); }
+.arrow.p2 { background: #dbeafe; border-color: var(--p2); box-shadow: 0 3px 0 var(--p2); }
+.arrow.p3 { background: #ede9fe; border-color: var(--p3); box-shadow: 0 3px 0 var(--p3); }
+.arrow.p4 { background: #fef3c7; border-color: var(--p4); box-shadow: 0 3px 0 var(--p4); }
+.arrow.p5 { background: #fee2e2; border-color: var(--p5); box-shadow: 0 3px 0 var(--p5); }
+.arrow.p0:after { border-left-color: #dcfce7; }
+.arrow.p1:after { border-left-color: #cffafe; }
+.arrow.p2:after { border-left-color: #dbeafe; }
+.arrow.p3:after { border-left-color: #ede9fe; }
+.arrow.p4:after { border-left-color: #fef3c7; }
+.arrow.p5:after { border-left-color: #fee2e2; }
+.legend { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; margin: 8px auto 15px; }
+.legend span { padding: 7px 10px; border-radius: 9px; font-size: 13px; font-weight: 900; }
+.l0 { background: #dcfce7; border: 2px solid var(--p0); color: #065f46; }
+.l1 { background: #cffafe; border: 2px solid var(--p1); color: #164e63; }
+.l2 { background: #dbeafe; border: 2px solid var(--p2); color: #1e3a8a; }
+.l3 { background: #ede9fe; border: 2px solid var(--p3); color: #4c1d95; }
+.l4 { background: #fef3c7; border: 2px solid var(--p4); color: #78350f; }
+.l5 { background: #fee2e2; border: 2px solid var(--p5); color: #7f1d1d; }
+
+/* TABLO BÖLÜMÜ (SÜRÜKLE BIRAK) STİLLERİ */
+.dnd-wrapper { width: 100%; overflow-x: auto; padding-bottom: 20px; }
+.dnd-table { display: grid; grid-template-columns: 140px repeat(6, 1fr); gap: 3px; background: #000; border: 4px solid #000; min-width: 900px; margin: 0 auto; user-select: none; }
+.dnd-cell { background: #fff; padding: 12px 8px; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-direction: column; }
+.dnd-header-col { background: #a3e635; color: #17202a; font-size: 16px; border-right: 2px solid #000; }
+.dnd-title-cell { background: #0ea5e9; color: white; font-size: 20px; font-weight: 900; }
+.dnd-sayi-row { background: #fde047; font-size: 32px; font-weight: 900; letter-spacing: 4px; color: #000; }
+.bg-light-green { background: #dcfce7; }
+.bg-light-yellow { background: #fef08a; }
+
+.dnd-dropzone { background: #f1f5f9; border: 3px dashed #cbd5e1; border-radius: 8px; min-height: 45px; width: 100%; display: flex; align-items: center; justify-content: center; transition: 0.2s; color: #94a3b8; font-size: 13px; font-weight: 600; }
+.dnd-dropzone.drag-over { border-color: var(--blue); background: #dbeafe; transform: scale(1.05); }
+.dnd-dropzone.filled { border: 2px solid #16a34a; background: #dcfce7; color: #166534; font-size: 15px; font-weight: 800; }
+.dnd-dropzone.disabled { background: #e2e8f0; border-color: #94a3b8; opacity: 0.5; }
+
+.dnd-bank { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 25px; padding: 20px; background: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; min-height: 100px; }
+.draggable { background: white; border: 2px solid var(--blue); color: #1e3a8a; padding: 10px 18px; border-radius: 8px; font-weight: 800; cursor: grab; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.1s; font-size: 15px; position: relative; z-index: 10; display: inline-block; touch-action: none; }
+.draggable:active { cursor: grabbing; }
+.draggable.dragging { transform: scale(1.1) rotate(-3deg); opacity: 0.9; z-index: 1000 !important; background: var(--blue); color: white; }
+
+footer { text-align: center; color: #64748b; padding: 25px 15px 15px; font-size: 14px; font-weight: 600; }
+
+/* 📱 MOBİL (CEP TELEFONU) OPTİMİZASYONLARI */
+@media (max-width: 768px) {
+    .top { flex-direction: column; padding: 15px; }
+    .score { width: 100%; text-align: center; font-size: 16px; }
+    .panel { padding: 15px 10px; }
+    .question { font-size: 16px; }
+    .bigNumber { font-size: 40px; }
+    .tab { padding: 10px 12px; font-size: 13px; }
+    
+    /* Mobil: Ok Kartları Boyut Ayarı */
+    .cards { min-height: 150px; padding: 20px 5px 10px; }
+    .arrow { height: 60px; min-width: 105px; margin-left: -35px; }
+    .arrow:after { right: -30px; border-top: 30px solid transparent; border-bottom: 30px solid transparent; border-left: 31px solid white; }
+    .arrow .num { font-size: 26px; padding: 8px 0 0 20px; }
+    .arrow .placeSmall { font-size: 10px; padding-left: 20px; bottom: 3px; }
+    
+    /* Mobil: Pop-up yüksekliğini ve fontunu daralt */
+    .value-popup { font-size: 16px; left: 10px; top: 5px; padding: 2px 6px; }
+    .arrow.revealed .value-popup { transform: translateY(-45px); }
+
+    /* Mobil: Çoktan Seçmeli Basamak Bulma */
+    .choiceGrid { grid-template-columns: 1fr; gap: 8px; }
+    
+    /* Mobil: Bölükler */
+    .group { margin: 0 2px; }
+    .group > div:last-child { font-size: 26px !important; padding: 15px 10px !important; }
+    .groupLabel { font-size: 11px; margin: 0 5px 5px; }
+    
+    /* Mobil: Tablo Doldurma Bankası */
+    .dnd-bank { padding: 12px; gap: 8px; }
+    .draggable { padding: 8px 12px; font-size: 13px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div>
+    <h1>🔢 SAYI YAPBOZU</h1>
+    <div class="sub">Bölük • Basamak • Basamak Değeri • Çözümleme</div>
+  </div>
+  <div class="score">Puan: <span id="score">0</span></div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('build',this)">1 · Sayıyı Kur</button>
+  <button class="tab" onclick="showTab('split',this)">2 · Çözümle</button>
+  <button class="tab" onclick="showTab('place',this)">3 · Basamağı Bul</button>
+  <button class="tab" onclick="showTab('groups',this)">4 · Bölükleri Gör</button>
+  <button class="tab" onclick="showTab('tableGame',this)">5 · Tabloyu Doldur (Sürükle)</button>
+</div>
+
+<section id="build" class="panel active">
+  <div class="controls">
+    <button class="action green" onclick="newBuild()">🎲 Yeni Sayı</button>
+    <button class="action" onclick="revealBuild()">👀 Kartları Ayır</button>
+    <span class="tag">4–6 basamak</span>
+  </div>
+  <div class="question">Kartın üzerindeki rakama tıklayarak basamak değerini yukarı çıkarabilirsin.</div>
+  <div class="legend">
+    <span class="l5">● Yüz Binler</span><span class="l4">● On Binler</span><span class="l3">● Binler</span>
+    <span class="l2">● Yüzler</span><span class="l1">● Onlar</span><span class="l0">● Birler</span>
+  </div>
+  <div id="buildNumber" class="bigNumber">—</div>
+  <div id="buildCards" class="cards"></div>
+  <div id="buildSolution" class="solution"></div>
+  <div id="buildMsg" class="message"></div>
+</section>
+
+<section id="split" class="panel">
+  <div class="controls">
+    <button class="action green" onclick="newSplit()">🎲 Yeni Sayı</button>
+    <button class="action" onclick="revealSplit()">💡 Çözümü Göster</button>
+  </div>
+  <div class="question">Bu sayıyı basamak değerlerine ayır. (Değeri görmek için kartlara tıkla)</div>
+  <div id="splitNumber" class="bigNumber">—</div>
+  <div id="splitCards" class="cards"></div>
+  <div id="splitSolution" class="solution"></div>
+  <div id="splitMsg" class="message"></div>
+</section>
+
+<section id="place" class="panel">
+  <div class="controls"><button class="action green" onclick="newPlace()">🎲 Yeni Soru</button></div>
+  <div id="placeQuestion" class="question">—</div>
+  <div class="choiceGrid" id="choices"></div>
+  <div id="placeMsg" class="message"></div>
+</section>
+
+<section id="groups" class="panel">
+  <div class="controls">
+    <button class="action green" onclick="newGroups()">🎲 Yeni Sayı</button>
+    <button class="action" onclick="revealGroups()">👀 Bölükleri Aç</button>
+  </div>
+  <div id="groupsNumber" class="bigNumber">—</div>
+  <div id="groupBoard" class="board"></div>
+  <div id="groupsMsg" class="message"></div>
+</section>
+
+<section id="tableGame" class="panel">
+  <div class="controls">
+    <button class="action green" onclick="newTableGame()">🎲 Yeni Sayı</button>
+    <button class="action blue" onclick="solveTableGame()">💡 Hepsini Doldur</button>
+  </div>
+  <div class="question">Aşağıdaki kutuları tutup tablodaki doğru boşluğa sürükle! (Mobilde tabloyu sağa/sola kaydırabilirsin)</div>
+  
+  <div class="dnd-wrapper">
+    <div class="dnd-table" id="tableGrid"></div>
+  </div>
+  
+  <div class="message" id="tableMsg" style="font-size:18px;">Eşleştirme bekleniyor...</div>
+  
+  <div class="dnd-bank" id="dragBank"></div>
+</section>
+
+<footer>Akıllı tahta ve cep telefonu uyumlu • Öğretmen kontrol paneli</footer>
+</div>
+
+<script>
+let score = 0, buildN, splitN, placeN, groupsN, tableN;
+const names = ["Birler", "Onlar", "Yüzler", "Binler", "On Binler", "Yüz Binler"];
+const vals = [1, 10, 100, 1000, 10000, 100000];
+
+function randNum() { 
+  let d = 4 + Math.floor(Math.random() * 3);
+  let min = 10 ** (d - 1), max = 10 ** d - 1; 
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function digits(n) { return String(n).split('').map(Number); }
+function addPoint(n = 1) { score += n; document.getElementById('score').textContent = score; }
+
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// YENİDEN DÜZENLENEN KART YAPISI (Mat Şekilde)
+function cardHTML(n, i, interactive = false) {
+  let d = digits(n)[i]; let place = digits(n).length - 1 - i; let v = d * vals[place];
+  let clickAction = interactive ? `onclick="this.classList.toggle('revealed')"` : '';
+  
+  return `<div class="arrow p${place}" ${clickAction}>
+            <div class="value-popup">${v}</div>
+            <div class="num">${d}</div>
+            <div class="placeSmall">${names[place]}</div>
+          </div>`;
+}
+
+function cardsFor(n) { return digits(n).map((d, i) => cardHTML(n, i, true)).join(''); }
+
+function newBuild() { buildN = randNum(); document.getElementById('buildNumber').textContent = buildN; document.getElementById('buildCards').innerHTML = cardsFor(buildN); document.getElementById('buildSolution').innerHTML = ''; document.getElementById('buildMsg').textContent = 'Kartlardaki rakamlara tıklayarak basamak değerlerini yukarı doğru açabilirsin.'; }
+function revealBuild() { if (!buildN) newBuild(); let ds = digits(buildN); document.getElementById('buildSolution').innerHTML = ds.map((d, i) => `<span class="term p${ds.length - 1 - i}">${d * vals[ds.length - 1 - i]}</span>`).join('<b style="font-size:28px"> + </b>'); document.getElementById('buildMsg').textContent = 'Çözümleme aşağıda gösterildi. İnceleyebilirsin.'; addPoint(); }
+
+function newSplit() { splitN = randNum(); document.getElementById('splitNumber').textContent = splitN; document.getElementById('splitCards').innerHTML = cardsFor(splitN); document.getElementById('splitSolution').innerHTML = ''; document.getElementById('splitMsg').textContent = 'Değeri görmek için kartlara tıkla.'; }
+function revealSplit() { if (!splitN) newSplit(); let ds = digits(splitN); document.getElementById('splitSolution').innerHTML = ds.map((d, i) => `<span class="term p${ds.length - 1 - i}">${d} × ${vals[ds.length - 1 - i]}</span>`).join(' + ') + `<span class="term"> = ${splitN}</span>`; document.getElementById('splitMsg').textContent = 'Çözümleme: Sayı, basamak değerlerinin toplamıdır.'; addPoint(); }
+
+function newPlace() {
+  placeN = randNum(); let ds = digits(placeN); let i = Math.floor(Math.random() * ds.length); let place = ds.length - 1 - i; let d = ds[i]; let value = d * vals[place];
+  document.getElementById('placeQuestion').innerHTML = `<div class="bigNumber">${placeN}</div>Bu sayıda <b>${d}</b> rakamının <b>basamak değeri</b> nedir?`;
+  let opts = new Set([value]); let attempts = 0;
+  while(opts.size < 3 && attempts < 20) { let p = Math.floor(Math.random() * ds.length); opts.add(ds[p] * vals[ds.length - 1 - p]); attempts++; }
+  let dummyMult = 1; while(opts.size < 3) { if(dummyMult !== d) opts.add(dummyMult * vals[place]); dummyMult++; }
+  document.getElementById('choices').innerHTML = [...opts].sort(() => Math.random() - .5).map(x => `<button class="choice" onclick="checkPlace(${x},${value})">${x}</button>`).join('');
+  document.getElementById('placeMsg').textContent = '';
+}
+function checkPlace(x, correct) { if(x === correct) { document.getElementById('placeMsg').innerHTML = '✅ <b>Doğru!</b> Rakamın değeri ile basamak değeri aynı şey değildir.'; addPoint(2); } else { document.getElementById('placeMsg').innerHTML = '❌ <b>Bir daha düşün:</b> Rakam hangi basamakta yer alıyor?'; } }
+
+function newGroups() { groupsN = randNum(); document.getElementById('groupsNumber').textContent = groupsN; document.getElementById('groupBoard').innerHTML = ''; document.getElementById('groupsMsg').textContent = 'Sayıyı üçlü gruplara ayır: sağdan başlayarak her 3 basamak bir bölük oluşturur.'; }
+function revealGroups() {
+  if (!groupsN) newGroups(); let s = String(groupsN); let parts = [];
+  for(let i = s.length; i > 0; i -= 3) parts.unshift(s.substring(Math.max(0, i - 3), i));
+  document.getElementById('groupBoard').innerHTML = parts.map((p, i) => {
+    let isThousands = (parts.length === 2 && i === 0); let label = isThousands ? 'BİNLER BÖLÜĞÜ' : 'BİRLER BÖLÜĞÜ';
+    return `<div class="group"><div class="groupLabel">${label}</div><div style="font-size:44px;font-weight:900;padding:20px 30px">${p}</div></div>`;
+  }).join('');
+  document.getElementById('groupsMsg').textContent = 'Bölükler sağdan sola doğru isimlendirilir: Birler Bölüğü, Binler Bölüğü.'; addPoint();
+}
+
+/* --- TABLO OYUNU SÜRÜKLE-BIRAK MANTIĞI --- */
+let aktifKart = null;
+let baslangicX = 0, baslangicY = 0;
+
+function sayiyiYaziyaCevir(n) {
+  if (n === 0) return "Sıfır";
+  const b = ["", "Bir", "İki", "Üç", "Dört", "Beş", "Altı", "Yedi", "Sekiz", "Dokuz"];
+  const o = ["", "On", "Yirmi", "Otuz", "Kırk", "Elli", "Altmış", "Yetmiş", "Seksen", "Doksan"];
+  function ucBasamakliOku(num) {
+    let res = "";
+    let yuz = Math.floor(num / 100); let on = Math.floor((num % 100) / 10); let bir = num % 10;
+    if (yuz === 1) res += "Yüz "; else if (yuz > 1) res += b[yuz] + " Yüz ";
+    res += o[on] + (o[on] ? " " : ""); res += b[bir]; return res.trim();
+  }
+  let bin = Math.floor(n / 1000); let bir = n % 1000; let str = "";
+  if (bin === 1) str += "Bin "; else if (bin > 1) str += ucBasamakliOku(bin) + " Bin ";
+  str += ucBasamakliOku(bir); return str.trim();
+}
+
+function dragBasla(e) {
+    aktifKart = e.target;
+    let rect = aktifKart.getBoundingClientRect();
+    
+    aktifKart.style.position = 'absolute';
+    aktifKart.style.margin = '0';
+    aktifKart.classList.add('dragging');
+    
+    baslangicX = e.clientX - rect.left;
+    baslangicY = e.clientY - rect.top;
+    aktifKart.style.left = (e.clientX - baslangicX) + 'px';
+    aktifKart.style.top = (e.clientY - baslangicY) + 'px';
+    
+    document.addEventListener('pointermove', dragDevam);
+    document.addEventListener('pointerup', dragBitir);
+    aktifKart.setPointerCapture(e.pointerId);
+}
+
+function dragDevam(e) {
+    if (!aktifKart) return;
+    e.preventDefault(); // Mobilde kaymayı engeller
+    
+    aktifKart.style.left = (e.clientX - baslangicX) + 'px';
+    aktifKart.style.top = (e.clientY - baslangicY) + 'px';
+
+    aktifKart.style.display = 'none';
+    let altindakiEleman = document.elementFromPoint(e.clientX, e.clientY);
+    aktifKart.style.display = 'inline-block';
+
+    document.querySelectorAll('.dnd-dropzone').forEach(z => z.classList.remove('drag-over'));
+    if (altindakiEleman) {
+        let targetZone = altindakiEleman.closest('.dnd-dropzone:not(.disabled):not(.filled)');
+        if (targetZone) targetZone.classList.add('drag-over');
+    }
+}
+
+function dragBitir(e) {
+    if (!aktifKart) return;
+    aktifKart.style.display = 'none';
+    let altindakiEleman = document.elementFromPoint(e.clientX, e.clientY);
+    aktifKart.style.display = 'inline-block';
+
+    let hedefeUlasti = false;
+    
+    if (altindakiEleman) {
+        let zone = altindakiEleman.closest('.dnd-dropzone:not(.disabled):not(.filled)');
+        if (zone) hedefeUlasti = handleTableDrop(zone);
+    }
+
+    if (!hedefeUlasti) {
+        aktifKart.style.position = 'relative';
+        aktifKart.style.left = '0';
+        aktifKart.style.top = '0';
+        aktifKart.classList.remove('dragging');
+    }
+
+    document.querySelectorAll('.dnd-dropzone').forEach(z => z.classList.remove('drag-over'));
+    document.removeEventListener('pointermove', dragDevam);
+    document.removeEventListener('pointerup', dragBitir);
+    aktifKart = null;
+}
+
+function handleTableDrop(zone) {
+    if (zone.dataset.expected === aktifKart.dataset.val) {
+        zone.innerHTML = aktifKart.innerText;
+        zone.classList.add('filled');
+        aktifKart.remove();
+        addPoint(1);
+        document.getElementById('tableMsg').innerHTML = '✅ <b>Harika!</b> Doğru yere yerleştirdin.';
+        
+        if(document.querySelectorAll('.dnd-dropzone:not(.filled):not(.disabled)').length === 0) {
+            document.getElementById('tableMsg').innerHTML = '🎉 <b>TEBRİKLER!</b> Tablonun tamamını doğru doldurdun!';
+            addPoint(10);
+        }
+        return true;
+    } else {
+        document.getElementById('tableMsg').innerHTML = '❌ <b>Yanlış eşleştirme!</b> Bu değer buraya ait değil.';
+        return false;
+    }
+}
+
+function newTableGame() {
+  tableN = randNum();
+  let ds = digits(tableN);
+  let len = ds.length;
+  let hasYuzBin = len >= 6;
+  let hasOnBin = len >= 5;
+  
+  let cozumlemeArr = [];
+  for(let i=0; i<len; i++) {
+      let v = ds[i] * vals[len - 1 - i];
+      if(v > 0) cozumlemeArr.push(v);
+  }
+  let cozumlemeMetni = cozumlemeArr.join(' + ');
+  let okunusMetni = sayiyiYaziyaCevir(tableN);
+
+  let tableHTML = `
+    <div class="dnd-cell dnd-title-cell">SAYI</div>
+    <div class="dnd-cell dnd-sayi-row" style="grid-column: span 6;">${tableN}</div>
+    
+    <div class="dnd-cell dnd-header-col">Bölük<br>Adları</div>
+    <div class="dnd-cell bg-light-green" style="grid-column: span 3;">
+       <div class="dnd-dropzone ${len > 3 ? '' : 'disabled'}" data-expected="${len > 3 ? 'Binler Bölüğü' : 'x'}">${len > 3 ? 'Bırak...' : '-'}</div>
+    </div>
+    <div class="dnd-cell bg-light-yellow" style="grid-column: span 3;">
+       <div class="dnd-dropzone" data-expected="Birler Bölüğü">Bırak...</div>
+    </div>
+    
+    <div class="dnd-cell dnd-header-col">Basamak<br>Adları</div>
+    <div class="dnd-cell bg-light-green"><div class="dnd-dropzone ${hasYuzBin ? '' : 'disabled'}" data-expected="${hasYuzBin ? 'Yüz Binler Basamağı' : 'x'}">${hasYuzBin ? 'Bırak' : '-'}</div></div>
+    <div class="dnd-cell bg-light-green"><div class="dnd-dropzone ${hasOnBin ? '' : 'disabled'}" data-expected="${hasOnBin ? 'On Binler Basamağı' : 'x'}">${hasOnBin ? 'Bırak' : '-'}</div></div>
+    <div class="dnd-cell bg-light-green"><div class="dnd-dropzone" data-expected="Binler Basamağı">Bırak</div></div>
+    
+    <div class="dnd-cell bg-light-yellow"><div class="dnd-dropzone" data-expected="Yüzler Basamağı">Bırak</div></div>
+    <div class="dnd-cell bg-light-yellow"><div class="dnd-dropzone" data-expected="Onlar Basamağı">Bırak</div></div>
+    <div class="dnd-cell bg-light-yellow"><div class="dnd-dropzone" data-expected="Birler Basamağı">Bırak</div></div>
+    
+    <div class="dnd-cell dnd-header-col">Rakamların<br>Basamak<br>Değeri</div>
+    <div class="dnd-cell"><div class="dnd-dropzone ${hasYuzBin ? '' : 'disabled'}" data-expected="${hasYuzBin ? ds[len-6]*100000 : 'x'}">${hasYuzBin ? 'Bırak' : '-'}</div></div>
+    <div class="dnd-cell"><div class="dnd-dropzone ${hasOnBin ? '' : 'disabled'}" data-expected="${hasOnBin ? ds[len-5]*10000 : 'x'}">${hasOnBin ? 'Bırak' : '-'}</div></div>
+    <div class="dnd-cell"><div class="dnd-dropzone" data-expected="${ds[len-4]*1000}">Bırak</div></div>
+    <div class="dnd-cell"><div class="dnd-dropzone" data-expected="${ds[len-3]*100}">Bırak</div></div>
+    <div class="dnd-cell"><div class="dnd-dropzone" data-expected="${ds[len-2]*10}">Bırak</div></div>
+    <div class="dnd-cell"><div class="dnd-dropzone" data-expected="${ds[len-1]*1}">Bırak</div></div>
+    
+    <div class="dnd-cell dnd-header-col">Sayının<br>Okunuşu</div>
+    <div class="dnd-cell bg-light-yellow" style="grid-column: span 6;">
+        <div class="dnd-dropzone" data-expected="${okunusMetni}">Bırak...</div>
+    </div>
+    
+    <div class="dnd-cell dnd-title-cell" style="font-size:16px;">Sayının<br>Çözümlemesi</div>
+    <div class="dnd-cell bg-light-yellow" style="grid-column: span 6;">
+        <div class="dnd-dropzone" data-expected="${cozumlemeMetni}">Bırak...</div>
+    </div>
+  `;
+  document.getElementById('tableGrid').innerHTML = tableHTML;
+  
+  let bankItems = [];
+  if(len > 3) bankItems.push("Binler Bölüğü");
+  bankItems.push("Birler Bölüğü");
+  if(hasYuzBin) bankItems.push("Yüz Binler Basamağı");
+  if(hasOnBin) bankItems.push("On Binler Basamağı");
+  bankItems.push("Binler Basamağı", "Yüzler Basamağı", "Onlar Basamağı", "Birler Basamağı");
+  for(let i=0; i<len; i++) bankItems.push( (ds[i] * vals[len - 1 - i]).toString() );
+  bankItems.push(okunusMetni);
+  bankItems.push(cozumlemeMetni);
+  
+  bankItems.sort(() => Math.random() - 0.5);
+  
+  let bank = document.getElementById('dragBank');
+  bank.innerHTML = '';
+  bankItems.forEach((item) => {
+      let kart = document.createElement('div');
+      kart.className = 'draggable';
+      kart.innerText = item;
+      kart.dataset.val = item;
+      kart.addEventListener('pointerdown', dragBasla);
+      bank.appendChild(kart);
+  });
+  
+  document.getElementById('tableMsg').innerHTML = 'Eşleştirme bekleniyor...';
+}
+
+function solveTableGame() {
+    document.querySelectorAll('.dnd-dropzone:not(.disabled)').forEach(zone => {
+        zone.innerHTML = zone.dataset.expected;
+        zone.classList.add('filled');
+    });
+    document.getElementById('dragBank').innerHTML = '';
+    document.getElementById('tableMsg').innerHTML = '💡 <b>Çözüm Gösterildi!</b> Tüm boşluklar otomatik dolduruldu.';
+}
+
+newBuild(); newSplit(); newPlace(); newGroups(); newTableGame();
+</script>
+</body>
+</html>

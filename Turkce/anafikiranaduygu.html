@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>T.4.1.6 Ana Fikir ve Ana Duygu</title>
+<style>
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#22252a; --muted:#5c6470;
+  --accent:#3d6b52; --accent-ink:#ffffff; --good:#2e7d46; --bad:#b3413a;
+  --line:#e2ddd2; --chip:#eef0e6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1c1e22; --card:#26292f; --ink:#eceff1; --muted:#a3abb5;
+    --accent:#7fbf9d; --accent-ink:#12241b; --good:#7fbf9d; --bad:#e08a83;
+    --line:#3a3e46; --chip:#31353c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1c1e22; --card:#26292f; --ink:#eceff1; --muted:#a3abb5;
+  --accent:#7fbf9d; --accent-ink:#12241b; --good:#7fbf9d; --bad:#e08a83;
+  --line:#3a3e46; --chip:#31353c;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  min-height:100vh;
+}
+#app{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.25rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.badge{display:inline-block;background:var(--chip);color:var(--muted);font-size:.72rem;padding:3px 9px;border-radius:99px;margin-bottom:10px}
+.prompt{font-size:1.05rem;line-height:1.5;margin-bottom:16px}
+.opts{display:flex;flex-direction:column;gap:8px}
+button.opt{
+  text-align:left;padding:12px 14px;border-radius:10px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font-size:.98rem;cursor:pointer;
+}
+button.opt:active{transform:scale(.99)}
+button.opt.sel{border-color:var(--accent)}
+button.opt.correct{background:var(--good);border-color:var(--good);color:#fff}
+button.opt.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:.92rem}
+.msg.bad{background:rgba(179,65,58,.12);color:var(--bad)}
+.msg.good{background:rgba(46,125,70,.12);color:var(--good)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.col{flex:1;min-width:130px;display:flex;flex-direction:column;gap:8px}
+.chipbtn{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);font-size:.9rem;cursor:pointer;text-align:left}
+.chipbtn.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.chipbtn.locked{background:var(--good);color:#fff;border-color:var(--good);opacity:.9}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.catbtn{flex:1;min-width:100px;padding:10px;border-radius:10px;border:1px dashed var(--muted);background:transparent;color:var(--ink);cursor:pointer;text-align:center;font-size:.88rem}
+.catbtn.active{border-color:var(--accent);background:var(--chip)}
+textarea{width:100%;min-height:90px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px;font-size:.95rem;font-family:inherit}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:16px}
+.navbtn{padding:11px 16px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);font-size:.9rem;cursor:pointer}
+.navbtn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.navbtn:disabled{opacity:.4;cursor:not-allowed}
+.progress{height:6px;background:var(--chip);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.progress > div{height:100%;background:var(--accent)}
+input[type=text]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1rem}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.stat{background:var(--chip);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:1.3rem}
+.stat span{color:var(--muted);font-size:.78rem}
+.reviewitem{border-top:1px solid var(--line);padding:10px 0;font-size:.9rem}
+.reviewitem b{display:block}
+pre{white-space:pre-wrap;background:var(--chip);border-radius:10px;padding:12px;font-size:.82rem;font-family:inherit}
+
+:root,:root:not([data-theme="light"]),:root[data-theme="dark"]{--bg:#fff7e6;--card:#fff;--ink:#2b2a4c;--muted:#66658a;--accent:#7c4dff;--accent-ink:#fff;--good:#1f9d55;--bad:#e5484d;--line:#eadfca;--chip:#f3ecff}
+body{background:linear-gradient(#fff7e6,#ffeaf1);font-size:17px}
+#app{padding-top:48px}
+h1{font-size:1.5rem;color:var(--accent)}
+.card{border-radius:20px;border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+button.opt,.chipbtn,.catbtn,.navbtn{border-radius:14px;border-width:2px;transition:transform .1s}
+button.opt:hover,.chipbtn:hover{transform:translateY(-2px);border-color:var(--accent)}
+.navbtn{font-weight:600}.navbtn.primary{box-shadow:0 3px 0 #5a35c9}
+.progress{height:12px}.progress>div{background:linear-gradient(90deg,#ff6b8b,#7c4dff);transition:width .4s}
+.mbar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.mbar svg{width:54px;height:50px;flex:none}
+.bubble{background:#fff;border:2px solid var(--line);border-radius:16px;padding:8px 12px;font-size:.92rem}
+.mbar.good svg{animation:bounce .6s}.mbar.bad svg{animation:shake .4s}
+.msg.good,button.opt.correct{animation:pop .35s}
+.msg.bad,button.opt.wrong{animation:shake .4s}
+.intro{text-align:center}.intro svg{width:120px;height:110px;animation:bob 2s ease-in-out infinite}
+#sndBtn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:8px;z-index:9;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;font-size:.8rem;cursor:pointer}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-12px)}}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const DATA=(function(){
+const L='abcd';
+function M(id,p,c,w,e){return{id,type:'mc',prompt:p,opts:[c,...w].map((t,i)=>({id:L[i],t})),correct:'a',explain:e};}
+function F(id,p,c,e){return{id,type:'tf',prompt:p,correct:c,explain:e};}
+function P(id,p,a){return{id,type:'match',prompt:p,pairs:a.map((x,i)=>({id:id+'_'+i,l:x[0],r:x[1]}))};}
+function C(id,p,cats,a){return{id,type:'classify',prompt:p,cats,items:a.map((x,i)=>({id:id+'_'+i,t:x[0],cat:x[1]}))};}
+
+const TA='Ela’nın bir paket bisküvisi vardı. Teneffüste yanında oturan Mert’in yiyecek bir şey getirmediğini fark etti. Bisküviyi ikiye bölüp yarısını Mert’e verdi. Mert gülümsedi. Sonra o da yarın getireceği elmayı Ela ile paylaşacağını söyledi.';
+const TB='Annem kapıdan çıktı,\nGözüm hep yolda kaldı.\nSaatler geçmek bilmedi,\nBu bekleyiş çok uzadı.';
+const TC='Kerem, annesinin çok sevdiği vazoyu top oynarken kırdı. Önce korktu ve vazoyu sakladı. Akşam yemeğinde yüzü kıpkırmızı oldu. Sonunda annesine olanları anlattı. Annesi “Doğruyu söylediğin için sağ ol” dedi. Kerem’in içi rahatladı.';
+const TD='Yağmur yağdı sabaha kadar,\nBahçemiz çiçek yuvası oldu.\nBen de koştum ıslana ıslana,\nBu sabah dünyanın en mutlusu bendim.';
+const TE='Köyde yaşayan Aslı her sabah yolun kenarındaki yaşlı ağacı sulardı. Dallarına kuşlar için su kapları asardı. Bir yaz kuraklık oldu ve bütün bahçeler kurudu. Yalnızca Aslı’nın ağacı yemyeşil kaldı, kuşlar hep onun dalına kondu. Aslı ağaca bakıp gülümsedi.';
+const TF='Ece, bütün sınıfın önünde şiirini hiç şaşırmadan okudu. Öğretmeni ve arkadaşları alkışladı. Ece’nin gözleri parladı, başını dik tuttu.';
+return[
+M('q1','Ana fikir nedir?','Metnin bize vermek istediği asıl mesaj ya da öğüt',['Metinde geçen kişilerin adları','Metnin kaç bölümden oluştuğu','Metindeki en uzun cümle'],'Ana fikir, yazarın metinle bize vermek istediği asıl mesajdır. Konu ise metnin neyi anlattığıdır.'),
+F('q2','Bir metnin konusu ile ana fikri her zaman aynı şeydir.',false,'Konu, metnin neyi anlattığıdır (örneğin dürüstlük). Ana fikir ise metinden çıkardığımız mesajdır (örneğin “Doğruyu söylemeliyiz”).'),
+M('q3','Metni oku:\n“'+TA+'”\n\nBu metnin ana fikri hangisidir?','Paylaşmak insanı da arkadaşlığı da güzelleştirir',['Teneffüste yemek yemek gerekir','Herkes yiyeceğini kendine saklamalıdır','Elma, bisküviden daha lezzetlidir'],'Ela bisküvisini paylaştı, Mert de elmasını paylaşacağını söyledi. Metnin asıl mesajı paylaşmanın güzelliğidir. Diğerleri ayrıntı ya da yanlış çıkarımdır.'),
+P('q4','Her cümleyi, anlattığı ana duyguyla eşleştir.',[['Kaybolan kedisini bulunca sevinçten zıpladı.','Sevinç'],['Karanlık odada yalnız kalınca titredi.','Korku'],['Yıllar sonra dedesini görünce gözleri doldu, ona sarıldı.','Özlem'],['Sırasını atlayanlara bağırıp kızdı.','Kızgınlık']]),
+M('q5','Şiiri oku:\n“'+TB+'”\n\nBu şiirin ana duygusu nedir?','Özlem',['Korku','Kızgınlık','Şaşkınlık'],'“Gözüm yolda kaldı” ve “bekleyiş uzadı” dizeleri annesini özleyen birini anlatır. Ana duygu özlemdir.'),
+F('q6','Bir şiiri okurken vurgu ve tonlama, ana duyguyu anlamamıza yardımcı olur.',true,'Ses tonu ve vurgu duyguyu belli eder. Neşeli şiir neşeli, hüzünlü şiir yumuşak bir sesle okunur.'),
+M('q7','Metni oku:\n“'+TC+'”\n\nBu metnin ana fikri hangisidir?','Hata yapınca doğruyu söylemeliyiz',['Vazolar çok değerli eşyalardır','Akşam yemeği ailecek yenmelidir','Kırılan eşyalar saklanmalıdır'],'Kerem doğruyu söyleyince rahatladı. Metnin mesajı dürüst olmanın doğru ve rahatlatıcı olduğudur.'),
+C('q8','Kerem’in metni için ifadeleri doğru kutuya koy.',['Konu','Ana Fikir'],[['Dürüstlük','Konu'],['Kerem’in kırdığı vazo','Konu'],['Hata yapınca doğruyu söylemeliyiz','Ana Fikir'],['Doğruyu söylemek insanın içini rahatlatır','Ana Fikir']]),
+M('q9','Ela ile Mert’in bisküvi paylaştığı metni hatırla. Ayşe: “Ana fikir, Ela’nın bisküviyi sevmesidir.” Ayşe’nin hatası nedir?','Bir ayrıntıyı ana fikir sanmış; asıl mesajı (paylaşmak) bulmamış',['Hiç hata yapmamış','Metnin konusunu yanlış yazmış, çünkü konu elmadır','Ana fikir her zaman bir kişinin adıdır'],'Bisküvi sevmek metinde geçen bir ayrıntıdır. Ana fikir, metnin asıl mesajı olan paylaşmanın güzelliğidir.'),
+M('q10','Şiiri oku:\n“'+TD+'”\n\nBu şiirin ana duygusu nedir?','Mutluluk',['Yalnızlık','Korku','Kızgınlık'],'Şair yağmurda ıslana ıslana koşuyor ve kendini en mutlu hissediyor. Ana duygu mutluluktur.'),
+F('q11','Bir kamu spotunda şöyle denir: “Ormanlar yanınca canlılar evsiz kalır. Piknikten sonra ateşini söndür!” Bu spotun ana fikri “Doğada ateşi dikkatli kullanmalıyız”dır.',true,'Spot, ateşin ormanlara ve canlılara zarar verebileceğini anlatıp ateşi söndürmeyi öğütlüyor. Mesaj da budur.'),
+P('q12','Her kısa metni ana fikriyle eşleştir.',[['Karınca yaz boyunca çalışıp kış yiyeceği biriktirdi.','Çalışkan olmalı, ileriyi düşünmeliyiz'],['Ali, arkadaşının kalemini izinsiz alıp bozunca özür diledi.','Hatamızı kabul edip özür dilemeliyiz'],['Çocuklar çöpleri toplayıp parkı temiz tuttu.','Çevremizi temiz tutmalıyız'],['Yeni gelen öğrenciyi oyuna çağırdılar.','Arkadaşlarımıza sıcak davranmalıyız']]),
+M('q13','Metni oku:\n“'+TF+'”\n\nBu metnin ana duygusu nedir?','Gurur ve sevinç',['Pişmanlık','Korku','Kıskançlık'],'Ece şiiri hatasız okudu, alkış aldı, gözleri parladı. Metinde ön plandaki duygu gurur ve sevinçtir.'),
+C('q14','Cümleleri ana duygusuna göre yerleştir.',['Sevinç','Üzüntü','Korku'],[['Doğum günü partisinde herkes şarkı söyledi, yüzü güldü.','Sevinç'],['Oyuncağı kırılınca sessizce ağladı.','Üzüntü'],['Karanlık koridorda ayak sesi duyunca olduğu yerde dondu.','Korku'],['Eski oyuncağını bulunca bağırarak zıpladı.','Sevinç'],['En yakın arkadaşı taşınınca odasına kapandı.','Üzüntü'],['Şimşek çakınca yorganın altına saklandı.','Korku']]),
+M('q15','Metni oku:\n“'+TE+'”\n\nHangi seçenek bu metnin konusunu, ana fikrini ve ana duygusunu doğru verir?','Konu: Aslı’nın ağacı sulaması – Ana fikir: Doğaya emek verirsek karşılığını görürüz – Ana duygu: Mutluluk',['Konu: Kuraklık – Ana fikir: Ağaçlar çok su ister – Ana duygu: Korku','Konu: Aslı’nın ağacı sulaması – Ana fikir: Kuşların su kapları vardır – Ana duygu: Mutluluk','Konu: Aslı’nın ağacı sulaması – Ana fikir: Doğaya emek verirsek karşılığını görürüz – Ana duygu: Öfke'],'Konu Aslı’nın ağaca bakması, ana fikir doğaya verilen emeğin karşılığıdır; Aslı gülümsediği için ana duygu mutluluktur. “Su kapları” sadece bir ayrıntıdır.')
+];})();
+
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let ST;
+function freshState(){
+ return{idx:0,name:'',started:false,start:null,end:null,
+  tasks:DATA.map(d=>({id:d.id,status:'pending',attempts:0,wrong:0,firstTry:null,skipped:false,answer:null,text:'',
+    order: d.type==='mc'?shuffle(d.opts.map(o=>o.id)):null,
+    left: d.type==='match'?shuffle(d.pairs.map(p=>({id:p.id,txt:p.l}))):null,
+    right: d.type==='match'?shuffle(d.pairs.map(p=>({id:p.id,txt:p.r}))):null,
+    matched: d.type==='match'?new Set():null, sel:null,
+    pool: d.type==='classify'?shuffle(d.items.map(i=>i.id)):null,
+    placed: d.type==='classify'?{}:null, selItem:null}))};
+}
+ST=freshState();
+function T(i){return ST.tasks[i];}
+function D(i){return DATA[i];}
+function el(html){const d=document.createElement('div');d.innerHTML=html;return d;}
+function render(){
+ const app=document.getElementById('app');
+ if(!ST.started){app.innerHTML=intro();bind();return;}
+ if(ST.idx>=DATA.length){app.innerHTML=report();bind();return;}
+ app.innerHTML=taskView();bind();
+}
+function intro(){
+ return `<div class="intro">${HEART}<h1>Ana Fikir ve Ana Duygu Dedektifi!</h1>
+ <div class="sub">Türkçe 4. Sınıf — Okuma / Anlama</div>
+ <div class="card"><div class="prompt">Merhaba, ben Kalpik! Bugün kısa metinleri ve şiirleri okuyup ana fikri ve ana duyguyu bulacağız. Yaklaşık 10-12 dakika sürer.</div>
+ <button class="navbtn primary" id="startBtn" style="font-size:1.1rem;padding:12px 28px">Başla!</button></div></div>`;
+}
+function progressBar(){
+ const pct=Math.round((ST.idx)/DATA.length*100);
+ return `<div class="progress"><div style="width:${pct}%"></div></div><div class="sub">Görev ${ST.idx+1} / ${DATA.length}</div>`;
+}
+function taskView(){
+ const d=D(ST.idx),t=T(ST.idx);
+ let body='';
+ if(d.type==='mc') body=mcView(d,t);
+ else if(d.type==='tf') body=tfView(d,t);
+ else if(d.type==='match') body=matchView(d,t);
+ else if(d.type==='classify') body=classifyView(d,t);
+ else if(d.type==='reflect') body=reflectView(d,t);
+ const canNext = t.status==='correct'||t.status==='skipped'||(d.type==='reflect'&&t.text.trim().length>0);
+ const isLast = ST.idx===DATA.length-1;
+ const showSkip = t.status==='pending'||t.status==='retry';
+ return `${progressBar()}${mascotBar(t,d)}
+ <div class="card">${body}</div>
+ <div class="nav">
+  <button class="navbtn" id="prevBtn" ${ST.idx===0?'disabled':''}>← Önceki</button>
+  <div style="display:flex;gap:8px">
+   ${showSkip?`<button class="navbtn" id="skipBtn">Soruyu Geç</button>`:''}
+   <button class="navbtn primary" id="nextBtn" ${canNext?'':'disabled'}>${isLast?'Bitir ve Raporu Gör':'Sonraki →'}</button>
+  </div>
+ </div>`;
+}
+function mcView(d,t){
+ const opts=t.order.map(id=>d.opts.find(o=>o.id===id));
+ const rows=opts.map(o=>{
+   let cls='opt';
+   if(t.status==='correct'){ if(o.id===d.correct) cls+=' correct'; }
+   else if(t.answer===o.id && t.status==='retry') cls+=' wrong';
+   return `<button class="${cls}" data-opt="${o.id}" ${t.status==='correct'?'disabled':''}>${o.t}</button>`;
+ }).join('');
+ let msg='';
+ if(t.status==='correct') msg=`<div class="msg good">Doğru! ${d.explain}</div>`;
+ else if(t.status==='retry') msg=`<div class="msg bad">Yanlış, tekrar dene.</div>`;
+ return `<div class="prompt" style="white-space:pre-line">${d.prompt}</div><div class="opts">${rows}</div>${msg}`;
+}
+function tfView(d,t){
+ const opts=[{id:'true',t:'Doğru'},{id:'false',t:'Yanlış'}];
+ const rows=opts.map(o=>{
+  let cls='opt';
+  const isCorrectOpt=(o.id==='true')===d.correct;
+  if(t.status==='correct'){ if(isCorrectOpt) cls+=' correct'; }
+  else if(t.answer===o.id && t.status==='retry') cls+=' wrong';
+  return `<button class="${cls}" data-opt="${o.id}" ${t.status==='correct'?'disabled':''}>${o.t}</button>`;
+ }).join('');
+ let msg='';
+ if(t.status==='correct') msg=`<div class="msg good">Doğru! ${d.explain}</div>`;
+ else if(t.status==='retry') msg=`<div class="msg bad">Yanlış, tekrar dene.</div>`;
+ return `<div class="prompt" style="white-space:pre-line">${d.prompt}</div><div class="opts">${rows}</div>${msg}`;
+}
+function matchView(d,t){
+ const L=t.left.map(x=>`<button class="chipbtn ${t.matched.has(x.id)?'locked':(t.sel===x.id?'sel':'')}" data-l="${x.id}" ${t.matched.has(x.id)?'disabled':''}>${x.txt}</button>`).join('');
+ const R=t.right.map(x=>`<button class="chipbtn ${t.matched.has(x.id)?'locked':''}" data-r="${x.id}" ${t.matched.has(x.id)?'disabled':''}>${x.txt}</button>`).join('');
+ let msg = t.status==='correct'?`<div class="msg good">Tüm eşleştirmeler doğru!</div>`
+   : (t.lastWrong?`<div class="msg bad">Yanlış eşleştirme, tekrar dene.</div>`:'');
+ return `<div class="prompt">${d.prompt}</div><div class="row"><div class="col">${L}</div><div class="col">${R}</div></div>${msg}`;
+}
+function classifyView(d,t){
+ const pool=t.pool.map(id=>d.items.find(i=>i.id===id));
+ const poolHtml=pool.map(i=>`<button class="chipbtn ${t.selItem===i.id?'sel':''}" data-item="${i.id}">${i.t}</button>`).join('')||'<span class="sub">Havuz boş — tüm kartlar yerleşti.</span>';
+ const placedHtml=d.cats.map(cat=>{
+   const items=(t.placed[cat]||[]).map(id=>d.items.find(i=>i.id===id).t);
+   return `<div class="catbtn ${t.selItem?'active':''}" data-cat="${cat}"><b>${cat}</b><br>${items.join(', ')||'—'}</div>`;
+ }).join('');
+ let msg = t.status==='correct'?`<div class="msg good">Tüm kartlar doğru yerleştirildi!</div>`
+   : (t.lastWrong?`<div class="msg bad">Yanlış yerleştirme, kart havuza döndü. Tekrar dene.</div>`:'');
+ return `<div class="prompt">${d.prompt}</div><div>${poolHtml}</div><div class="cats">${placedHtml}</div>${msg}`;
+}
+function reflectView(d,t){
+ return `<div class="prompt">${d.prompt}</div><textarea id="reflectBox" placeholder="Buraya yaz...">${t.text}</textarea>
+ <div class="sub" style="margin-top:8px">Bu görev puanlanmaz; öğretmenin görebilmesi için raporun sonunda yer alır.</div>`;
+}
+function report(){
+ const graded=ST.tasks.filter((t,i)=>D(i).type!=='reflect');
+ const total=graded.length;
+ const correct=graded.filter(t=>t.status==='correct').length;
+ const firstTry=graded.filter(t=>t.status==='correct'&&t.firstTry).length;
+ const wrongAttempts=graded.reduce((s,t)=>s+t.wrong,0);
+ const skipped=graded.filter(t=>t.status==='skipped').length;
+ const dur=ST.end-ST.start; const mm=Math.floor(dur/60000),ss=Math.floor((dur%60000)/1000);
+ const wrongList=ST.tasks.map((t,i)=>({t,d:D(i)})).filter(x=>x.d.type!=='reflect'&&x.t.status!=='correct');
+ const reflects=ST.tasks.map((t,i)=>({t,d:D(i)})).filter(x=>x.d.type==='reflect');
+ const reviewHtml=wrongList.length?wrongList.map(x=>`<div class="reviewitem"><b>${x.t.status==='skipped'?'Geçildi':'Yanlış kaldı'}:</b> ${x.d.prompt}${x.d.explain?` — <i>${x.d.explain}</i>`:''}</div>`).join(''):'<div class="sub">Yanlış kalan veya geçilen görev yok.</div>';
+ const reflectHtml=reflects.map(x=>`<div class="reviewitem"><b>${x.d.prompt}</b><br>${x.t.text.trim()||'(boş bırakıldı)'}</div>`).join('');
+ const reflectSection = reflects.length ? `<h3>Yansıtma Cevapların</h3>${reflectHtml}` : '';
+ const reflectSummary = reflects.length ? `\n\nYansıtma cevapları:\n${reflects.map(x=>`- ${x.d.prompt}\n${x.t.text.trim()||'(boş)'}`).join('\n')}` : '';
+ const mk=(nm)=>`Türkçe 4. Sınıf T.4.1.6 (Ana Fikir/Ana Duygu) Etkinlik Raporu\nÖğrenci: ${nm||'(isimsiz)'}\nDoğru: ${correct}/${total} (İlk denemede: ${firstTry})\nYanlış deneme sayısı: ${wrongAttempts}\nGeçilen: ${skipped}\nSüre: ${mm} dk ${ss} sn${reflectSummary}`;window.mkSum=mk;const summary=mk(ST.name);
+ return `<h1>Rapor</h1>
+ <div class="card">
+  <div class="statgrid">
+   <div class="stat"><b>${correct}/${total}</b><span>Doğru</span></div>
+   <div class="stat"><b>${firstTry}</b><span>İlk denemede doğru</span></div>
+   <div class="stat"><b>${wrongAttempts}</b><span>Yanlış deneme</span></div>
+   <div class="stat"><b>${skipped}</b><span>Geçilen</span></div>
+   <div class="stat"><b>${mm}:${String(ss).padStart(2,'0')}</b><span>Süre</span></div>
+   <div class="stat"><b>🏅</b><span>Tebrikler!</span></div>
+  </div>
+  ${reflectSection}
+  <h3>Yanlış / Geçilen Görevleri İncele</h3>
+  ${reviewHtml}
+  <h3>Adını Yaz</h3><input type="text" id="nameInput2" placeholder="Adın Soyadın"><h3>Öğretmenine Gönder</h3>
+  <div class="sub">Aşağıdaki metni kopyala ve WhatsApp'tan öğretmenine gönder.</div>
+  <pre id="summaryText">${summary}</pre>
+  <div class="nav"><button class="navbtn" id="copyBtn">Panoya Kopyala</button><button class="navbtn primary" id="replayBtn">Baştan Başla</button></div>
+ </div>`;
+}
+function bind(){
+ const startBtn=document.getElementById('startBtn');
+ if(startBtn) startBtn.onclick=()=>{
+    ST.started=true; ST.start=Date.now(); render();
+ };
+ const prevBtn=document.getElementById('prevBtn');
+ if(prevBtn) prevBtn.onclick=()=>{ if(ST.idx>0){ST.idx--; render();} };
+ const nextBtn=document.getElementById('nextBtn');
+ if(nextBtn) nextBtn.onclick=()=>{ ST.idx++; if(ST.idx>=DATA.length) ST.end=Date.now(); render(); };
+ const skipBtn=document.getElementById('skipBtn');
+ if(skipBtn) skipBtn.onclick=()=>{ const t=T(ST.idx); t.status='skipped'; t.skipped=true; ST.idx++; if(ST.idx>=DATA.length) ST.end=Date.now(); render(); };
+ document.querySelectorAll('button[data-opt]').forEach(b=>b.onclick=()=>{
+  const d=D(ST.idx),t=T(ST.idx); if(t.status==='correct') return;
+  const val=b.getAttribute('data-opt'); t.answer=val; t.attempts++;
+  const isCorrect = d.type==='tf' ? ((val==='true')===d.correct) : (val===d.correct);
+  if(isCorrect){ t.status='correct'; if(t.firstTry===null) t.firstTry=true; }
+  else{ t.status='retry'; t.wrong++; if(t.firstTry===null) t.firstTry=false; }
+  render();
+ });
+ document.querySelectorAll('button[data-l]').forEach(b=>b.onclick=()=>{
+  const t=T(ST.idx); const id=b.getAttribute('data-l'); if(t.matched.has(id)) return; t.sel=id; render();
+ });
+ document.querySelectorAll('button[data-r]').forEach(b=>b.onclick=()=>{
+  const t=T(ST.idx); const id=b.getAttribute('data-r'); if(t.matched.has(id)||!t.sel) return;
+  t.attempts++;
+  if(t.sel===id){ t.matched.add(id); t.sel=null; t.lastWrong=false;
+    if(t.matched.size===D(ST.idx).pairs.length){ t.status='correct'; t.firstTry=t.wrong===0; }
+  } else { t.wrong++; t.sel=null; t.lastWrong=true; }
+  render();
+ });
+ document.querySelectorAll('button[data-item]').forEach(b=>b.onclick=()=>{
+  const t=T(ST.idx); t.selItem=b.getAttribute('data-item'); render();
+ });
+ document.querySelectorAll('.catbtn').forEach(b=>b.onclick=()=>{
+  const d=D(ST.idx),t=T(ST.idx); if(!t.selItem) return;
+  const cat=b.getAttribute('data-cat'); const item=d.items.find(i=>i.id===t.selItem);
+  t.attempts++;
+  if(item.cat===cat){
+   t.placed[cat]=t.placed[cat]||[]; t.placed[cat].push(item.id);
+   t.pool=t.pool.filter(x=>x!==item.id); t.selItem=null; t.lastWrong=false;
+   if(t.pool.length===0){ t.status='correct'; t.firstTry=t.wrong===0; }
+  } else { t.wrong++; t.selItem=null; t.lastWrong=true; }
+  render();
+ });
+ const rb=document.getElementById('reflectBox');
+ if(rb) rb.oninput=(e)=>{ T(ST.idx).text=e.target.value; document.getElementById('nextBtn').disabled = e.target.value.trim().length===0; };
+ const copyBtn=document.getElementById('copyBtn');
+ if(copyBtn) copyBtn.onclick=()=>{
+   const txt=document.getElementById('summaryText').textContent;
+   navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{copyBtn.textContent='Kopyalandı ✓';}).catch(()=>{});
+ };
+ const n2=document.getElementById('nameInput2');
+ if(n2){n2.value=ST.name;n2.oninput=()=>{ST.name=n2.value.trim();document.getElementById('summaryText').textContent=window.mkSum(ST.name);};}
+ const replayBtn=document.getElementById('replayBtn');
+ if(replayBtn) replayBtn.onclick=()=>{ ST=freshState(); render(); };
+}
+const HEART='<svg viewBox="-2 0 68 60"><path d="M32 56C4 36-2 18 12 8 22 2 30 8 32 14 34 8 42 2 52 8 66 18 60 36 32 56Z" fill="#ff6b8b"/><circle cx="23" cy="26" r="3.5" fill="#2b2a4c"/><circle cx="41" cy="26" r="3.5" fill="#2b2a4c"/><path d="M24 35q8 8 16 0" stroke="#2b2a4c" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="17" cy="32" r="3" fill="#ff9db3"/><circle cx="47" cy="32" r="3" fill="#ff9db3"/></svg>';
+function mascotBar(t,d){
+ let c='',m='Dikkatle oku, sen yaparsın!';
+ if(d.type==='reflect') m='Burada doğru ya da yanlış yok. Kendi düşünceni yaz!';
+ else if(t.status==='correct'){c='good';m='Harika, doğru yaptın!';}
+ else if(t.status==='retry'||t.lastWrong){c='bad';m='Olsun, bir daha dene!';}
+ else if(t.status==='skipped') m='Geçtin. İstersen sonra geri dönebilirsin.';
+ return `<div class="mbar ${c}">${HEART}<div class="bubble">${m}</div></div>`;
+}
+let AC=null,SND=false,LK=null,LW=0;
+function beep(k){ if(!AC)return; const n=AC.currentTime; (k==='good'?[660,880]:[220,180]).forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=k==='good'?'sine':'triangle';o.frequency.value=f;g.gain.setValueAtTime(.15,n+i*.12);g.gain.exponentialRampToValueAtTime(.001,n+i*.12+.2);o.connect(g);g.connect(AC.destination);o.start(n+i*.12);o.stop(n+i*.12+.22);}); }
+function sfxCheck(){
+ if(!SND||!ST.started||ST.idx>=DATA.length) return;
+ const t=T(ST.idx), st=t.status+'|'+t.wrong+'|'+ST.idx;
+ if(LK===null){LK=st;LW=t.wrong;return;}
+ if(st===LK) return;
+ const same=LK.split('|')[2]===String(ST.idx); LK=st;
+ if(same){ if(t.wrong>LW) beep('bad'); else if(t.status==='correct') beep('good'); }
+ LW=t.wrong;
+}
+const _r=render; render=function(){_r();sfxCheck();};
+const sb=document.createElement('button'); sb.id='sndBtn'; sb.textContent='🔊 Ses: Kapalı';
+sb.onclick=()=>{ SND=!SND; if(SND&&!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){SND=false;}} LK=null; sb.textContent=SND?'🔊 Ses: Açık':'🔊 Ses: Kapalı'; if(SND) beep('good'); };
+document.body.appendChild(sb);
+
+render();
+</script>
+</body>
+</html>
