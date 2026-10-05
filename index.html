@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İnteraktif Öğrenme Portalı</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --turkce: #FF6B6B;
+        --matematik: #4ECDC4;
+        --fen: #45B7D1;
+        --sosyal: #FCA311;
+        --insan: #9B5DE5;
+        --trafik: #F9A03F;
+        --bg-color: #F0F4F8;
+    }
+    
+    body {
+        font-family: 'Nunito', sans-serif;
+        background-color: var(--bg-color);
+        background-image: radial-gradient(#d7e1ec 2px, transparent 2px);
+        background-size: 30px 30px;
+        margin: 0;
+        padding: 20px;
+        color: #2D3748;
+        min-height: 100vh;
+    }
+
+    .header {
+        text-align: center;
+        background: white;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        max-width: 800px;
+        margin: 0 auto 40px auto;
+        border: 4px dashed #CBD5E0;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: #4A5568;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    /* ANA MENÜ IZGARASI */
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    /* DERS BUTONLARI */
+    .subject-btn {
+        background: white;
+        border: none;
+        border-radius: 25px;
+        padding: 40px 20px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+        border-bottom: 8px solid;
+    }
+
+    .subject-btn:hover {
+        transform: translateY(-15px) scale(1.02);
+        box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+    }
+
+    .subject-icon {
+        font-size: 5rem; /* Dev Görseller */
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+    }
+
+    .subject-name {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #2D3748;
+    }
+
+    .btn-turkce { border-color: var(--turkce); }
+    .btn-matematik { border-color: var(--matematik); }
+    .btn-fen { border-color: var(--fen); }
+    .btn-sosyal { border-color: var(--sosyal); }
+    .btn-insan { border-color: var(--insan); }
+    .btn-trafik { border-color: var(--trafik); }
+
+    /* DERS SAYFALARI (İÇERİK) */
+    .subject-page {
+        display: none; /* Başlangıçta gizli */
+        background: white;
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border-top: 10px solid;
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px dashed #E2E8F0;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .back-btn {
+        background: #EDF2F7;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #4A5568;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .back-btn:hover {
+        background: #E2E8F0;
+        transform: translateX(-5px);
+    }
+
+    /* OYUN LİNKLERİ */
+    .game-list {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+    }
+
+    .game-list li a {
+        display: block;
+        padding: 20px;
+        background: #F7FAFC;
+        border-radius: 15px;
+        text-decoration: none;
+        color: #2D3748;
+        font-size: 1.2rem;
+        font-weight: 700;
+        border-left: 6px solid #CBD5E0;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+    }
+    
+    .game-list li a::before {
+        content: "▶";
+        margin-right: 15px;
+        color: #A0AEC0;
+        font-size: 0.9rem;
+    }
+
+    .page-turkce { border-color: var(--turkce); }
+    .page-turkce .game-list li a:hover { border-color: var(--turkce); background: #FFF5F5; transform: scale(1.03); }
+    
+    .page-matematik { border-color: var(--matematik); }
+    .page-matematik .game-list li a:hover { border-color: var(--matematik); background: #E6FFFA; transform: scale(1.03); }
+    
+    .page-fen { border-color: var(--fen); }
+    .page-fen .game-list li a:hover { border-color: var(--fen); background: #E6FFFA; transform: scale(1.03); }
+    
+    .page-sosyal { border-color: var(--sosyal); }
+    .page-sosyal .game-list li a:hover { border-color: var(--sosyal); background: #FFFAF0; transform: scale(1.03); }
+    
+    .page-insan { border-color: var(--insan); }
+    .page-insan .game-list li a:hover { border-color: var(--insan); background: #FAF5FF; transform: scale(1.03); }
+
+    .page-trafik { border-color: var(--trafik); }
+    .page-trafik .game-list li a:hover { border-color: var(--trafik); background: #FFFAF0; transform: scale(1.03); }
+
+</style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>İnteraktif Öğrenme Portalı</h1>
+    </div>
+
+    <div class="container">
+        
+        <!-- ANA MENÜ (DERS SEÇİMİ) -->
+        <div id="main-menu" class="menu-grid">
+            <button class="subject-btn btn-turkce" onclick="openSubject('turkce')">
+                <span class="subject-icon">📚</span>
+                <span class="subject-name">TÜRKÇE</span>
+            </button>
+            
+            <button class="subject-btn btn-matematik" onclick="openSubject('matematik')">
+                <span class="subject-icon">🧮</span>
+                <span class="subject-name">MATEMATİK</span>
+            </button>
+
+            <button class="subject-btn btn-fen" onclick="openSubject('fen')">
+                <span class="subject-icon">🔬</span>
+                <span class="subject-name">FEN BİLİMLERİ</span>
+            </button>
+
+            <button class="subject-btn btn-sosyal" onclick="openSubject('sosyal')">
+                <span class="subject-icon">🌍</span>
+                <span class="subject-name">SOSYAL BİLGİLER</span>
+            </button>
+
+            <button class="subject-btn btn-insan" onclick="openSubject('insan')">
+                <span class="subject-icon">🤝</span>
+                <span class="subject-name">İNSAN HAKLARI</span>
+            </button>
+
+            <button class="subject-btn btn-trafik" onclick="openSubject('trafik')">
+                <span class="subject-icon">🚦</span>
+                <span class="subject-name">TRAFİK GÜVENLİĞİ</span>
+            </button>
+        </div>
+
+        <!-- TÜRKÇE SAYFASI -->
+        <div id="turkce" class="subject-page page-turkce">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">📚</span> Türkçe Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Turkce/anafikiranaduygu.html">Ana Fikir ve Ana Duygu Dedektifi</a></li>
+                <li><a href="Turkce/dogrusunuyaz.html">Sözcüklerin Doğru Yazımı</a></li>
+                <li><a href="Turkce/essesli.html">Eş Sesli Sözcükler</a></li>
+                <li><a href="Turkce/pekistirme2.html">Eş Sesli Sözcükler 2</a></li>
+                <li><a href="Turkce/eszitanlam.html">Eş ve Zıt Anlamlılar</a></li>
+                <li><a href="Turkce/harfhece.html">Harf ve Hece Bilgisi</a></li>
+                <li><a href="Turkce/hikayededektifi.html">Hikaye Dedektifi</a></li>
+                <li><a href="Turkce/ikilemeler.html">İkileme Dedektifi</a></li>
+                <li><a href="Turkce/metninkonusu.html">Metnin Konusunu Bul</a></li>
+                <li><a href="Turkce/metninmimarlari.html">Metnin Mimarları</a></li>
+                <li><a href="Turkce/metninbolumleri.html">Metnin Bölümleri</a></li>
+                <li><a href="Turkce/noktalamaisaretleri.html">Noktalama İşaretleri</a></li>
+                <li><a href="Turkce/pekistirme.html">Pekiştirme Dedektifi 1</a></li>
+            </ul>
+        </div>
+
+        <!-- MATEMATİK SAYFASI -->
+        <div id="matematik" class="subject-page page-matematik">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🧮</span> Matematik Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Matematik/oruntuler.html">Sayı Örüntüleri</a></li>
+                <li><a href="Matematik/sayilar.html">Sayılar</a></li>
+                <li><a href="Matematik/sayilarikarsilastirsirala.html">Sayıları Karşılaştırma ve Sıralama</a></li>
+                <li><a href="Matematik/toplama.html">Toplama Yapalım</a></li>
+                <li><a href="Matematik/yuvarlama.html">Yuvarlama Macerası 1</a></li>
+                <li><a href="Matematik/yuvarlama2.html">Yuvarlama Macerası 2</a></li>
+            </ul>
+        </div>
+
+        <!-- FEN BİLİMLERİ SAYFASI -->
+        <div id="fen" class="subject-page page-fen">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🔬</span> Fen Bilimleri Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Fen/dunyaninhareketleri2.html">Dünya'nın Hareketleri 1</a></li>
+                <li><a href="Fen/dunyaninhareketleri3.html">Dünya'nın Hareketleri 2</a></li>
+                <li><a href="Fen/fosiller.html">Fosil Keşfi 1</a></li>
+                <li><a href="Fen/fosiller2.html">Fosil Keşfi 2</a></li>
+                <li><a href="Fen/madenler.html">Madenler 1</a></li>
+                <li><a href="Fen/madenler2.html">Madenler 2</a></li>
+            </ul>
+        </div>
+
+        <!-- SOSYAL BİLGİLER SAYFASI -->
+        <div id="sosyal" class="subject-page page-sosyal">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🌍</span> Sosyal Bilgiler Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Sosyal/kendini-onun-yerine-koy.html">Kendini Onun Yerine Koy</a></li>
+                <li><a href="Sosyal/ilgiihtiyacyetenek.html">İlgi, İhtiyaç ve Yeteneklerimiz</a></li>
+            </ul>
+        </div>
+
+        <!-- İNSAN HAKLARI SAYFASI -->
+        <div id="insan" class="subject-page page-insan">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🤝</span> İnsan Hakları Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Insanhaklari/hakozgurluksorumluluk4sinif.html">Hak Özgürlük ve Sorumluluk</a></li>
+            </ul>
+        </div>
+
+        <!-- TRAFİK GÜVENLİĞİ SAYFASI -->
+        <div id="trafik" class="subject-page page-trafik">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🚦</span> Trafik Güvenliği Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <!-- Trafik oyunlarınızı yükledikçe buraya ekleyebilirsiniz -->
+                <li><a href="#">Yakında Eklenecek...</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- SAYFA GEÇİŞ SCRİPTİ -->
+    <script>
+        function openSubject(subjectId) {
+            // Ana menüyü gizle
+            document.getElementById('main-menu').style.display = 'none';
+            
+            // Tüm ders sayfalarını gizle
+            var pages = document.getElementsByClassName('subject-page');
+            for(var i = 0; i < pages.length; i++) {
+                pages[i].style.display = 'none';
+            }
+            
+            // Sadece tıklanan dersin sayfasını göster
+            document.getElementById(subjectId).style.display = 'block';
+            
+            // Sayfanın en üstüne kaydır
+            window.scrollTo(0, 0);
+        }
+
+        function goBack() {
+            // Tüm ders sayfalarını gizle
+            var pages = document.getElementsByClassName('subject-page');
+            for(var i = 0; i < pages.length; i++) {
+                pages[i].style.display = 'none';
+            }
+            
+            // Ana menüyü tekrar göster
+            document.getElementById('main-menu').style.display = 'grid';
+        }
+    </script>
+
+</body>
+</html>
