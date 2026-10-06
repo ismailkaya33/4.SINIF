@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Uzaylı Toplama Macerası</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -13,7 +13,7 @@
     background:radial-gradient(ellipse at 50% 0%,#1b2a6b 0%,#0b1440 45%,#050a24 100%);
     display:flex;justify-content:center;align-items:center;
   }
-  #app{width:100%;max-width:min(480px,calc((100dvh - 150px) * 0.75));display:flex;flex-direction:column;gap:8px;padding:8px}
+  #app{width:100%;max-width:min(480px,calc((100dvh - 125px) * 0.75));height:100dvh;max-height:100dvh;display:flex;flex-direction:column;gap:6px;padding:6px}
   #hud{display:flex;justify-content:space-between;align-items:center;font-size:clamp(15px,4vw,20px)}
   #hearts{letter-spacing:2px}
   #question{
@@ -21,9 +21,9 @@
     background:rgba(255,255,255,.1);border:3px solid #ffd54a;border-radius:18px;
     text-shadow:0 3px 0 rgba(0,0,0,.4);box-shadow:0 0 22px rgba(255,213,74,.35);
   }
-  #stage{position:relative;width:100%;aspect-ratio:3/4;border-radius:18px;overflow:hidden;
+  #stage{position:relative;width:100%;aspect-ratio:3/4;max-height:calc(100dvh - 170px);border-radius:18px;overflow:hidden;
     border:3px solid #3b4fa8;background:linear-gradient(180deg,#0a1238 0%,#101c5a 100%);touch-action:none}
-  canvas{width:100%;height:100%;display:block;touch-action:none;-webkit-touch-callout:none;user-select:none}
+  canvas{width:100%;height:100%;display:block;touch-action:none;-ms-touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
   .overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
     gap:14px;text-align:center;background:rgba(5,10,36,.82);padding:20px}
   .overlay.hidden{display:none}
@@ -35,6 +35,28 @@
   button:active{transform:translateY(4px);box-shadow:0 2px 0 #b27a00}
   #rocketBig{font-size:64px;animation:fly 2s ease-in-out infinite}
   @keyframes fly{50%{transform:translateY(-10px) rotate(6deg)}}
+
+  @media (max-height: 700px){
+    #app{gap:4px;padding:4px}
+    #hud{font-size:14px}
+    #question{font-size:26px;padding:6px}
+    #stage{max-height:calc(100dvh - 120px)}
+    .overlay{gap:7px;padding:8px}
+    .overlay h1{font-size:27px}
+    .overlay p{font-size:14px;line-height:1.2}
+    #rocketBig{font-size:46px}
+    button{font-size:20px;padding:9px 28px;min-height:44px}
+  }
+
+  @media (max-height: 560px){
+    #hud{font-size:12px}
+    #question{font-size:22px;padding:4px}
+    .overlay h1{font-size:23px}
+    .overlay p{font-size:12px}
+    #rocketBig{font-size:36px}
+    button{font-size:18px;padding:7px 24px;min-height:40px}
+  }
+
 </style>
 </head>
 <body>
@@ -53,7 +75,7 @@
       <h1>Uzaylı Toplama Macerası</h1>
       <p>İşlemin <b>doğru sonucunu</b> taşıyan yıldızı yakala!<br>
          ⬅️ ➡️ ⬆️ ⬇️ ok tuşlarıyla veya parmağın/farenle gemiyi her yöne hareket ettir.<br>
-         Yanlış yıldızı yakalarsan ya da doğrusunu kaçırırsan bir can kaybedersin. ❤️❤️❤️<br><br><b>📱 Mobil:</b> Parmağını ekran üzerinde sürükleyerek 🚀 roketi her yöne hareket ettir.<br><b>💻 Bilgisayar:</b> Ok tuşları / WASD veya fare.</p>
+         Yanlış yıldızı yakalarsan veya doğrusu kaçarsa bir can kaybedersin. ❤️❤️❤️<br><br><b>📱 Mobil:</b> Parmağını sürükle.<br><b>💻 Bilgisayar:</b> Ok tuşları / WASD.</p>
       <button id="startBtn">Başla!</button>
     </div>
 
@@ -313,6 +335,7 @@
       (clientY - r.top) * (H / r.height)));
   }
 
+  // Pointer Events — bilgisayar + modern telefonlar
   function pointerStart(e){
     activePointer = e.pointerId;
     try{ cv.setPointerCapture(e.pointerId); }catch(_){}
@@ -338,6 +361,20 @@
   cv.addEventListener('pointermove', pointerMove, {passive:false});
   cv.addEventListener('pointerup', pointerEnd, {passive:false});
   cv.addEventListener('pointercancel', pointerEnd, {passive:false});
+
+  // Touch Events — özellikle iPhone/iPad Safari için doğrudan yedek kontrol
+  function touchMove(e){
+    if(e.touches && e.touches.length){
+      const t = e.touches[0];
+      setShipFromClient(t.clientX, t.clientY);
+    }
+    e.preventDefault();
+  }
+
+  cv.addEventListener('touchstart', touchMove, {passive:false});
+  cv.addEventListener('touchmove', touchMove, {passive:false});
+  cv.addEventListener('touchend', e => e.preventDefault(), {passive:false});
+
   cv.addEventListener('contextmenu', e => e.preventDefault());
 
   $('startBtn').addEventListener('click',startGame);
