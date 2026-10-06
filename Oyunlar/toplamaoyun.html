@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;overflow:hidden}
+  html,body{height:100%;overflow:hidden;touch-action:none}
   body{
     font-family:'Nunito',Arial,sans-serif;font-weight:800;color:#fff;
     background:radial-gradient(ellipse at 50% 0%,#1b2a6b 0%,#0b1440 45%,#050a24 100%);
@@ -52,7 +52,7 @@
       <div id="rocketBig">🚀</div>
       <h1>Uzaylı Toplama Macerası</h1>
       <p>İşlemin <b>doğru sonucunu</b> taşıyan yıldızı yakala!<br>
-         ⬅️ ➡️ ⬆️ ⬇️ ok tuşlarıyla veya parmağın/farenle gemiyi her yöne hareket ettir.<br>
+         ⬅️ ➡️️ ⬆️ ⬇️ ok tuşlarıyla veya parmağın/farenle gemiyi her yöne hareket ettir.<br>
          Yanlış yıldızı yakalarsan ya da doğrusunu kaçırırsan bir can kaybedersin. ❤️❤️❤️<br><br><b>🎮 Kontrol:</b> Ok tuşları / WASD veya parmağınla-farenle her yöne hareket et.</p>
       <button id="startBtn">Başla!</button>
     </div>
@@ -74,7 +74,7 @@
   const $ = id => document.getElementById(id);
   const qEl = $('question'), scoreEl = $('score'), heartsEl = $('hearts'), speedEl = $('speedInfo');
 
-  const BASE_SPEED = 48;          // px/sn — daha sakin, 4. sınıfa uygun tempo
+  const BASE_SPEED = 48;
   const LANES = [W/6, W/2, W*5/6];
   const SHIP_Y = H - 80;
   const SHIP_MARGIN = 42;
@@ -95,7 +95,7 @@
     while(a>0||b>0){ if(a%10 + b%10 >= 10) return true; a=Math.floor(a/10); b=Math.floor(b/10); }
     return false;
   }
-  function noCarrySum(a,b){            // "eldeyi unutma" hatası
+  function noCarrySum(a,b){
     let r=0,p=1;
     while(a>0||b>0){ r += ((a%10 + b%10)%10)*p; p*=10; a=Math.floor(a/10); b=Math.floor(b/10); }
     return r;
@@ -113,7 +113,6 @@
     lastQ = a+' + '+b;
     const sum = a+b;
 
-    // Mantıklı çeldiriciler
     const pool = new Set();
     const nc = noCarrySum(a,b);
     const primary = [];
@@ -198,7 +197,6 @@
   }
 
   function update(dt){
-    // Gemi kontrolü: sağ-sol + yukarı-aşağı
     const dx = (keys.right?1:0) - (keys.left?1:0);
     const dy = (keys.down?1:0) - (keys.up?1:0);
 
@@ -214,7 +212,6 @@
     if(state!=='play') return;
     round.y += BASE_SPEED*speedMul*dt;
 
-    // Çarpışma: geminin gerçek X-Y konumuna göre
     for(const s of round.stars){
       if(Math.abs(s.x-ship.x) < 58 && Math.abs(round.y-ship.y) < 58){
         if(s.correct) correctCaught(s);
@@ -225,7 +222,6 @@
         return;
       }
     }
-    // doğru yıldızı kaçırdı
     if(round.y > H+40){
       loseLife('Kaçırdın! Doğrusu '+round.sum);
     }
@@ -243,11 +239,9 @@
     ctx.clearRect(0,0,W,H);
     if(shake>0) ctx.translate((Math.random()-.5)*10,(Math.random()-.5)*10);
 
-    // arka plan yıldızları
     bgStars.forEach(s=>{ ctx.globalAlpha = .45+.45*Math.sin(s.t); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,7); ctx.fill(); });
     ctx.globalAlpha=1;
 
-    // düşen yıldızlar
     if(round && state!=='start'){
       ctx.textAlign='center'; ctx.textBaseline='middle';
       round.stars.forEach(s=>{
@@ -259,7 +253,6 @@
       });
     }
 
-    // uzay gemisi
     ctx.textAlign='center'; ctx.textBaseline='middle';
     const fl = 8+Math.random()*8;
     ctx.fillStyle='rgba(255,170,40,.85)';
@@ -267,7 +260,6 @@
     ctx.save(); ctx.translate(ship.x,ship.y); ctx.rotate(-Math.PI/4);
     ctx.font='58px serif'; ctx.fillText('🚀',0,0); ctx.restore();
 
-    // efektler
     effects.forEach(e=>{
       const k = e.life/e.max;
       if(e.type==='p'){ ctx.globalAlpha=k; ctx.fillStyle=e.c; ctx.beginPath(); ctx.arc(e.x,e.y,5*k+1,0,7); ctx.fill(); }
@@ -287,7 +279,6 @@
     requestAnimationFrame(loop);
   }
 
-  // Kontroller
   addEventListener('keydown',e=>{
     if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){keys.left=true;e.preventDefault();}
     if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){keys.right=true;e.preventDefault();}
@@ -301,17 +292,30 @@
     if(e.key==='ArrowUp'||e.key==='w'||e.key==='W') keys.up=false;
     if(e.key==='ArrowDown'||e.key==='s'||e.key==='S') keys.down=false;
   });
+
+  // Mobil Dokunmatik ve Fare Kontrolleri
   function pointerMove(e){
     const r = cv.getBoundingClientRect();
-    ship.target = (e.clientX - r.left) * (W / r.width);
+    let clientX = e.clientX;
+    let clientY = e.clientY;
+    if (e.touches && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    }
+    if (clientX !== undefined && clientY !== undefined) {
+      ship.targetX = (clientX - r.left) * (W / r.width);
+      ship.targetY = (clientY - r.top) * (H / r.height);
+    }
   }
-  cv.addEventListener('pointermove',pointerMove);
-  cv.addEventListener('pointerdown',pointerMove);
+
+  cv.addEventListener('pointermove', pointerMove);
+  cv.addEventListener('pointerdown', pointerMove);
+  cv.addEventListener('touchmove', function(e) { e.preventDefault(); pointerMove(e); }, {passive: false});
+  cv.addEventListener('touchstart', function(e) { pointerMove(e); }, {passive: false});
 
   $('startBtn').addEventListener('click',startGame);
   $('againBtn').addEventListener('click',startGame);
 
-  // ilk görünüm
   score=0;lives=3;correctCount=0;speedMul=1;
   round = makeQuestion(); round.y = 150; qEl.textContent = round.text; drawHUD();
   requestAnimationFrame(loop);
