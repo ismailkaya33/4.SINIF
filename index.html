@@ -13,6 +13,7 @@
         --sosyal: #FCA311;
         --insan: #9B5DE5;
         --trafik: #F9A03F;
+        --oyunlar: #E84393;
         --bg-color: #F0F4F8;
     }
     
@@ -82,7 +83,7 @@
     }
 
     .subject-icon {
-        font-size: 5rem; /* Dev Görseller */
+        font-size: 5rem;
         filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
     }
 
@@ -98,10 +99,11 @@
     .btn-sosyal { border-color: var(--sosyal); }
     .btn-insan { border-color: var(--insan); }
     .btn-trafik { border-color: var(--trafik); }
+    .btn-oyunlar { border-color: var(--oyunlar); }
 
     /* DERS SAYFALARI (İÇERİK) */
     .subject-page {
-        display: none; /* Başlangıçta gizli */
+        display: none;
         background: white;
         border-radius: 30px;
         padding: 40px;
@@ -200,6 +202,9 @@
     .page-trafik { border-color: var(--trafik); }
     .page-trafik .game-list li a:hover { border-color: var(--trafik); background: #FFFAF0; transform: scale(1.03); }
 
+    .page-oyunlar { border-color: var(--oyunlar); }
+    .page-oyunlar .game-list li a:hover { border-color: var(--oyunlar); background: #FDEDF3; transform: scale(1.03); }
+
 </style>
 </head>
 <body>
@@ -241,6 +246,11 @@
                 <span class="subject-icon">🚦</span>
                 <span class="subject-name">TRAFİK GÜVENLİĞİ</span>
             </button>
+
+            <button class="subject-btn btn-oyunlar" onclick="openSubject('oyunlar')">
+                <span class="subject-icon">🎮</span>
+                <span class="subject-name">OYUNLAR</span>
+            </button>
         </div>
 
         <!-- TÜRKÇE SAYFASI -->
@@ -279,6 +289,7 @@
                 <li><a href="Matematik/toplama.html">Toplama Yapalım</a></li>
                 <li><a href="Matematik/yuvarlama.html">Yuvarlama Macerası 1</a></li>
                 <li><a href="Matematik/yuvarlama2.html">Yuvarlama Macerası 2</a></li>
+                <li><a href="Matematik/toplamaoyun.html">Uzaylı Toplama Macerası 2D 🚀</a></li>
             </ul>
         </div>
 
@@ -329,6 +340,17 @@
             </div>
             <ul class="game-list">
                 <li><a href="Trafik/temelkavramlar.html">Temel Kavramlar</a></li>
+            </ul>
+        </div>
+
+        <!-- YENİ: OYUNLAR SAYFASI -->
+        <div id="oyunlar" class="subject-page page-oyunlar">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🎮</span> Eğlenceli Oyunlar</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="#">Yakında Yeni Oyunlar Eklenecek...</a></li>
             </ul>
         </div>
 
