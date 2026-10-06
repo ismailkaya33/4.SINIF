@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Uzaylı Toplama Macerası</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden}
+  body{
+    font-family:'Nunito',Arial,sans-serif;font-weight:800;color:#fff;
+    background:radial-gradient(ellipse at 50% 0%,#1b2a6b 0%,#0b1440 45%,#050a24 100%);
+    display:flex;justify-content:center;align-items:center;
+  }
+  #app{width:100%;max-width:min(480px,calc((100dvh - 190px) * 0.75));display:flex;flex-direction:column;gap:8px;padding:8px}
+  #hud{display:flex;justify-content:space-between;align-items:center;font-size:clamp(15px,4vw,20px)}
+  #hearts{letter-spacing:2px}
+  #question{
+    text-align:center;font-size:clamp(28px,8vw,46px);font-weight:900;padding:10px 6px;
+    background:rgba(255,255,255,.1);border:3px solid #ffd54a;border-radius:18px;
+    text-shadow:0 3px 0 rgba(0,0,0,.4);box-shadow:0 0 22px rgba(255,213,74,.35);
+  }
+  #stage{position:relative;width:100%;aspect-ratio:3/4;border-radius:18px;overflow:hidden;
+    border:3px solid #3b4fa8;background:linear-gradient(180deg,#0a1238 0%,#101c5a 100%);touch-action:none}
+  canvas{width:100%;height:100%;display:block;touch-action:none}
+  .overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    gap:14px;text-align:center;background:rgba(5,10,36,.82);padding:20px}
+  .overlay.hidden{display:none}
+  .overlay h1{font-size:clamp(28px,8vw,44px);font-weight:900;color:#ffd54a;text-shadow:0 3px 0 #b8860b}
+  .overlay p{font-size:clamp(15px,4vw,20px);line-height:1.4}
+  .big{font-size:clamp(44px,14vw,76px);font-weight:900;color:#7dffb0}
+  button{font-family:inherit;font-weight:900;font-size:clamp(20px,5vw,26px);color:#1b1b3a;background:linear-gradient(#ffe07a,#ffb300);
+    border:none;border-radius:50px;padding:12px 34px;cursor:pointer;box-shadow:0 6px 0 #b27a00;transition:transform .1s}
+  button:active{transform:translateY(4px);box-shadow:0 2px 0 #b27a00}
+  #rocketBig{font-size:64px;animation:fly 2s ease-in-out infinite}
+  @keyframes fly{50%{transform:translateY(-10px) rotate(6deg)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="hud">
+    <div>⭐ Puan: <span id="score">0</span></div>
+    <div id="speedInfo">🚀 Hız: ×1.0</div>
+    <div id="hearts"></div>
+  </div>
+  <div id="question">1250 + 3420 = ?</div>
+  <div id="stage">
+    <canvas id="c" width="480" height="640"></canvas>
+
+    <div id="startScreen" class="overlay">
+      <div id="rocketBig">🚀</div>
+      <h1>Uzaylı Toplama Macerası</h1>
+      <p>İşlemin <b>doğru sonucunu</b> taşıyan yıldızı yakala!<br>
+         ⬅️ ➡️ ⬆️ ⬇️ ok tuşlarıyla veya parmağın/farenle gemiyi her yöne hareket ettir.<br>
+         Yanlış yıldızı yakalarsan ya da doğrusunu kaçırırsan bir can kaybedersin. ❤️❤️❤️<br><br><b>🎮 Kontrol:</b> Ok tuşları / WASD veya parmağınla-farenle her yöne hareket et.</p>
+      <button id="startBtn">Başla!</button>
+    </div>
+
+    <div id="overScreen" class="overlay hidden">
+      <h1>🛸 Oyun Bitti! 🛸</h1>
+      <p>Toplam Puanın</p>
+      <div class="big" id="finalScore">0</div>
+      <p id="finalMsg"></p>
+      <button id="againBtn">Tekrar Oyna</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const W = 480, H = 640;
+  const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+  const $ = id => document.getElementById(id);
+  const qEl = $('question'), scoreEl = $('score'), heartsEl = $('hearts'), speedEl = $('speedInfo');
+
+  const BASE_SPEED = 48;          // px/sn — daha sakin, 4. sınıfa uygun tempo
+  const LANES = [W/6, W/2, W*5/6];
+  const SHIP_Y = H - 80;
+  const SHIP_MARGIN = 42;
+  const SHIP_SPEED = 300;
+
+  let state = 'start';
+  let score, lives, correctCount, speedMul, round, lastQ = '';
+  let ship = {x: W/2, y: SHIP_Y, targetX: W/2, targetY: SHIP_Y};
+  let keys = {left:false, right:false, up:false, down:false};
+  let effects = [], bgStars = [], shake = 0, flashRed = 0;
+
+  for(let i=0;i<60;i++) bgStars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+.4,s:Math.random()*20+8,t:Math.random()*6});
+
+  const rnd = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+  const shuffle = arr => { for(let i=arr.length-1;i>0;i--){const j=rnd(0,i);[arr[i],arr[j]]=[arr[j],arr[i]];} return arr; };
+
+  function hasCarry(a,b){
+    while(a>0||b>0){ if(a%10 + b%10 >= 10) return true; a=Math.floor(a/10); b=Math.floor(b/10); }
+    return false;
+  }
+  function noCarrySum(a,b){            // "eldeyi unutma" hatası
+    let r=0,p=1;
+    while(a>0||b>0){ r += ((a%10 + b%10)%10)*p; p*=10; a=Math.floor(a/10); b=Math.floor(b/10); }
+    return r;
+  }
+
+  function makeQuestion(){
+    let a=1250,b=3420,tries=0;
+    const wantCarry = Math.random() < 0.5;
+    while(tries++ < 800){
+      const dA = rnd(3,4), dB = rnd(3,4);
+      a = rnd(Math.pow(10,dA-1), Math.pow(10,dA)-1);
+      b = rnd(Math.pow(10,dB-1), Math.pow(10,dB)-1);
+      if(hasCarry(a,b)===wantCarry && a+b<10000 && (a+' + '+b) !== lastQ) break;
+    }
+    lastQ = a+' + '+b;
+    const sum = a+b;
+
+    // Mantıklı çeldiriciler
+    const pool = new Set();
+    const nc = noCarrySum(a,b);
+    const primary = [];
+    if(nc !== sum && nc > 0) primary.push(nc);
+    [10,100,1000].forEach(d => { primary.push(sum+d); primary.push(sum-d); });
+    const secondary = [sum+1, sum-1, sum+20, sum-20, sum+200, sum-200];
+    const ok = v => v>0 && v!==sum && v<10000;
+    const wrong = [];
+    shuffle(primary.filter(ok)).forEach(v=>{ if(wrong.length<2 && !wrong.includes(v)) wrong.push(v); });
+    shuffle(secondary.filter(ok)).forEach(v=>{ if(wrong.length<2 && !wrong.includes(v)) wrong.push(v); });
+
+    const answers = shuffle([{n:sum,correct:true},{n:wrong[0],correct:false},{n:wrong[1],correct:false}]);
+    const lanes = shuffle(LANES.slice());
+    return {
+      text: a+' + '+b+' = ?', sum,
+      y: -40,
+      stars: answers.map((s,i)=>({x:lanes[i], n:s.n, correct:s.correct})),
+      done:false
+    };
+  }
+
+  function newRound(){
+    round = makeQuestion();
+    qEl.textContent = round.text;
+  }
+
+  function drawHUD(){
+    scoreEl.textContent = score;
+    let h=''; for(let i=0;i<3;i++) h += i<lives ? '❤️' : '🖤';
+    heartsEl.textContent = h;
+    speedEl.textContent = '🚀 Hız: ×' + speedMul.toFixed(1);
+  }
+
+  function startGame(){
+    score=0; lives=3; correctCount=0; speedMul=1; effects=[]; shake=0; flashRed=0;
+    ship.x = ship.targetX = W/2;
+    ship.y = ship.targetY = SHIP_Y;
+    newRound(); drawHUD();
+    $('startScreen').classList.add('hidden');
+    $('overScreen').classList.add('hidden');
+    state='play';
+  }
+
+  function endGame(){
+    state='over';
+    $('finalScore').textContent = score;
+    const msg = score>=150 ? '🏆 Harika! Gerçek bir uzay kaptanısın!'
+              : score>=80  ? '🌟 Çok iyi! Biraz daha çalışırsan rekor senin!'
+              : score>=30  ? '👍 Güzel deneme! Tekrar oynayıp daha çok yıldız topla!'
+              :              '🚀 Pes etme! Her kaptan önce antrenman yapar!';
+    $('finalMsg').textContent = msg;
+    $('overScreen').classList.remove('hidden');
+  }
+
+  function burst(x,y){
+    for(let i=0;i<26;i++){
+      const a=Math.random()*Math.PI*2, v=Math.random()*220+80;
+      effects.push({type:'p',x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.7,max:.7,c:['#ffe066','#fff','#7dffb0','#ff9ff3'][rnd(0,3)]});
+    }
+    effects.push({type:'ring',x,y,life:.5,max:.5});
+  }
+  function floatText(text,x,y,color){
+    effects.push({type:'t',text,x,y,life:1.1,max:1.1,color});
+  }
+
+  function correctCaught(star){
+    score += 10; correctCount++;
+    burst(star.x, round.y);
+    floatText('+10 ✨', star.x, round.y-40, '#7dffb0');
+    if(correctCount % 5 === 0){
+      speedMul = +(Math.min(1.8, speedMul*1.06)).toFixed(3);
+      floatText('Hızlandı! 🔥', W/2, H/2, '#ffd54a');
+    }
+    drawHUD(); newRound();
+  }
+
+  function loseLife(msg, x){
+    lives--; shake=.35; flashRed=.35;
+    floatText(msg, x ?? W/2, H/2, '#ff6b6b');
+    drawHUD();
+    if(lives<=0){ endGame(); } else newRound();
+  }
+
+  function update(dt){
+    // Gemi kontrolü: sağ-sol + yukarı-aşağı
+    const dx = (keys.right?1:0) - (keys.left?1:0);
+    const dy = (keys.down?1:0) - (keys.up?1:0);
+
+    if(dx) ship.targetX += dx * SHIP_SPEED * dt;
+    if(dy) ship.targetY += dy * SHIP_SPEED * dt;
+
+    ship.targetX = Math.max(SHIP_MARGIN, Math.min(W-SHIP_MARGIN, ship.targetX));
+    ship.targetY = Math.max(70, Math.min(H-SHIP_MARGIN, ship.targetY));
+
+    ship.x += (ship.targetX-ship.x) * Math.min(1, dt*12);
+    ship.y += (ship.targetY-ship.y) * Math.min(1, dt*12);
+
+    if(state!=='play') return;
+    round.y += BASE_SPEED*speedMul*dt;
+
+    // Çarpışma: geminin gerçek X-Y konumuna göre
+    for(const s of round.stars){
+      if(Math.abs(s.x-ship.x) < 58 && Math.abs(round.y-ship.y) < 58){
+        if(s.correct) correctCaught(s);
+        else {
+          const right = round.stars.find(q=>q.correct).n;
+          loseLife('Yanlış! Doğrusu '+right, s.x);
+        }
+        return;
+      }
+    }
+    // doğru yıldızı kaçırdı
+    if(round.y > H+40){
+      loseLife('Kaçırdın! Doğrusu '+round.sum);
+    }
+  }
+
+  function updateFx(dt){
+    effects.forEach(e=>{ e.life-=dt; if(e.type==='p'){e.x+=e.vx*dt;e.y+=e.vy*dt;e.vy+=300*dt;} if(e.type==='t') e.y-=40*dt; });
+    effects = effects.filter(e=>e.life>0);
+    if(shake>0) shake-=dt; if(flashRed>0) flashRed-=dt;
+    bgStars.forEach(s=>{ s.y += s.s*dt*(state==='play'?speedMul:1); s.t+=dt*3; if(s.y>H){s.y=-2;s.x=Math.random()*W;} });
+  }
+
+  function draw(){
+    ctx.save();
+    ctx.clearRect(0,0,W,H);
+    if(shake>0) ctx.translate((Math.random()-.5)*10,(Math.random()-.5)*10);
+
+    // arka plan yıldızları
+    bgStars.forEach(s=>{ ctx.globalAlpha = .45+.45*Math.sin(s.t); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,7); ctx.fill(); });
+    ctx.globalAlpha=1;
+
+    // düşen yıldızlar
+    if(round && state!=='start'){
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      round.stars.forEach(s=>{
+        ctx.font='84px serif';
+        ctx.fillText('⭐', s.x, round.y);
+        ctx.font='900 26px Nunito, Arial, sans-serif';
+        ctx.lineWidth=6; ctx.strokeStyle='#14206b'; ctx.strokeText(s.n, s.x, round.y+4);
+        ctx.fillStyle='#fff'; ctx.fillText(s.n, s.x, round.y+4);
+      });
+    }
+
+    // uzay gemisi
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    const fl = 8+Math.random()*8;
+    ctx.fillStyle='rgba(255,170,40,.85)';
+    ctx.beginPath(); ctx.ellipse(ship.x, ship.y+34, 7, fl, 0, 0, 7); ctx.fill();
+    ctx.save(); ctx.translate(ship.x,ship.y); ctx.rotate(-Math.PI/4);
+    ctx.font='58px serif'; ctx.fillText('🚀',0,0); ctx.restore();
+
+    // efektler
+    effects.forEach(e=>{
+      const k = e.life/e.max;
+      if(e.type==='p'){ ctx.globalAlpha=k; ctx.fillStyle=e.c; ctx.beginPath(); ctx.arc(e.x,e.y,5*k+1,0,7); ctx.fill(); }
+      else if(e.type==='ring'){ ctx.globalAlpha=k; ctx.strokeStyle='#fff7a8'; ctx.lineWidth=8*k+1; ctx.beginPath(); ctx.arc(e.x,e.y,(1-k)*110+20,0,7); ctx.stroke(); }
+      else if(e.type==='t'){ ctx.globalAlpha=Math.min(1,k*2); ctx.font='900 30px Nunito, Arial, sans-serif'; ctx.lineWidth=6; ctx.strokeStyle='#0b1440'; ctx.strokeText(e.text,Math.max(110,Math.min(W-110,e.x)),e.y); ctx.fillStyle=e.color; ctx.fillText(e.text,Math.max(110,Math.min(W-110,e.x)),e.y); }
+      ctx.globalAlpha=1;
+    });
+
+    if(flashRed>0){ ctx.fillStyle='rgba(255,60,60,'+(flashRed*1.2)+')'; ctx.fillRect(0,0,W,H); }
+    ctx.restore();
+  }
+
+  let last = performance.now();
+  function loop(now){
+    const dt = Math.min(.05,(now-last)/1000); last=now;
+    update(dt); updateFx(dt); draw();
+    requestAnimationFrame(loop);
+  }
+
+  // Kontroller
+  addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){keys.left=true;e.preventDefault();}
+    if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){keys.right=true;e.preventDefault();}
+    if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'){keys.up=true;e.preventDefault();}
+    if(e.key==='ArrowDown'||e.key==='s'||e.key==='S'){keys.down=true;e.preventDefault();}
+    if((e.key==='Enter'||e.key===' ') && state!=='play'){ e.preventDefault(); startGame(); }
+  });
+  addEventListener('keyup',e=>{
+    if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A') keys.left=false;
+    if(e.key==='ArrowRight'||e.key==='d'||e.key==='D') keys.right=false;
+    if(e.key==='ArrowUp'||e.key==='w'||e.key==='W') keys.up=false;
+    if(e.key==='ArrowDown'||e.key==='s'||e.key==='S') keys.down=false;
+  });
+  function pointerMove(e){
+    const r = cv.getBoundingClientRect();
+    ship.target = (e.clientX - r.left) * (W / r.width);
+  }
+  cv.addEventListener('pointermove',pointerMove);
+  cv.addEventListener('pointerdown',pointerMove);
+
+  $('startBtn').addEventListener('click',startGame);
+  $('againBtn').addEventListener('click',startGame);
+
+  // ilk görünüm
+  score=0;lives=3;correctCount=0;speedMul=1;
+  round = makeQuestion(); round.y = 150; qEl.textContent = round.text; drawHUD();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
