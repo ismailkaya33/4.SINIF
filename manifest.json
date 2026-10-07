@@ -1,0 +1,9 @@
+{
+  "name": "4/D Eğitim Portalı",
+  "short_name": "4/D Portal",
+  "description": "İnteraktif Öğrenme Uygulaması",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F0F4F8",
+  "theme_color": "#E84393"
+}
