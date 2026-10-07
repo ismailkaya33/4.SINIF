@@ -1,0 +1,227 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Dünya'nın Hareketleri</title><style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;font-family:system-ui,"Segoe UI",Arial,sans-serif;color:#fff;background:radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 120px,#ffe9a8,transparent),radial-gradient(1px 1px at 150px 60px,#fff,transparent),linear-gradient(#0b1030,#1b1650 60%,#0d2147);background-size:180px 150px,180px 150px,180px 150px,100% 100%;background-color:#0b1030;padding:env(safe-area-inset-top) 12px calc(24px + env(safe-area-inset-bottom))}
+#app{max-width:900px;margin:auto}h1{font-size:clamp(24px,5vw,38px);margin:14px 0 2px;text-align:center}.sub{text-align:center;color:#b9c6ff;margin:0 0 6px}#sc{text-align:center;font-weight:800;color:#ffd24d;margin-bottom:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);border-radius:22px;padding:14px;margin:10px 0}
+button{font:inherit;color:#fff;border:0;border-radius:16px;min-height:52px;min-width:52px;padding:10px 16px;background:#3a6df0;cursor:pointer;font-weight:700;transition:.2s}button:active{transform:scale(.95)}button:disabled{cursor:default}
+.m{font-size:20px;text-align:left;display:flex;gap:12px;align-items:center;min-height:76px;background:linear-gradient(135deg,#3a4bd8,#7b3fe4)}
+.row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin:8px 0}
+.opt{display:block;width:100%;margin:8px 0;text-align:left;background:#2b3a8f;font-size:18px}
+.ok{background:#1faa59!important}.no{background:#d63b4a!important}
+canvas{display:block;margin:auto;width:100%;max-width:640px;touch-action:none;border-radius:20px;background:rgba(0,0,0,.2)}
+.big{font-size:clamp(26px,7vw,42px);font-weight:800;text-align:center}.muted{color:#b9c6ff;font-size:15px}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.st div{text-align:center;background:rgba(0,0,0,.25);border-radius:16px;padding:10px}.st b{display:block;font-size:26px}
+.bd{opacity:.3;filter:grayscale(1)}.bd.on{opacity:1;filter:none}.bd div{font-size:34px}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#ffd24d;color:#222;padding:12px 18px;border-radius:16px;font-weight:800;display:none;z-index:9;text-align:center;max-width:90%}
+details{margin:8px 0}summary{cursor:pointer;min-height:40px;font-weight:700}
+</style></head><body><div id="app"><h1>🌍 DÜNYA'NIN HAREKETLERİ</h1><p class="sub">Uzay Görevi: Gece, Gündüz ve Dünya Saatleri</p><div id="sc"></div><div id="v"></div></div><div id="toast"></div><script>
+const $=s=>document.querySelector(s),V=$('#v');
+const G={H:15,play:false,sp:1.5,lq:innerWidth<700,drag:0},S={pts:0,ok:0,bad:0,m:0,qd:0,qb:0,b:{},pr:0};
+const BN={kas:['🌍','Dünya Kaşifi'],gun:['☀️','Gündüz Uzmanı'],gece:['🌙','Gece Dedektifi'],zam:['🕐','Zaman Ustası'],uzay:['🚀','Uzay Görevlisi'],uzm:['🏆',"Dünya'nın Hareketleri Uzmanı"]};
+const DAYS=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
+const FM="🌍 Tebrikler! Dünya'nın kendi ekseni etrafındaki hareketi ile gece-gündüz arasındaki ilişkiyi keşfettin.";
+const mod=(a,n)=>((a%n)+n)%n;
+const fmt=h=>{h=mod(h,24);const a=Math.floor(h);return String(a).padStart(2,'0')+'.'+String(Math.floor((h-a)*60)).padStart(2,'0')};
+const isDay=h=>{h=mod(h,24);return h>=6&&h<18};
+const dayN=h=>DAYS[mod(Math.floor(h/24),7)];
+const sh=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+let tt;function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(tt);tt=setTimeout(()=>e.style.display='none',3200)}
+function badge(k){if(!S.b[k]){S.b[k]=1;toast('🎖️ Yeni rozet: '+BN[k][0]+' '+BN[k][1]);if(k!='uzm')chk()}}
+function chk(){if(['kas','gun','gece','zam','uzay'].every(k=>S.b[k])&&S.qb>=10)badge('uzm')}
+const PTS3=[{n:'A',off:0,c:'#ff6b6b',lat:12},{n:'B',off:8,c:'#5ee38b',lat:-8},{n:'C',off:16,c:'#ffd24d',lat:20}];
+const CT=[['🇹🇷','İstanbul',0,41,29],['🇯🇵','Tokyo',6,35.7,139.7],['🇦🇿','Bakü',1,40.4,49.9],['🇬🇧','Londra',-3,51.5,0],['🇲🇦','Rabat',-2,34,-6.8],['🇺🇸','New York',-8,40.7,-74],['🇺🇸','Los Angeles',-11,34,-118.2],['🇳🇿','Wellington',9,-41.3,174.8]];
+const D2R=Math.PI/180,TILT=23.5*D2R,LS=[-.8,.15,.58];
+const Rx=a=>[1,0,0,0,Math.cos(a),-Math.sin(a),0,Math.sin(a),Math.cos(a)],Ry=a=>[Math.cos(a),0,Math.sin(a),0,1,0,-Math.sin(a),0,Math.cos(a)],Rz=a=>[Math.cos(a),-Math.sin(a),0,Math.sin(a),Math.cos(a),0,0,0,1];
+const mm=(a,b)=>{const r=[];for(let i=0;i<3;i++)for(let j=0;j<3;j++)r.push(a[3*i]*b[j]+a[3*i+1]*b[3+j]+a[3*i+2]*b[6+j]);return r};
+const mv3=(m,v)=>[0,1,2].map(i=>m[3*i]*v[0]+m[3*i+1]*v[1]+m[3*i+2]*v[2]);
+const tr=m=>[m[0],m[3],m[6],m[1],m[4],m[7],m[2],m[5],m[8]];
+const PSI=(()=>{const t=mv3(Rz(TILT),LS);return Math.atan2(t[0],t[2])})();
+const alpha=h=>PSI-(45+(12-h)*15)*D2R,MW=a=>mm(Rz(-TILT),Ry(a));
+const ll2m=(la,lo)=>[Math.cos(la*D2R)*Math.sin(lo*D2R),Math.sin(la*D2R),Math.cos(la*D2R)*Math.cos(lo*D2R)];
+const litAt=(la,lo,h=G.H)=>{const w=mv3(MW(alpha(h)),ll2m(la,lo));return w[0]*LS[0]+w[1]*LS[1]+w[2]*LS[2]>0};
+const dn=()=>PTS3.map(p=>p.n+(litAt(p.lat,45+p.off*15)?' ☀️ Gündüz':' 🌙 Gece')).join('  ·  ');
+const TB='<div class="row" id="tb"><button id="bR">🔄 Döndür</button><button id="bS">⏸ Durdur</button><button id="bSun">☀️ Güneşi Göster</button><button id="bAx">🌐 Ekseni Göster</button><button id="bH">🏠 Başlangıç Açısı</button><button id="bZp">🔍 +</button><button id="bZm">🔎 -</button><button id="bQ">⚙️ Kalite</button></div>';
+function wire(e,ren,hit){hit=hit||(()=>{});const b=id=>$('#'+id);
+const sl=()=>{b('bSun').textContent=e.showSun?'☀️ Güneşi Gizle':'☀️ Güneşi Göster';b('bAx').textContent=e.showAx?'🌐 Ekseni Gizle':'🌐 Ekseni Göster';b('bQ').textContent=G.lq?'⚙️ Kalite: Düşük':'⚙️ Kalite: Yüksek'};
+b('bR').onclick=()=>{G.play=true;hit()};b('bS').onclick=()=>{G.play=false;hit()};
+b('bSun').onclick=()=>{e.showSun=!e.showSun;sl();ren()};b('bAx').onclick=()=>{e.showAx=!e.showAx;sl();ren()};
+b('bH').onclick=()=>{e.home();ren();hit()};b('bZp').onclick=()=>{e.zoom(1.15);ren()};b('bZm').onclick=()=>{e.zoom(1/1.15);ren()};b('bQ').onclick=()=>{G.lq=!G.lq;sl();ren()};sl()}
+const LAND=[
+[-168,66,-162,70,-141,70,-128,70,-110,73,-95,72,-82,68,-80,62,-93,58,-88,52,-80,52,-78,60,-65,60,-60,53,-55,50,-66,45,-70,42,-76,38,-76,35,-81,31,-80,26,-83,29,-90,30,-97,27,-97,22,-92,19,-87,21,-88,16,-83,15,-83,10,-79,9,-82,8,-86,12,-92,15,-105,20,-106,23,-112,29,-110,23,-115,29,-118,34,-124,40,-124,48,-130,54,-140,60,-152,59,-158,57,-165,60,-166,64],
+[-73,78,-60,82,-30,83,-20,80,-20,72,-40,65,-44,60,-52,64,-56,70,-68,76],
+[-80,9,-72,12,-62,11,-52,5,-50,0,-44,-2,-35,-6,-39,-14,-41,-22,-48,-26,-53,-34,-58,-38,-65,-41,-66,-47,-69,-52,-72,-54,-75,-50,-73,-40,-71,-30,-70,-18,-76,-14,-81,-6,-80,-1,-78,3],
+[-9,37,-9,43,-2,44,-4,48,2,51,8,54,8,57,11,54,14,54,21,55,24,59,30,60,22,61,22,65,25,66,18,63,17,58,12,56,6,59,5,62,14,68,25,71,40,68,44,68,60,69,70,73,80,73,100,77,113,74,130,71,150,71,170,70,180,68,180,65,165,60,156,51,142,59,135,54,141,48,135,43,130,42,129,35,126,35,126,38,122,40,118,38,121,31,120,26,110,21,108,16,106,10,100,13,100,8,104,1,98,8,98,16,92,22,87,21,80,15,77,8,73,17,72,21,67,25,57,25,56,27,50,30,48,29,51,25,56,26,60,22,55,17,45,13,43,16,35,28,34,31,36,36,27,37,26,40,23,38,22,37,19,41,13,45,16,41,18,40,16,38,12,42,8,44,3,43,0,38,-6,36],
+[-17,21,-13,28,-6,36,10,37,11,33,20,31,32,31,34,28,43,12,51,12,51,2,40,-3,39,-9,41,-16,35,-24,33,-27,28,-33,20,-35,18,-32,12,-17,13,-8,9,-1,10,4,5,5,-5,5,-12,8,-17,15],
+[44,-25,47,-25,50,-15,49,-12,44,-17],
+[114,-22,122,-18,130,-12,136,-12,137,-16,142,-11,146,-19,153,-26,150,-37,141,-38,135,-34,130,-32,116,-35,114,-26],
+[95,5,106,-6,104,-6,98,0],[109,1,117,7,119,1,116,-4,110,-3],[131,-1,141,-3,150,-10,142,-9,138,-8],
+[130,31,135,34,140,36,142,40,141,45,144,43,140,40,136,36,132,34],[-5,50,2,51,-2,56,-3,58,-6,56,-4,53],[-10,52,-6,52,-6,55,-10,54],
+[173,-35,178,-38,175,-41,173,-39],[172,-41,174,-42,170,-46,167,-46],[-24,64,-14,64,-14,66,-22,66],[-85,22,-75,20,-80,23],[120,18,122,13,126,7,122,8,120,14],
+[-180,-70,-120,-73,-60,-65,-60,-75,0,-70,60,-67,120,-66,180,-70,180,-90,-180,-90]];
+const SEA=[[28,41,28,45,33,46,38,47,41,42,36,41.5],[47,45,53,47,54,40,50,37,49,40]];
+const CIT=[29,41,140,36,50,40,0,51.5,-7,34,-74,41,-118,34,175,-41,2,49,37,56,31,30,77,29,73,19,116,40,121,31,127,37.5,-47,-23.5,-58,-34.6,-99,19,-88,42,3,6,28,-26,151,-34,107,-6,100.5,14,51,35.7,47,24.7,-3.7,40,13,52.5,12.5,42,37,-1,-77,-12,-79,43.7,-80,25.8,90,23.7,67,25,121,14.6,-122,37.7,-43,-22.9,-0.1,5.6,32.5,15.5,72,33,104,30,114,23];
+function makeTex(){const W=512,H=256,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.fillStyle='#000';x.fillRect(0,0,W,H);
+const poly=(a,f)=>{x.fillStyle=f;x.beginPath();for(let i=0;i<a.length;i+=2){const px=(a[i]+180)/360*W,py=(90-a[i+1])/180*H;i?x.lineTo(px,py):x.moveTo(px,py)}x.closePath();x.fill()};
+LAND.forEach(a=>poly(a,'#fff'));SEA.forEach(a=>poly(a,'#000'));
+const m=x.getImageData(0,0,W,H).data,A=new Uint8Array(W*H*4),B=new Uint8Array(W*H*4),Li=new Float32Array(W*H);
+for(let i=0;i<CIT.length;i+=2){const cx=Math.round((CIT[i]+180)/360*W),cy=Math.round((90-CIT[i+1])/180*H);for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++){const X=cx+dx,Y=cy+dy;if(X>=0&&X<W&&Y>=0&&Y<H)Li[Y*W+X]+=Math.exp(-(dx*dx+dy*dy)/2.2)}}
+const hs=(i,j)=>{const s=Math.sin(i*127.1+j*311.7)*43758.5;return s-Math.floor(s)};
+const nz=(u,v,p)=>{const i=Math.floor(u),j=Math.floor(v),fu=u-i,fv=v-j,s=fu*fu*(3-2*fu),t=fv*fv*(3-2*fv),a=hs(i%p,j),b=hs((i+1)%p,j),c=hs(i%p,j+1),d=hs((i+1)%p,j+1);return a+(b-a)*s+(c-a)*t+(a-b-c+d)*s*t};
+const fb=(px,py,k)=>{let r=0,a=.5,f=4;for(let o=0;o<3;o++){r+=a*nz(px/W*f,py/W*f+k,f);a/=2;f*=2}return r/.875};
+const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+for(let y=0;y<H;y++)for(let X=0;X<W;X++){const i=y*W+X,k=i*4,lat=90-(y+.5)/H*180,al=Math.abs(lat),ml=m[k]/255,e=fb(X,y,0),cv=fb(X,y,50);
+let r=.04+.06*e,g=.2+.14*e,b=.48+.22*e;
+if(ml>0){const dry=cl((al-12)/8,0,1)*(1-cl((al-30)/10,0,1))*(.35+e),dd=Math.min(1,dry);let lr=.2+.12*e,lg=.5-.1*e,lb=.2;lr+=(.84-lr)*dd;lg+=(.72-lg)*dd;lb+=(.42-lb)*dd;
+const mt=cl((e-.6)*3,0,1);lr+=(.5-lr)*mt;lg+=(.4-lg)*mt;lb+=(.28-lb)*mt;const ic=Math.max(cl((al-62)/10,0,1),cl((e-.82)*5,0,1)*.7);lr+=(.95-lr)*ic;lg+=(.96-lg)*ic;lb+=(.98-lb)*ic;
+r+=(lr-r)*ml;g+=(lg-g)*ml;b+=(lb-b)*ml}
+else if(al>78){const ic=cl((al-78)/5,0,1)*.8;r+=(.9-r)*ic;g+=(.94-g)*ic;b+=(.98-b)*ic}
+A[k]=r*255;A[k+1]=g*255;A[k+2]=b*255;A[k+3]=Math.min(1,Li[i])*255*(ml>.5?1:.3);
+B[k]=cl((cv-.45)*3,0,1)*255;B[k+1]=ml*255;B[k+2]=0;B[k+3]=255}
+return{a:A,b:B}}
+const FS=`precision highp float;uniform vec2 uC;uniform float uR,uCa;uniform mat3 uW,uM;uniform vec3 uL;uniform sampler2D uA,uB;
+vec2 ll(vec3 m){return vec2(atan(m.x,m.z)*.15915494+.5,acos(clamp(m.y,-1.,1.))*.31830989);}
+void main(){vec2 p=(gl_FragCoord.xy-uC)/uR;float r2=dot(p,p);
+if(r2<1.){float z=sqrt(1.-r2);vec3 n=vec3(p,z);vec3 w=uW*n;vec3 m=uM*w;vec2 uv=ll(m);vec4 t=texture2D(uA,uv);vec4 b=texture2D(uB,uv);
+float d=dot(w,uL);float day=smoothstep(-.12,.2,d);float df=max(d,0.);
+vec3 V=uW*vec3(0.,0.,1.);vec3 H=normalize(uL+V);float sp=pow(max(dot(w,H),0.),70.)*(1.-b.g)*.6;
+vec3 dc=t.rgb*(.12+1.05*df)+vec3(sp);vec3 nc=t.rgb*vec3(.05,.07,.13)+vec3(1.,.8,.35)*t.a*1.3;
+vec3 col=mix(nc,dc,day);
+vec3 mc=vec3(m.x*cos(uCa)+m.z*sin(uCa),m.y,-m.x*sin(uCa)+m.z*cos(uCa));float cl=texture2D(uB,ll(mc)).r*.8;
+col=mix(col,vec3(.96)*(.1+df)+vec3(.03,.04,.07)*(1.-day),cl);
+col+=vec3(.2,.45,1.)*pow(1.-z,3.)*(.15+.85*day);gl_FragColor=vec4(col,1.);}
+else{float r=sqrt(r2);if(r<1.14){float g=pow(1.-(r-1.)/.14,2.2);vec3 Lv=vec3(dot(uL,uW[0]),dot(uL,uW[1]),dot(uL,uW[2]));float lt=.25+.75*smoothstep(-.5,.6,dot(normalize(p),normalize(Lv.xy)));float a=g*lt;gl_FragColor=vec4(vec3(.3,.6,1.)*a,a);}else gl_FragColor=vec4(0.);}}`;
+let GL=null;
+function initGL(){if(GL!==null)return GL;GL=false;try{const c=document.createElement('canvas'),g=c.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false});if(!g)return GL;
+const sh=(t,s)=>{const o=g.createShader(t);g.shaderSource(o,s);g.compileShader(o);return o},p=g.createProgram();
+g.attachShader(p,sh(g.VERTEX_SHADER,'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'));g.attachShader(p,sh(g.FRAGMENT_SHADER,FS));g.linkProgram(p);if(!g.getProgramParameter(p,g.LINK_STATUS))return GL;
+g.useProgram(p);g.bindBuffer(g.ARRAY_BUFFER,g.createBuffer());g.bufferData(g.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),g.STATIC_DRAW);const al=g.getAttribLocation(p,'a');g.enableVertexAttribArray(al);g.vertexAttribPointer(al,2,g.FLOAT,false,0,0);
+const T=makeTex();[T.a,T.b].forEach((d,i)=>{const t=g.createTexture();g.activeTexture(g.TEXTURE0+i);g.bindTexture(g.TEXTURE_2D,t);g.texImage2D(g.TEXTURE_2D,0,g.RGBA,512,256,0,g.RGBA,g.UNSIGNED_BYTE,d);
+[[g.TEXTURE_MIN_FILTER,g.LINEAR],[g.TEXTURE_MAG_FILTER,g.LINEAR],[g.TEXTURE_WRAP_S,g.REPEAT],[g.TEXTURE_WRAP_T,g.CLAMP_TO_EDGE]].forEach(q=>g.texParameteri(g.TEXTURE_2D,q[0],q[1]))});
+const u=n=>g.getUniformLocation(p,n);g.uniform1i(u('uA'),0);g.uniform1i(u('uB'),1);
+GL={c,g,u:{cn:u('uC'),r:u('uR'),ca:u('uCa'),w:u('uW'),m:u('uM'),l:u('uL')}}}catch(er){GL=false}return GL}
+function Earth(cv,o){const ctx=cv.getContext('2d');let P=.3,Y=0,zm=1,lh=G.H;const cz=v=>Math.max(.65,Math.min(1.35,v));
+const e={showSun:true,showAx:false,zoom(f){zm=cz(zm*f)},home(){P=.3;zm=1},
+vis(la,lo){return mv3(mm(Rx(P),Ry(Y)),mv3(MW(alpha(lh)),ll2m(la,lo)))[2]>.05},
+draw(h=G.H,face){lh=h;const W=G.lq?448:640,Hh=G.lq?364:520;if(cv.width!=W){cv.width=W;cv.height=Hh}
+const s=W/640,R=215*s*zm,cx=W/2,cy=Hh/2,gl=initGL(),a=alpha(h),Ma=MW(a);ctx.clearRect(0,0,W,Hh);
+Y=face?30*D2R-Math.atan2(...(w=>[w[0],w[2]])(mv3(Ma,ll2m(face.lat,face.lon)))):0;
+if(!gl){ctx.fillStyle='#fff';ctx.font='20px sans-serif';ctx.textAlign='center';ctx.fillText('Bu cihazda 3B desteklenmiyor 😕',cx,cy);return}
+const Vm=mm(Rx(P),Ry(Y)),Lv=mv3(Vm,LS),txt=(t,x,y,c)=>{ctx.font='bold '+16*s+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';x=Math.max(80*s,Math.min(W-80*s,x));y=Math.max(14*s,Math.min(Hh-14*s,y));ctx.lineWidth=4*s;ctx.strokeStyle='rgba(0,0,30,.8)';ctx.strokeText(t,x,y);ctx.fillStyle=c;ctx.fillText(t,x,y)};
+if(e.showSun||o.fener){const hy=Math.hypot(Lv[0],Lv[1])||1,dist=R+80*s,sx=Math.max(50*s,Math.min(W-50*s,cx+Lv[0]/hy*dist)),sy=Math.max(50*s,Math.min(Hh-50*s,cy-Lv[1]/hy*dist));
+if(o.fener){ctx.font=70*s+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🔦',sx,sy)}
+else{const gr=ctx.createRadialGradient(sx,sy,5,sx,sy,70*s);gr.addColorStop(0,'#fff6b0');gr.addColorStop(.45,'#ffc933');gr.addColorStop(1,'rgba(255,160,0,0)');ctx.fillStyle=gr;ctx.beginPath();ctx.arc(sx,sy,70*s,0,7);ctx.fill()}
+let dx=cx-sx,dy=cy-sy;const dl=Math.hypot(dx,dy)||1;dx/=dl;dy/=dl;ctx.strokeStyle='rgba(255,230,120,.3)';ctx.lineWidth=3*s;[-1,0,1].forEach(k=>{ctx.beginPath();ctx.moveTo(sx+dx*50*s,sy+dy*50*s);ctx.lineTo(cx-dx*R*.8-dy*k*R*.6,cy-dy*R*.8+dx*k*R*.6);ctx.stroke()})}
+const{c,g,u}=gl;if(c.width!=W||c.height!=Hh){c.width=W;c.height=Hh}g.viewport(0,0,W,Hh);g.clearColor(0,0,0,0);g.clear(g.COLOR_BUFFER_BIT);
+g.uniform2f(u.cn,cx,Hh-cy);g.uniform1f(u.r,R);g.uniform1f(u.ca,h*.02);g.uniformMatrix3fv(u.w,false,tr(tr(Vm)));g.uniformMatrix3fv(u.m,false,tr(mm(Ry(-a),Rz(TILT))));g.uniform3fv(u.l,LS);g.drawArrays(g.TRIANGLES,0,3);ctx.drawImage(c,0,0);
+if(e.showAx){const A=mv3(Vm,[Math.sin(TILT),Math.cos(TILT),0]),ax=A[0]*R*1.38,ay=-A[1]*R*1.38;ctx.setLineDash([10*s,6*s]);ctx.strokeStyle='#ffe066';ctx.lineWidth=3*s;ctx.beginPath();ctx.moveTo(cx-ax,cy-ay);ctx.lineTo(cx+ax,cy+ay);ctx.stroke();ctx.setLineDash([]);
+txt('⬆ Kuzey Kutbu',cx+ax,cy+ay-16*s,'#ffe066');txt('Güney Kutbu ⬇',cx-ax,cy-ay+16*s,'#ffe066');txt('23,5° eksen eğikliği',130*s,Hh-18*s,'#fff')}
+o.pts().forEach(p=>{const la=p.lat!=null?p.lat:10,lo=p.lon!=null?p.lon:45+p.off*15,v=mv3(Vm,mv3(Ma,ll2m(la,lo)));if(v[2]<.05)return;const px=cx+R*v[0],py=cy-R*v[1],r=(p.sel?15:11)*s;
+ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();ctx.lineWidth=(p.sel?4:2)*s;ctx.strokeStyle=p.sel?'#ffd24d':'#fff';ctx.stroke();ctx.fillStyle='#111';ctx.font='bold '+14*s+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.n,px,py+s);
+if(p.lab)txt(p.lab,px,py-26*s,'#fff')})}};
+if(o.drag){const ps=new Map();cv.style.touchAction='none';
+cv.onpointerdown=ev=>{cv.setPointerCapture(ev.pointerId);ps.set(ev.pointerId,[ev.clientX,ev.clientY]);G.drag=1};
+cv.onpointermove=ev=>{if(!ps.has(ev.pointerId))return;const old=ps.get(ev.pointerId),np=[ev.clientX,ev.clientY],k=cv.width/cv.getBoundingClientRect().width,Rp=215*(cv.width/640)*zm;let dx,dy;
+if(ps.size==1){dx=(np[0]-old[0])*k;dy=(np[1]-old[1])*k}else{const ot=[...ps.entries()].find(q=>q[0]!=ev.pointerId)[1],d0=Math.hypot(old[0]-ot[0],old[1]-ot[1]),d1=Math.hypot(np[0]-ot[0],np[1]-ot[1]);if(d0>5)zm=cz(zm*d1/d0);dx=(np[0]-old[0])*k/2;dy=(np[1]-old[1])*k/2}
+ps.set(ev.pointerId,np);G.H+=dx/Rp/D2R/15;P=Math.max(-1.5,Math.min(1.5,P+dy/Rp));o.mv?o.mv():e.draw()};
+cv.onpointerup=cv.onpointercancel=ev=>{ps.delete(ev.pointerId);if(!ps.size){G.drag=0;o.up&&o.up()}};
+cv.onwheel=ev=>{ev.preventDefault();zm=cz(zm*Math.exp(-ev.deltaY*.001));o.mv?o.mv():e.draw()}}
+return e}
+function Quiz(box,L,o){let i=0,r=0;
+function show(){const q=L[i];o.pre&&o.pre(q);
+box.innerHTML=`<div class="card"><div class="muted">${o.t} ${i+1} / ${L.length}</div><h2 style="margin:8px 0">${q.q}</h2>${q.v!=null?'<canvas id="qc"></canvas>':''}<div id="op"></div><div id="fb"></div></div>`;
+if(q.v!=null)Earth($('#qc'),{pts:()=>[{n:'A',off:0,c:'#ff6b6b'}]}).draw(q.v,{lat:10,lon:45});
+const op=$('#op');
+function fin(ok,ct,sel){if(ok){r++;S.pts+=10;S.ok++}else S.bad++;o.on&&o.on(ok);$('#sc').textContent='⭐ Puan: '+S.pts;
+[...op.querySelectorAll('button')].forEach((b,k)=>{b.disabled=true;if(!q.ord){if(k==q.a)b.classList.add('ok');else if(b===sel)b.classList.add('no')}});
+$('#fb').innerHTML=`<div class="card ${ok?'ok':'no'}"><b style="font-size:20px">${ok?'✅ Doğru! +10 puan':'❌ Yanlış. Doğru cevap: '+ct}</b><p style="margin:6px 0">${q.e}</p></div><button id="nx">${i+1<L.length?'Devam ➜':'Bitir 🏁'}</button>`;
+$('#nx').onclick=()=>{i++;i<L.length?show():end()}}
+if(q.ord){const pk=[];op.innerHTML='<div class="row" id="sl" style="min-height:52px"></div><div class="row" id="ch"></div>';
+sh(q.ord).forEach(t=>{const b=document.createElement('button');b.className='opt';b.style.width='auto';b.textContent=t;b.onclick=()=>{b.style.display='none';pk.push(t);const s=document.createElement('span');s.className='card';s.style.margin=0;s.style.padding='10px';s.textContent=pk.length+'. '+t;$('#sl').append(s);if(pk.length==q.ord.length){$('#ch').remove();fin(pk.join()==q.ord.join(),q.ord.join(' ➜ '))}};$('#ch').append(b)})}
+else q.o.forEach((t,k)=>{const b=document.createElement('button');b.className='opt';b.textContent=t;b.onclick=()=>fin(k==q.a,q.o[q.a],b);op.append(b)})}
+function end(){const p=Math.round(r/L.length*100),lv=p>=90?'⭐⭐⭐ Süper Kaşif':p>=60?'⭐⭐ Usta Gözlemci':'⭐ Yeni Kaşif',bd=o.end(r)||'Rozet için biraz daha doğru cevap lazım. Tekrar dene!';
+box.innerHTML=`<div class="card" style="text-align:center"><div class="big">🏆 ${r*10} puan</div><p style="font-size:20px">${r} / ${L.length} doğru (%${p})</p><p style="font-size:22px">${lv}</p><p style="font-size:18px">${bd}</p><div class="row"><button id="rp">🔄 Tekrar oyna</button><button onclick="go('karne')">📊 Görev Karnem</button></div></div>`;
+$('#rp').onclick=()=>{i=0;r=0;show()}}
+show()}
+const Q=(q,o,a,e,x)=>Object.assign({q,o,a,e},x||{});
+const MS=[
+Q("İstanbul'da gündüz yaşanırken Dünya'nın hangi tarafında gece yaşanabilir?",["Güneş'e bakmayan tarafında","Güneş'e bakan tarafında","Hiçbir yerinde"],0,"Dünya'nın Güneş'e bakmayan yarısı karanlıktır. Orada gece yaşanır."),
+Q("İstanbul'da saat 08.00 ise Tokyo'da saat yaklaşık kaç olabilir?",["02.00","14.00","08.00","20.00"],1,"Tokyo, İstanbul'un doğusunda. Güneş'i daha önce görür, saati 6 saat ileridir: 14.00."),
+Q("Bir öğrenci Dünya'nın bir tam turunu 24 saatte tamamladığını söylüyor. Doğru mu?",["Doğru","Yanlış"],0,"Dünya kendi etrafında 1 tam turu yaklaşık 24 saatte yapar. 1 tur = 24 saat = 1 gün."),
+Q("Dünya'nın Güneş'e bakan kısmı neden aydınlıktır?",["Güneş ışığı alır","Dünya kendi ışığını yapar","Ay ışık verir"],0,"Güneş ışık kaynağıdır. Işığı alan yarı aydınlık olur, yani gündüzdür."),
+Q("Dünya hiç dönmeseydi ne olurdu?",["Bir yarısı hep gündüz, diğer yarısı hep gece olurdu","Her yer hep gündüz olurdu","Her yer hep gece olurdu"],0,"Dönmezse aynı yarı hep Güneş'e bakardı. Gece-gündüz değişmezdi."),
+Q("İstanbul'da saat 12.00 iken Londra'da saat kaç olabilir?",["09.00","15.00","12.00","21.00"],0,"Londra, İstanbul'un batısında. Saati 3 saat geridir: 09.00."),
+Q("İstanbul'da saat 15.00 iken Los Angeles'ta saat kaç olabilir?",["04.00","18.00","10.00","15.00"],0,"Los Angeles çok batıda. Saati yaklaşık 11 saat geridir: 04.00. Orada gecedir."),
+Q("Dünya'nın kendi etrafında 1 tam dönüşü ne kadar sürer?",["12 saat","24 saat","1 hafta","1 yıl"],1,"1 tam dönüş yaklaşık 24 saat sürer. Buna 1 gün diyoruz."),
+Q("İstanbul'da Pazartesi 22.00 ise Wellington'da gün ve saat ne olabilir?",["Pazartesi 13.00","Salı 07.00","Pazartesi 07.00","Salı 13.00"],1,"Wellington 9 saat ileride: 22.00 + 9 = 07.00. Gün de değişir, Salı olur."),
+Q("Gece ile gündüzün oluşmasının nedeni hangisidir?",["Dünya'nın kendi ekseni etrafında dönmesi","Ay'ın Dünya'nın önüne geçmesi","Bulutların Güneş'i örtmesi"],0,"Dünya kendi ekseni etrafında döner. Böylece her yer sırayla Güneş'e bakar ve sonra bakmaz.")];
+const QZ=[
+Q("Dünya kendi etrafında 1 tam turu kaç saatte yapar?",["12","24","48","6"],1,"1 tam tur 24 saattir."),
+Q("Dünya'nın Güneş'e bakan yarısında gündüz yaşanır.",["Doğru","Yanlış"],0,"Işık alan yarıda gündüzdür."),
+Q("İstanbul'da saat 10.00 iken Bakü'de saat kaçtır?",["09.00","10.00","11.00","13.00"],2,"Bakü doğuda, 1 saat ileride: 11.00."),
+Q("Görseldeki A noktasında ne yaşanıyor? (Güneş solda)",["Gündüz ☀️","Gece 🌙"],1,"A noktası karanlık yarıda, Güneş'e bakmıyor. Gecedir.",{v:2}),
+Q("Bir günün akışını sabahtan başlayarak sırala.",0,0,"Sabah, öğle, akşam, gece sırasıyla gelir.",{ord:["Sabah","Öğle","Akşam","Gece"]}),
+Q("Eksik bilgiyi tamamla: Dünya kendi ____ etrafında döner.",["ekseni","Güneş'i","Ay'ı"],0,"Dünya kendi ekseni etrafında döner."),
+Q("Dünya'nın hangi kısmı karanlıktır?",["Güneş'e bakan","Güneş'e bakmayan","Kuzey"],1,"Güneş'e bakmayan yarıya ışık gelmez."),
+Q("İstanbul'da saat 18.00 iken Tokyo'da saat kaçtır?",["12.00","00.00 (ertesi gün)","06.00","18.00"],1,"Tokyo 6 saat ileride: 18.00 + 6 = 24.00, yani ertesi günün 00.00'ı."),
+Q("Dünya'nın her yerinde aynı anda aynı saat yaşanır.",["Doğru","Yanlış"],1,"Dünya döndüğü için farklı yerlerde farklı saatler yaşanır."),
+Q("Görseldeki A noktasında ne yaşanıyor? (Güneş solda)",["Gündüz ☀️","Gece 🌙"],0,"A noktası Güneş'e bakan yarıda. Gündüzdür.",{v:14}),
+Q("Eksik bilgiyi tamamla: Doğudaki şehirlerde saat, batıdakilere göre ____ olur.",["ileri","geri","aynı"],0,"Doğudaki yerler Güneş'i önce görür, saatleri ileridir."),
+Q("Görseldeki A noktasında ne yaşanıyor? (Güneş solda)",["Gündüz ☀️","Gece 🌙"],1,"A noktası ışık almıyor. Gecedir.",{v:22}),
+Q("İstanbul'da saat 12.00 iken şehirleri saati en ileri olandan en geriye sırala.",0,0,"Doğudaki şehirlerin saati ileridir: Tokyo, Bakü, İstanbul, Londra.",{ord:["Tokyo 18.00","Bakü 13.00","İstanbul 12.00","Londra 09.00"]}),
+Q("Dünya bir günde kendi etrafında kaç tur döner?",["1","2","12","24"],0,"Bir günde 1 tam tur döner."),
+Q("Dünya döndükçe Güneş'e bakan bölge sürekli değişir.",["Doğru","Yanlış"],0,"Dönen Dünya'da her yer sırayla ışığa girer ve çıkar.")];
+const back='<button onclick="go(\'menu\')">🏠 Ana Menü</button>';
+let cur=null;
+function go(n){cur=null;G.play=false;V.innerHTML='';$('#sc').textContent='⭐ Puan: '+S.pts;VW[n]();scrollTo(0,0)}
+let lt=0;(function L(t){const d=Math.min((t-lt)/1000,.1);lt=t;if(cur&&G.play&&!G.drag){G.H+=d*G.sp;cur.render()}requestAnimationFrame(L)})(0);
+const VW={
+menu(){V.innerHTML='<div class="grid">'+[['kesfet','🌍',"Dünya'yı Keşfet"],['lab','☀️','Gece-Gündüz Laboratuvarı'],['saat','🕐','Dünya Saatleri'],['gorev','🚀','Uzay Görevleri'],['fener','🔦','Fener Deneyi'],['yaris','🏆','Bilgi Yarışı'],['karne','📊','Görev Karnem']].map(m=>`<button class="m" onclick="go('${m[0]}')"><span style="font-size:40px">${m[1]}</span>${m[2]}</button>`).join('')+'</div>'},
+kesfet(){const TQ=["İstanbul'da saat 12.00 iken Dünya'nın hangi bölgelerinde gece olabilir?","İstanbul'da gece yarısı iken Dünya'nın Güneş'e bakan yarısında hangi şehirler olabilir?","Dünya bir tam tur döndüğünde kaç saat geçer?","Dünya'yı 6 saat ileri döndürürsen İstanbul'da gündüz mü gece mi olur? Dene!"],
+TA=["Güneş'e bakmayan yarıda, yani Dünya'nın karanlık tarafında gece olabilir.","Dünya'yı döndür ve ışık alan yarıdaki şehirleri bul. Orada gündüzdür.","24 saat geçer. 1 tur = 24 saat = 1 gün.","Saati 6 saat ileri al. 12.00'den 18.00 olur: gün batımı, akşam."];let q=0,n=0;G.H=15;G.play=true;
+V.innerHTML=back+`<div class="card"><canvas id="cv"></canvas><div class="big" id="clk"></div><div class="row"><b>1 tur = 24 saat = 1 gün</b></div><div class="row muted" style="font-size:18px">🔄 Dönüş sayacı: <b id="tr">0</b> tur</div>
+${TB}<div id="axi" class="muted" style="text-align:center"></div><div class="row"><button data-s="0.5">🐢 Yavaş</button><button data-s="1.5">🚶 Normal</button><button data-s="4">🚀 Hızlı</button></div>
+<div class="row"><button id="m1">⏪ 1 saat geri</button><button id="p1">1 saat ileri ⏩</button></div><div class="muted" style="text-align:center">Sürükle: sağa-sola döndür, yukarı-aşağı eğ. İki parmakla yakınlaştır. Türkiye'yi bulabilir misin? 🔎</div></div>
+<div class="card"><b id="tq" style="font-size:19px"></b><details><summary>💡 Cevabı gör</summary><span id="ta"></span></details><button id="nq">🤔 Başka soru</button></div>`;
+const hit=()=>{if(++n>=3)badge('kas')};
+const ren=()=>{e.draw();$('#clk').textContent='🕐 İstanbul: '+fmt(G.H)+(litAt(41,29)?' ☀️':' 🌙');$('#tr').textContent=Math.abs((G.H-15)/24).toFixed(2);$('#axi').textContent=e.showAx?"🌐 Dünya'nın ekseni yaklaşık 23,5° eğiktir. Eksen Kuzey ve Güney Kutbu'ndan geçer.":''};
+const e=Earth($('#cv'),{drag:1,pts:()=>[{n:'🇹🇷',off:0,lat:41,lon:29,c:'#fff',sel:1,lab:'İstanbul'}],mv:ren,up:hit});wire(e,ren,hit);
+const sq=()=>{$('#tq').textContent=TQ[q];$('#ta').textContent=TA[q];document.querySelector('details').open=false};sq();
+
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{G.sp=+b.dataset.s;G.play=true;hit()});
+$('#m1').onclick=()=>{G.H=Math.round(G.H)-1;ren();hit()};$('#p1').onclick=()=>{G.H=Math.round(G.H)+1;ren();hit()};
+$('#nq').onclick=()=>{q=(q+1)%4;sq()};cur={render:ren};ren()},
+lab(){G.H=11;
+V.innerHTML=back+`<div class="card"><div class="muted">Dünya'yı sürükle ya da düğmeyle döndür. Sonra soruyu cevapla.</div><canvas id="cv"></canvas><div class="row" id="ch" style="font-size:18px;font-weight:800"></div>${TB}<div class="row"><button id="r1">↻ 2 saat döndür</button></div></div><div id="qb"></div>`;
+const ren=()=>{e.draw();$('#ch').textContent=dn()};const e=Earth($('#cv'),{drag:1,pts:()=>PTS3,mv:ren});wire(e,ren);
+$('#r1').onclick=()=>{G.H+=2;ren()};cur={render:ren};
+const LQ=[Q("A noktası şu anda gündüz mü, gece mi?",["Gündüz ☀️","Gece 🌙"],0,"A noktası Güneş'e bakan yarıda. Işık aldığı için gündüzdür.",{h:11}),
+Q("B noktası Güneş ışığı alıyor mu?",["Evet, alıyor","Hayır, almıyor"],1,"B noktası karanlık yarıda. Güneş'e bakmadığı için ışık alamaz, orada gecedir.",{h:11}),
+Q("Dünya biraz dönerse A noktasında ne olur?",["Akşam olur, gece yaklaşır","Sabah olur","Hiçbir şey değişmez"],0,"Dönünce A noktası Güneş'ten uzaklaşır. Işık azalır, gece yaklaşır.",{h:16})];
+Quiz($('#qb'),LQ,{t:'Soru',pre:q=>{G.H=q.h;ren()},end:r=>{if(r>=2){badge('gun');return '🎖️ ☀️ Gündüz Uzmanı'}}})},
+saat(){G.H=Math.round(G.H);let sel=0;
+V.innerHTML=back+`<div class="card"><canvas id="cv"></canvas>${TB}<div class="row"><button id="m1">⏪ 1 saat geri</button><button id="p1">1 saat ileri ⏩</button><button id="rnd">🎲 Yeni saat</button></div><div id="ib" style="font-size:20px;font-weight:800;text-align:center"></div></div><div class="card"><div class="muted">Bir şehir seç:</div><div class="grid" id="cg"></div></div><div id="pr"></div>`;
+const ren=()=>{e.draw();const c=CT[sel],h=G.H+c[2];$('#ib').innerHTML=`İstanbul'da saat ${fmt(G.H)}.<br>${c[0]} ${c[1]}: saat ${fmt(h)} · ${dayN(h)} · ${litAt(c[3],c[4])?'☀️ GÜNDÜZ':'🌙 GECE'}${e.vis(c[3],c[4])?'':'<br><span class="muted">📍 Şehir Dünya’nın arka yüzünde, çevirerek bul!</span>'}`};
+const e=Earth($('#cv'),{drag:1,pts:()=>CT.map((c,i)=>({n:c[0],off:c[2],lat:c[3],lon:c[4],c:'#fff',sel:i==sel,lab:i==sel?c[1]+' '+fmt(G.H+c[2]):''})),mv:ren,up:()=>pick(sel)});wire(e,ren);
+function pick(i){sel=i;ren();const c=CT[i],pr=$('#pr');if(!i){pr.innerHTML='<div class="card">İstanbul başlangıç şehrimiz. Başka bir şehir seçip saatini tahmin et!</div>';return}
+const cor=G.H+c[2];pr.innerHTML=`<div class="card"><h3 style="margin:4px 0">🤔 Tahmin et: İstanbul'da saat ${fmt(G.H)} iken ${c[1]}'da saat kaç?</h3><div id="op"></div><div id="fb"></div></div>`;
+sh([0,3,-3,9]).forEach(d=>{const b=document.createElement('button');b.className='opt';b.textContent=fmt(cor+d);b.onclick=()=>{const ok=d==0;if(ok){S.pts+=10;S.ok++;if(++S.pr>=3)badge('zam')}else S.bad++;$('#sc').textContent='⭐ Puan: '+S.pts;
+[...$('#op').children].forEach(x=>{x.disabled=true;if(x.textContent==fmt(cor))x.classList.add('ok')});if(!ok)b.classList.add('no');
+$('#fb').innerHTML=`<div class="card ${ok?'ok':'no'}"><b>${ok?'✅ Doğru! +10 puan':'❌ Doğru cevap: '+fmt(cor)}</b><p style="margin:6px 0">${c[1]}, İstanbul'un ${c[2]>0?'doğusunda':'batısında'}; İstanbul'dan ${Math.abs(c[2])} saat ${c[2]>0?'ileride':'geride'}. Orada saat ${fmt(cor)}, ${dayN(cor)}, ${litAt(c[3],c[4])?'gündüz ☀️':'gece 🌙'}. Dünya'daki konumuna ve Güneş'e bakıp kontrol et!</p></div>`};$('#op').append(b)})}
+CT.forEach((c,i)=>{const b=document.createElement('button');b.className='m';b.style.minHeight='60px';b.innerHTML=`<span style="font-size:30px">${c[0]}</span>${c[1]}`;b.onclick=()=>pick(i);$('#cg').append(b)});
+$('#m1').onclick=()=>{G.H-=1;pick(sel)};$('#p1').onclick=()=>{G.H+=1;pick(sel)};$('#rnd').onclick=()=>{G.H=Math.floor(Math.random()*24)+24*Math.floor(G.H/24);pick(sel)};
+cur={render:ren};pick(0)},
+gorev(){V.innerHTML=back+'<div class="card"><h2 style="margin:0">🚀 Uzay Görevleri</h2><div class="muted">10 görev, kolaydan zora. Her doğru cevap +10 puan!</div></div><div id="qb"></div>';
+Quiz($('#qb'),MS,{t:'GÖREV',on:()=>{S.m=Math.min(10,S.m+1)},end:r=>{if(r>=7){badge('uzay');return '🎖️ 🚀 Uzay Görevlisi rozeti kazandın!'}}})},
+fener(){G.H=12;let n=0;
+V.innerHTML=back+`<div class="card"><canvas id="cv"></canvas><div class="row" id="ch" style="font-size:19px;font-weight:800"></div>${TB}<div class="row"><button id="m3">↺ 3 saat geri</button><button id="p3">3 saat ileri ↻</button></div><div class="muted" style="text-align:center">Fener sabit durur, sen Dünya'yı döndür! Bir nokta arkada kalırsa Dünya'yı çevir.</div></div><div class="card" style="background:rgba(255,210,77,.15)">🔦 <b>Feneri Güneş, küreyi Dünya kabul edersek...</b><br>fener küreyi hep aynı yönden aydınlatır. Işık alan yarı gündüz, ışık almayan yarı gece olur. Küre döndükçe A, B ve C noktaları sırayla ışığa girer ve karanlığa çıkar. Gerçek Dünya'da da böyle olur.</div>`;
+const mv=()=>{if(++n>=5)badge('gece')};const ren=()=>{e.draw();$('#ch').textContent=dn()};
+const e=Earth($('#cv'),{drag:1,fener:1,pts:()=>PTS3,mv:ren,up:mv});wire(e,ren);$('#bSun').remove();
+$('#m3').onclick=()=>{G.H-=3;ren();mv()};$('#p3').onclick=()=>{G.H+=3;ren();mv()};cur={render:ren};ren()},
+yaris(){V.innerHTML=back+'<div class="card"><h2 style="margin:0">🏆 Bilgi Yarışı</h2><div class="muted">15 soru. Her doğru cevap +10 puan!</div></div><div id="qb"></div>';
+Quiz($('#qb'),QZ,{t:'Soru',end:r=>{S.qd=1;S.qb=Math.max(S.qb,r);chk();return (S.b.uzm?'🎖️ 🏆 Dünya\'nın Hareketleri Uzmanı!':'')+(S.m>=10?'<br><br>'+FM:'')}})},
+karne(){const t=S.ok+S.bad,p=t?Math.round(S.ok/t*100):0;
+V.innerHTML=back+`<div class="card"><h2 style="margin:0 0 10px">📊 Görev Karnem</h2><div class="st"><div><b>${S.pts}</b>Toplam puan</div><div><b>${S.ok}</b>Doğru</div><div><b>${S.bad}</b>Yanlış</div><div><b>${S.m}/10</b>Tamamlanan görev</div><div><b>%${p}</b>Başarı</div></div></div>
+<div class="card"><h3 style="margin:0 0 8px">🎖️ Rozetlerim</h3><div class="st">${Object.keys(BN).map(k=>`<div class="bd ${S.b[k]?'on':''}"><div>${BN[k][0]}</div>${BN[k][1]}</div>`).join('')}</div></div>${S.m>=10&&S.qd?`<div class="card ok big" style="font-size:22px">${FM}</div>`:''}`}};
+go('menu');
+</script></body></html>
