@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Millî Mücadele Yolculuğu (1918–1923)</title>
+<style>
+:root{--n:#1b2a5c;--r:#c8102e;--l:#d9ecff;--c:#fffaf0}
+*{box-sizing:border-box}
+body{margin:0;font:18px/1.55 system-ui,"Segoe UI",Arial,sans-serif;background:var(--c);color:#1d1d2b}
+header{background:var(--n);color:#fff;padding:8px 12px;position:sticky;top:0;z-index:5}
+h1{margin:0 0 4px;font-size:1.15rem}
+#st{font-size:.85rem;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#bar{height:8px;background:#fff4;border-radius:4px;margin:4px 0}
+#bar i{display:block;height:100%;width:0;background:#ffd34d;border-radius:4px;transition:width .3s}
+nav{display:flex;gap:6px;overflow-x:auto}
+nav button{flex:none;background:#ffffff26;color:#fff;border:0;border-radius:10px;padding:8px 12px;font:inherit;font-size:.9rem;min-height:44px;cursor:pointer}
+nav button.on{background:var(--r)}
+main{max-width:980px;margin:auto;padding:12px}
+section{display:none}section.on{display:block}
+h2,h3{color:var(--n);margin:.4em 0}
+.card{background:#fff;border:2px solid var(--l);border-radius:14px;padding:12px 14px;margin:10px 0}
+.btn{font:inherit;background:var(--l);border:2px solid #9cc7f0;border-radius:12px;padding:10px 14px;margin:4px;min-height:48px;cursor:pointer;color:var(--n)}
+.btn:hover{background:#bcdcff}
+.btn.sel{background:#ffe9a8;border-color:#e0a800}
+.btn.good{background:#c9f2d5;border-color:#2e9e5b}
+.btn.bad{background:#ffd1d6;border-color:var(--r)}
+.btn:disabled{cursor:default}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.grid .btn{width:100%;margin:0;text-align:left}
+.grid .card{margin:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two .btn{display:block;width:100%;margin:4px 0}
+svg{width:100%;height:auto;background:#eaf5ff;border-radius:12px;display:block}
+svg [data-k]{cursor:pointer}
+.tag{background:#fff3cd;border-left:5px solid #e0a800;padding:6px 10px;border-radius:6px;font-size:.9rem}
+.ic{width:56px;height:56px;border-radius:50%;background:var(--n);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700}
+dialog{max-width:520px;width:92%;border-radius:16px;border:3px solid var(--n);font-size:1.05rem}
+input{font:inherit;padding:8px;border:2px solid #9cc7f0;border-radius:10px}
+#ozet{display:none}
+@media print{header,main{display:none}#ozet{display:block}table{border-collapse:collapse;width:100%}td,th{border:1px solid #888;padding:4px;font-size:12pt;text-align:left}}
+@media(max-width:560px){body{font-size:16px}.two{gap:4px}}
+</style></head><body>
+<header><h1>🇹🇷 Millî Mücadele Yolculuğu (1918–1923)</h1><div id="st"></div><div id="bar"><i></i></div><nav id="nv"></nav></header>
+<main id="mn"></main><div id="ozet"></div>
+<dialog id="dg"><div id="dgb"></div><button class="btn" onclick="$('dg').close()">Kapat</button></dialog>
+<script>
+const $=i=>document.getElementById(i),H=(e,h)=>{e.innerHTML=h},sc={},seen=new Set();
+const sh=a=>{a=[...a];for(let i=a.length;i>1;){const j=Math.floor(Math.random()*i--);[a[i],a[j]]=[a[j],a[i]]}return a};
+const nm=s=>s.trim().toLocaleLowerCase('tr').replace(/ı/g,'i');
+const SEC=[["🕰️","Tarih Yolculuğu"],["🗺️","Genelge ve Kongreler"],["🧭","Üç Cephe"],["🏔️","Batı Cephesi"],["🏛️","Cumhuriyet'e"],["⭐","Kahramanlar"],["🎮","Oyunlar"],["👩‍🏫","Öğretmen"]];
+const upd=()=>{const t=Object.values(sc).reduce((a,b)=>a+b,0);H($('st'),`<span>⭐ Toplam doğru: ${t}</span><span>✔ Gezilen bölüm: ${seen.size}/${SEC.length}</span>`);$('bar').firstElementChild.style.width=seen.size/SEC.length*100+'%'};
+const show=i=>{seen.add(i);document.querySelectorAll('section').forEach((s,k)=>s.classList.toggle('on',k==i));document.querySelectorAll('#nv button').forEach((b,k)=>b.classList.toggle('on',k==i));upd();scrollTo(0,0)};
+
+/* ---------- VERİ ---------- */
+const E=[
+["30 Ekim 1918","Mondros Ateşkes Antlaşması","Osmanlı Devleti I. Dünya Savaşı'nı kaybetti. İtilaf devletleri yurdumuzun birçok yerini işgal etmeye başladı.","Halkı vatanını korumaya yöneltti. Millî Mücadele'nin nedenlerinden biridir.","📜"],
+["15 Mayıs 1919","İzmir'in İşgali","Yunan askerleri İzmir'e çıktı. Gazeteci Hasan Tahsin'in sıktığı ilk kurşun, direnişin sembolü olarak anılır.","Halk işgale karşı tepki gösterdi.","🔔"],
+["19 Mayıs 1919","Samsun'a Çıkış","Mustafa Kemal Samsun'a çıktı.","Millî Mücadele'nin başlangıcı kabul edilir.","⚓"],
+["28 Mayıs 1919","Havza Genelgesi","Mustafa Kemal halkı, işgalleri protesto etmek için mitingler yapmaya çağırdı.","Halkın sesi duyuldu, millî duygular güçlendi.","📢"],
+["22 Haziran 1919","Amasya Genelgesi","Vatanın bütünlüğü ve milletin bağımsızlığı tehlikedeydi. Bağımsızlığı yine milletin azim ve kararı kurtaracaktı. Sivas'ta kongre toplanması istendi.","Millî bağımsızlık ve milletin kararlılığı vurgulandı.","✉️"],
+["23 Temmuz–7 Ağustos 1919","Erzurum Kongresi","Doğu illerinin temsilcileri toplandı. Vatan bölünmeyecek, millî sınırlar içinde birlikte direnilecekti.","Vatanın bütünlüğü ilkesi vurgulandı.","🤝"],
+["4–11 Eylül 1919","Sivas Kongresi","Yurdun her yerinden temsilciler toplandı. Direniş örgütleri birleşti.","Direniş birleşti; tek ses, tek güç olundu.","🔗"],
+["23 Nisan 1920","TBMM'nin Açılması","Ankara'da Türkiye Büyük Millet Meclisi açıldı. Millî egemenlik esas alındı: Yönetme hakkı millete aittir.","Millet adına karar veren meclis kuruldu.","🏛️"],
+["3 Aralık 1920","Gümrü Antlaşması","Doğu Cephesi'nde Ermenistan ile imzalandı.","TBMM'nin imzaladığı ilk uluslararası antlaşmadır.","🖋️"],
+["Ocak 1921","I. İnönü Savaşı","Yunan ilerleyişi durduruldu.","Düzenli ordunun ilk başarısıdır; moral yükseldi.","🛡️"],
+["Mart 1921","II. İnönü Savaşı","Yunanlar yeniden saldırdı ve yine durduruldu.","Mücadele sürdü; düzenli orduya güven arttı.","🛡️"],
+["Temmuz 1921","Kütahya–Eskişehir Savaşları","Yunan ordusu ilerledi. Ordumuz Sakarya Nehri'nin doğusuna çekildi.","Bu bir zafer değildir; yeni savunma için geri çekilmedir.","↩️"],
+["23 Ağustos–13 Eylül 1921","Sakarya Meydan Muharebesi","22 gün 22 gece sürdü. Yunan ordusu durduruldu ve geri çekildi.","Zaferden sonra Mustafa Kemal'e Gazi unvanı ve Mareşal rütbesi verildi.","🌊"],
+["20 Ekim 1921","Ankara Antlaşması","Fransa ile imzalandı.","Fransızlar Güney Cephesi'ndeki bölgelerden çekilmeye başladı.","🕊️"],
+["26–30 Ağustos 1922","Büyük Taarruz ve Başkomutanlık Meydan Muharebesi","Türk ordusu 26 Ağustos'ta büyük taarruzu başlattı; 30 Ağustos'ta Başkomutanlık Meydan Muharebesi kazanıldı.","Yunan ordusu yenildi, yol İzmir'e açıldı.","🚩"],
+["9 Eylül 1922","İzmir'in Kurtuluşu","Türk ordusu İzmir'e girdi.","Batı Cephesi'ndeki savaş zaferle sonuçlandı.","🌅"],
+["11 Ekim 1922","Mudanya Ateşkes Antlaşması","Çatışmalar durdu.","Askerî mücadeleden diplomasi dönemine geçildi.","⏸️"],
+["24 Temmuz 1923","Lozan Barış Antlaşması","Savaş resmen sona erdi.","Türkiye'nin bağımsızlığı uluslararası alanda kabul edildi.","🕊️"],
+["29 Ekim 1923","Cumhuriyet'in İlanı","Devletin yönetim şekli Cumhuriyet oldu. Mustafa Kemal Atatürk ilk Cumhurbaşkanı seçildi.","Millî egemenlik, Cumhuriyet ile güçlü bir temele oturdu.","🇹🇷"]];
+const C={Samsun:[36.33,41.29,"19 Mayıs 1919: Mustafa Kemal Samsun'a çıktı. Millî Mücadele başladı."],Havza:[35.67,40.97,"28 Mayıs 1919 – Havza Genelgesi: Halk işgalleri mitinglerle protesto etmeye çağrıldı."],Amasya:[35.83,40.65,"22 Haziran 1919 – Amasya Genelgesi: Bağımsızlığı milletin azim ve kararı kurtaracaktı."],Erzurum:[41.27,39.9,"23 Temmuz–7 Ağustos 1919 – Erzurum Kongresi: Vatanın bütünlüğü esas alındı."],Sivas:[37.02,39.75,"4–11 Eylül 1919 – Sivas Kongresi: Direniş birleştirildi."],Ankara:[32.85,39.93,"23 Nisan 1920: TBMM burada açıldı."]};
+const FR={
+d:{n:"Doğu",c:"#e63946",lo:42.5,la:40.2,rx:60,ry:36,v:"Ermeniler",h:"Kâzım Karabekir Paşa",s:"Kars ve çevresi",x:"15. Kolordu, doğuda savaşan düzenli ordu birliğidir. Komutanı Kâzım Karabekir Paşa'dır.",r:"3 Aralık 1920'de Gümrü Antlaşması imzalandı. Bu, TBMM'nin imzaladığı ilk uluslararası antlaşmadır."},
+g:{n:"Güney",c:"#f08c00",lo:37.5,la:37.5,rx:68,ry:24,v:"Fransızlar ve onlarla birlikte hareket eden Ermeni birlikleri",h:"Sütçü İmam (Maraş), Şahin Bey (Antep), Ali Saip Bey (Urfa), Tayyar Rahmiye Hanım (Osmaniye ve çevresi)",s:"Maraş, Antep, Urfa, Osmaniye",x:"Burada düzenli ordudan çok yerel halk ve Kuvâ-yı Milliye savaştı. Direnişleri nedeniyle Maraş'a “Kahraman”, Antep'e “Gazi”, Urfa'ya “Şanlı” unvanı verildi. Bugünkü adlar bu unvanlardan gelir.",r:"20 Ekim 1921'de Ankara Antlaşması imzalandı. Fransızlar Güney'den çekilmeye başladı."},
+b:{n:"Batı",c:"#2a7fff",lo:28.8,la:39.2,rx:80,ry:62,v:"Yunan ordusu",h:"Hasan Tahsin, Yörük Ali Efe, Şerife Bacı, Gördesli Makbule",s:"İzmir, Eskişehir, Kütahya, Sakarya, Afyon çevresi",x:"Önce Kuvâ-yı Milliye, sonra düzenli ordu savaştı. Asıl yükü düzenli ordu taşıdı.",r:"Sakarya Zaferi ve Büyük Taarruz'dan sonra 9 Eylül 1922'de İzmir kurtuldu."}};
+const BT=[["I. İnönü Savaşı","Ocak 1921","Yunan ilerleyişi durduruldu. Düzenli ordu ilk başarısını kazandı.","Moral yükseldi.","inonu"],
+["II. İnönü Savaşı","Mart 1921","Yunanlar yeniden saldırdı, yine durduruldu.","Mücadele sürdü; düzenli orduya güven arttı.","inonu"],
+["Kütahya–Eskişehir Savaşları","Temmuz 1921","Yunan ordusu ilerledi. Ordumuz Sakarya Nehri'nin doğusuna çekildi.","Bu bir zafer değildir; yeni savunma için geri çekilmedir.","esk"],
+["Sakarya Meydan Muharebesi","23 Ağustos–13 Eylül 1921","22 gün 22 gece sürdü. Yunan ordusu durduruldu ve geri çekildi.","Mustafa Kemal'e Gazi unvanı ve Mareşal rütbesi verildi.","sak"],
+["Büyük Taarruz","26 Ağustos 1922","Türk ordusu büyük bir saldırı başlattı.","Yunan ordusunun yenilgisine giden süreç başladı.","afy"],
+["Başkomutanlık Meydan Muharebesi","30 Ağustos 1922","Mustafa Kemal'in başkomutanlığında büyük zafer kazanıldı.","Yunan ordusu yenildi; yol İzmir'e açıldı.","afy"],
+["İzmir'in Kurtuluşu","9 Eylül 1922","Türk ordusu İzmir'e girdi.","Batı Cephesi'ndeki savaş zaferle sonuçlandı.","izm"]];
+const MK={inonu:[30.15,39.8,"İnönü",-11],esk:[30.6,39.75,"Eskişehir",0,-12,"middle"],sak:[32.15,39.6,"Sakarya",11],afy:[30.54,38.75,"Afyon çevresi",11],izm:[27.14,38.42,"İzmir",11]};
+const HR=[
+["Hasan Tahsin","İzmir (Batı Cephesi)","15 Mayıs 1919'da İzmir'in işgaline karşı ilk kurşunu sıkan gazeteci olarak anılır.","İlk kurşun, direnişin sembolüdür."],
+["Kâzım Karabekir Paşa","Doğu Cephesi, 15. Kolordu komutanı","Ermenilere karşı Doğu Cephesi'nde düzenli orduyu yönetti.","Gümrü Antlaşması (3 Aralık 1920) bu cephenin sonucudur."],
+["Sütçü İmam","Maraş (Güney Cephesi)","Maraş'ta Fransız işgaline karşı direnişin simgelerinden biridir.","Maraş'a “Kahraman” unvanı verildi: Kahramanmaraş."],
+["Şahin Bey","Antep (Güney Cephesi)","Antep'te Fransızlara karşı savunmaya önderlik etti.","Antep'e “Gazi” unvanı verildi: Gaziantep."],
+["Ali Saip Bey","Urfa (Güney Cephesi)","Urfa'da halkı örgütleyerek Fransız işgaline karşı direnişe öncülük etti.","Urfa'ya “Şanlı” unvanı verildi: Şanlıurfa."],
+["Tayyar Rahmiye Hanım","Osmaniye ve çevresi (Güney Cephesi)","Fransızlara karşı mücadelede yer alan cesur bir kadın kahramandır.","Kadınlar da Millî Mücadele'de önemli rol oynadı."],
+["Yörük Ali Efe","Ege Bölgesi (Batı Cephesi)","Yunan işgaline karşı Kuvâ-yı Milliye birliklerine komuta eden efedir.","Kuvâ-yı Milliye, halkın kurduğu gönüllü direniş birlikleridir."],
+["Şerife Bacı","Kastamonu (cephe gerisi)","Cepheye cephane taşıma çabalarında yer alan yurtsever bir kadındır.","Cephe gerisindeki halk da zaferde pay sahibidir."],
+["Gördesli Makbule","Gördes çevresi (Batı Cephesi)","Yunan işgaline karşı Batı Cephesi'nde mücadele eden bir kadın kahramandır.","Kadın kahramanlar da cephede ve cephe gerisinde direndi."],
+["Mustafa Kemal Atatürk","Başkomutan, Cumhuriyet'in kurucusu","Millî Mücadele'yi başlattı; halkı TBMM'de ve cephede birleştirdi.","Sakarya Zaferi'nden sonra Gazi ve Mareşal oldu; ilk Cumhurbaşkanı seçildi."],
+["İsmet İnönü","Batı Cephesi komutanı, Lozan heyeti başkanı","I. ve II. İnönü Savaşları'nda Batı Cephesi'ni yönetti; Lozan'da Türk heyetine başkanlık etti.","İnönü soyadı, kazandığı İnönü Savaşları'ndan gelir."]];
+const TFO=["Doğru","Yanlış"];
+const TF=[{q:"Mustafa Kemal 19 Mayıs 1919'da Samsun'a çıktı.",a:"Doğru",e:"Millî Mücadele'nin başlangıcı kabul edilir."},
+{q:"Gümrü Antlaşması Batı Cephesi'nde imzalandı.",a:"Yanlış",e:"Doğu Cephesi'nde, Ermenistan ile imzalandı."},
+{q:"Kütahya–Eskişehir Savaşları bir zaferdir.",a:"Yanlış",e:"Ordu Sakarya'nın doğusuna çekildi; bu yeni savunma için geri çekilmedir."},
+{q:"Sakarya Meydan Muharebesi 22 gün 22 gece sürdü.",a:"Doğru",e:"23 Ağustos–13 Eylül 1921 arasında yapıldı."},
+{q:"Lozan, savaşı geçici durduran bir ateşkes antlaşmasıdır.",a:"Yanlış",e:"Lozan bir barış antlaşmasıdır. Ateşkes antlaşması Mudanya'dır."}].map(x=>({...x,o:TFO}));
+const FL=[{q:"Mustafa Kemal 19 Mayıs 1919'da ____'a çıktı.",a:"Samsun",e:"Samsun'a çıkış Millî Mücadele'nin başlangıcıdır."},
+{q:"TBMM 23 Nisan ____ yılında açıldı. (4 rakam)",a:"1920",e:"TBMM Ankara'da açıldı."},
+{q:"Doğu Cephesi komutanı Kâzım ____ Paşa'dır.",a:"Karabekir",e:"Kâzım Karabekir Paşa 15. Kolordu komutanıydı."},
+{q:"Cumhuriyet ____ Ekim 1923'te ilan edildi. (sayı)",a:"29",e:"29 Ekim, Cumhuriyet Bayramı'dır."}];
+const MC=[{q:"TBMM'nin imzaladığı ilk uluslararası antlaşma hangisidir?",o:["Gümrü Antlaşması","Mudanya Ateşkesi","Lozan Antlaşması"],a:"Gümrü Antlaşması",e:"3 Aralık 1920'de Doğu Cephesi'nde imzalandı."},
+{q:"Güney Cephesi'nde Fransızlara karşı daha çok kim savaştı?",o:["Yerel halk ve Kuvâ-yı Milliye","Yalnızca düzenli ordu","Yabancı askerler"],a:"Yerel halk ve Kuvâ-yı Milliye",e:"Güney'de halkın direnişi çok önemliydi."},
+{q:"Mustafa Kemal'e Gazi unvanı hangi zaferden sonra verildi?",o:["Sakarya Meydan Muharebesi","I. İnönü Savaşı","Samsun'a çıkış"],a:"Sakarya Meydan Muharebesi",e:"Ona Gazi unvanı ve Mareşal rütbesi verildi."},
+{q:"9 Eylül 1922'de hangi şehir kurtuldu?",o:["İzmir","Ankara","Sivas"],a:"İzmir",e:"Büyük Taarruz'dan sonra İzmir kurtuldu."},
+{q:"Barış antlaşmasının ateşkesten farkı nedir?",o:["Savaşı resmen bitirir","Savaşı geçici durdurur","Savaşı başlatır"],a:"Savaşı resmen bitirir",e:"Ateşkes geçici bir duruştur."}];
+const EK=[{q:"Samsun → Havza → ? → Erzurum → Sivas. Eksik durak hangisi?",o:["Amasya","İzmir","Kars"],a:"Amasya",e:"Amasya Genelgesi 22 Haziran 1919'da yayımlandı."},
+{q:"I. İnönü → II. İnönü → ? → Sakarya → Büyük Taarruz. Eksik olan hangisi?",o:["Kütahya–Eskişehir Savaşları","Mudanya Ateşkesi","Lozan Antlaşması"],a:"Kütahya–Eskişehir Savaşları",e:"Bu savaşlardan sonra ordu Sakarya'nın doğusuna çekildi."},
+{q:"Mudanya Ateşkesi → ? → Cumhuriyet'in ilanı. Eksik olan hangisi?",o:["Lozan Barış Antlaşması","Gümrü Antlaşması","Havza Genelgesi"],a:"Lozan Barış Antlaşması",e:"Lozan 24 Temmuz 1923'te imzalandı."}];
+const NS=[["İzmir'in işgal edilmesi","Halkın tepkisi ve direnişin büyümesi"],["Millî bir yönetime ihtiyaç duyulması","TBMM'nin Ankara'da açılması"],["Düzenli ordunun kurulması","İnönü'de Yunan ilerleyişinin durdurulması"],["Ankara Antlaşması'nın imzalanması","Fransızların Güney'den çekilmesi"],["Büyük Taarruz'un kazanılması","İzmir'in kurtuluşu"],["Lozan Barış Antlaşması","Bağımsızlığın dünyaca kabul edilmesi"]];
+const KS=[["Sütçü İmam","Maraş"],["Şahin Bey","Antep"],["Ali Saip Bey","Urfa"],["Tayyar Rahmiye Hanım","Osmaniye"],["Hasan Tahsin","İzmir"]];
+const TS=[
+{h:"Mondros Ateşkesi'ni ve işgalleri anlatabilir.",t:"1918'de Mondros Ateşkesi imzalandı; İtilaf devletleri yurdumuzu işgal etmeye başladı. 15 Mayıs 1919'da İzmir işgal edildi ve halk tepki gösterdi.",s:0,q:"İzmir'in işgali halkta nasıl bir duygu uyandırdı?",a:"Tepki ve direnme isteği. Hasan Tahsin'in ilk kurşunu direnişin sembolü oldu.",e:"Tarih Yolculuğu: ilk üç olaya dokunun.",g:"Bu duruma karşı Mustafa Kemal ne yaptı?"},
+{h:"Samsun'dan Sivas'a genelge ve kongreleri haritada gösterebilir.",t:"Mustafa Kemal 19 Mayıs 1919'da Samsun'a çıktı. Havza, Amasya, Erzurum ve Sivas'ta direniş örgütlendi.",s:1,q:"Hangi kongrede vatanın bütünlüğü vurgulandı?",a:"Erzurum Kongresi'nde.",e:"Olay–şehir eşleştirme.",g:"Direniş birleşince Ankara'da hangi önemli gelişme yaşandı? (TBMM)"},
+{h:"Doğu, Güney ve Batı cephelerini ayırt edebilir.",t:"Doğu'da Ermenilere, Güney'de Fransızlara ve Ermeni birliklerine, Batı'da Yunan ordusuna karşı mücadele edildi.",s:2,q:"Güney Cephesi'nde asıl yükü kim taşıdı?",a:"Yerel halk ve Kuvâ-yı Milliye.",e:"Oyunlar: Cepheyi Bul.",g:"Batı Cephesi'nde hangi savaşlar yapıldı?"},
+{h:"Batı Cephesi savaşlarını doğru sıraya koyabilir.",t:"I. ve II. İnönü, Kütahya–Eskişehir, Sakarya, Büyük Taarruz, Başkomutanlık Meydan Muharebesi ve İzmir'in kurtuluşu.",s:3,q:"Kütahya–Eskişehir Savaşları'ndan sonra ordu nereye çekildi?",a:"Sakarya Nehri'nin doğusuna. Bu bir zafer değil, yeni savunma hazırlığıdır.",e:"Savaşları sıralama etkinliği.",g:"Zaferden sonra barış nasıl sağlandı?"},
+{h:"Ateşkes ile barış antlaşması farkını açıklayabilir.",t:"Mudanya Ateşkesi savaşı durdurdu. Lozan Barış Antlaşması savaşı resmen bitirdi. 29 Ekim 1923'te Cumhuriyet ilan edildi.",s:4,q:"Ateşkes ile barış antlaşması arasındaki fark nedir?",a:"Ateşkes geçici durdurur; barış antlaşması resmen bitirir.",e:"Oyunlar: Neden–Sonuç.",g:"Bu mücadelede kimler önemli rol oynadı?"},
+{h:"Kahramanları görev ve bölgeleriyle tanıtabilir.",t:"Kahramanlar Galerisi'ndeki kartları birlikte inceleyin.",s:5,q:"Sütçü İmam hangi şehirle anılır?",a:"Maraş.",e:"Oyunlar: Kahraman–Şehir ve genel değerlendirme.",g:"Konuyu bitirdik. Değerlendirme oyunlarını oynayalım!"}];
+
+/* ---------- HARİTA ---------- */
+const P=(o,a)=>[20+(o-26)*29.5,20+(42.2-a)*38];
+const OUT=[[26.1,41.8],[27.9,42],[29.1,41.2],[31,41.1],[33,42],[35.1,42],[36.3,41.4],[39,41],[41.5,41.5],[43.4,41.1],[44.2,40],[44.8,39.6],[44,38.4],[44.6,37.2],[42.2,37.3],[40,36.85],[38,36.8],[36.6,36.6],[36.2,36],[35.8,36.6],[34.6,36.8],[33.5,36.2],[32,36.1],[30.7,36.8],[29.1,36.6],[28.2,36.8],[27.3,37],[27.25,37.9],[26.75,38.35],[26.8,39.3],[26.2,39.95],[26.3,40.5]];
+function svgMap(R,M){const pt=OUT.map(p=>P(...p).join(',')).join(' '),[mx,my]=P(28.2,40.7);
+return `<svg viewBox="0 0 600 285" role="img" aria-label="Şematik Türkiye haritası"><polygon points="${pt}" fill="#fff3d6" stroke="#1b2a5c" stroke-width="2"/><ellipse cx="${mx}" cy="${my}" rx="32" ry="10" fill="#eaf5ff" stroke="#1b2a5c"/>`
++R.map(r=>{const[x,y]=P(r.lo,r.la);return `<ellipse data-k="${r.k}" cx="${x}" cy="${y}" rx="${r.rx}" ry="${r.ry}" fill="${r.col}" fill-opacity=".4" stroke="${r.col}" stroke-width="2"/>`+(r.t?`<text x="${x}" y="${y+5}" text-anchor="middle" font-size="15" font-weight="700" fill="#1d1d2b" pointer-events="none">${r.t}</text>`:'')}).join('')
++M.map(m=>{const[x,y]=P(m.lo,m.la),dx=m.dx??11;return `<g data-k="${m.k}"><circle cx="${x}" cy="${y}" r="10" fill="transparent"/><circle cx="${x}" cy="${y}" r="7" fill="${m.hi?'#c8102e':'#1b2a5c'}" stroke="#fff" stroke-width="2"/><text x="${x+dx}" y="${y+(m.dy??5)}" font-size="16" font-weight="700" fill="#1b2a5c" text-anchor="${m.a||(dx<0?'end':'start')}" paint-order="stroke" stroke="#fffaf0" stroke-width="4">${m.t}</text></g>`}).join('')+`</svg>`}
+const rg=(f,l)=>Object.keys(FR).map(k=>({k,lo:FR[k].lo,la:FR[k].la,rx:FR[k].rx,ry:FR[k].ry,col:f(k),t:l?FR[k].n+' Cephesi':''}));
+
+/* ---------- OYUN MOTORLARI ---------- */
+function quiz(id,el,L){L=sh(L);let i=0,ok=0;const go=()=>{
+if(i>=L.length){sc[id]=Math.max(sc[id]||0,ok);upd();H(el,`<div class="card"><h3>🎉 ${ok}/${L.length} doğru</h3><button class="btn">Tekrar Oyna</button></div>`);el.querySelector('button').onclick=()=>quiz(id,el,L);return}
+const q=L[i];H(el,`<div class="card"><b>Soru ${i+1}/${L.length}</b><p>${q.q}</p>${q.o?sh(q.o).map(x=>`<button class="btn a">${x}</button>`).join(''):'<input id="fi" size="14" aria-label="Cevap"> <button class="btn a" id="fk">Kontrol Et</button>'}<p id="fb"></p></div>`);
+const fin=(v,b)=>{const e=v.trim()==='',c=!e&&nm(v)==nm(q.a);if(c)ok++;
+el.querySelectorAll('.a,input').forEach(x=>{x.disabled=true;if(q.o&&nm(x.textContent)==nm(q.a))x.classList.add('good')});if(b&&!c)b.classList.add('bad');
+H($('fb'),(c?'✅ Doğru! ':e?'💡 Boş bıraktın. Doğru cevap: <b>'+q.a+'</b>. ':'❌ Doğru cevap: <b>'+q.a+'</b>. ')+q.e+'<br><button class="btn" id="nx">Devam</button>');$('nx').onclick=()=>{i++;go()}};
+if(q.o)el.querySelectorAll('.a').forEach(b=>b.onclick=()=>fin(b.textContent,b));else $('fk').onclick=()=>fin($('fi').value)};go()}
+function order(id,el,A,pr){const S=sh(A);let q=[];const dr=(m='')=>{H(el,`<div class="card"><p>${pr}</p>${S.map(x=>`<button class="btn it${q.includes(x)?' sel':''}">${q.includes(x)?(q.indexOf(x)+1)+'. ':''}${x}</button>`).join('')}<p><button class="btn" id="${id}k">Kontrol Et</button> <button class="btn" id="${id}r">Sıfırla</button></p><p>${m}</p></div>`);
+el.querySelectorAll('.it').forEach((b,i)=>b.onclick=()=>{if(!q.includes(S[i])){q.push(S[i]);dr()}});
+$(id+'r').onclick=()=>{q=[];dr()};
+$(id+'k').onclick=()=>{const n=q.filter((x,i)=>x==A[i]).length;sc[id]=Math.max(sc[id]||0,n);upd();dr(n==A.length?`🎉 Harika! ${n}/${A.length} doğru.`:`${q.length?'❌':'💡 Boş bıraktın.'} ${n}/${A.length} doğru. Doğru sıra: <b>${A.join(' → ')}</b>`)}};dr()}
+function match(id,el,Pr){const M=new Map(Pr),L=sh(Pr.map(p=>p[0])),R=sh(Pr.map(p=>p[1]));let s=null,ok=0,dn=0;
+H(el,`<div class="card"><p>Soldan birini, sonra sağdan eşini seç.</p><div class="two"><div>${L.map(x=>`<button class="btn l">${x}</button>`).join('')}</div><div>${R.map(x=>`<button class="btn r">${x}</button>`).join('')}</div></div><p><button class="btn" id="${id}a">Cevapları Göster</button> <button class="btn" id="${id}n">Yeniden Oyna</button></p><p id="${id}f"></p></div>`);
+const ls=[...el.querySelectorAll('.l')],rs=[...el.querySelectorAll('.r')],f=m=>H($(id+'f'),m);
+const fix=(l,r,g)=>{l.disabled=r.disabled=true;l.classList.remove('sel');l.classList.add(g?'good':'bad');r.classList.add('good');dn++;if(g)ok++;sc[id]=Math.max(sc[id]||0,ok);upd();if(dn==Pr.length)f(`🎉 İlk denemede ${ok}/${Pr.length} doğru.`)};
+ls.forEach(b=>b.onclick=()=>{ls.forEach(x=>x.classList.remove('sel'));s=b;b.classList.add('sel')});
+rs.forEach(b=>b.onclick=()=>{if(!s)return f('Önce soldan bir seçim yap.');const l=s,a=M.get(l.textContent);s=null;if(a==b.textContent)fix(l,b,1);else{f(`❌ ${l.textContent} → <b>${a}</b>`);fix(l,rs.find(x=>x.textContent==a),0)}});
+$(id+'a').onclick=()=>f(Pr.map(p=>p.join(' → ')).join('<br>'));$(id+'n').onclick=()=>match(id,el,Pr)}
+function ff(el){const Q=sh(Object.keys(FR));let i=0,ok=0;const go=()=>{
+if(i>=3){sc.ff=Math.max(sc.ff||0,ok);upd();H(el,`<div class="card"><h3>🎉 ${ok}/3 doğru</h3><button class="btn">Tekrar Oyna</button></div>`);el.querySelector('button').onclick=()=>ff(el);return}
+H(el,`<div class="card"><p class="tag">Şematik harita</p><p><b>${FR[Q[i]].n} Cephesi</b>'ni haritada bul!</p><div id="fm">${svgMap(rg(()=>'#8aa'),[])}</div><p><button class="btn" id="fq">Bilmiyorum</button></p><p id="ffb"></p></div>`);
+const end=(c,k)=>{if(c)ok++;$('fm').onclick=null;$('fq').remove();H($('fm'),svgMap(rg(x=>x==Q[i]?'#2e9e5b':'#8aa',1),[]));H($('ffb'),(c?'✅ Doğru! ':k?`❌ Burası ${FR[k].n} Cephesi değil. `:'💡 Boş bıraktın. ')+`${FR[Q[i]].n} Cephesi yeşil bölgedir.<br><button class="btn" id="fn">Devam</button>`);$('fn').onclick=()=>{i++;go()}};
+$('fm').onclick=e=>{const t=e.target.closest('[data-k]');if(t)end(t.dataset.k==Q[i],t.dataset.k)};$('fq').onclick=()=>end(0,0)};go()}
+const GM=[["Tarihleri Sırala",e=>order('od1',e,["Mondros Ateşkesi","Samsun'a çıkış","Amasya Genelgesi","TBMM'nin açılışı","Sakarya Meydan Muharebesi","Büyük Taarruz","Cumhuriyet'in ilanı"],"Olayları eskiden yeniye doğru sırala.")],
+["Kahraman–Şehir",e=>match('mt1',e,KS)],["Cepheyi Bul",ff],["Doğru / Yanlış",e=>quiz('tf',e,TF)],["Boşluk Doldur",e=>quiz('fl',e,FL)],["Çoktan Seçmeli",e=>quiz('mc',e,MC)],["Neden–Sonuç",e=>match('mt2',e,NS)],["Eksik Bilgi",e=>quiz('ek',e,EK)]];
+
+/* ---------- BÖLÜMLER ---------- */
+function r0(){const d=$('c0');H(d,'<p>Bir olaya dokun, ayrıntılarını gör.</p><div class="grid">'+E.map((e,i)=>`<button class="btn" data-i="${i}">${e[4]} <b>${e[0]}</b><br>${e[1]}</button>`).join('')+'</div>');
+d.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const e=E[b.dataset.i];H($('dgb'),`<h3>${e[4]} ${e[1]}</h3><p>📅 <b>${e[0]}</b></p><p>${e[2]}</p><p>⭐ <b>Önemi:</b> ${e[3]}</p>`);$('dg').showModal()})}
+function r1(){const d=$('c1');let k=null;
+H(d,`<p class="tag">Şematik haritadır; şehirlerin yeri yaklaşık gösterilmiştir.</p><div id="m1"></div><div id="i1" class="card">Haritada bir şehre dokun 👆</div><div class="card"><b>Ana fikir:</b> Amasya'da millî bağımsızlık ve milletin kararlılığı, Erzurum'da vatanın bütünlüğü, Sivas'ta direnişin birleştirilmesi vurgulandı.</div><h3>Etkinlik 1: Olay hangi şehirde?</h3><div id="a1"></div><h3>Etkinlik 2: Durakları sırala</h3><div id="b1"></div>`);
+const dr=()=>H($('m1'),svgMap([],Object.keys(C).map(c=>({k:c,lo:C[c][0],la:C[c][1],t:c,dx:c=='Havza'?-11:11,hi:c==k}))));
+$('m1').onclick=e=>{const t=e.target.closest('[data-k]');if(t){k=t.dataset.k;H($('i1'),`<h3>📍 ${k}</h3><p>${C[k][2]}</p>`);dr()}};dr();
+match('mt3',$('a1'),[["Havza Genelgesi","Havza"],["Amasya Genelgesi","Amasya"],["Erzurum Kongresi","Erzurum"],["Sivas Kongresi","Sivas"],["Samsun'a çıkış","Samsun"],["TBMM'nin açılışı","Ankara"]]);
+order('od2',$('b1'),["Havza","Amasya","Erzurum","Sivas","Ankara"],"Mustafa Kemal Samsun'dan sonra hangi sırayla durdu?")}
+function r2(){const d=$('c2');
+H(d,`<p class="tag">Bu harita şematiktir. Bölgeler yaklaşık gösterilmiştir; günümüz sınırlarıyla birebir aynı değildir.</p><div id="m2"></div><p id="bt2"></p><div id="i2" class="card">Bir cepheye dokun 👆</div><div class="card"><b>Kuvâ-yı Milliye ve düzenli ordu:</b> Kuvâ-yı Milliye, halkın gönüllü kurduğu direniş birlikleridir. Düzenli ordu, devletin eğitimli ve komutanlarca yönetilen ordusudur.</div>`);
+const fr=k=>{const f=FR[k];H($('i2'),`<h3 style="color:${f.c}">${f.n} Cephesi</h3><p>🔸 <b>Karşı taraf:</b> ${f.v}</p><p>🔸 <b>Kahramanlar:</b> ${f.h}</p><p>🔸 <b>Şehirler:</b> ${f.s}</p><p>${f.x}</p><p>🏁 <b>Sonuç:</b> ${f.r}</p>`)};
+H($('m2'),svgMap(rg(k=>FR[k].c,1),[]));$('m2').onclick=e=>{const t=e.target.closest('[data-k]');if(t)fr(t.dataset.k)};
+H($('bt2'),Object.keys(FR).map(k=>`<button class="btn" data-f="${k}" style="border-color:${FR[k].c}">${FR[k].n} Cephesi</button>`).join(''));
+$('bt2').querySelectorAll('button').forEach(b=>b.onclick=()=>fr(b.dataset.f))}
+function r3(){const d=$('c3');let sel=null;
+H(d,`<p class="tag">Şematik harita: konumlar yaklaşık, hareket yönleri gösterilmemiştir.</p><div id="m3"></div><div id="i3" class="card">Bir savaşa dokun 👇</div><div id="l3" class="grid"></div><div class="card">🛡️ <b>Sakarya'da savunma anlayışı:</b> Mustafa Kemal “Hattı müdafaa yoktur, sathı müdafaa vardır” dedi. Yani savunma tek bir çizgide değil, bütün yurtta yapılır; her karış toprak savunulur.</div><h3>Etkinlik: Savaşları sırala</h3><div id="o3"></div>`);
+const dr=()=>H($('m3'),svgMap([],Object.keys(MK).map(k=>({k,lo:MK[k][0],la:MK[k][1],t:MK[k][2],dx:MK[k][3],dy:MK[k][4],a:MK[k][5],hi:k==sel}))));
+const pk=(k,i)=>{sel=k;H($('i3'),BT.filter((b,j)=>i==null?b[4]==k:j==i).map(b=>`<h3>${b[0]}</h3><p>📅 ${b[1]}</p><p>${b[2]}</p><p>⭐ <b>Sonuç:</b> ${b[3]}</p>`).join('<hr>'));dr()};
+$('m3').onclick=e=>{const t=e.target.closest('[data-k]');if(t)pk(t.dataset.k)};dr();
+H($('l3'),BT.map((b,i)=>`<button class="btn" data-i="${i}">${i+1}. ${b[0]}<br><small>${b[1]}</small></button>`).join(''));
+$('l3').querySelectorAll('button').forEach(b=>b.onclick=()=>pk(BT[b.dataset.i][4],+b.dataset.i));
+order('od3',$('o3'),BT.map(b=>b[0]),"Savaşları eskiden yeniye doğru sırala.")}
+function r4(){H($('c4'),`<div class="grid">${[["🤝","Mudanya Ateşkes Antlaşması","11 Ekim 1922","Savaş durdu. Askerî mücadeleden diplomasi dönemine geçildi. Barış görüşmelerinin yolu açıldı."],["🕊️","Lozan Barış Antlaşması","24 Temmuz 1923","Savaş resmen sona erdi. Yeni Türk devletinin bağımsızlığı uluslararası alanda kabul edildi."],["🇹🇷","Cumhuriyet'in İlanı","29 Ekim 1923","Devletin yönetim şekli Cumhuriyet oldu. Mustafa Kemal Atatürk ilk Cumhurbaşkanı seçildi."]].map(c=>`<div class="card"><div class="ic">${c[0]}</div><h3>${c[1]}</h3><p>📅 ${c[2]}</p><p>${c[3]}</p></div>`).join('')}</div><div class="card"><b>Ateşkes mi, barış mı?</b><p>🔸 <b>Ateşkes:</b> Savaşa geçici olarak ara verilir.</p><p>🔸 <b>Barış antlaşması:</b> Savaşı resmen bitirir ve kalıcı kuralları belirler.</p></div><div class="card"><b>Bağlantı kur:</b> TBMM 23 Nisan 1920'de açıldı ve egemenliğin millete ait olduğu ilkesi esas alındı. 29 Ekim 1923'te devletin yönetim şekli de Cumhuriyet olarak belirlendi.</div>`)}
+function r5(){H($('c5'),`<p class="tag">Simgeler temsilîdir; gerçek fotoğraf değildir.</p><div class="grid">${HR.map(h=>`<div class="card"><div class="ic">${h[0][0]}</div><h3>${h[0]}</h3><p><b>Görev / Bölge:</b> ${h[1]}</p><p><b>Katkısı:</b> ${h[2]}</p><p>💡 <b>Hatırla:</b> ${h[3]}</p></div>`).join('')}</div>`)}
+function r6(){const d=$('c6');H(d,GM.map((g,i)=>`<button class="btn" data-i="${i}">${g[0]}</button>`).join('')+'<div id="gm"></div>');
+const pl=i=>{d.querySelectorAll('[data-i]').forEach((b,k)=>b.classList.toggle('sel',k==i));GM[i][1]($('gm'))};
+d.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>pl(+b.dataset.i));pl(0)}
+function r7(){let i=0,r=0;const d=$('c7'),dr=()=>{const t=TS[i];
+H(d,`<div class="card" style="font-size:1.15em"><p><b>Konu ${i+1}/${TS.length}</b></p><p>🎯 <b>Öğrenme hedefi:</b> ${t.h}</p><p>📖 ${t.t}</p><p><button class="btn" id="tg">Haritayı / bölümü aç</button></p><p>❓ <b>Soru:</b> ${t.q}</p><p><button class="btn" id="ta">Cevabı göster</button></p><p id="tr">${r?'✅ '+t.a:''}</p><p>🎮 <b>Etkinlik:</b> ${t.e}</p><p>➡️ <b>Geçiş sorusu:</b> ${t.g}</p><button class="btn" id="tp">← Önceki</button><button class="btn" id="tn">Sonraki →</button></div>`);
+$('tg').onclick=()=>show(t.s);$('ta').onclick=()=>{r=1;dr()};$('tp').onclick=()=>{i=Math.max(0,i-1);r=0;dr()};$('tn').onclick=()=>{i=Math.min(TS.length-1,i+1);r=0;dr()}};dr()}
+
+/* ---------- BAŞLAT ---------- */
+H($('nv'),SEC.map(s=>`<button>${s[0]} ${s[1]}</button>`).join('')+'<button onclick="print()">🖨️ Yazdır</button>');
+H($('mn'),SEC.map((s,i)=>`<section id="s${i}"><h2>${s[0]} ${s[1]}</h2><div id="c${i}"></div></section>`).join(''));
+SEC.forEach((_,i)=>{$('nv').children[i].onclick=()=>show(i)});
+[r0,r1,r2,r3,r4,r5,r6,r7].forEach(f=>f());
+H($('ozet'),`<h1>Millî Mücadele Konu Özeti (1918–1923)</h1><table><tr><th>Tarih</th><th>Olay</th><th>Açıklama</th></tr>${E.map(e=>`<tr><td>${e[0]}</td><td>${e[1]}</td><td>${e[2]}</td></tr>`).join('')}</table>`);
+show(0);
+</script></body></html>
