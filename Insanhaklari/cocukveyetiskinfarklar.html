@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaman Yolcusu: Büyüme Macerası</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --secondary: #F39C12;
+            --success: #2ECC71;
+            --danger: #E74C3C;
+            --background: #ECF0F1;
+            --text: #2C3E50;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 90vh;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stats span {
+            font-weight: bold;
+            margin-right: 15px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .visual-area {
+            background: #2C3E50;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .machine-svg {
+            width: 100px;
+            height: 100px;
+            transition: all 0.5s ease;
+        }
+
+        .core-glow {
+            fill: var(--primary);
+            transition: fill 0.5s ease, r 0.5s ease;
+        }
+
+        .progress-text {
+            color: #ecf0f1;
+            margin-top: 10px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--background);
+            padding-bottom: 10px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background-color: var(--background);
+            border: 2px solid transparent;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            text-align: left;
+            transition: all 0.2s;
+            color: var(--text);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            background-color: #D6EAF8;
+            border-color: var(--primary);
+        }
+
+        .option-btn.correct {
+            background-color: #D5F5E3;
+            border-color: var(--success);
+        }
+
+        .option-btn.wrong {
+            background-color: #FADBD8;
+            border-color: var(--danger);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Classification Specific */
+        .classify-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .classify-btn {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 8px;
+            border: 2px solid var(--secondary);
+            background: white;
+            cursor: pointer;
+        }
+        .classify-btn.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Boss Stage */
+        .boss-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--background);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .boss-toggles button {
+            padding: 5px 10px;
+            margin-left: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+        }
+        .boss-toggles button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 2px solid var(--background);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        button.nav-btn {
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        button.nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-prev { background-color: #95A5A6; color: white; }
+        .btn-skip { background-color: var(--secondary); color: white; }
+        .btn-next { background-color: var(--primary); color: white; }
+        .btn-check { background-color: var(--success); color: white; width: 100%; margin-bottom: 10px;}
+
+        /* Modal / Feedback */
+        #feedback-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: var(--danger);
+        }
+
+        .modal-content.success h2 {
+            color: var(--success);
+        }
+
+        .modal-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Report Screen */
+        #report-screen {
+            display: none;
+            padding: 20px;
+        }
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .report-card {
+            background: var(--background);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .report-card span { display: block; font-size: 2em; font-weight: bold; color: var(--primary); }
+        .error-log {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .error-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .error-item:last-child { border-bottom: none; }
+        
+        @media (max-width: 500px) {
+            .boss-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .controls { flex-direction: column; }
+            .controls button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <header>
+        <div>Zaman Yolcusu: Büyüme Macerası</div>
+        <div class="stats">
+            <span id="score-display">Puan: 0</span>
+            <span id="task-counter">Görev: 1/16</span>
+        </div>
+    </header>
+
+    <div class="visual-area" id="visual-area">
+        <svg class="machine-svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#7F8C8D" stroke-width="4" stroke-dasharray="10 5" />
+            <circle cx="50" cy="50" r="35" fill="#34495E" />
+            <circle id="energy-core" class="core-glow" cx="50" cy="50" r="10" />
+            <path d="M 50 15 L 50 25 M 50 75 L 50 85 M 15 50 L 25 50 M 75 50 L 85 50" stroke="#F1C40F" stroke-width="3" />
+        </svg>
+        <div class="progress-text" id="stage-text">Aşama 1: Sorumlulukları Keşfet</div>
+    </div>
+
+    <main id="main-area">
+        <!-- Dynamic Content Injected Here -->
+    </main>
+
+    <div id="report-screen">
+        <h2 style="color: var(--primary); text-align: center;">Maceran Tamamlandı!</h2>
+        <div class="report-grid">
+            <div class="report-card">Toplam Puan<span id="rep-score">0</span></div>
+            <div class="report-card">Doğru (İlk Deneme)<span id="rep-first">0</span></div>
+            <div class="report-card">Yanlış Deneme<span id="rep-wrong">0</span></div>
+            <div class="report-card">Geçilen Görev<span id="rep-skip">0</span></div>
+        </div>
+        <h3>İnceleme Alanı (Yanlış/Geçilen Görevler)</h3>
+        <div class="error-log" id="error-log"></div>
+        <button class="btn-next" style="width: 100%; margin-top: 20px;" onclick="replayGame()">Yeniden Oyna</button>
+    </div>
+</div>
+
+<div id="feedback-modal">
+    <div class="modal-content" id="modal-content">
+        <h2 id="modal-title">Yanlış Cevap</h2>
+        <p id="modal-desc">Açıklama buraya gelecek.</p>
+        <button class="modal-btn" onclick="closeModal()">Tekrar Dene</button>
+    </div>
+</div>
+
+<script>
+    // Task Data Generation matching the curriculum requirements
+    const rawTasks = [
+        // Stage 1: Classify (Rights & Duties)
+        { stage: 1, type: 'classify', q: "Ailesinin geçimini sağlamak için çalışıp para kazanmak kimin sorumluluğudur?", options: ['Çocuk', 'Yetişkin'], correct: 'Yetişkin', exp: "Para kazanmak ve ailenin geçimini sağlamak yetişkinlerin sorumluluğudur. Çocukların çalıştırılması yasaktır; onların temel görevi gelişimlerini tamamlamak ve eğitim almaktır." },
+        { stage: 1, type: 'classify', q: "Okula gitmek ve eğitim hizmetlerinden ücretsiz olarak yararlanmak kimin öncelikli hakkı ve görevidir?", options: ['Çocuk', 'Yetişkin'], correct: 'Çocuk', exp: "Eğitim görmek her insanın hakkı olsa da, zorunlu eğitim çağında maddi kazanç beklemeden sadece okula odaklanmak çocukların temel hakkı ve yasal görevidir." },
+        { stage: 1, type: 'classify', q: "Bir ev kiralamak ve resmi sözleşmelere imza atmak kimin yasal yetkisindedir?", options: ['Çocuk', 'Yetişkin'], correct: 'Yetişkin', exp: "Sözleşme imzalamak gibi resmi ve hukuki işlemler 18 yaşını doldurmuş yetişkinlerin özerk karar verme yetkisi altındadır." },
+        { stage: 1, type: 'classify', q: "Yaşına ve fiziksel gücüne uygun olarak kendi yatağını toplamak kimin sorumluluğudur?", options: ['Çocuk', 'Yetişkin'], correct: 'Çocuk', exp: "Çocukların da ev içinde yaşlarına ve güçlerine uygun, gelişimlerini destekleyen sorumlulukları vardır. Sorumluluk sadece yetişkinlere ait değildir." },
+        
+        // Stage 2: True/False
+        { stage: 2, type: 'tf', q: "Çocukların hiçbir sorumluluğu yoktur, sadece hakları vardır.", options: ['Doğru', 'Yanlış'], correct: 'Yanlış', exp: "Çocukların da yaşlarına uygun sorumlulukları vardır. Örneğin; kurallara uymak, ders çalışmak, başkalarının haklarına saygı göstermek." },
+        { stage: 2, type: 'tf', q: "İnsan hakları ve çocuk hakları incelendiğinde; yaşama, barınma ve beslenme hakkı hem çocukların hem yetişkinlerin ortak temel hakkıdır.", options: ['Doğru', 'Yanlış'], correct: 'Doğru', exp: "Temel yaşama hakları her yaş grubu için ortaktır. Çocuk hakları sözleşmesi, çocukları yetişkin dünyasının zorluklarından ekstra korumak için tasarlanmıştır." },
+        { stage: 2, type: 'tf', q: "Çocuklar, hangi şehre taşınacakları gibi aileyi ilgilendiren büyük konularda tek başlarına, ailelerine sormadan karar verebilirler.", options: ['Doğru', 'Yanlış'], correct: 'Yanlış', exp: "Özerk karar verme (kendi başına büyük kararlar alma) becerisi ve yetkisi yetişkinlikte tamamlanır. Çocuklar kararlara katılır ve fikirlerini söylerler, ancak son kararı tek başlarına alamazlar." },
+        { stage: 2, type: 'tf', q: "Yaşımız ilerleyip yetişkin oldukça yasal özgürlüklerimiz genişlerken, yerine getirmemiz gereken sorumluluklar da artar.", options: ['Doğru', 'Yanlış'], correct: 'Doğru', exp: "Büyümek sadece daha fazla özgürlük demek değildir; aynı zamanda kendi ihtiyaçlarımızı karşılamak ve topluma katkı sağlamak gibi sorumlulukların artması demektir." },
+        
+        // Stage 3: Multiple Choice (Conceptual)
+        { stage: 3, type: 'mcq', q: "Aşağıdakilerden hangisi çocukların temel ihtiyaçlarının karşılanması konusunda DOĞRU bir bilgidir?", options: ['Çocuklar kendi yiyeceklerini çalışarak almalıdır.', 'Çocukların barınma ve beslenme ihtiyacını karşılamak devletin ve yetişkinlerin (ailenin) görevidir.', 'Çocuklar sadece eğitim ihtiyaçlarını kendileri karşılar.', 'Yetişkinler çocukların ihtiyaçlarını karşılamak zorunda değildir.'], correct: 'Çocukların barınma ve beslenme ihtiyacını karşılamak devletin ve yetişkinlerin (ailenin) görevidir.', exp: "Çocuk Hakları Sözleşmesi'ne göre çocuğun sağlıklı gelişimi için gerekli olan temel ihtiyaçları (beslenme, barınma, sağlık) sağlamak birincil olarak ailenin ve devletin sorumluluğundadır." },
+        { stage: 3, type: 'mcq', q: "Hangi seçenek SADECE yetişkinlerin kullanabildiği bir haktır?", options: ['Oyun oynamak', 'Düşüncelerini özgürce ifade etmek', 'Seçimlerde oy kullanarak ülke yönetimine katılmak', 'Hastanede tedavi olmak'], correct: 'Seçimlerde oy kullanarak ülke yönetimine katılmak', exp: "Oy kullanmak ve seçilmek 18 yaşını doldurmuş vatandaşlara (yetişkinlere) ait bir haktır. Diğer seçenekler çocukların da hakkıdır." },
+        { stage: 3, type: 'mcq', q: "Bir yetişkin ile çocuğun farkı düşünüldüğünde hangisi HATALI bir düşüncedir?", options: ['Yetişkinler temel ihtiyaçlarını genellikle kendi bütçeleriyle karşılar.', 'Çocuklar gelişimlerini tamamlamak için özel bir korumaya ihtiyaç duyar.', 'Çocukların fikir belirtme hakkı yoktur, sadece yetişkinler konuşur.', 'Özerk kararlar alma durumu yaşa bağlı olarak değişir.'], correct: 'Çocukların fikir belirtme hakkı yoktur, sadece yetişkinler konuşur.', exp: "Çocuk Hakları Sözleşmesi'ne göre her çocuğun kendisini ilgilendiren konularda fikrini özgürce söyleme ve dinlenme hakkı vardır." },
+        { stage: 3, type: 'mcq', q: "İnsan hakları ve Çocuk hakları arasındaki ilişki nasıl özetlenebilir?", options: ['İkisi tamamen aynı şeydir, fark yoktur.', 'Çocuk hakları, insan haklarının çocuklara özel olarak düzenlenmiş ve çocukları ekstra koruyan kısmıdır.', 'Sadece yetişkinlerin insan hakkı vardır.', 'Çocuk hakları sadece okul kurallarını içerir.'], correct: 'Çocuk hakları, insan haklarının çocuklara özel olarak düzenlenmiş ve çocukları ekstra koruyan kısmıdır.', exp: "Çocuklar fiziksel ve zihinsel olarak gelişme çağında oldukları için, evrensel insan haklarına ek olarak özel bakım ve koruma gerektiren ayrı bir sözleşme ile korunurlar." },
+        
+        // Stage 4: Missing Word / Fill in the blank (Implemented as MCQ for simplicity)
+        { stage: 4, type: 'mcq', q: "18 yaşından küçük herkes yasal olarak ________ sayılır ve uluslararası yasalarla özel olarak korunma hakkına sahiptir.", options: ['Yetişkin', 'Çocuk', 'Öğrenci', 'Vatandaş'], correct: 'Çocuk', exp: "Uluslararası Çocuk Hakları Sözleşmesi'ne ve yasalarımıza göre, 18 yaşını doldurmamış her birey 'çocuk' olarak kabul edilir." },
+        { stage: 4, type: 'mcq', q: "Büyüdükçe hayatımızla ilgili hangi okula gideceğimiz veya hangi mesleği seçeceğimiz gibi konularda kendi başımıza karar verebilme becerimize ne ad verilir?", options: ['Fiziksel büyüme', 'Özerk karar verme', 'Temel ihtiyaç', 'Çocuk hakkı'], correct: 'Özerk karar verme', exp: "Özerk karar verme, bireyin kendi hayatı hakkında bağımsızca kararlar alabilmesidir ve çocukluktan yetişkinliğe geçişte kazanılan en büyük farklardan biridir." },
+        { stage: 4, type: 'mcq', q: "Aşağıdaki ifadelerden hangisi yanlıştır?", options: ['Her insanın yaşama hakkı vardır.', 'Çocukların hakları kanunlarla güvence altına alınmıştır.', 'Çocuklar ağır işlerde çalıştırılabilir.', 'Yetişkinler kanunlara uymakla yükümlüdür.'], correct: 'Çocuklar ağır işlerde çalıştırılabilir.', exp: "Çocukların ekonomik sömürüden korunma hakkı vardır. Yaşlarına ve gelişimlerine zarar verecek hiçbir ağır işte çalıştırılamazlar." },
+        
+        // Stage 5: Boss (Multi-select / Scenario)
+        { stage: 5, type: 'boss', q: "Zaman Makinesi Şifre Paneli: Aşağıdaki durumların çocuklara mı yoksa yetişkinlere mi ait temel bir özellik olduğunu doğru eşleştirerek sistemi onar!", 
+          items: [
+              { text: "Askere gitmek ve vergi ödemek", correct: "Yetişkin" },
+              { text: "Şiddetten ve kötü muameleden öncelikli olarak korunma ihtiyacı duymak", correct: "Çocuk" },
+              { text: "Ailenin geçimini kendi geliriyle sağlamak", correct: "Yetişkin" },
+              { text: "Gelişimi için oyun oynamaya ve dinlenmeye bolca vakit ayırmak", correct: "Çocuk" }
+          ], exp: "Askerlik, vergi ödemek ve evin geçimini sağlamak yetişkinlerin yasal sorumluluklarıdır. Oyun oynamak, dinlenmek ve gelişim süresince özel olarak korunmak ise çocukların en temel haklarıdır." }
+    ];
+
+    // State Management
+    let state = {
+        currentIndex: 0,
+        score: 0,
+        wrongCount: 0,
+        skippedCount: 0,
+        hintsCount: 0,
+        tasks: [],
+        history: [] // Stores objects: {q: text, status: 'correct'|'skipped'|'wrong_first', exp: text}
+    };
+
+    // Initialize Game
+    function initGame() {
+        // Deep copy and shuffle options without changing task order
+        state.tasks = JSON.parse(JSON.stringify(rawTasks)).map(task => {
+            task.isCompleted = false;
+            task.firstTry = true;
+            if (task.options) {
+                task.options = shuffleArray(task.options);
+            }
+            return task;
+        });
+        
+        state.currentIndex = 0;
+        state.score = 0;
+        state.wrongCount = 0;
+        state.skippedCount = 0;
+        state.hintsCount = 0;
+        state.history = [];
+
+        document.getElementById('report-screen').style.display = 'none';
+        document.getElementById('visual-area').style.display = 'block';
+        document.getElementById('main-area').style.display = 'flex';
+        
+        updateUI();
+    }
+
+    function shuffleArray(array) {
+        let newArr = [...array];
+        for (let i = newArr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+        }
+        return newArr;
+    }
+
+    // UI Updater
+    function updateUI() {
+        const task = state.tasks[state.currentIndex];
+        
+        // Update Headers
+        document.getElementById('score-display').innerText = `Puan: ${state.score}`;
+        document.getElementById('task-counter').innerText = `Görev: ${state.currentIndex + 1}/${state.tasks.length}`;
+        
+        // Update Visuals
+        const energyLevels = [15, 30, 45, 60, 80]; // Radiuses
+        const currentStage = task.stage;
+        document.getElementById('energy-core').setAttribute('r', energyLevels[currentStage-1]);
+        
+        let stageNames = ["Aşama 1: Sorumlulukları Keşfet", "Aşama 2: Doğru Bilinen Yanlışlar", "Aşama 3: Hakları Öğren", "Aşama 4: Farkı Bul", "Aşama 5: Zaman Kapsülü (FİNAL)"];
+        document.getElementById('stage-text').innerText = stageNames[currentStage-1];
+
+        // Render Task Area
+        const mainArea = document.getElementById('main-area');
+        mainArea.innerHTML = `<div class="task-header">${task.q}</div>`;
+        
+        if (task.type === 'mcq' || task.type === 'tf') {
+            const optsContainer = document.createElement('div');
+            optsContainer.className = 'options-container';
+            task.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                if (task.isCompleted) {
+                    btn.disabled = true;
+                    if (opt === task.correct) btn.classList.add('correct');
+                    else if (task.selected === opt) btn.classList.add('wrong');
+                } else {
+                    btn.onclick = () => checkAnswer(opt, btn);
+                }
+                optsContainer.appendChild(btn);
+            });
+            mainArea.appendChild(optsContainer);
+        } 
+        else if (task.type === 'classify') {
+            const optsContainer = document.createElement('div');
+            optsContainer.className = 'options-container';
+            task.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn classify-btn';
+                btn.innerText = opt;
+                if (task.isCompleted) {
+                    btn.disabled = true;
+                    if (opt === task.correct) btn.classList.add('correct');
+                    else if (task.selected === opt) btn.classList.add('wrong');
+                } else {
+                    btn.onclick = () => checkAnswer(opt, btn);
+                }
+                optsContainer.appendChild(btn);
+            });
+            mainArea.appendChild(optsContainer);
+        }
+        else if (task.type === 'boss') {
+            const bossContainer = document.createElement('div');
+            bossContainer.className = 'options-container';
+            bossContainer.id = 'boss-container';
+            
+            task.items.forEach((item, idx) => {
+                const row = document.createElement('div');
+                row.className = 'boss-item';
+                
+                const text = document.createElement('div');
+                text.innerText = item.text;
+                
+                const toggles = document.createElement('div');
+                toggles.className = 'boss-toggles';
+                
+                ['Çocuk', 'Yetişkin'].forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.innerText = opt;
+                    if (task.isCompleted) {
+                        btn.disabled = true;
+                        if (task.userAnswers && task.userAnswers[idx] === opt) {
+                            btn.classList.add(opt === item.correct ? 'correct' : 'wrong');
+                        } else if (opt === item.correct) {
+                            btn.classList.add('correct'); // Highlight correct even if not selected on skip
+                        }
+                    } else {
+                        btn.onclick = (e) => {
+                            Array.from(toggles.children).forEach(c => c.classList.remove('active'));
+                            btn.classList.add('active');
+                            checkBossReady();
+                        };
+                    }
+                    toggles.appendChild(btn);
+                });
+                
+                row.appendChild(text);
+                row.appendChild(toggles);
+                bossContainer.appendChild(row);
+            });
+            mainArea.appendChild(bossContainer);
+            
+            if (!task.isCompleted) {
+                const checkBtn = document.createElement('button');
+                checkBtn.className = 'nav-btn btn-check';
+                checkBtn.id = 'boss-check-btn';
+                checkBtn.innerText = "Şifreyi Kontrol Et";
+                checkBtn.disabled = true;
+                checkBtn.onclick = checkBossAnswer;
+                mainArea.appendChild(checkBtn);
+            }
+        }
+
+        renderControls(mainArea, task);
+    }
+
+    function checkBossReady() {
+        const rows = document.querySelectorAll('.boss-item');
+        let allSelected = true;
+        rows.forEach(row => {
+            if (!row.querySelector('.active')) allSelected = false;
+        });
+        document.getElementById('boss-check-btn').disabled = !allSelected;
+    }
+
+    function checkBossAnswer() {
+        const task = state.tasks[state.currentIndex];
+        const rows = document.querySelectorAll('.boss-item');
+        let allCorrect = true;
+        let userAnswers = [];
+
+        rows.forEach((row, idx) => {
+            const selected = row.querySelector('.active').innerText;
+            userAnswers.push(selected);
+            if (selected !== task.items[idx].correct) {
+                allCorrect = false;
+            }
+        });
+
+        if (allCorrect) {
+            handleCorrectAnswer();
+            task.userAnswers = userAnswers;
+        } else {
+            handleWrongAnswer(task.exp);
+        }
+    }
+
+    function renderControls(container, task) {
+        const controls = document.createElement('div');
+        controls.className = 'controls';
+
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'nav-btn btn-prev';
+        prevBtn.innerText = "Önceki";
+        prevBtn.disabled = state.currentIndex === 0;
+        prevBtn.onclick = () => { state.currentIndex--; updateUI(); };
+
+        const skipBtn = document.createElement('button');
+        skipBtn.className = 'nav-btn btn-skip';
+        skipBtn.innerText = "Soruyu Geç";
+        if (task.isCompleted) skipBtn.style.display = 'none';
+        skipBtn.onclick = skipTask;
+
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'nav-btn btn-next';
+        nextBtn.innerText = state.currentIndex === state.tasks.length - 1 ? "Sonuçları Gör" : "Sonraki";
+        nextBtn.disabled = !task.isCompleted;
+        nextBtn.onclick = () => {
+            if (state.currentIndex === state.tasks.length - 1) {
+                showReport();
+            } else {
+                state.currentIndex++;
+                updateUI();
+            }
+        };
+
+        controls.appendChild(prevBtn);
+        controls.appendChild(skipBtn);
+        controls.appendChild(nextBtn);
+        container.appendChild(controls);
+    }
+
+    // Logic Handlers
+    function checkAnswer(selectedOpt, btnElement) {
+        const task = state.tasks[state.currentIndex];
+        task.selected = selectedOpt;
+
+        if (selectedOpt === task.correct) {
+            btnElement.classList.add('correct');
+            handleCorrectAnswer();
+        } else {
+            btnElement.classList.add('wrong');
+            handleWrongAnswer(task.exp);
+        }
+    }
+
+    function handleCorrectAnswer() {
+        const task = state.tasks[state.currentIndex];
+        task.isCompleted = true;
+        
+        if (task.firstTry) {
+            state.score += 10;
+            state.history.push({ q: task.q, status: 'correct', exp: task.exp });
+        }
+        
+        updateUI(); // Re-render to disable buttons and enable Next
+    }
+
+    function handleWrongAnswer(explanation) {
+        const task = state.tasks[state.currentIndex];
+        if (task.firstTry) {
+            state.wrongCount++;
+            state.hintsCount++;
+            task.firstTry = false;
+            state.history.push({ q: task.q, status: 'wrong', exp: explanation });
+        }
+        showModal(false, explanation);
+    }
+
+    function skipTask() {
+        const task = state.tasks[state.currentIndex];
+        task.isCompleted = true;
+        task.firstTry = false;
+        state.skippedCount++;
+        state.history.push({ q: task.q, status: 'skipped', exp: task.exp });
+        
+        if (state.currentIndex === state.tasks.length - 1) {
+            showReport();
+        } else {
+            state.currentIndex++;
+            updateUI();
+        }
+    }
+
+    // Modal Logic
+    function showModal(isSuccess, text) {
+        const modal = document.getElementById('feedback-modal');
+        const content = document.getElementById('modal-content');
+        const title = document.getElementById('modal-title');
+        const desc = document.getElementById('modal-desc');
+
+        if (isSuccess) {
+            content.classList.add('success');
+            title.innerText = "Tebrikler!";
+        } else {
+            content.classList.remove('success');
+            title.innerText = "Hata Analizi";
+        }
+        
+        desc.innerText = text;
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('feedback-modal').style.display = 'none';
+        updateUI(); // Clean up wrong UI states by re-rendering based on current state
+    }
+
+    // Report Screen
+    function showReport() {
+        document.getElementById('visual-area').style.display = 'none';
+        document.getElementById('main-area').style.display = 'none';
+        document.getElementById('report-screen').style.display = 'block';
+
+        document.getElementById('rep-score').innerText = state.score;
+        
+        let correctFirst = state.history.filter(h => h.status === 'correct').length;
+        document.getElementById('rep-first').innerText = correctFirst;
+        document.getElementById('rep-wrong').innerText = state.wrongCount;
+        document.getElementById('rep-skip').innerText = state.skippedCount;
+
+        const logContainer = document.getElementById('error-log');
+        logContainer.innerHTML = '';
+        
+        const errorsAndSkips = state.history.filter(h => h.status === 'wrong' || h.status === 'skipped');
+        
+        if (errorsAndSkips.length === 0) {
+            logContainer.innerHTML = '<p style="color: var(--success); font-weight: bold; text-align:center;">Harika! Hiç hata yapmadın veya soru geçmedin.</p>';
+        } else {
+            errorsAndSkips.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'error-item';
+                const statusColor = item.status === 'skipped' ? 'var(--secondary)' : 'var(--danger)';
+                const statusText = item.status === 'skipped' ? 'Geçildi' : 'Yanlış Yapıldı';
+                
+                div.innerHTML = `
+                    <strong style="color: ${statusColor}">[${statusText}]</strong> <b>Görev:</b> ${item.q}<br>
+                    <span style="font-size: 0.9em; color: #555;"><b>Öğrenelim:</b> ${item.exp}</span>
+                `;
+                logContainer.appendChild(div);
+            });
+        }
+    }
+
+    function replayGame() {
+        initGame();
+    }
+
+    // Start on load
+    window.onload = initGame;
+
+</script>
+
+</body>
+</html>
