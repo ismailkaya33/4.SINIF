@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaman Dedektifi: Aile Sırrının Peşinde</title>
+<style>
+    :root {
+        --primary: #4A90E2;
+        --secondary: #F39C12;
+        --bg: #F5F7FA;
+        --text: #2C3E50;
+        --correct: #27AE60;
+        --wrong: #E74C3C;
+        --room-dark: #34495E;
+        --room-light: #F1C40F;
+    }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
+    #app { max-width: 800px; width: 100%; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 20px; overflow: hidden; }
+    
+    /* Header & Mansion */
+    header { text-align: center; margin-bottom: 20px; }
+    h1 { color: var(--primary); margin-top: 0; }
+    #mansion { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px auto; max-width: 300px; padding: 15px; background: #8e44ad; border-radius: 8px; border: 4px solid #2c3e50; }
+    .room { height: 40px; background-color: var(--room-dark); border-radius: 4px; transition: background-color 0.5s; position: relative; }
+    .room::after { content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; background: rgba(255,255,255,0.2); }
+    .room.light { background-color: var(--room-light); box-shadow: 0 0 10px var(--room-light); }
+    
+    #stats { display: flex; justify-content: space-between; background: #ecf0f1; padding: 10px; border-radius: 6px; font-weight: bold; }
+    
+    /* Task Area */
+    #task-area { min-height: 250px; margin: 20px 0; padding: 20px; border: 2px dashed #bdc3c7; border-radius: 8px; }
+    .question { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; }
+    
+    /* Interaction Styles */
+    .btn { padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-skip { background: #95a5a6; color: white; }
+    
+    .mcq-option { display: block; width: 100%; text-align: left; background: #ecf0f1; padding: 12px; margin-bottom: 10px; border: 2px solid transparent; border-radius: 6px; cursor: pointer; }
+    .mcq-option:hover { background: #dcdde1; }
+    
+    .match-container, .classify-container { display: flex; justify-content: space-between; gap: 20px; }
+    .match-col { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    .match-item, .class-item { padding: 10px; background: #ecf0f1; border: 2px solid #bdc3c7; border-radius: 6px; cursor: pointer; text-align: center; }
+    .match-item.selected, .class-item.selected { border-color: var(--primary); background: #d6eaf8; }
+    .match-item.matched { background: var(--correct); color: white; border-color: var(--correct); pointer-events: none; }
+    
+    .class-targets { display: flex; gap: 10px; margin-top: 20px; }
+    .class-target { flex: 1; padding: 15px; border: 2px dashed #bdc3c7; border-radius: 6px; text-align: center; min-height: 100px; }
+    .class-target.active { border-color: var(--primary); background: #fdfefe; }
+
+    .order-list { list-style: none; padding: 0; }
+    .order-item { display: flex; justify-content: space-between; padding: 10px; background: #ecf0f1; margin-bottom: 5px; border-radius: 6px; }
+    .order-controls button { margin-left: 5px; padding: 5px 10px; }
+
+    .free-input { width: 100%; padding: 10px; font-size: 1.1rem; border: 2px solid #bdc3c7; border-radius: 6px; margin-bottom: 10px; }
+
+    /* Controls */
+    #controls { display: flex; justify-content: space-between; margin-top: 20px; border-top: 2px solid #ecf0f1; padding-top: 20px; }
+    
+    /* Modal */
+    #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 100; }
+    .modal-content { background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; text-align: center; }
+    .modal-icon { font-size: 3rem; margin-bottom: 10px; }
+    .modal-wrong { color: var(--wrong); }
+    
+    /* Report */
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+    th, td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; }
+    th { background: #ecf0f1; }
+    .status-correct { color: var(--correct); font-weight: bold; }
+    .status-wrong { color: var(--wrong); font-weight: bold; }
+    .status-skipped { color: #f39c12; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div id="app">
+    <header>
+        <h1>Zaman Dedektifi: Aile Sırrının Peşinde</h1>
+        <p>Büyük dedenin eski konağındaki odaları aydınlatmak için görevleri tamamla!</p>
+        <div id="mansion">
+            <!-- 16 Rooms generated via JS -->
+        </div>
+        <div id="stats">
+            <span id="score-display">Puan: 0</span>
+            <span id="task-display">Görev: 1/16</span>
+        </div>
+    </header>
+
+    <div id="task-area"></div>
+
+    <div id="controls">
+        <button id="btn-prev" class="btn btn-skip" onclick="nav(-1)">Önceki Görev</button>
+        <button id="btn-skip" class="btn btn-skip" onclick="skipTask()">Soruyu Geç</button>
+        <button id="btn-next" class="btn btn-primary" onclick="nav(1)">Sonraki Görev</button>
+    </div>
+</div>
+
+<div id="modal">
+    <div class="modal-content">
+        <div class="modal-icon modal-wrong">❌</div>
+        <h2>Hata Yaptın Dedektif!</h2>
+        <p id="modal-desc"></p>
+        <p id="modal-hint" style="font-weight:bold; color: var(--primary);"></p>
+        <button class="btn btn-primary" onclick="closeModal()">Tekrar Dene</button>
+    </div>
+</div>
+
+<script>
+const rawTasks = [
+    {
+        id: "t1", type: "mcq",
+        q: "Aile tarihi araştırırken aşağıdaki kaynaklardan hangisi <b>yazılı</b> bir kaynaktır?",
+        options: [{id:"o1", t:"Diploma", c:true}, {id:"o2", t:"Fotoğraf Albümü", c:false}, {id:"o3", t:"Gaz Lambası", c:false}, {id:"o4", t:"Dedeyle yapılan röportaj", c:false}],
+        exp: "Yazılı kaynaklar kâğıt üzerinde belgelerdir. Fotoğraf görsel, gaz lambası nesne (eşya), röportaj ise sözlü kaynaktır."
+    },
+    {
+        id: "t2", type: "tf",
+        q: "Aile tarihi geçmişimizi öğrenmemizi ve köklerimizi tanımamızı sağlar.",
+        ans: true,
+        exp: "Aile tarihi çalışmaları, geçmişte kim olduğumuzu ve kültürel bağlarımızı öğrenmemizi sağlar."
+    },
+    {
+        id: "t3", type: "match",
+        q: "Kaynak türlerini uygun örnekleriyle eşleştirin.",
+        pairs: [
+            {l:"Sözlü Kaynak", r:"Büyükbabayla yapılan röportaj"},
+            {l:"Yazılı Kaynak", r:"Dedemin eski ilkokul karnesi"},
+            {l:"Görsel Kaynak", r:"Düğün video kaseti"},
+            {l:"Eşya (Nesne)", r:"Ninemin köstekli saati"}
+        ],
+        exp: "Sözlü kaynaklar konuşmaya, yazılı olanlar belgelere, görseller resim/videoya, eşyalar ise nesnelere dayanır."
+    },
+    {
+        id: "t4", type: "order",
+        q: "Sözlü tarih çalışması aşamalarını doğru sıraya koyunuz.",
+        items: ["Görüşülecek kişiyi belirlemek", "Soruları hazırlamak", "Görüşmeyi yapıp kaydetmek", "Bilgileri düzenleyip raporlaştırmak"],
+        exp: "Önce kişi seçilir, sonra ona sorulacak sorular hazırlanır, ardından görüşme yapılır ve en son elde edilen bilgiler rapora dönüştürülür."
+    },
+    {
+        id: "t5", type: "classify",
+        q: "Aşağıdaki kaynakları türlerine göre sınıflandır.",
+        cats: ["Yazılı Kaynak", "Görsel Kaynak"],
+        items: [
+            {t: "Nüfus Cüzdanı", c: 0}, {t: "Eski Fotoğraf", c: 1}, {t: "Tapu Senedi", c: 0}, {t: "Video Kaydı", c: 1}
+        ],
+        exp: "Nüfus cüzdanı ve tapu senedi belge olduğu için yazılı, fotoğraf ve video görüntülendiği için görsel kaynaktır."
+    },
+    {
+        id: "t6", type: "mcq",
+        q: "Aile üyelerinin geçmişten günümüze doğru sıralandığı ve akrabalık ilişkilerini gösteren şemaya ne ad verilir?",
+        options: [{id:"o1", t:"Soy Ağacı", c:true}, {id:"o2", t:"Sözlük", c:false}, {id:"o3", t:"Kroki", c:false}, {id:"o4", t:"Zaman Şeridi", c:false}],
+        exp: "Akrabalık ilişkilerini dallanmış bir ağaç gibi gösteren şemalara Soy Ağacı denir."
+    },
+    {
+        id: "t7", type: "tf",
+        q: "Aile tarihi çalışmalarında sadece internetten elde edilen bilgiler kullanılır.",
+        ans: false,
+        exp: "Aile tarihi asıl olarak aile büyükleriyle konuşarak, eski eşyalara ve fotoğraflara bakarak araştırılır."
+    },
+    {
+        id: "t8", type: "free",
+        q: "Aile büyüklerimizle geçmiş hakkında sohbet ederek yaptığımız tarih çalışması yönteminin adı nedir? (İki kelime olarak yazınız)",
+        ans: "sözlü tarih",
+        exp: "İnsanların anılarını dinleyerek yaptığımız tarih çalışmasına 'Sözlü Tarih' denir."
+    },
+    {
+        id: "t9", type: "mcq",
+        q: "Aşağıdakilerden hangisi aile tarihi araştırırken kullanabileceğimiz bir <b>nesnedir (eşyadır)</b>?",
+        options: [{id:"o1", t:"Eski Nüfus Cüzdanı", c:false}, {id:"o2", t:"Dikiş Makinesi", c:true}, {id:"o3", t:"Askerlik Fotoğrafı", c:false}, {id:"o4", t:"Soyağacı", c:false}],
+        exp: "Dikiş makinesi geçmişte kullanılmış, dokunulabilen bir eşya (nesne) örneğidir."
+    },
+    {
+        id: "t10", type: "match",
+        q: "Geçmişte kullanılan eşyaları kullanım amaçlarıyla eşleştirin.",
+        pairs: [
+            {l:"Aydınlatma Aracı", r:"Gaz Lambası"},
+            {l:"Zaman Ölçer", r:"Köstekli Saat"},
+            {l:"Su Taşımak", r:"Bakır İbrik"},
+            {l:"Giysi Dikmek", r:"Dikiş Makinesi"}
+        ],
+        exp: "Gaz lambası eskiden evleri aydınlatmak için, ibrik ise su taşımak ve dökünmek için kullanılırdı."
+    },
+    {
+        id: "t11", type: "order",
+        q: "Bir ailedeki kişileri <b>en eskiden günümüze</b> doğru sıralayınız.",
+        items: ["Büyükdedem", "Dedem", "Babam", "Ben"],
+        exp: "En büyük geçmişteki kişi büyükdede, ardından dede, sonra baba ve en son kendimiz geliriz."
+    },
+    {
+        id: "t12", type: "classify",
+        q: "Aşağıdaki ifadeleri doğru yönteme yerleştir.",
+        cats: ["Sözlü Tarih", "Nesne İnceleme"],
+        items: [
+            {t: "Ninemin çocukluk anısını anlatması", c: 0}, {t: "Dedemin madalyasına dokunmak", c: 1}, {t: "Eski bir sandığı incelemek", c: 1}, {t: "Eski bayramları dedemden dinlemek", c: 0}
+        ],
+        exp: "Dinlemeye dayalı olanlar sözlü tarih, dokunup incelemeye dayalı olanlar nesne (eşya) incelemedir."
+    },
+    {
+        id: "t13", type: "mcq",
+        q: "Sözlü tarih görüşmesi yaparken, aile büyüğünün anlattıklarının unutulmaması için en güvenilir yöntem hangisidir?",
+        options: [{id:"o1", t:"Akılda tutmaya çalışmak", c:false}, {id:"o2", t:"Sadece bir kelimesini yazmak", c:false}, {id:"o3", t:"Ses veya video kaydı almak", c:true}, {id:"o4", t:"Başka birine anlatmak", c:false}],
+        exp: "Bilgilerin kaybolmaması ve daha sonra raporlaştırılabilmesi için en iyi yöntem ses veya video kaydı almaktır."
+    },
+    {
+        id: "t14", type: "tf",
+        q: "Aile tarihi sadece o aileyi ilgilendirir, yaşadıkları toplumun geçmişi hakkında hiçbir bilgi vermez.",
+        ans: false,
+        exp: "Aile tarihi aynı zamanda o dönemdeki toplumun yaşantısı, kültürü ve göçleri hakkında da önemli bilgiler verir."
+    },
+    {
+        id: "t15", type: "free",
+        q: "Aile tarihi araştırırken incelediğimiz; eski sandık, kılıç, halı, radyo gibi varlıklara genel olarak ne ad verilir?",
+        ans: "eşya",
+        exp: "Geçmişten günümüze ulaşan ve dokunabildiğimiz bu tür varlıklara eşya (veya nesne) denir."
+    },
+    {
+        id: "t16", type: "mcq",
+        q: "Aile tarihi araştırması için dedenin yanına gittin. Önce ona eski bayramları sordun (1). Sonra sana eski bir askerlik fotoğrafını gösterdi (2). En son büyükdedesinden kalan bir tapu senedini okudunuz (3). <b>Sırasıyla</b> hangi kaynak türlerini kullandın?",
+        options: [
+            {id:"o1", t:"Sözlü - Görsel - Yazılı", c:true}, 
+            {id:"o2", t:"Yazılı - Görsel - Nesne", c:false}, 
+            {id:"o3", t:"Sözlü - Yazılı - Görsel", c:false}, 
+            {id:"o4", t:"Görsel - Sözlü - Yazılı", c:false}
+        ],
+        exp: "Soru sormak Sözlü Kaynak, Fotoğrafa bakmak Görsel Kaynak, Tapu Senedi okumak Yazılı Kaynak kullanımıdır."
+    }
+];
+
+let state = {
+    currentIndex: 0,
+    score: 0,
+    wrongCount: 0,
+    skippedCount: 0,
+    hintCount: 0,
+    tasks: JSON.parse(JSON.stringify(rawTasks)),
+    results: [] 
+};
+
+// Initialize results array
+state.tasks.forEach(t => {
+    state.results.push({
+        id: t.id,
+        status: 'pending',
+        answer: null,
+        attempts: 0,
+        firstTry: true,
+        hintUsed: false
+    });
+});
+
+const taskArea = document.getElementById('task-area');
+const btnPrev = document.getElementById('btn-prev');
+const btnNext = document.getElementById('btn-next');
+const btnSkip = document.getElementById('btn-skip');
+const modal = document.getElementById('modal');
+
+function initGame() {
+    buildMansion();
+    renderTask(state.currentIndex);
+    updateStats();
+}
+
+function buildMansion() {
+    const mansion = document.getElementById('mansion');
+    mansion.innerHTML = '';
+    for(let i=0; i<state.tasks.length; i++) {
+        const room = document.createElement('div');
+        room.className = 'room';
+        room.id = 'room-' + i;
+        mansion.appendChild(room);
+    }
+}
+
+function updateStats() {
+    document.getElementById('score-display').innerText = `Puan: ${state.score}`;
+    if(state.currentIndex < state.tasks.length) {
+        document.getElementById('task-display').innerText = `Görev: ${state.currentIndex + 1}/${state.tasks.length}`;
+    } else {
+        document.getElementById('task-display').innerText = `Rapor`;
+    }
+
+    // Update Mansion lights
+    for(let i=0; i<state.tasks.length; i++) {
+        const room = document.getElementById('room-'+i);
+        if(state.results[i].status === 'completed') {
+            room.classList.add('light');
+        } else {
+            room.classList.remove('light');
+        }
+    }
+}
+
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+}
+
+function normalizeText(text) {
+    return text.trim().toLocaleLowerCase('tr-TR').replace(/\s+/g, ' ');
+}
+
+function renderTask(index) {
+    btnPrev.disabled = index === 0;
+    
+    if (index >= state.tasks.length) {
+        renderReport();
+        return;
+    }
+
+    const task = state.tasks[index];
+    const res = state.results[index];
+    
+    btnNext.disabled = res.status !== 'completed';
+    btnSkip.style.display = res.status === 'completed' ? 'none' : 'inline-block';
+
+    let html = `<div class="question">${index+1}. ${task.q}</div>`;
+
+    if (res.status === 'completed') {
+        html += `<div style="color:var(--correct); font-weight:bold; padding:20px; text-align:center; background:#e8f8f5; border-radius:8px;">Bu görevi zaten başarıyla tamamladın!</div>`;
+        taskArea.innerHTML = html;
+        return;
+    }
+
+    if (task.type === 'mcq') {
+        if(!task.shuffledOptions) task.shuffledOptions = shuffle([...task.options]);
+        html += `<div id="mcq-box">`;
+        task.shuffledOptions.forEach(opt => {
+            html += `<button class="mcq-option" onclick="checkMCQ('${opt.id}')">${opt.t}</button>`;
+        });
+        html += `</div>`;
+    } 
+    else if (task.type === 'tf') {
+        html += `<div style="display:flex; gap:10px; justify-content:center;">
+            <button class="btn btn-primary" onclick="checkTF(true)">Doğru</button>
+            <button class="btn btn-wrong" style="background:var(--wrong); color:white;" onclick="checkTF(false)">Yanlış</button>
+        </div>`;
+    }
+    else if (task.type === 'free') {
+        html += `<input type="text" id="free-input" class="free-input" placeholder="Cevabınızı yazın...">
+                 <button class="btn btn-primary" onclick="checkFree()">Kontrol Et</button>`;
+    }
+    else if (task.type === 'match') {
+        if(!task.left) {
+            task.left = shuffle(task.pairs.map(p => p.l));
+            task.right = shuffle(task.pairs.map(p => p.r));
+        }
+        html += `<div class="match-container">
+                    <div class="match-col" id="match-left">
+                        ${task.left.map((l, i) => `<div class="match-item" data-val="${l}" onclick="selectMatch(this, 'left')">${l}</div>`).join('')}
+                    </div>
+                    <div class="match-col" id="match-right">
+                        ${task.right.map((r, i) => `<div class="match-item" data-val="${r}" onclick="selectMatch(this, 'right')">${r}</div>`).join('')}
+                    </div>
+                 </div>`;
+    }
+    else if (task.type === 'order') {
+        if(!task.currentOrder) task.currentOrder = shuffle([...task.items]);
+        html += `<ul class="order-list" id="order-list">`;
+        task.currentOrder.forEach((item, i) => {
+            html += `<li class="order-item"><span>${item}</span>
+                        <div class="order-controls">
+                            <button onclick="moveOrder(${i}, -1)">▲</button>
+                            <button onclick="moveOrder(${i}, 1)">▼</button>
+                        </div>
+                     </li>`;
+        });
+        html += `</ul><button class="btn btn-primary" style="margin-top:10px; width:100%" onclick="checkOrder()">Sıralamayı Kontrol Et</button>`;
+    }
+    else if (task.type === 'classify') {
+        if(!task.shuffledItems) task.shuffledItems = shuffle([...task.items]);
+        html += `<div id="class-items" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">`;
+        task.shuffledItems.forEach((item, i) => {
+            if(!item.placed) html += `<div class="class-item" data-idx="${i}" onclick="selectClassify(this)">${item.t}</div>`;
+        });
+        html += `</div><div class="class-targets">`;
+        task.cats.forEach((cat, i) => {
+            html += `<div class="class-target" onclick="placeClassify(${i})"><b>${cat}</b><br><div id="cat-box-${i}"></div></div>`;
+        });
+        html += `</div>`;
+    }
+
+    taskArea.innerHTML = html;
+}
+
+// Logic implementations
+function checkMCQ(optId) {
+    const task = state.tasks[state.currentIndex];
+    const opt = task.options.find(o => o.id === optId);
+    processAnswer(opt.c, task.exp);
+}
+
+function checkTF(val) {
+    const task = state.tasks[state.currentIndex];
+    processAnswer(val === task.ans, task.exp);
+}
+
+function checkFree() {
+    const task = state.tasks[state.currentIndex];
+    const val = document.getElementById('free-input').value;
+    if(val.trim() === '') return;
+    const isCorrect = normalizeText(val) === normalizeText(task.ans);
+    processAnswer(isCorrect, task.exp);
+}
+
+// Match logic
+let matchSel = { left: null, right: null };
+function selectMatch(el, side) {
+    if(side === 'left') {
+        if(matchSel.left) matchSel.left.classList.remove('selected');
+        matchSel.left = el;
+    } else {
+        if(matchSel.right) matchSel.right.classList.remove('selected');
+        matchSel.right = el;
+    }
+    el.classList.add('selected');
+    
+    if(matchSel.left && matchSel.right) {
+        const task = state.tasks[state.currentIndex];
+        const lVal = matchSel.left.getAttribute('data-val');
+        const rVal = matchSel.right.getAttribute('data-val');
+        const pair = task.pairs.find(p => p.l === lVal);
+        
+        if(pair && pair.r === rVal) {
+            matchSel.left.classList.add('matched');
+            matchSel.right.classList.add('matched');
+            matchSel.left.classList.remove('selected');
+            matchSel.right.classList.remove('selected');
+            
+            // check if all matched
+            const allMatched = document.querySelectorAll('#match-left .matched').length === task.pairs.length;
+            if(allMatched) {
+                processAnswer(true, task.exp);
+            }
+        } else {
+            matchSel.left.classList.remove('selected');
+            matchSel.right.classList.remove('selected');
+            processAnswer(false, task.exp);
+            // Reset visually
+            document.querySelectorAll('.match-item').forEach(i => {
+                i.classList.remove('matched');
+                i.classList.remove('selected');
+            });
+        }
+        matchSel = {left: null, right: null};
+    }
+}
+
+// Order logic
+function moveOrder(idx, dir) {
+    const task = state.tasks[state.currentIndex];
+    const arr = task.currentOrder;
+    if(idx + dir >= 0 && idx + dir < arr.length) {
+        let temp = arr[idx];
+        arr[idx] = arr[idx+dir];
+        arr[idx+dir] = temp;
+        renderTask(state.currentIndex);
+    }
+}
+function checkOrder() {
+    const task = state.tasks[state.currentIndex];
+    const isCorrect = JSON.stringify(task.currentOrder) === JSON.stringify(task.items);
+    processAnswer(isCorrect, task.exp);
+}
+
+// Classify logic
+let classSel = null;
+function selectClassify(el) {
+    if(classSel) classSel.classList.remove('selected');
+    classSel = el;
+    classSel.classList.add('selected');
+}
+function placeClassify(catIdx) {
+    if(!classSel) return;
+    const task = state.tasks[state.currentIndex];
+    const itemIdx = classSel.getAttribute('data-idx');
+    const item = task.shuffledItems[itemIdx];
+    
+    if(item.c === catIdx) {
+        item.placed = true;
+        document.getElementById('cat-box-'+catIdx).innerHTML += `<div>✔️ ${item.t}</div>`;
+        classSel.remove();
+        classSel = null;
+        
+        if(task.shuffledItems.every(i => i.placed)) {
+            processAnswer(true, task.exp);
+        }
+    } else {
+        classSel.classList.remove('selected');
+        classSel = null;
+        processAnswer(false, task.exp);
+        // Reset all
+        task.shuffledItems.forEach(i => i.placed = false);
+        renderTask(state.currentIndex);
+    }
+}
+
+
+function processAnswer(isCorrect, explanation) {
+    const res = state.results[state.currentIndex];
+    res.attempts++;
+    
+    if (isCorrect) {
+        if(res.firstTry) state.score += 10;
+        res.status = 'completed';
+        updateStats();
+        btnNext.disabled = false;
+        btnSkip.style.display = 'none';
+        
+        // Show success inline
+        taskArea.innerHTML += `<div style="margin-top:15px; padding:15px; background:#e8f8f5; border-left:4px solid var(--correct); color:#2c3e50;">
+            <b>Tebrikler! Doğru Cevap.</b><br>${explanation}
+        </div>`;
+        
+    } else {
+        res.firstTry = false;
+        state.wrongCount++;
+        res.hintUsed = true;
+        state.hintCount++;
+        showModal("Bunu tekrar düşünmelisin.", explanation);
+    }
+}
+
+function skipTask() {
+    const res = state.results[state.currentIndex];
+    res.status = 'skipped';
+    state.skippedCount++;
+    nav(1);
+}
+
+function nav(dir) {
+    state.currentIndex += dir;
+    if (state.currentIndex < 0) state.currentIndex = 0;
+    updateStats();
+    renderTask(state.currentIndex);
+}
+
+function showModal(desc, hint) {
+    document.getElementById('modal-desc').innerText = desc;
+    document.getElementById('modal-hint').innerText = hint;
+    document.getElementById('modal').style.display = 'flex';
+}
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+}
+
+function renderReport() {
+    btnNext.style.display = 'none';
+    btnSkip.style.display = 'none';
+    btnPrev.style.display = 'none';
+    
+    document.getElementById('task-display').innerText = 'Görev Raporu';
+    
+    let completed = state.results.filter(r => r.status === 'completed').length;
+    let firstTries = state.results.filter(r => r.status === 'completed' && r.firstTry).length;
+    
+    let html = `<h2>Görev Tamamlandı Dedektif!</h2>
+        <div style="background:#ecf0f1; padding:15px; border-radius:8px; margin-bottom:20px; display:flex; justify-content:space-around;">
+            <div>Toplam Görev: <b>${state.tasks.length}</b></div>
+            <div>Puan: <b>${state.score}</b></div>
+            <div>İlk Denemede Doğru: <b>${firstTries}</b></div>
+            <div>Hatalı Denemeler: <b>${state.wrongCount}</b></div>
+            <div>Geçilen: <b>${state.skippedCount}</b></div>
+        </div>`;
+        
+    let reviewHtml = `<h3>Yanlış / Geçilen Görevleri İncele</h3>`;
+    let needsReview = false;
+    
+    state.results.forEach((r, idx) => {
+        if(r.status === 'skipped' || !r.firstTry) {
+            needsReview = true;
+            let statusText = r.status === 'skipped' ? '<span class="status-skipped">Geçildi</span>' : '<span class="status-wrong">Hatalı Deneme Yapıldı</span>';
+            reviewHtml += `
+            <div style="border:1px solid #bdc3c7; padding:10px; margin-bottom:10px; border-radius:6px; background:#fff;">
+                <strong>Soru ${idx+1}:</strong> ${state.tasks[idx].q}<br>
+                <strong>Durum:</strong> ${statusText}<br>
+                <div style="margin-top:5px; background:#fdfefe; padding:8px; border-left:3px solid var(--primary); font-size:0.9rem;">
+                    <b>Öğretici Açıklama:</b> ${state.tasks[idx].exp}
+                </div>
+            </div>`;
+        }
+    });
+    
+    if (needsReview) {
+        html += reviewHtml;
+    } else {
+        html += `<p style="color:var(--correct); font-weight:bold;">Mükemmel! Bütün görevleri ilk denemede hatasız tamamladın.</p>`;
+    }
+    
+    html += `<button class="btn btn-primary" style="margin-top:20px; width:100%;" onclick="replay()">Yeniden Oyna (Sıfırla)</button>`;
+    
+    taskArea.innerHTML = html;
+}
+
+function replay() {
+    state.currentIndex = 0;
+    state.score = 0;
+    state.wrongCount = 0;
+    state.skippedCount = 0;
+    state.hintCount = 0;
+    
+    state.tasks = JSON.parse(JSON.stringify(rawTasks));
+    state.results = [];
+    state.tasks.forEach(t => {
+        state.results.push({ id: t.id, status: 'pending', answer: null, attempts: 0, firstTry: true, hintUsed: false });
+    });
+    
+    btnNext.style.display = 'inline-block';
+    btnSkip.style.display = 'inline-block';
+    btnPrev.style.display = 'inline-block';
+    
+    initGame();
+}
+
+window.onload = initGame;
+</script>
+</body>
+</html>
