@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelime Dedektifi: Anlam Peşinde</title>
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --secondary: #E67E22;
+            --accent: #F1C40F;
+            --success: #27AE60;
+            --danger: #E74C3C;
+            --light: #ECF0F1;
+            --dark: #1A252C;
+            --gray: #BDC3C7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--primary);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--dark);
+            color: var(--accent);
+            padding: 0.5rem;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        /* Map Styles */
+        #map-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+
+        .map-track {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            min-width: 800px;
+            padding: 10px 0;
+        }
+
+        .map-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--gray);
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .map-node {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--gray);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 2;
+            position: relative;
+            border: 3px solid white;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .map-node.completed { background-color: var(--success); }
+        .map-node.skipped { background-color: var(--secondary); }
+        .map-node.active { 
+            background-color: var(--accent); 
+            transform: scale(1.3);
+            color: var(--dark);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Task Area Styles */
+        #task-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            flex: 1;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .task-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            width: 100%;
+        }
+
+        mark {
+            background-color: rgba(241, 196, 15, 0.4);
+            padding: 0 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        /* UI Type 1: Tagging */
+        .tag-container { text-align: center; }
+        .tag-sentence { font-size: 1.3rem; margin-bottom: 2rem; }
+        .tag-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn-tag {
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        .btn-tag:hover { background: var(--primary); color: white; }
+        .btn-tag.selected-correct { background: var(--success); border-color: var(--success); color: white; }
+        .btn-tag.selected-wrong { background: var(--danger); border-color: var(--danger); color: white; }
+
+        /* UI Type 2: MCQ & Find Error */
+        .mcq-container { display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 600px; }
+        .btn-mcq {
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--gray);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .btn-mcq:hover { border-color: var(--primary); background: #f8f9fa; }
+        .btn-mcq.selected-correct { background: var(--success); border-color: var(--success); color: white; }
+        .btn-mcq.selected-wrong { background: var(--danger); border-color: var(--danger); color: white; }
+
+        /* UI Type 3: Pairing */
+        .pair-container { display: flex; justify-content: space-between; width: 100%; max-width: 600px; gap: 2rem; }
+        .pair-col { display: flex; flex-direction: column; gap: 1rem; flex: 1; }
+        .pair-item {
+            padding: 1rem;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            background: white;
+            transition: all 0.2s;
+        }
+        .pair-item.active { border-color: var(--accent); background: #fef9e7; transform: scale(1.05); }
+        .pair-item.matched { background: var(--success); border-color: var(--success); color: white; cursor: default; }
+        .pair-item.wrong { animation: shake 0.5s; background: var(--danger); color: white; border-color: var(--danger); }
+
+        /* UI Type 4: Drag/Drop (Tap-to-Map) */
+        .dd-container { display: flex; flex-direction: column; gap: 2rem; width: 100%; }
+        .dd-sentences { display: flex; flex-direction: column; gap: 1rem; }
+        .dd-sentence {
+            padding: 1rem;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            background: white;
+        }
+        .dd-sentence.active { border-color: var(--accent); background: #fef9e7; }
+        .dd-categories { display: flex; gap: 1rem; justify-content: center; }
+        .dd-box {
+            padding: 1.5rem;
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .dd-box.hover { background: #e8f4f8; }
+        .dd-matched-item { background: var(--success); color: white; padding: 0.5rem; border-radius: 4px; font-size: 0.9rem; font-weight: normal; }
+
+        /* UI Type 6: Boss */
+        .boss-container { text-align: center; max-width: 700px; }
+        .boss-text { font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 10px; border-left: 4px solid var(--accent); text-align: left;}
+        .boss-selects { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+        .boss-row { display: flex; justify-content: space-between; align-items: center; background: white; padding: 0.8rem; border: 1px solid var(--gray); border-radius: 8px; }
+        .boss-row select { padding: 0.5rem; font-size: 1rem; border-radius: 5px; border: 1px solid var(--primary); }
+        .btn-check { background: var(--primary); color: white; padding: 0.8rem 2rem; border: none; border-radius: 25px; font-size: 1.1rem; cursor: pointer; font-weight: bold; }
+        .btn-check:hover { background: #1a252c; }
+
+        /* Controls */
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .btn-nav {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+        #btn-prev { background: var(--gray); color: var(--dark); }
+        #btn-skip { background: var(--secondary); color: white; }
+        #btn-next { background: var(--primary); color: white; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .modal.show { transform: scale(1); display: block; }
+        .modal h2 { margin-bottom: 1rem; }
+        .modal p { margin-bottom: 1.5rem; font-size: 1.1rem; line-height: 1.5; }
+        .modal-success h2 { color: var(--success); }
+        .modal-error h2 { color: var(--danger); }
+        .btn-modal { padding: 0.8rem 2rem; border: none; border-radius: 25px; font-size: 1.1rem; cursor: pointer; font-weight: bold; background: var(--primary); color: white;}
+
+        /* Report */
+        #report-panel { display: none; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .report-header { text-align: center; margin-bottom: 2rem; color: var(--primary); }
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-box { background: #f8f9fa; padding: 1.5rem; border-radius: 8px; text-align: center; border-bottom: 4px solid var(--accent); }
+        .stat-box .num { font-size: 2rem; font-weight: bold; color: var(--primary); }
+        .error-list { display: flex; flex-direction: column; gap: 1rem; }
+        .error-item { border: 1px solid var(--danger); border-left: 5px solid var(--danger); padding: 1rem; border-radius: 5px; background: #fdf5f5; cursor: pointer;}
+        .error-item:hover { background: #fadbd8; }
+        .btn-replay { display: block; width: 100%; max-width: 300px; margin: 2rem auto 0; padding: 1rem; background: var(--primary); color: white; text-align: center; border: none; border-radius: 25px; font-size: 1.2rem; cursor: pointer; font-weight: bold; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+        }
+
+        .disabled-interaction { pointer-events: none; opacity: 0.8; }
+
+        @media (max-width: 600px) {
+            .pair-container { flex-direction: column; gap: 1rem; }
+            .dd-categories { flex-direction: column; }
+            .boss-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Kelime Dedektifi: Anlam Peşinde
+        </h1>
+    </header>
+    <div class="stats-bar">
+        <span>Puan: <span id="ui-score">0</span></span>
+        <span>Görev: <span id="ui-task">1/18</span></span>
+    </div>
+
+    <div id="game-container">
+        <div id="map-panel">
+            <div class="map-track" id="map-track">
+                <div class="map-line"></div>
+                <!-- Nodes generated by JS -->
+            </div>
+        </div>
+
+        <div id="task-panel">
+            <!-- Dynamic Task Content -->
+        </div>
+
+        <div id="controls">
+            <button id="btn-prev" class="btn-nav" disabled>Önceki Görev</button>
+            <button id="btn-skip" class="btn-nav">Görevi Geç</button>
+            <button id="btn-next" class="btn-nav" disabled>Sonraki Görev</button>
+        </div>
+
+        <div id="report-panel">
+            <h2 class="report-header">Vaka Dosyası Kapandı: Final Raporu</h2>
+            <div class="report-grid">
+                <div class="stat-box">
+                    <div class="num" id="rep-total">18</div>
+                    <div>Toplam Görev</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="rep-score">0</div>
+                    <div>Puan</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="rep-first">0</div>
+                    <div>İlk Denemede Doğru</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="rep-wrong">0</div>
+                    <div>Yanlış Deneme</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="rep-skip">0</div>
+                    <div>Geçilen</div>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 1rem; color: var(--primary);">Geliştirilmesi Gereken Dedektiflik Becerileri:</h3>
+            <div class="error-list" id="error-list">
+                <!-- Errors go here -->
+            </div>
+            
+            <button class="btn-replay" id="btn-replay">Yeni Dosya Aç (Tekrar Oyna)</button>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal-content">
+            <h2 id="modal-title">Başlık</h2>
+            <p id="modal-text">Açıklama metni burada yer alacak.</p>
+            <button class="btn-modal" id="btn-modal-close">Tamam</button>
+        </div>
+    </div>
+
+<script>
+    // --- TASK DATA ---
+    const tasksData = [
+        {
+            id: 1, type: "tag",
+            question: "Aşağıdaki cümlede altı çizili kelimenin anlam özelliğini bulunuz.",
+            sentence: "Kutuları taşırken kolum <mark>koptu</mark>.",
+            options: ["Gerçek", "Mecaz", "Terim"],
+            answer: "Mecaz",
+            explanation: "'Kopmak' sözcüğü burada fiziksel olarak bir parçanın ayrılması anlamında değil, 'çok yorulmak' anlamında tamamen yeni bir anlam kazanarak mecaz anlamda kullanılmıştır."
+        },
+        {
+            id: 2, type: "tag",
+            question: "Aşağıdaki cümlede altı çizili kelimenin anlam özelliğini bulunuz.",
+            sentence: "Matematik dersinde <mark>açıları</mark> ölçtük.",
+            options: ["Gerçek", "Mecaz", "Terim"],
+            answer: "Terim",
+            explanation: "'Açı' kelimesi matematik ve geometri bilimine ait özel bir kavram olduğu için terim anlamlıdır."
+        },
+        {
+            id: 3, type: "tag",
+            question: "Aşağıdaki cümlede altı çizili kelimenin anlam özelliğini bulunuz.",
+            sentence: "Sobadaki odunlar gürül gürül <mark>yandı</mark>.",
+            options: ["Gerçek", "Mecaz", "Terim"],
+            answer: "Gerçek",
+            explanation: "'Yanmak' kelimesi ateş almak, tutuşmak olan sözlükteki ilk anlamıyla kullanıldığı için gerçek anlamlıdır."
+        },
+        {
+            id: 4, type: "mcq",
+            question: "Hangi cümlede 'kırmak' sözcüğü mecaz anlamda kullanılmıştır?",
+            options: ["Bardağı düşürüp kırdı.", "Sert sözleriyle kalbimi kırdı.", "Odunları baltayla kırdı."],
+            answer: "Sert sözleriyle kalbimi kırdı.",
+            explanation: "Kalp fiziksel olarak cam gibi kırılmaz. Burada 'kırmak' üzmek anlamında kullanılarak mecaz anlam kazanmıştır."
+        },
+        {
+            id: 5, type: "mcq",
+            question: "Hangi cümlede terim anlamlı bir sözcük KULLANILMAMIŞTIR?",
+            options: ["Hakem ofsayt kararı verdi.", "Şiirin son kıtasını okuduk.", "Dışarıda şiddetli bir fırtına var."],
+            answer: "Dışarıda şiddetli bir fırtına var.",
+            explanation: "'Ofsayt' spor, 'kıta' edebiyat terimidir. Ancak fırtına genel bir doğa olayıdır ve belirli bir bilim/sanat dalına ait terim değildir."
+        },
+        {
+            id: 6, type: "mcq",
+            question: "Hangi cümlede 'boş' sözcüğü gerçek anlamdadır?",
+            options: ["Boş bardağı masaya bıraktı.", "Bana boş sözlerle gelme.", "Bugün çok boş bir gün geçirdim."],
+            answer: "Boş bardağı masaya bıraktı.",
+            explanation: "İçinde hiçbir şey bulunmayan anlamı 'boş' kelimesinin akla gelen ilk (gerçek) anlamıdır."
+        },
+        {
+            id: 7, type: "pair",
+            question: "'Ağır' kelimesinin kullanıldığı cümleleri anlam özellikleriyle eşleştiriniz.",
+            pairs: [
+                { text: "Pazardan ağır bir çuval taşıdı.", match: "Gerçek" },
+                { text: "Bana çok ağır sözler söyledi.", match: "Mecaz" }
+            ],
+            explanation: "Çuvalın tartıda ağır gelmesi gerçek anlamdır. Sözlerin kırıcı (ağır) olması ise mecaz anlamdır."
+        },
+        {
+            id: 8, type: "pair",
+            question: "'Kök' kelimesinin kullanıldığı cümleleri anlam özellikleriyle eşleştiriniz.",
+            pairs: [
+                { text: "Ağacın kökleri çürümüş.", match: "Gerçek" },
+                { text: "Türkçe dersinde kelimenin kökünü bulduk.", match: "Terim" }
+            ],
+            explanation: "Ağacın toprak altındaki kısmı gerçek anlamdır. Dilbilgisindeki 'kök' kavramı ise bir terimdir."
+        },
+        {
+            id: 9, type: "pair",
+            question: "'Oyun' kelimesinin kullanıldığı cümleleri anlam özellikleriyle eşleştiriniz.",
+            pairs: [
+                { text: "Bize oyun oynayıp hepimizi kandırdılar.", match: "Mecaz" },
+                { text: "Bahçede arkadaşlarımla oyun oynadık.", match: "Gerçek" }
+            ],
+            explanation: "Eğlenmek için yapılan etkinlik (gerçek) iken, hile ve kandırmaca anlamında kullanılması mecazdır."
+        },
+        {
+            id: 10, type: "dragdrop",
+            question: "Aşağıdaki cümleleri içerdikleri anlam özelliğine göre doğru kutulara yerleştiriniz.",
+            items: [
+                { text: "Yemeğe acı biber doğradı.", target: "Gerçek" },
+                { text: "Acı sözleriyle onu ağlattı.", target: "Mecaz" },
+                { text: "Üçgenin iç açısını ölçtük.", target: "Terim" }
+            ],
+            options: ["Gerçek", "Mecaz", "Terim"],
+            explanation: "Tat alma (acı biber) gerçek, üzücü (acı söz) mecaz, geometri (açı) ise terim anlamdır."
+        },
+        {
+            id: 11, type: "dragdrop",
+            question: "Aşağıdaki ifadeleri doğru anlam kutularına yerleştiriniz.",
+            items: [
+                { text: "Koyu mavi gömlek", target: "Gerçek" },
+                { text: "Koyu bir sohbet", target: "Mecaz" },
+                { text: "Müzikte notalar", target: "Terim" }
+            ],
+            options: ["Gerçek", "Mecaz", "Terim"],
+            explanation: "Rengin koyu olması gerçek, sohbetin derinleşmesi mecaz, nota ise müzik terimidir."
+        },
+        {
+            id: 12, type: "dragdrop",
+            question: "Aşağıdaki ifadeleri doğru anlam kutularına yerleştiriniz.",
+            items: [
+                { text: "Boş kutu", target: "Gerçek" },
+                { text: "Boş bakış", target: "Mecaz" },
+                { text: "Futbolda penaltı", target: "Terim" }
+            ],
+            options: ["Gerçek", "Mecaz", "Terim"],
+            explanation: "İçi boş olan kutu gerçek, anlamsız/dalgın bakış mecaz, penaltı ise spor terimidir."
+        },
+        {
+            id: 13, type: "find_error",
+            question: "Aşağıdaki kartlardan hangisinde kelimenin anlam özelliği YANLIŞ eşleştirilmiştir?",
+            options: [
+                { text: "İnce bir ip (Gerçek)", isWrong: false },
+                { text: "İnce davranış (Terim)", isWrong: true },
+                { text: "Gemi kaptanı (Gerçek)", isWrong: false }
+            ],
+            explanation: "İnce davranış zarif anlamındadır ve 'mecaz' anlamlıdır, 'terim' değildir."
+        },
+        {
+            id: 14, type: "find_error",
+            question: "Aşağıdaki kartlardan hangisinde kelimenin anlam özelliği YANLIŞ eşleştirilmiştir?",
+            options: [
+                { text: "Sıcak çorba (Gerçek)", isWrong: false },
+                { text: "Sıcak karşılama (Mecaz)", isWrong: false },
+                { text: "Dünya ve Güneş (Mecaz)", isWrong: true }
+            ],
+            explanation: "Astronomi biliminde kullanılan Dünya, Güneş, Ay gibi kelimeler terim anlamlıdır, mecaz değildir."
+        },
+        {
+            id: 15, type: "find_error",
+            question: "Aşağıdaki eşleştirmelerden hangisi YANLIŞTIR?",
+            options: [
+                { text: "Pencerenin perdesi kirlendi. (Gerçek)", isWrong: false },
+                { text: "Oyunun ikinci perdesi başladı. (Terim)", isWrong: false },
+                { text: "Gözüme perde indi. (Gerçek)", isWrong: true }
+            ],
+            explanation: "'Gözüne perde inmek' gerçeği görememek anlamında bir deyimdir ve mecaz anlamlıdır."
+        },
+        {
+            id: 16, type: "boss",
+            question: "Aşağıdaki metinde numaralanmış kelimelerin anlam özelliklerini sırasıyla bularak kasanın kilidini açınız.",
+            text: "Doktor, hastanın <mark>nabzını</mark> (1) ölçtükten sonra ona <mark>sıcak</mark> (2) bir şekilde gülümsedi. Sonra masadaki <mark>kalemi</mark> (3) alıp reçeteyi yazdı.",
+            targets: [
+                { word: "1. nabzını", answer: "Terim" },
+                { word: "2. sıcak", answer: "Mecaz" },
+                { word: "3. kalemi", answer: "Gerçek" }
+            ],
+            options: ["Gerçek", "Mecaz", "Terim"],
+            explanation: "Nabız tıp terimidir. Sıcak (içten) gülümseme mecazdır. Kalem ise yazı yazma aracı olarak gerçek anlamlıdır."
+        },
+        {
+            id: 17, type: "boss",
+            question: "Aşağıdaki metinde numaralanmış kelimelerin anlam özelliklerini sırasıyla bularak kasanın kilidini açınız.",
+            text: "Gemi <mark>limana</mark> (1) yaklaştı. Kaptanın kalbinde <mark>ağır</mark> (2) bir hüzün vardı. Denizcilik <mark>haritasını</mark> (3) masaya bıraktı.",
+            targets: [
+                { word: "1. limana", answer: "Gerçek" },
+                { word: "2. ağır", answer: "Mecaz" },
+                { word: "3. haritasını", answer: "Terim" }
+            ],
+            options: ["Gerçek", "Mecaz", "Terim"],
+            explanation: "Liman gemilerin yanaştığı yerdir (Gerçek). Ağır hüzün, yoğun üzüntü anlamında mecazdır. Harita, coğrafya/denizcilik terimidir."
+        },
+        {
+            id: 18, type: "boss",
+            question: "Aşağıdaki metinde numaralanmış kelimelerin anlam özelliklerini sırasıyla bularak kasanın kilidini açınız.",
+            text: "Maçta hakem <mark>penaltı</mark> (1) noktasını gösterdi. Oyuncu <mark>keskin</mark> (2) bir vuruş yaptı. Top <mark>ağlara</mark> (3) takıldı.",
+            targets: [
+                { word: "1. penaltı", answer: "Terim" },
+                { word: "2. keskin", answer: "Mecaz" },
+                { word: "3. ağlara", answer: "Gerçek" }
+            ],
+            options: ["Gerçek", "Mecaz", "Terim"],
+            explanation: "Penaltı spor terimidir. Keskin vuruş, sert/etkili anlamında mecazdır. Ağlar (kale ağı) gerçek anlamdadır."
+        }
+    ];
+
+    // --- STATE MANAGEMENT ---
+    let state = {
+        currentIndex: 0,
+        score: 0,
+        wrongCount: 0,
+        skippedCount: 0,
+        hintCount: 0,
+        results: []
+    };
+
+    function initState() {
+        state.currentIndex = 0;
+        state.score = 0;
+        state.wrongCount = 0;
+        state.skippedCount = 0;
+        state.hintCount = 0;
+        state.results = tasksData.map(t => ({
+            id: t.id,
+            status: 'locked', // locked, active, completed, skipped
+            firstTry: true,
+            attempts: 0,
+            userAnswer: null
+        }));
+        state.results[0].status = 'active';
+    }
+
+    // --- UTILS ---
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    // --- DOM ELEMENTS ---
+    const elMapTrack = document.getElementById('map-track');
+    const elTaskPanel = document.getElementById('task-panel');
+    const elScore = document.getElementById('ui-score');
+    const elTaskCount = document.getElementById('ui-task');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const btnSkip = document.getElementById('btn-skip');
+    
+    // Modal
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modalContent = document.getElementById('modal-content');
+    const modalTitle = document.getElementById('modal-title');
+    const modalText = document.getElementById('modal-text');
+    const btnModalClose = document.getElementById('btn-modal-close');
+
+    // --- RENDERING ---
+    function renderMap() {
+        elMapTrack.innerHTML = '<div class="map-line"></div>';
+        state.results.forEach((res, index) => {
+            const node = document.createElement('div');
+            node.className = `map-node ${res.status}`;
+            node.textContent = index + 1;
+            
+            // Allow clicking completed or skipped nodes to review
+            if(res.status === 'completed' || res.status === 'skipped' || res.status === 'active') {
+                node.onclick = () => {
+                    document.getElementById('report-panel').style.display = 'none';
+                    document.getElementById('task-panel').style.display = 'flex';
+                    document.getElementById('controls').style.display = 'flex';
+                    state.currentIndex = index;
+                    renderCurrentTask();
+                };
+            }
+            elMapTrack.appendChild(node);
+        });
+    }
+
+    function renderCurrentTask() {
+        const task = tasksData[state.currentIndex];
+        const res = state.results[state.currentIndex];
+        
+        elTaskCount.textContent = `${state.currentIndex + 1}/${tasksData.length}`;
+        elScore.textContent = state.score;
+
+        let html = `<div class="task-title">${task.id}. Görev: ${task.question}</div>`;
+        const isCompleted = res.status === 'completed';
+
+        if (task.type === "tag") {
+            html += `<div class="tag-container ${isCompleted ? 'disabled-interaction' : ''}">
+                        <div class="tag-sentence">${task.sentence}</div>
+                        <div class="tag-buttons">
+                            ${task.options.map(opt => {
+                                let cls = 'btn-tag';
+                                if(isCompleted && res.userAnswer === opt) cls += ' selected-correct';
+                                return `<button class="\${cls}" onclick="checkTag('${opt}')">${opt}</button>`
+                            }).join('')}
+                        </div>
+                     </div>`;
+        } 
+        else if (task.type === "mcq" || task.type === "find_error") {
+            // Shuffle options only if not completed/started to keep consistency during review
+            let optionsToRender = task.options;
+            if(!isCompleted && res.attempts === 0 && !res.shuffledOptions) {
+                res.shuffledOptions = shuffle([...task.options]);
+            }
+            optionsToRender = res.shuffledOptions || task.options;
+
+            html += `<div class="mcq-container ${isCompleted ? 'disabled-interaction' : ''}">`;
+            optionsToRender.forEach(opt => {
+                let text = typeof opt === 'string' ? opt : opt.text;
+                let val = typeof opt === 'string' ? opt : opt.isWrong.toString();
+                let cls = 'btn-mcq';
+                if(isCompleted && res.userAnswer === val) cls += ' selected-correct';
+                html += `<button class="${cls}" onclick="checkMCQ('${val.replace(/'/g, "\\'")}')">${text}</button>`;
+            });
+            html += `</div>`;
+        }
+        else if (task.type === "pair") {
+            html += `<div class="pair-container ${isCompleted ? 'disabled-interaction' : ''}">
+                        <div class="pair-col" id="pair-left"></div>
+                        <div class="pair-col" id="pair-right"></div>
+                     </div>`;
+        }
+        else if (task.type === "dragdrop") {
+            html += `<div class="dd-container ${isCompleted ? 'disabled-interaction' : ''}">
+                        <div class="dd-sentences" id="dd-sentences"></div>
+                        <div class="dd-categories" id="dd-categories"></div>
+                     </div>`;
+        }
+        else if (task.type === "boss") {
+            html += `<div class="boss-container ${isCompleted ? 'disabled-interaction' : ''}">
+                        <div class="boss-text">${task.text}</div>
+                        <div class="boss-selects">`;
+            task.targets.forEach((t, i) => {
+                html += `<div class="boss-row">
+                            <span>${t.word}</span>
+                            <select id="boss-sel-${i}">
+                                <option value="">-- Seçiniz --</option>
+                                ${task.options.map(o => `<option value="\${o}" ${isCompleted && res.userAnswer && res.userAnswer[i]===o ? 'selected' : ''}>${o}</option>`).join('')}
+                            </select>
+                         </div>`;
+            });
+            html += `</div>`;
+            if(!isCompleted) {
+                html += `<button class="btn-check" onclick="checkBoss()">Kilidi Aç</button>`;
+            } else {
+                html += `<div style="color:var(--success); font-weight:bold; font-size:1.2rem;">Kasa Başarıyla Açıldı!</div>`;
+            }
+            html += `</div>`;
+        }
+
+        elTaskPanel.innerHTML = html;
+
+        // Post-render logic for complex UI
+        if (task.type === "pair" && !isCompleted) {
+            setupPairingUI(task);
+        } else if (task.type === "pair" && isCompleted) {
+            // Render completed state
+            const left = document.getElementById('pair-left');
+            const right = document.getElementById('pair-right');
+            task.pairs.forEach(p => {
+                left.innerHTML += `<div class="pair-item matched">${p.text}</div>`;
+                right.innerHTML += `<div class="pair-item matched">${p.match}</div>`;
+            });
+        }
+
+        if (task.type === "dragdrop" && !isCompleted) {
+            setupDragDropUI(task);
+        } else if (task.type === "dragdrop" && isCompleted) {
+             const cats = document.getElementById('dd-categories');
+             task.options.forEach(opt => {
+                 let itemsHtml = task.items.filter(i => i.target === opt).map(i => `<div class="dd-matched-item">${i.text}</div>`).join('');
+                 cats.innerHTML += `<div class="dd-box">${opt}${itemsHtml}</div>`;
+             });
+        }
+
+        updateControls();
+        renderMap();
+    }
+
+    // --- COMPLEX UI LOGIC ---
+    let activePairLeft = null;
+    function setupPairingUI(task) {
+        const leftCol = document.getElementById('pair-left');
+        const rightCol = document.getElementById('pair-right');
+        
+        let leftItems = shuffle([...task.pairs]);
+        let rightItems = shuffle([...task.pairs]);
+
+        leftItems.forEach(item => {
+            let el = document.createElement('div');
+            el.className = 'pair-item';
+            el.textContent = item.text;
+            el.dataset.match = item.match;
+            el.onclick = () => {
+                if(el.classList.contains('matched')) return;
+                document.querySelectorAll('#pair-left .pair-item').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
+                activePairLeft = el;
+            };
+            leftCol.appendChild(el);
+        });
+
+        let matchedCount = 0;
+        rightItems.forEach(item => {
+            let el = document.createElement('div');
+            el.className = 'pair-item';
+            el.textContent = item.match;
+            el.onclick = () => {
+                if(el.classList.contains('matched')) return;
+                if(!activePairLeft) return;
+
+                if(activePairLeft.dataset.match === item.match) {
+                    // Match!
+                    el.classList.add('matched');
+                    activePairLeft.classList.remove('active');
+                    activePairLeft.classList.add('matched');
+                    activePairLeft = null;
+                    matchedCount++;
+                    if(matchedCount === task.pairs.length) {
+                        handleSuccess(task.id, "Eşleştirme");
+                    }
+                } else {
+                    // Wrong!
+                    el.classList.add('wrong');
+                    activePairLeft.classList.add('wrong');
+                    setTimeout(() => {
+                        el.classList.remove('wrong');
+                        if(activePairLeft) activePairLeft.classList.remove('wrong', 'active');
+                        activePairLeft = null;
+                    }, 500);
+                    handleError(task.id);
+                }
+            };
+            rightCol.appendChild(el);
+        });
+    }
+
+    let activeDDItem = null;
+    function setupDragDropUI(task) {
+        const sCont = document.getElementById('dd-sentences');
+        const cCont = document.getElementById('dd-categories');
+        
+        let items = shuffle([...task.items]);
+        items.forEach((item, idx) => {
+            let el = document.createElement('div');
+            el.className = 'dd-sentence';
+            el.textContent = item.text;
+            el.dataset.target = item.target;
+            el.id = `dd-item-${idx}`;
+            el.onclick = () => {
+                if(el.style.display === 'none') return;
+                document.querySelectorAll('.dd-sentence').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
+                activeDDItem = el;
+            };
+            sCont.appendChild(el);
+        });
+
+        let placedCount = 0;
+        task.options.forEach(opt => {
+            let box = document.createElement('div');
+            box.className = 'dd-box';
+            box.textContent = opt;
+            box.onclick = () => {
+                if(!activeDDItem) return;
+                if(activeDDItem.dataset.target === opt) {
+                    // Correct
+                    let clone = document.createElement('div');
+                    clone.className = 'dd-matched-item';
+                    clone.textContent = activeDDItem.textContent;
+                    box.appendChild(clone);
+                    activeDDItem.style.display = 'none';
+                    activeDDItem.classList.remove('active');
+                    activeDDItem = null;
+                    placedCount++;
+                    if(placedCount === task.items.length) {
+                        handleSuccess(task.id, "Sınıflandırma");
+                    }
+                } else {
+                    // Wrong
+                    box.classList.add('wrong');
+                    setTimeout(() => box.classList.remove('wrong'), 500);
+                    handleError(task.id);
+                }
+            };
+            cCont.appendChild(box);
+        });
+    }
+
+    // --- INTERACTION HANDLERS ---
+    window.checkTag = function(answer) {
+        const task = tasksData[state.currentIndex];
+        if(answer === task.answer) {
+            handleSuccess(task.id, answer);
+        } else {
+            handleError(task.id);
+        }
+    }
+
+    window.checkMCQ = function(answer) {
+        const task = tasksData[state.currentIndex];
+        let isCorrect = false;
+        
+        if(task.type === "mcq") {
+            isCorrect = (answer === task.answer);
+        } else if (task.type === "find_error") {
+            isCorrect = (answer === "true");
+        }
+
+        if(isCorrect) {
+            handleSuccess(task.id, answer);
+        } else {
+            handleError(task.id);
+        }
+    }
+
+    window.checkBoss = function() {
+        const task = tasksData[state.currentIndex];
+        let allCorrect = true;
+        let userAnswers = [];
+        
+        task.targets.forEach((t, i) => {
+            let val = document.getElementById(`boss-sel-${i}`).value;
+            userAnswers.push(val);
+            if(val !== t.answer) allCorrect = false;
+        });
+
+        if(allCorrect) {
+            handleSuccess(task.id, userAnswers);
+        } else {
+            handleError(task.id);
+        }
+    }
+
+    // --- GAME LOGIC ---
+    function handleSuccess(taskId, answerObj) {
+        const res = state.results[taskId - 1];
+        if (res.status === 'completed') return;
+
+        res.status = 'completed';
+        res.userAnswer = answerObj;
+        if(res.firstTry) state.score += 10;
+        
+        showModal("Doğru Karar Dedektif!", "İpuçlarını mükemmel değerlendirdin.", "success");
+        
+        // Unlock next
+        if(taskId < tasksData.length) {
+            if(state.results[taskId].status === 'locked') {
+                state.results[taskId].status = 'active';
+            }
+        }
+        renderCurrentTask();
+    }
+
+    function handleError(taskId) {
+        const task = tasksData[taskId - 1];
+        const res = state.results[taskId - 1];
+        res.attempts++;
+        res.firstTry = false;
+        state.wrongCount++;
+        
+        showModal("Küçük Bir Hata...", task.explanation, "error");
+    }
+
+    function showModal(title, text, type) {
+        modalTitle.textContent = title;
+        modalText.textContent = text;
+        modalContent.className = `modal show modal-${type}`;
+        modalOverlay.style.display = 'flex';
+    }
+
+    btnModalClose.onclick = () => {
+        modalOverlay.style.display = 'none';
+        modalContent.className = 'modal';
+    };
+
+    function updateControls() {
+        const res = state.results[state.currentIndex];
+        btnPrev.disabled = state.currentIndex === 0;
+        
+        // Next button is enabled if current task is completed/skipped AND it's not the last task
+        // OR if it's the last task and completed/skipped (to show report)
+        const canMoveForward = res.status === 'completed' || res.status === 'skipped';
+        btnNext.disabled = !canMoveForward;
+        
+        btnSkip.style.display = (res.status === 'active' || res.status === 'locked') ? 'block' : 'none';
+
+        if(state.currentIndex === tasksData.length - 1 && canMoveForward) {
+            btnNext.textContent = "Raporu Gör";
+        } else {
+            btnNext.textContent = "Sonraki Görev";
+        }
+    }
+
+    btnPrev.onclick = () => {
+        if(state.currentIndex > 0) {
+            state.currentIndex--;
+            renderCurrentTask();
+        }
+    };
+
+    btnNext.onclick = () => {
+        if(state.currentIndex === tasksData.length - 1) {
+            showReport();
+        } else {
+            state.currentIndex++;
+            renderCurrentTask();
+        }
+    };
+
+    btnSkip.onclick = () => {
+        const res = state.results[state.currentIndex];
+        res.status = 'skipped';
+        state.skippedCount++;
+        
+        if(state.currentIndex < tasksData.length - 1) {
+            if(state.results[state.currentIndex + 1].status === 'locked') {
+                state.results[state.currentIndex + 1].status = 'active';
+            }
+            state.currentIndex++;
+            renderCurrentTask();
+        } else {
+            showReport();
+        }
+    };
+
+    // --- REPORT ---
+    function showReport() {
+        document.getElementById('task-panel').style.display = 'none';
+        document.getElementById('controls').style.display = 'none';
+        document.getElementById('report-panel').style.display = 'block';
+
+        document.getElementById('rep-score').textContent = state.score;
+        let firstTries = state.results.filter(r => r.status === 'completed' && r.firstTry).length;
+        document.getElementById('rep-first').textContent = firstTries;
+        document.getElementById('rep-wrong').textContent = state.wrongCount;
+        document.getElementById('rep-skip').textContent = state.skippedCount;
+
+        const elErrors = document.getElementById('error-list');
+        elErrors.innerHTML = '';
+        
+        const errorsAndSkips = state.results.filter(r => r.status === 'skipped' || (!r.firstTry && r.status === 'completed'));
+        
+        if(errorsAndSkips.length === 0) {
+            elErrors.innerHTML = '<div style="color:var(--success); font-weight:bold; text-align:center;">Mükemmel iş çıkardın! Hiç hatan yok.</div>';
+        } else {
+            errorsAndSkips.forEach(res => {
+                const task = tasksData[res.id - 1];
+                const div = document.createElement('div');
+                div.className = 'error-item';
+                div.innerHTML = `
+                    <strong>Görev ${task.id}:</strong> ${task.question} <br>
+                    <small><em>Durum: ${res.status === 'skipped' ? 'Geçildi' : 'Yanlış Deneme Yapıldı'}</em></small><br>
+                    <strong style="color:var(--primary)">Açıklama:</strong> ${task.explanation}
+                `;
+                div.onclick = () => {
+                    // Allow revisiting the specific task to learn
+                    document.getElementById('report-panel').style.display = 'none';
+                    document.getElementById('task-panel').style.display = 'flex';
+                    document.getElementById('controls').style.display = 'flex';
+                    state.currentIndex = res.id - 1;
+                    renderCurrentTask();
+                };
+                elErrors.appendChild(div);
+            });
+        }
+    }
+
+    document.getElementById('btn-replay').onclick = () => {
+        initState();
+        document.getElementById('report-panel').style.display = 'none';
+        document.getElementById('task-panel').style.display = 'flex';
+        document.getElementById('controls').style.display = 'flex';
+        renderCurrentTask();
+    };
+
+    // Start Game
+    initState();
+    renderCurrentTask();
+
+</script>
+</body>
+</html>
