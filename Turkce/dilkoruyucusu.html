@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dil Muhafızları: Yabancı Kelime İstilası</title>
+    <style>
+        :root {
+            --bg-color: #0b132b;
+            --panel-bg: #1c2541;
+            --primary-color: #3a506b;
+            --accent-green: #00ffcc;
+            --accent-blue: #4ea8de;
+            --accent-red: #ff4d4d;
+            --text-color: #e0e1dd;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 255, 204, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER & MAP */
+        header {
+            background-color: var(--primary-color);
+            padding: 15px 20px;
+            border-bottom: 3px solid var(--accent-blue);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header-top h1 {
+            font-size: 1.5rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .stat-badge {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid var(--accent-blue);
+        }
+
+        .map-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .map-line {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 4px;
+            background-color: #555;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .map-node {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #333;
+            border: 3px solid #555;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .map-node.active {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px var(--accent-blue);
+        }
+
+        .map-node.cleared {
+            background-color: var(--accent-green);
+            border-color: #fff;
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-green);
+        }
+
+        /* CONTENT AREA */
+        #content-area {
+            padding: 25px;
+            flex-grow: 1;
+            min-height: 400px;
+        }
+
+        .story-box {
+            background-color: rgba(78, 168, 222, 0.1);
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .question-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* INTERACTION TYPES */
+        /* MCQ & TF & CLASSIFY */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: 2px solid transparent;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .option-btn.selected {
+            background-color: rgba(78, 168, 222, 0.3);
+            border-color: var(--accent-blue);
+        }
+
+        .option-btn.correct {
+            background-color: rgba(0, 255, 204, 0.2);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .option-btn.wrong {
+            background-color: rgba(255, 77, 77, 0.2);
+            border-color: var(--accent-red);
+            color: #ffb3b3;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* FIND ERROR */
+        .sentence-box {
+            font-size: 1.3rem;
+            line-height: 2;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .clickable-word {
+            display: inline-block;
+            padding: 2px 8px;
+            margin: 0 4px;
+            background: var(--primary-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .clickable-word:hover {
+            background: var(--accent-blue);
+        }
+
+        .clickable-word.selected {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        /* MATCHING */
+        .match-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .match-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .match-item {
+            background-color: var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            user-select: none;
+        }
+
+        .match-item.selected {
+            border-color: var(--accent-blue);
+            background-color: rgba(78, 168, 222, 0.3);
+        }
+
+        .match-item.matched {
+            background-color: rgba(0, 255, 204, 0.2);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            cursor: default;
+        }
+
+        .match-item.error-flash {
+            border-color: var(--accent-red);
+            background-color: rgba(255, 77, 77, 0.2);
+        }
+
+        /* BOSS (DROPDOWNS) */
+        .boss-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        .boss-select {
+            font-size: 1rem;
+            padding: 5px;
+            margin: 0 5px;
+            border-radius: 4px;
+            background: var(--primary-color);
+            color: white;
+            border: 2px solid var(--accent-blue);
+            outline: none;
+            font-family: inherit;
+        }
+
+        .boss-select.correct {
+            border-color: var(--accent-green);
+            background-color: rgba(0, 255, 204, 0.1);
+        }
+
+        .boss-select.wrong {
+            border-color: var(--accent-red);
+            background-color: rgba(255, 77, 77, 0.1);
+        }
+
+        /* FEEDBACK */
+        #feedback-box {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            animation: fadeIn 0.3s ease;
+        }
+
+        #feedback-box.success {
+            background-color: rgba(0, 255, 204, 0.1);
+            border-left: 4px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        #feedback-box.error {
+            background-color: rgba(255, 77, 77, 0.1);
+            border-left: 4px solid var(--accent-red);
+            color: #ffb3b3;
+        }
+
+        /* CONTROLS */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 25px;
+            background-color: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--primary-color);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover:not(:disabled) {
+            opacity: 0.8;
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-prev { background-color: #555; color: white; }
+        .btn-skip { background-color: #fca311; color: #000; }
+        .btn-action { background-color: var(--accent-blue); color: #000; margin-left: auto; margin-right: 10px;}
+        .btn-next { background-color: var(--accent-green); color: #000; }
+
+        /* REPORT SCREEN */
+        #report-screen {
+            display: none;
+            padding: 25px;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .report-card {
+            background: var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-bottom: 3px solid var(--accent-blue);
+        }
+
+        .report-card h3 { font-size: 2rem; margin-bottom: 5px; color: var(--accent-green);}
+        .report-card p { font-size: 0.9rem; color: #aaa; }
+
+        .error-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .error-item {
+            background: rgba(0,0,0,0.2);
+            border-left: 4px solid var(--accent-red);
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .error-item.skipped { border-left-color: #fca311; }
+        .error-item button { background: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;}
+        .error-item button:hover { background: var(--accent-blue); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 600px) {
+            .match-container { flex-direction: column; }
+            .controls { flex-wrap: wrap; gap: 10px; justify-content: center; }
+            .btn-action { margin: 10px 0 0 0; width: 100%; order: 4;}
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        
+        <header id="game-header">
+            <div class="header-top">
+                <h1>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    DİL MUHAFIZLARI
+                </h1>
+                <div class="stats">
+                    <div class="stat-badge">Puan: <span id="ui-score">0</span></div>
+                    <div class="stat-badge">Görev: <span id="ui-task">1/20</span></div>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <div class="map-line"></div>
+                <div class="map-node" id="node-0" title="Bölge 1: İletişim Üssü">1</div>
+                <div class="map-node" id="node-1" title="Bölge 2: Medya Merkezi">2</div>
+                <div class="map-node" id="node-2" title="Bölge 3: Spor Kompleksi">3</div>
+                <div class="map-node" id="node-3" title="Bölge 4: Eğitim Kampüsü">4</div>
+                <div class="map-node" id="node-4" title="Bölge 5: Ana Çekirdek">B</div>
+            </div>
+        </header>
+
+        <div id="content-area">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+
+        <div id="report-screen">
+            <h2 style="margin-bottom: 20px; color: var(--accent-green); text-align: center;">Operasyon Raporu</h2>
+            <div class="report-grid">
+                <div class="report-card"><h3 id="rep-score">0</h3><p>Toplam Puan</p></div>
+                <div class="report-card"><h3 id="rep-first">0</h3><p>İlk Seferde Başarılı</p></div>
+                <div class="report-card"><h3 id="rep-wrong" style="color:var(--accent-red);">0</h3><p>Hatalı Deneme</p></div>
+                <div class="report-card"><h3 id="rep-skip" style="color:#fca311;">0</h3><p>Geçilen Görev</p></div>
+            </div>
+            <h3 style="margin-bottom: 15px; border-bottom: 1px solid #4ea8de; padding-bottom: 5px;">İncelenmesi Gereken Dosyalar</h3>
+            <div id="error-list" class="error-list"></div>
+            <button class="btn btn-next" onclick="App.replay()" style="width: 100%; margin-top: 20px;">YENİ OPERASYON BAŞLAT</button>
+        </div>
+
+        <div class="controls" id="game-controls">
+            <button class="btn btn-prev" id="btn-prev" onclick="App.prevTask()">Önceki</button>
+            <button class="btn btn-skip" id="btn-skip" onclick="App.skipTask()">Geç</button>
+            <button class="btn btn-action hidden" id="btn-check" onclick="App.checkAnswer()">Kontrol Et</button>
+            <button class="btn btn-next" id="btn-next" onclick="App.nextTask()" disabled>Sonraki</button>
+        </div>
+
+    </div>
+
+<script>
+/**
+ * DATA: 20 Tasks covering 40+ foreign words and their Turkish equivalents.
+ * Interaction Types: mcq, tf, find_error, classify, match, boss.
+ */
+const rawTasks = [
+    // BÖLGE 1 (0-3)
+    {
+        id: "t1", type: "mcq", zone: 0,
+        story: "Ajan, iletişim üssüne ulaştık. Ağdaki cihazlar 'Selfie' komutu nedeniyle donuyor. Türkçe yama yüklemeliyiz.",
+        question: "'Selfie' kelimesinin Türkçe karşılığı hangisidir?",
+        options: [
+            { id: "o1", text: "Özçekim", isCorrect: true },
+            { id: "o2", text: "Görüntü", isCorrect: false, feedback: "'Görüntü' genel bir kavramdır, kişinin kendi fotoğrafını çekmesi anlamına gelen kelimenin tam karşılığı değildir." },
+            { id: "o3", text: "Manzara", isCorrect: false, feedback: "'Manzara' doğa veya çevre görüntüsüdür. Özçekim ile ilgisi yoktur." },
+            { id: "o4", text: "Portre", isCorrect: false, feedback: "'Portre' bir kişinin yüzünü gösteren resimdir, kelimenin tam karşılığı 'Özçekim'dir." }
+        ],
+        explanation: "Türk Dil Kurumu, 'selfie' kelimesinin Türkçe karşılığını 'özçekim' olarak belirlemiştir."
+    },
+    {
+        id: "t2", type: "mcq", zone: 0,
+        story: "Merkez üsse giden yolu kaybettik. Sistem sürekli 'Navigasyon hatası' veriyor.",
+        question: "'Navigasyon' sözcüğünün yerine hangi Türkçe kelimeyi kullanırsak sistem düzelir?",
+        options: [
+            { id: "o1", text: "Yolbul", isCorrect: true },
+            { id: "o2", text: "Harita", isCorrect: false, feedback: "'Harita' bir alanı kâğıt üzerinde gösterir, yönlendirme yapan sisteme 'yolbul' denir." },
+            { id: "o3", text: "Pusula", isCorrect: false, feedback: "'Pusula' sadece yönü (kuzey/güney) gösterir. Navigasyonun tam Türkçe karşılığı 'Yolbul'dur." },
+            { id: "o4", text: "Güzergâh", isCorrect: false, feedback: "'Güzergâh' izlenen yoldur, yönlendiren sistemin adı 'Yolbul'dur." }
+        ],
+        explanation: "'Navigasyon' kelimesinin Türkçesi 'Yolbul'dur."
+    },
+    {
+        id: "t3", type: "tf", zone: 0,
+        story: "Mesajlaşma ağında sorun var. Tüm iletilerde 'E-mail atacağım' yazıyor.",
+        question: "'E-mail' kelimesinin yerine 'E-posta' kelimesini kullanmak Türkçemizi korumak adına doğru bir karardır.",
+        isCorrect: true,
+        feedbackWrong: "'E-mail' İngilizce bir kelimedir. Elektronik posta kelimesinin kısaltması olan 'e-posta' tamamen dilimize uygundur.",
+        explanation: "'E-mail' yerine Türkçe 'e-posta' kelimesi kullanılmalıdır."
+    },
+    {
+        id: "t4", type: "classify", zone: 0,
+        story: "Bağlantı koptu! Ağ ayarlarını düzeltmek için yabancı kelimeleri eleyip sadece Türkçe olanları seçmelisin.",
+        question: "Aşağıdaki kelimelerden YALNIZCA TÜRKÇE olanları seç ve onayla.",
+        items: [
+            { id: "i1", text: "Bağlantı", isTurkish: true },
+            { id: "i2", text: "Link", isTurkish: false },
+            { id: "i3", text: "Çevrim içi", isTurkish: true },
+            { id: "i4", text: "Online", isTurkish: false }
+        ],
+        explanation: "'Link' yerine 'bağlantı', 'online' yerine 'çevrim içi' kelimelerini kullanmalıyız."
+    },
+
+    // BÖLGE 2 (4-7)
+    {
+        id: "t5", type: "find_error", zone: 1,
+        story: "Medya merkezine sızdık. Yayın metninde yabancı bir kelime virüsü gizli. Üzerine tıklayarak yok et!",
+        question: "Aşağıdaki cümlede dilimize yabancı dillerden giren kelimeyi bulup tıkla.",
+        sentence: "Bugünkü programın spikeri çok heyecanlıydı.",
+        correctWord: "spikeri",
+        explanation: "'Spiker' yabancı kökenlidir, yerine Türkçe 'sunucu' kelimesi kullanılmalıdır."
+    },
+    {
+        id: "t6", type: "find_error", zone: 1,
+        story: "Bir diğer yayın metni daha! Virüsü temizlemeden yayına giremeyiz.",
+        question: "Cümledeki yabancı kökenli kelimeyi bul ve tıkla.",
+        sentence: "Odamın dizaynı herkes tarafından çok beğenildi.",
+        correctWord: "dizaynı",
+        explanation: "'Dizayn' İngilizce kökenlidir, Türkçe karşılığı 'tasarım'dır. 'Odamın tasarımı...' denmelidir."
+    },
+    {
+        id: "t7", type: "tf", zone: 1,
+        story: "Canlı yayında bir tuşa basman gerekiyor. Sistemde 'Buton' yazıyor.",
+        question: "'Buton' kelimesi tamamen Türkçe kökenli bir kelimedir, değiştirmeye gerek yoktur.",
+        isCorrect: false,
+        feedbackWrong: "'Buton' Fransızca kökenli bir kelimedir. Düğme kelimesi var varken buton demek yanlıştır.",
+        explanation: "'Buton' yerine Türkçe 'Düğme' kelimesi kullanılmalıdır."
+    },
+    {
+        id: "t8", type: "mcq", zone: 1,
+        story: "Medya binasındaki bir haberde 'Şov başladı' yazıyor. Bunu Türkçeye çevirmeliyiz.",
+        question: "'Şov' kelimesinin Türkçe karşılığı hangisidir?",
+        options: [
+            { id: "o1", text: "Gösteri", isCorrect: true },
+            { id: "o2", text: "Oyun", isCorrect: false, feedback: "'Oyun' farklı bir kavramdır. Şov, izleyicilere sunulan bir gösteridir." },
+            { id: "o3", text: "Film", isCorrect: false, feedback: "Film sinema ile ilgilidir. Şov kelimesi sahne gösterilerini ifade eder." },
+            { id: "o4", text: "Eğlence", isCorrect: false, feedback: "Eğlence sonucunda oluşan duygudur, olayın adı 'Gösteri'dir." }
+        ],
+        explanation: "İngilizce 'show' kelimesinin Türkçe karşılığı 'gösteri'dir."
+    },
+
+    // BÖLGE 3 (8-11)
+    {
+        id: "t9", type: "match", zone: 2,
+        story: "Spor kompleksine ulaştık! Oyuncuların sözleşmelerindeki yabancı kelimeleri Türkçeleriyle eşleştirerek şifreyi kır.",
+        question: "Yabancı kelimeleri (Solda) Türkçe karşılıklarıyla (Sağda) eşleştir.",
+        pairs: [
+            { foreign: "Skor", turkish: "Sonuç" },
+            { foreign: "Defans", turkish: "Savunma" },
+            { foreign: "Sponsor", turkish: "Destekçi" },
+            { foreign: "Efor", turkish: "Çaba" }
+        ],
+        explanation: "Spor terimleri sıkça yabancı dillerden gelir. Skor=Sonuç, Defans=Savunma, Sponsor=Destekçi, Efor=Çaba."
+    },
+    {
+        id: "t10", type: "find_error", zone: 2,
+        story: "Sporcular çok gergin. Sağlık raporundaki hatayı bulmalısın.",
+        question: "Aşağıdaki cümlede yabancı kökenli kelimeyi bul ve tıkla.",
+        sentence: "Bugünkü maç öncesi stres seviyeleri çok yüksekti.",
+        correctWord: "stres",
+        explanation: "'Stres' kelimesinin Türkçe karşılığı 'gerilim' veya 'baskı'dır."
+    },
+    {
+        id: "t11", type: "mcq", zone: 2,
+        story: "Spor salonunun girişinde 'Hijyenik kurallara uyun' yazıyor.",
+        question: "'Hijyenik' kelimesinin yerine hangi ifadeyi kullanmalıyız?",
+        options: [
+            { id: "o1", text: "Sağlığa uygun", isCorrect: true },
+            { id: "o2", text: "Güzel", isCorrect: false, feedback: "'Güzel' sadece estetik bir kavramdır." },
+            { id: "o3", text: "Parlak", isCorrect: false, feedback: "'Parlak' temiz görünebilir ancak hijyenik (mikropsuz) anlamına gelmez." },
+            { id: "o4", text: "Kaliteli", isCorrect: false, feedback: "Kalite, nitelik belirtir. Hijyen ise sağlıkla ilgilidir." }
+        ],
+        explanation: "'Hijyenik' yabancı kökenlidir. Türkçe karşılığı 'sağlığa uygun' veya 'temiz'dir."
+    },
+    {
+        id: "t12", type: "tf", zone: 2,
+        story: "Antrenör sporculara 'Maksimum hızda koşun' dedi.",
+        question: "'Maksimum' kelimesinin Türkçe karşılığı 'En az / Asgari'dir.",
+        isCorrect: false,
+        feedbackWrong: "Maksimum 'en çok / azami' demektir. 'En az' anlamına gelen yabancı kelime 'Minimum'dur.",
+        explanation: "'Maksimum' kelimesi 'en çok' veya 'azami' anlamına gelir."
+    },
+
+    // BÖLGE 4 (12-15)
+    {
+        id: "t13", type: "classify", zone: 3,
+        story: "Eğitim Kampüsü veritabanı kilitlendi! Sistemin sana sunduğu seçeneklerden YALNIZCA TÜRKÇE olanları seç.",
+        question: "Türkçe olan kelimeleri seçip Kontrol Et butonuna bas.",
+        items: [
+            { id: "i1", text: "Ayrıntı", isTurkish: true },
+            { id: "i2", text: "Detay", isTurkish: false },
+            { id: "i3", text: "Özgün", isTurkish: true },
+            { id: "i4", text: "Orijinal", isTurkish: false }
+        ],
+        explanation: "Detay yerine 'Ayrıntı', Orijinal yerine 'Özgün' kullanılmalıdır."
+    },
+    {
+        id: "t14", type: "match", zone: 3,
+        story: "Kütüphanedeki eski belgeler hasar görmüş. Doğru kelimeleri birleştirerek metinleri onar.",
+        question: "Yabancı kelimeleri (Solda) Türkçe karşılıklarıyla (Sağda) eşleştir.",
+        pairs: [
+            { foreign: "Kampüs", turkish: "Yerleşke" },
+            { foreign: "Asistan", turkish: "Yardımcı" },
+            { foreign: "Kriter", turkish: "Ölçüt" },
+            { foreign: "Doküman", turkish: "Belge" }
+        ],
+        explanation: "Kampüs=Yerleşke, Asistan=Yardımcı, Kriter=Ölçüt, Doküman=Belge."
+    },
+    {
+        id: "t15", type: "mcq", zone: 3,
+        story: "Yeni gelen öğrenci grubuna bir 'Anons' yapılması gerekiyor.",
+        question: "'Anons' sözcüğünün yerine hangi Türkçe kelimeyi kullanmalıyız?",
+        options: [
+            { id: "o1", text: "Duyuru", isCorrect: true },
+            { id: "o2", text: "Seslenme", isCorrect: false, feedback: "Seslenme bir hitap şeklidir, bilgi verme amacı taşıyan anonsun tam karşılığı duyurudur." },
+            { id: "o3", text: "Haber", isCorrect: false, feedback: "Haber bir bilgidir ancak bunu kitleye aktarma eylemi (anons) duyurudur." },
+            { id: "o4", text: "Uyarı", isCorrect: false, feedback: "Uyarı dikkat çekmek içindir, anons ise genel bir duyurudur." }
+        ],
+        explanation: "Halka veya bir topluluğa yapılan bildirimlere (anons) Türkçe 'duyuru' denir."
+    },
+    {
+        id: "t16", type: "mcq", zone: 3,
+        story: "Öğrencilere okulda yapılacak bir 'Aktivite' listesi dağıtıldı.",
+        question: "'Aktivite' kelimesinin Türkçe karşılığı hangisidir?",
+        options: [
+            { id: "o1", text: "Etkinlik", isCorrect: true },
+            { id: "o2", text: "Hareket", isCorrect: false, feedback: "'Hareket' fiziksel bir eylemdir. Aktivite planlanmış eylemler (etkinlik) bütünüdür." },
+            { id: "o3", text: "Ders", isCorrect: false, feedback: "Her aktivite ders değildir. Eğlence amaçlı da olabilir." },
+            { id: "o4", text: "Eğlence", isCorrect: false, feedback: "Eğlence sadece bir tür aktivitedir, genel karşılığı 'Etkinlik'tir." }
+        ],
+        explanation: "'Aktivite' kelimesinin Türkçe karşılığı 'etkinlik'tir."
+    },
+
+    // BÖLGE 5 - ANA ÇEKİRDEK (16-19)
+    {
+        id: "t17", type: "match", zone: 4,
+        story: "Ana merkezin savunma kalkanları açıldı! Kelime bağlarını kurarak kalkanı devre dışı bırak.",
+        question: "Yabancı kelimeleri Türkçe karşılıklarıyla eşleştir.",
+        pairs: [
+            { foreign: "İllegal", turkish: "Yasa dışı" },
+            { foreign: "İmitasyon", turkish: "Taklit" },
+            { foreign: "Global", turkish: "Küresel" },
+            { foreign: "Panik", turkish: "Ürkütü" }
+        ],
+        explanation: "İllegal=Yasa dışı, İmitasyon=Taklit, Global=Küresel, Panik=Ürkütü."
+    },
+    {
+        id: "t18", type: "boss", zone: 4,
+        story: "VİRÜSÜN ANA KAYNAĞINA ULAŞTIN! Aşağıdaki bozuk cümleyi tamamen Türkçeleştirerek sistemi sıfırla.",
+        question: "Paragraftaki yabancı kelimeleri, menüden Türkçe karşılıklarını seçerek düzelt.",
+        segments: [
+            { type: "text", val: "Bu " },
+            { type: "select", foreign: "jenerasyon", options: ["nesil", "kuşak", "çağ", "grup"], correct: "kuşak" },
+            { type: "text", val: " teknolojik cihazları çok " },
+            { type: "select", foreign: "aktif", options: ["hızlı", "etkili", "etkin", "canlı"], correct: "etkin" },
+            { type: "text", val: " kullanıyor." }
+        ],
+        explanation: "'Jenerasyon' yerine 'kuşak' (veya nesil), 'aktif' yerine 'etkin' kullanılmalıdır."
+    },
+    {
+        id: "t19", type: "boss", zone: 4,
+        story: "SİSTEM ÇÖKMEK ÜZERE! Son güvenlik duvarı...",
+        question: "Cümleyi saf Türkçe haline getir.",
+        segments: [
+            { type: "select", foreign: "Trend", options: ["Moda", "Gözde", "Güzel"], correct: "Gözde" },
+            { type: "text", val: " olan bu " },
+            { type: "select", foreign: "merkeze", options: ["binaya", "alana", "merkeze", "center'a"], correct: "merkeze" }, // Trick: Center -> Merkez, the foreign was Center, so target is merkez
+            { type: "text", val: " girmek için " },
+            { type: "select", foreign: "ekstra", options: ["fazladan", "büyük", "ilave"], correct: "fazladan" },
+            { type: "text", val: " zaman harcadık." }
+        ],
+        // Overriding setup due to complexity: Actually let's specify foreign words clearly in prompt.
+        // Wait, the dropdown shows foreign word by default? No, dropdown should replace the foreign word.
+        explanation: "Trend = Gözde, Center = Merkez, Ekstra = Fazladan/İlave."
+    },
+    {
+        id: "t20", type: "boss", zone: 4,
+        story: "SON ŞİFRE! Bunu çözersen dilimiz tamamen kurtulacak!",
+        question: "Cümledeki yabancı kelimelerin Türkçe karşılıklarını seçin.",
+        segments: [
+            { type: "text", val: "Sorunu çözmek için liderimizin (önderimizin) " },
+            { type: "select", foreign: "okey", options: ["evet", "tamam", "olur"], correct: "tamam" },
+            { type: "text", val: " vermesini bekledik ve " },
+            { type: "select", foreign: "minimum", options: ["en az", "en çok", "biraz"], correct: "en az" },
+            { type: "text", val: " hata ile görevimizi bitirdik." }
+        ],
+        explanation: "Okey = Tamam, Minimum = En az."
+    }
+];
+
+// Re-map boss 19 properly based on logic
+rawTasks[18].segments = [
+    { type: "select", foreign: "Trend", options: ["Gözde", "Popüler", "Yeni"], correct: "Gözde" },
+    { type: "text", val: " olan bu " },
+    { type: "select", foreign: "center'a", options: ["plaza", "merkeze", "stadyum"], correct: "merkeze" },
+    { type: "text", val: " girmek için " },
+    { type: "select", foreign: "ekstra", options: ["süper", "fazladan", "çok"], correct: "fazladan" },
+    { type: "text", val: " efor sarf ettik." }
+];
+
+/** STATE MANAGEMENT */
+const State = {
+    currentIndex: 0,
+    score: 0,
+    wrongCount: 0,
+    skippedCount: 0,
+    tasks: [],
+    history: []
+};
+
+// Utilities
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+}
+
+function cleanWord(word) {
+    return word.replace(/[.,!?]/g, "");
+}
+
+/** APP LOGIC */
+const App = {
+    init: function() {
+        State.currentIndex = 0;
+        State.score = 0;
+        State.wrongCount = 0;
+        State.skippedCount = 0;
+        
+        // Deep clone & shuffle setup
+        State.tasks = JSON.parse(JSON.stringify(rawTasks)).map(task => {
+            if(task.type === 'mcq') {
+                task.options = shuffle(task.options);
+            } else if (task.type === 'classify') {
+                task.items = shuffle(task.items);
+            } else if (task.type === 'match') {
+                task.shuffledForeign = shuffle([...task.pairs]);
+                task.shuffledTurkish = shuffle([...task.pairs]);
+            } else if (task.type === 'boss') {
+                task.segments.forEach(seg => {
+                    if(seg.type === 'select') seg.options = shuffle(seg.options);
+                });
+            }
+            return task;
+        });
+
+        State.history = State.tasks.map(t => ({
+            status: 'pending',
+            attempts: 0,
+            firstTry: true,
+            answer: null,
+            locked: false
+        }));
+
+        document.getElementById("report-screen").classList.add("hidden");
+        document.getElementById("content-area").classList.remove("hidden");
+        document.getElementById("game-controls").classList.remove("hidden");
+        document.getElementById("game-header").style.display = "block";
+
+        this.updateUI();
+    },
+
+    updateUI: function() {
+        document.getElementById("ui-score").innerText = State.score;
+        document.getElementById("ui-task").innerText = `${State.currentIndex + 1}/${State.tasks.length}`;
+        
+        // Update Map
+        const currentZone = State.tasks[State.currentIndex].zone;
+        for(let i=0; i<5; i++) {
+            let node = document.getElementById(`node-${i}`);
+            node.classList.remove('active', 'cleared');
+            if(i < currentZone) node.classList.add('cleared');
+            else if(i === currentZone) node.classList.add('active');
+        }
+
+        // Buttons state
+        document.getElementById("btn-prev").disabled = State.currentIndex === 0;
+        
+        const history = State.history[State.currentIndex];
+        const btnNext = document.getElementById("btn-next");
+        const btnSkip = document.getElementById("btn-skip");
+        const btnCheck = document.getElementById("btn-check");
+
+        if(history.locked || history.status === 'skipped') {
+            btnNext.disabled = false;
+            btnSkip.classList.add('hidden');
+        } else {
+            btnNext.disabled = true;
+            btnSkip.classList.remove('hidden');
+        }
+
+        this.renderTask();
+    },
+
+    renderTask: function() {
+        const task = State.tasks[State.currentIndex];
+        const history = State.history[State.currentIndex];
+        const container = document.getElementById("content-area");
+        const btnCheck = document.getElementById("btn-check");
+
+        let html = `<div class="story-box">${task.story}</div>
+                    <div class="question-title">${task.question}</div>`;
+
+        btnCheck.classList.add('hidden'); // hidden by default unless needed
+
+        if (task.type === 'mcq') {
+            html += `<div class="options-grid">`;
+            task.options.forEach(opt => {
+                let cssClass = "option-btn";
+                if (history.answer === opt.id) {
+                    cssClass += history.locked ? (opt.isCorrect ? " correct" : " wrong") : " selected";
+                } else if (history.locked && opt.isCorrect) {
+                    cssClass += " correct"; // highlight correct if missed
+                }
+                html += `<button class="${cssClass}" onclick="App.selectMCQ('${opt.id}')" ${history.locked ? 'disabled' : ''}>${opt.text}</button>`;
+            });
+            html += `</div>`;
+            if(!history.locked) btnCheck.classList.remove('hidden');
+        } 
+        else if (task.type === 'tf') {
+            html += `<div class="options-grid">`;
+            const options = [{id: 't', text: 'Doğru', val: true}, {id: 'f', text: 'Yanlış', val: false}];
+            options.forEach(opt => {
+                let cssClass = "option-btn";
+                if(history.answer === opt.id) {
+                    cssClass += history.locked ? (opt.val === task.isCorrect ? " correct" : " wrong") : " selected";
+                } else if (history.locked && opt.val === task.isCorrect) {
+                    cssClass += " correct";
+                }
+                html += `<button class="${cssClass}" onclick="App.selectMCQ('${opt.id}')" ${history.locked ? 'disabled' : ''}>${opt.text}</button>`;
+            });
+            html += `</div>`;
+            if(!history.locked) btnCheck.classList.remove('hidden');
+        }
+        else if (task.type === 'find_error') {
+            html += `<div class="sentence-box">`;
+            task.words = task.sentence.split(" ");
+            task.words.forEach((w, idx) => {
+                let cssClass = "clickable-word";
+                let isTarget = cleanWord(w).toLowerCase() === task.correctWord.toLowerCase();
+                
+                if (history.answer === idx) {
+                    cssClass += history.locked ? (isTarget ? " correct" : " wrong") : " selected";
+                } else if (history.locked && isTarget) {
+                    cssClass += " correct";
+                }
+                html += `<span class="${cssClass}" onclick="App.selectWord(${idx})" ${history.locked ? 'style="pointer-events:none;"' : ''}>${w}</span>`;
+            });
+            html += `</div>`;
+            if(!history.locked) btnCheck.classList.remove('hidden');
+        }
+        else if (task.type === 'classify') {
+            html += `<div class="options-grid">`;
+            history.answer = history.answer || [];
+            task.items.forEach(item => {
+                let cssClass = "option-btn";
+                let isSel = history.answer.includes(item.id);
+                if (history.locked) {
+                    if (item.isTurkish) cssClass += " correct";
+                    else if (isSel && !item.isTurkish) cssClass += " wrong";
+                } else if (isSel) {
+                    cssClass += " selected";
+                }
+                html += `<button class="${cssClass}" onclick="App.toggleClassify('${item.id}')" ${history.locked ? 'disabled' : ''}>${item.text}</button>`;
+            });
+            html += `</div>`;
+            if(!history.locked) btnCheck.classList.remove('hidden');
+        }
+        else if (task.type === 'match') {
+            history.answer = history.answer || []; // array of {f, t}
+            html += `<div class="match-container">
+                        <div class="match-col" id="match-left">`;
+            task.shuffledForeign.forEach(pair => {
+                let matched = history.answer.find(a => a.f === pair.foreign);
+                let css = matched ? "match-item matched" : "match-item";
+                html += `<div class="${css}" onclick="App.selectMatch('left', '${pair.foreign}')" data-val="${pair.foreign}">${pair.foreign}</div>`;
+            });
+            html += `</div><div class="match-col" id="match-right">`;
+            task.shuffledTurkish.forEach(pair => {
+                let matched = history.answer.find(a => a.t === pair.turkish);
+                let css = matched ? "match-item matched" : "match-item";
+                html += `<div class="${css}" onclick="App.selectMatch('right', '${pair.turkish}')" data-val="${pair.turkish}">${pair.turkish}</div>`;
+            });
+            html += `</div></div>`;
+            // No check button for match, it auto-checks pairs.
+        }
+        else if (task.type === 'boss') {
+            html += `<div class="boss-text">`;
+            history.answer = history.answer || {};
+            task.segments.forEach((seg, i) => {
+                if(seg.type === 'text') {
+                    html += `<span>${seg.val}</span>`;
+                } else {
+                    let selVal = history.answer[i] || "";
+                    let css = "boss-select";
+                    if(history.locked) {
+                        css += (selVal === seg.correct) ? " correct" : " wrong";
+                    }
+                    html += `<select id="boss-sel-${i}" class="${css}" onchange="App.selectBoss(${i}, this.value)" ${history.locked ? 'disabled' : ''}>
+                                <option value="">(${seg.foreign})</option>`;
+                    seg.options.forEach(o => {
+                        html += `<option value="${o}" ${selVal===o ? 'selected':''}>${o}</option>`;
+                    });
+                    html += `</select>`;
+                }
+            });
+            html += `</div>`;
+            if(!history.locked) btnCheck.classList.remove('hidden');
+        }
+
+        html += `<div id="feedback-box"></div>`;
+        container.innerHTML = html;
+
+        // If skipped previously but not locked, show a note
+        if(history.status === 'skipped' && !history.locked) {
+            this.showFeedback(false, "Bu görevi atlamıştın. Tekrar çözebilirsin!", true);
+        } else if (history.locked) {
+            this.showFeedback(true, task.explanation, false, true);
+        }
+    },
+
+    selectMCQ: function(id) {
+        let history = State.history[State.currentIndex];
+        if(history.locked) return;
+        history.answer = id;
+        this.renderTask();
+    },
+
+    selectWord: function(idx) {
+        let history = State.history[State.currentIndex];
+        if(history.locked) return;
+        history.answer = idx;
+        this.renderTask();
+    },
+
+    toggleClassify: function(id) {
+        let history = State.history[State.currentIndex];
+        if(history.locked) return;
+        let idx = history.answer.indexOf(id);
+        if(idx > -1) history.answer.splice(idx, 1);
+        else history.answer.push(id);
+        this.renderTask();
+    },
+
+    matchState: { left: null, right: null },
+    selectMatch: function(side, val) {
+        let task = State.tasks[State.currentIndex];
+        let history = State.history[State.currentIndex];
+        if(history.locked) return;
+
+        // Visual selection
+        let colId = side === 'left' ? 'match-left' : 'match-right';
+        let items = document.getElementById(colId).children;
+        for(let i=0; i<items.length; i++) {
+            if(!items[i].classList.contains('matched')) items[i].classList.remove('selected');
+            if(items[i].getAttribute('data-val') === val && !items[i].classList.contains('matched')) {
+                items[i].classList.add('selected');
+            }
+        }
+
+        this.matchState[side] = val;
+
+        // Check if both selected
+        if(this.matchState.left && this.matchState.right) {
+            let isCorrect = task.pairs.some(p => p.foreign === this.matchState.left && p.turkish === this.matchState.right);
+            if(isCorrect) {
+                history.answer.push({f: this.matchState.left, t: this.matchState.right});
+                this.matchState = {left: null, right: null};
+                this.renderTask();
+                
+                if(history.answer.length === task.pairs.length) {
+                    this.handleCorrect(task.explanation);
+                }
+            } else {
+                // Error flash
+                let lNode = Array.from(document.getElementById('match-left').children).find(n=>n.getAttribute('data-val')===this.matchState.left);
+                let rNode = Array.from(document.getElementById('match-right').children).find(n=>n.getAttribute('data-val')===this.matchState.right);
+                if(lNode) lNode.classList.add('error-flash');
+                if(rNode) rNode.classList.add('error-flash');
+                
+                this.handleWrong(`'${this.matchState.left}' kelimesinin Türkçe karşılığı '${this.matchState.right}' değildir.`);
+                this.matchState = {left: null, right: null};
+                setTimeout(() => this.renderTask(), 800);
+            }
+        }
+    },
+
+    selectBoss: function(index, val) {
+        let history = State.history[State.currentIndex];
+        if(history.locked) return;
+        history.answer[index] = val;
+    },
+
+    checkAnswer: function() {
+        const task = State.tasks[State.currentIndex];
+        const history = State.history[State.currentIndex];
+        if(history.locked) return;
+
+        history.attempts++;
+        let isCorrect = false;
+        let feedbackMsg = "";
+
+        if (task.type === 'mcq') {
+            if(!history.answer) return;
+            let opt = task.options.find(o => o.id === history.answer);
+            isCorrect = opt.isCorrect;
+            feedbackMsg = isCorrect ? task.explanation : (opt.feedback || "Yanlış seçim.");
+        } 
+        else if (task.type === 'tf') {
+            if(!history.answer) return;
+            let val = history.answer === 't';
+            isCorrect = val === task.isCorrect;
+            feedbackMsg = isCorrect ? task.explanation : task.feedbackWrong;
+        }
+        else if (task.type === 'find_error') {
+            if(history.answer === null) return;
+            let clickedWord = cleanWord(task.words[history.answer]);
+            isCorrect = clickedWord.toLowerCase() === task.correctWord.toLowerCase();
+            feedbackMsg = isCorrect ? task.explanation : `'${clickedWord}' Türkçe kökenlidir veya cümlenin normal bir ögesidir. Yabancı kelimeyi aramaya devam et!`;
+        }
+        else if (task.type === 'classify') {
+            let correctIds = task.items.filter(i => i.isTurkish).map(i => i.id);
+            let sel = history.answer || [];
+            isCorrect = sel.length === correctIds.length && sel.every(id => correctIds.includes(id));
+            if(isCorrect) feedbackMsg = task.explanation;
+            else {
+                feedbackMsg = "Seçimlerinde yabancı kelimeler var veya Türkçe kelimeleri eksik seçtin. Tekrar dene!";
+            }
+        }
+        else if (task.type === 'boss') {
+            isCorrect = true;
+            let errors = [];
+            task.segments.forEach((seg, i) => {
+                if(seg.type === 'select') {
+                    if(history.answer[i] !== seg.correct) {
+                        isCorrect = false;
+                        errors.push(`'${seg.foreign}' yerine '${history.answer[i] || 'boş'}' seçimi hatalı.`);
+                    }
+                }
+            });
+            if(isCorrect) feedbackMsg = task.explanation;
+            else feedbackMsg = "Sistem onarılamadı:<br>" + errors.join("<br>");
+        }
+
+        if (isCorrect) {
+            this.handleCorrect(feedbackMsg);
+        } else {
+            history.firstTry = false;
+            State.wrongCount++;
+            this.handleWrong(feedbackMsg);
+            this.renderTask(); // to show wrong highlights if implemented
+        }
+    },
+
+    handleCorrect: function(msg) {
+        const history = State.history[State.currentIndex];
+        history.locked = true;
+        
+        // Only award points if status wasn't already success (prevent double reward)
+        if(history.status !== 'success') {
+            if(history.firstTry) State.score += 10;
+            else State.score += 5;
+            
+            if(history.status === 'skipped') State.skippedCount--; // resolved a skipped task
+            history.status = 'success';
+        }
+        
+        this.updateUI();
+        this.showFeedback(true, "BAŞARILI: " + msg);
+    },
+
+    handleWrong: function(msg) {
+        this.showFeedback(false, "SİSTEM UYARISI: " + msg);
+    },
+
+    showFeedback: function(isSuccess, text, isInfo=false, noAnim=false) {
+        const fb = document.getElementById("feedback-box");
+        fb.style.display = "block";
+        fb.className = isSuccess ? "success" : (isInfo ? "" : "error");
+        if(isInfo) {
+            fb.style.backgroundColor = "rgba(252, 163, 17, 0.1)";
+            fb.style.borderLeft = "4px solid #fca311";
+            fb.style.color = "#fca311";
+        }
+        if(noAnim) fb.style.animation = "none";
+        else fb.style.animation = "fadeIn 0.3s ease";
+        fb.innerHTML = text;
+    },
+
+    skipTask: function() {
+        const history = State.history[State.currentIndex];
+        if(!history.locked) {
+            if(history.status !== 'skipped') {
+                history.status = 'skipped';
+                history.firstTry = false;
+                State.skippedCount++;
+            }
+            this.nextTask();
+        }
+    },
+
+    nextTask: function() {
+        if(State.currentIndex < State.tasks.length - 1) {
+            State.currentIndex++;
+            this.updateUI();
+        } else {
+            this.showReport();
+        }
+    },
+
+    prevTask: function() {
+        if(State.currentIndex > 0) {
+            State.currentIndex--;
+            this.updateUI();
+        }
+    },
+
+    showReport: function() {
+        document.getElementById("content-area").classList.add("hidden");
+        document.getElementById("game-controls").classList.add("hidden");
+        document.getElementById("game-header").style.display = "none";
+        
+        const rep = document.getElementById("report-screen");
+        rep.classList.remove("hidden");
+
+        let firstTryCount = State.history.filter(h => h.status==='success' && h.firstTry).length;
+
+        document.getElementById("rep-score").innerText = State.score;
+        document.getElementById("rep-first").innerText = firstTryCount;
+        document.getElementById("rep-wrong").innerText = State.wrongCount;
+        document.getElementById("rep-skip").innerText = State.skippedCount;
+
+        const list = document.getElementById("error-list");
+        list.innerHTML = "";
+
+        let hasIssues = false;
+        State.history.forEach((h, idx) => {
+            if(h.status === 'skipped' || !h.firstTry) {
+                hasIssues = true;
+                let t = State.tasks[idx];
+                let isSkipped = h.status === 'skipped';
+                let div = document.createElement("div");
+                div.className = "error-item " + (isSkipped ? "skipped" : "");
+                
+                let desc = `Görev ${idx+1}: ${t.question} <br>
+                            <small style="color:#bbb;">${t.explanation}</small>`;
+                            
+                div.innerHTML = `<div>${desc}</div>
+                                 <button onclick="App.goToTask(${idx})">${isSkipped ? 'Çöz' : 'İncele'}</button>`;
+                list.appendChild(div);
+            }
+        });
+
+        if(!hasIssues) {
+            list.innerHTML = "<div style='color:var(--accent-green); text-align:center;'>Harika ajan! Hiçbir dosyada hata yapmadın.</div>";
+        }
+    },
+
+    goToTask: function(idx) {
+        State.currentIndex = idx;
+        document.getElementById("report-screen").classList.add("hidden");
+        document.getElementById("content-area").classList.remove("hidden");
+        document.getElementById("game-controls").classList.remove("hidden");
+        document.getElementById("game-header").style.display = "block";
+        this.updateUI();
+    },
+
+    replay: function() {
+        this.init();
+    }
+};
+
+// Start Game
+window.onload = () => App.init();
+
+</script>
+</body>
+</html>
