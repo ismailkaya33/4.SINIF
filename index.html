@@ -81,7 +81,7 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
         border-bottom: 8px solid;
-        position: relative; /* YENİ: Etiketi konumlandırmak için eklendi */
+        position: relative; /* Etiketi konumlandırmak için */
     }
 
     .subject-btn:hover {
@@ -89,7 +89,7 @@
         box-shadow: 0 20px 35px rgba(0,0,0,0.15);
     }
 
-    /* YENİ: Yeni Etiketi Tasarımı */
+    /* YENİ UYARI ETİKETİ TASARIMI */
     .badge-yeni {
         position: absolute;
         top: -10px;
@@ -100,6 +100,23 @@
         font-weight: 900;
         padding: 5px 15px;
         border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);
+        animation: pulse 1.5s infinite;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    /* İç sayfalardaki linklerin üzerinde etiketin daha iyi durması için küçük boyutlu versiyon */
+    .badge-yeni-kucuk {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #FF3B30;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 900;
+        padding: 3px 10px;
+        border-radius: 15px;
         box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);
         animation: pulse 1.5s infinite;
         z-index: 10;
@@ -193,7 +210,8 @@
     }
 
     .game-list li a {
-        display: block;
+        display: flex;
+        align-items: center;
         padding: 20px;
         background: #F7FAFC;
         border-radius: 15px;
@@ -203,8 +221,7 @@
         font-weight: 700;
         border-left: 6px solid #CBD5E0;
         transition: all 0.2s;
-        display: flex;
-        align-items: center;
+        position: relative; /* İçerideki uyarı etiketinin konumlanması için gerekli */
     }
     
     .game-list li a::before {
@@ -245,7 +262,7 @@
 
     <div class="container">
         
-        <!-- ANA MENÜ (DERS SEÇİMİ) - YENİ: ID'ler eklendi -->
+        <!-- ANA MENÜ (DERS SEÇİMİ) -->
         <div id="main-menu" class="menu-grid">
             <button id="btn-turkce" class="subject-btn btn-turkce" onclick="openSubject('turkce')">
                 <span class="subject-icon">📚</span>
@@ -295,8 +312,9 @@
                 <li><a href="Turkce/essesli.html">Eş Sesli Sözcükler</a></li>
                 <li><a href="Turkce/essesli2.html">Eş Sesli Sözcükler 2</a></li>
                 <li><a href="Turkce/eszitanlam.html">Eş ve Zıt Anlamlılar</a></li>
-                <li><a href="Turkce/gercekmecazterim.html">Gerçek Mecaz ve Terim Anlam</a></li>
-                <li><a href="Turkce/gercekmecazterim2.html">Gerçek Mecaz ve Terim Anlam 2</a></li>
+                <!-- Yeni eklenen içeriklere id ekledik -->
+                <li><a id="etk-turkce-mecaz1" href="Turkce/gercekmecazterim.html">Gerçek Mecaz ve Terim Anlam</a></li>
+                <li><a id="etk-turkce-mecaz2" href="Turkce/gercekmecazterim2.html">Gerçek Mecaz ve Terim Anlam 2</a></li>
                 <li><a href="Turkce/harfhece.html">Harf ve Hece Bilgisi</a></li>
                 <li><a href="Turkce/hikayededektifi.html">Hikaye Dedektifi</a></li>
                 <li><a href="Turkce/ikilemeler.html">İkileme Dedektifi</a></li>
@@ -311,8 +329,8 @@
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
         </div>
         <ul class="game-list">
-            <li><a href="Turkce/DefterNotlari/metninbolumleri.png" target="_blank">Metnin Bölümleri Defter Notu 📸</a></li>
-            <li><a href="Turkce/DefterNotlari/gercekmecaz.png" target="_blank">Gerçek Mecaz Terim Anlam Defter Notu 📸</a></li>
+            <li><a id="etk-turkce-not1" href="Turkce/DefterNotlari/metninbolumleri.png" target="_blank">Metnin Bölümleri Defter Notu 📸</a></li>
+            <li><a id="etk-turkce-not2" href="Turkce/DefterNotlari/gercekmecaz.png" target="_blank">Gerçek Mecaz Terim Anlam Defter Notu 📸</a></li>
         </ul>
         </div>
 
@@ -326,7 +344,8 @@
                 <li><a href="Matematik/oruntuler.html">Sayı Örüntüleri</a></li>
                 <li><a href="Matematik/sayilar.html">Sayılar</a></li>
                 <li><a href="Matematik/sayilarikarsilastirsirala.html">Sayıları Karşılaştırma ve Sıralama</a></li>
-                <li><a href="Matematik/sayiproblemleri.html">Sayı Problemleri Atölyesi</a></li>
+                <!-- Yeni eklenen içeriğe id ekledik -->
+                <li><a id="etk-mat-problemler" href="Matematik/sayiproblemleri.html">Sayı Problemleri Atölyesi</a></li>
                 <li><a href="Matematik/toplama.html">Toplama Yapalım</a></li>
                 <li><a href="Matematik/yuvarlama.html">Yuvarlama Macerası 1</a></li>
                 <li><a href="Matematik/yuvarlama2.html">Yuvarlama Macerası 2</a></li>
@@ -336,8 +355,8 @@
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
         </div>
         <ul class="game-list">
-            <li><a href="Matematik/DefterNotlari/toplama.png" target="_blank">Doğal Sayılarla Toplama İşlemi Notu 📸</a></li>
-            <li><a href="Matematik/DefterNotlari/cikarmadefternotu.png" target="_blank">Doğal Sayılarla Çıkarma İşlemi Notu 📸</a></li>
+            <li><a id="etk-mat-not1" href="Matematik/DefterNotlari/toplama.png" target="_blank">Doğal Sayılarla Toplama İşlemi Notu 📸</a></li>
+            <li><a id="etk-mat-not2" href="Matematik/DefterNotlari/cikarmadefternotu.png" target="_blank">Doğal Sayılarla Çıkarma İşlemi Notu 📸</a></li>
         </ul>
         </div>
 
@@ -365,9 +384,10 @@
                 <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
             </div>
             <ul class="game-list">
-                <li><a href="Sosyal/ailetarihi.html">Aile Tarihi</a></li>
+                <!-- Yeni eklenen içeriklere id ekledik -->
+                <li><a id="etk-sosyal-aile" href="Sosyal/ailetarihi.html">Aile Tarihi</a></li>
                 <li><a href="Sosyal/kendinionunyerinekoy.html">Kendini Onun Yerine Koy</a></li>
-                <li><a href="Sosyal/millimucadele.html">Milli Mücadele Dönemi</a></li>
+                <li><a id="etk-sosyal-milli" href="Sosyal/millimucadele.html">Milli Mücadele Dönemi</a></li>
                 <li><a href="Sosyal/ilgiihtiyacyetenek.html">İlgi, İhtiyaç ve Yeteneklerimiz</a></li>
             </ul>
             <!-- SOSYAL BİLGİLER DEFTER NOTLARI -->
@@ -375,8 +395,8 @@
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
         </div>
         <ul class="game-list">
-            <li><a href="Sosyal/DefterNotlari/farkliliklarimizvesaygi.png" target="_blank">Farklılıklarımız ve Saygı Notu 📸</a></li>
-            <li><a href="Sosyal/DefterNotlari/ailetarihi.png" target="_blank">Aile Tarihi Notu 📸</a></li>
+            <li><a id="etk-sosyal-not1" href="Sosyal/DefterNotlari/farkliliklarimizvesaygi.png" target="_blank">Farklılıklarımız ve Saygı Notu 📸</a></li>
+            <li><a id="etk-sosyal-not2" href="Sosyal/DefterNotlari/ailetarihi.png" target="_blank">Aile Tarihi Notu 📸</a></li>
         </ul>
         </div>
 
@@ -388,7 +408,8 @@
             </div>
             <ul class="game-list">
                 <li><a href="Insanhaklari/hakozgurluksorumluluk.html">Hak Özgürlük ve Sorumluluk</a></li>
-                <li><a href="Insanhaklari/cocukveyetiskinfarklar.html">Yetişkinler ve Çocuklar</a></li>
+                <!-- Yeni eklenen içeriğe id ekledik -->
+                <li><a id="etk-insan-cocuk" href="Insanhaklari/cocukveyetiskinfarklar.html">Yetişkinler ve Çocuklar</a></li>
             </ul>
         </div>
 
@@ -419,72 +440,71 @@
 
     <!-- SAYFA GEÇİŞ VE YENİ ETKİNLİK SCRİPTİ -->
     <script>
-        // YENİ: Sayfa yüklendiğinde yeni etkinlikleri kontrol et
         document.addEventListener("DOMContentLoaded", function() {
-            // YENİ EKLENEN DOSYALARIN TARİHLERİ:
-            // Türkçe, Matematik, Sosyal Bilgiler ve İnsan Hakları için bugünün tarihini (12 Ekim 2026) girdik.
-            
+            // ANA MENÜ BUTONLARI İÇİN UYARILAR
             showNewBadge('btn-turkce', '2026-10-12');
             showNewBadge('btn-matematik', '2026-10-12');
             showNewBadge('btn-sosyal', '2026-10-12');
             showNewBadge('btn-insan', '2026-10-12');
             
-            // Eğer ileride Fen Bilimlerine de eklerseniz şu şekilde kullanabilirsiniz:
-            // showNewBadge('btn-fen', '2026-10-15');
+            // ALT SAYFALARDAKİ LİNKLER İÇİN UYARILAR (3 gün boyunca iç sayfalarda da görünecek)
+            showNewBadge('etk-turkce-mecaz1', '2026-10-12', true);
+            showNewBadge('etk-turkce-mecaz2', '2026-10-12', true);
+            showNewBadge('etk-turkce-not1', '2026-10-12', true);
+            showNewBadge('etk-turkce-not2', '2026-10-12', true);
+            
+            showNewBadge('etk-mat-problemler', '2026-10-12', true);
+            showNewBadge('etk-mat-not1', '2026-10-12', true);
+            showNewBadge('etk-mat-not2', '2026-10-12', true);
+            
+            showNewBadge('etk-sosyal-aile', '2026-10-12', true);
+            showNewBadge('etk-sosyal-milli', '2026-10-12', true);
+            showNewBadge('etk-sosyal-not1', '2026-10-12', true);
+            showNewBadge('etk-sosyal-not2', '2026-10-12', true);
+            
+            showNewBadge('etk-insan-cocuk', '2026-10-12', true);
         });
 
-        // YENİ: 3 Gün kuralını hesaplayan ve etiketi ekleyen fonksiyon
-        function showNewBadge(buttonId, dateString) {
+        // isSmallBadge parametresi ekledim. İç sayfalardaki linklerin üzerinde kocaman durmaması için.
+        function showNewBadge(elementId, dateString, isSmallBadge = false) {
             const addedDate = new Date(dateString);
             const today = new Date();
             
-            // Saatleri sıfırlayarak sadece gün farkını bulalım
             addedDate.setHours(0, 0, 0, 0);
             today.setHours(0, 0, 0, 0);
 
             const diffTime = today - addedDate;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-            // Eğer eklendiği tarih üzerinden 3 gün veya daha az zaman geçtiyse
             if (diffDays >= 0 && diffDays <= 3) {
-                const button = document.getElementById(buttonId);
-                if (button) {
-                    // Butonda zaten etiket yoksa oluşturup ekle
-                    if (!button.querySelector('.badge-yeni')) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    if (!element.querySelector('.badge-yeni') && !element.querySelector('.badge-yeni-kucuk')) {
                         const badge = document.createElement('span');
-                        badge.className = 'badge-yeni';
+                        // Linklerin içindeyse daha küçük sınıfı kullan
+                        badge.className = isSmallBadge ? 'badge-yeni-kucuk' : 'badge-yeni';
                         badge.innerText = 'YENİ';
-                        button.appendChild(badge);
+                        element.appendChild(badge);
                     }
                 }
             }
         }
 
         function openSubject(subjectId) {
-            // Ana menüyü gizle
             document.getElementById('main-menu').style.display = 'none';
-            
-            // Tüm ders sayfalarını gizle
             var pages = document.getElementsByClassName('subject-page');
             for(var i = 0; i < pages.length; i++) {
                 pages[i].style.display = 'none';
             }
-            
-            // Sadece tıklanan dersin sayfasını göster
             document.getElementById(subjectId).style.display = 'block';
-            
-            // Sayfanın en üstüne kaydır
             window.scrollTo(0, 0);
         }
 
         function goBack() {
-            // Tüm ders sayfalarını gizle
             var pages = document.getElementsByClassName('subject-page');
             for(var i = 0; i < pages.length; i++) {
                 pages[i].style.display = 'none';
             }
-            
-            // Ana menüyü tekrar göster
             document.getElementById('main-menu').style.display = 'grid';
         }
     </script>
