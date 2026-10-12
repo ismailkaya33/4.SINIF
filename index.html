@@ -81,11 +81,35 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
         border-bottom: 8px solid;
+        position: relative; /* YENİ: Etiketi konumlandırmak için eklendi */
     }
 
     .subject-btn:hover {
         transform: translateY(-15px) scale(1.02);
         box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+    }
+
+    /* YENİ: Yeni Etiketi Tasarımı */
+    .badge-yeni {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #FF3B30;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 900;
+        padding: 5px 15px;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);
+        animation: pulse 1.5s infinite;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+        100% { transform: scale(1); }
     }
 
     .subject-icon {
@@ -221,39 +245,39 @@
 
     <div class="container">
         
-        <!-- ANA MENÜ (DERS SEÇİMİ) -->
+        <!-- ANA MENÜ (DERS SEÇİMİ) - YENİ: ID'ler eklendi -->
         <div id="main-menu" class="menu-grid">
-            <button class="subject-btn btn-turkce" onclick="openSubject('turkce')">
+            <button id="btn-turkce" class="subject-btn btn-turkce" onclick="openSubject('turkce')">
                 <span class="subject-icon">📚</span>
                 <span class="subject-name">TÜRKÇE</span>
             </button>
             
-            <button class="subject-btn btn-matematik" onclick="openSubject('matematik')">
+            <button id="btn-matematik" class="subject-btn btn-matematik" onclick="openSubject('matematik')">
                 <span class="subject-icon">🧮</span>
                 <span class="subject-name">MATEMATİK</span>
             </button>
 
-            <button class="subject-btn btn-fen" onclick="openSubject('fen')">
+            <button id="btn-fen" class="subject-btn btn-fen" onclick="openSubject('fen')">
                 <span class="subject-icon">🔬</span>
                 <span class="subject-name">FEN BİLİMLERİ</span>
             </button>
 
-            <button class="subject-btn btn-sosyal" onclick="openSubject('sosyal')">
+            <button id="btn-sosyal" class="subject-btn btn-sosyal" onclick="openSubject('sosyal')">
                 <span class="subject-icon">🌍</span>
                 <span class="subject-name">SOSYAL BİLGİLER</span>
             </button>
 
-            <button class="subject-btn btn-insan" onclick="openSubject('insan')">
+            <button id="btn-insan" class="subject-btn btn-insan" onclick="openSubject('insan')">
                 <span class="subject-icon">🤝</span>
                 <span class="subject-name">İNSAN HAKLARI</span>
             </button>
 
-            <button class="subject-btn btn-trafik" onclick="openSubject('trafik')">
+            <button id="btn-trafik" class="subject-btn btn-trafik" onclick="openSubject('trafik')">
                 <span class="subject-icon">🚦</span>
                 <span class="subject-name">TRAFİK GÜVENLİĞİ</span>
             </button>
 
-            <button class="subject-btn btn-oyunlar" onclick="openSubject('oyunlar')">
+            <button id="btn-oyunlar" class="subject-btn btn-oyunlar" onclick="openSubject('oyunlar')">
                 <span class="subject-icon">🎮</span>
                 <span class="subject-name">OYUNLAR</span>
             </button>
@@ -379,7 +403,7 @@
             </ul>
         </div>
 
-        <!-- YENİ: OYUNLAR SAYFASI -->
+        <!-- OYUNLAR SAYFASI -->
         <div id="oyunlar" class="subject-page page-oyunlar">
             <div class="page-header">
                 <h2 class="page-title"><span style="font-size:2.5rem">🎮</span> Eğlenceli Oyunlar</h2>
@@ -393,8 +417,49 @@
 
     </div>
 
-    <!-- SAYFA GEÇİŞ SCRİPTİ -->
+    <!-- SAYFA GEÇİŞ VE YENİ ETKİNLİK SCRİPTİ -->
     <script>
+        // YENİ: Sayfa yüklendiğinde yeni etkinlikleri kontrol et
+        document.addEventListener("DOMContentLoaded", function() {
+            // YENİ EKLENEN DOSYALARIN TARİHLERİ:
+            // Türkçe, Matematik, Sosyal Bilgiler ve İnsan Hakları için bugünün tarihini (12 Ekim 2026) girdik.
+            
+            showNewBadge('btn-turkce', '2026-10-12');
+            showNewBadge('btn-matematik', '2026-10-12');
+            showNewBadge('btn-sosyal', '2026-10-12');
+            showNewBadge('btn-insan', '2026-10-12');
+            
+            // Eğer ileride Fen Bilimlerine de eklerseniz şu şekilde kullanabilirsiniz:
+            // showNewBadge('btn-fen', '2026-10-15');
+        });
+
+        // YENİ: 3 Gün kuralını hesaplayan ve etiketi ekleyen fonksiyon
+        function showNewBadge(buttonId, dateString) {
+            const addedDate = new Date(dateString);
+            const today = new Date();
+            
+            // Saatleri sıfırlayarak sadece gün farkını bulalım
+            addedDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            const diffTime = today - addedDate;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // Eğer eklendiği tarih üzerinden 3 gün veya daha az zaman geçtiyse
+            if (diffDays >= 0 && diffDays <= 3) {
+                const button = document.getElementById(buttonId);
+                if (button) {
+                    // Butonda zaten etiket yoksa oluşturup ekle
+                    if (!button.querySelector('.badge-yeni')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-yeni';
+                        badge.innerText = 'YENİ';
+                        button.appendChild(badge);
+                    }
+                }
+            }
+        }
+
         function openSubject(subjectId) {
             // Ana menüyü gizle
             document.getElementById('main-menu').style.display = 'none';
