@@ -81,7 +81,7 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
         border-bottom: 8px solid;
-        position: relative; /* Etiketi konumlandırmak için */
+        position: relative;
     }
 
     .subject-btn:hover {
@@ -106,7 +106,6 @@
         pointer-events: none;
     }
 
-    /* İç sayfalardaki linklerin üzerinde etiketin daha iyi durması için küçük boyutlu versiyon */
     .badge-yeni-kucuk {
         position: absolute;
         top: -8px;
@@ -221,7 +220,7 @@
         font-weight: 700;
         border-left: 6px solid #CBD5E0;
         transition: all 0.2s;
-        position: relative; /* İçerideki uyarı etiketinin konumlanması için gerekli */
+        position: relative;
     }
     
     .game-list li a::before {
@@ -313,7 +312,6 @@
                 <li><a href="Turkce/essesli.html">Eş Sesli Sözcükler</a></li>
                 <li><a href="Turkce/essesli2.html">Eş Sesli Sözcükler 2</a></li>
                 <li><a href="Turkce/eszitanlam.html">Eş ve Zıt Anlamlılar</a></li>
-                <!-- Yeni eklenen içeriklere id ekledik -->
                 <li><a id="etk-turkce-mecaz1" href="Turkce/gercekmecazterim.html">Gerçek Mecaz ve Terim Anlam</a></li>
                 <li><a id="etk-turkce-mecaz2" href="Turkce/gercekmecazterim2.html">Gerçek Mecaz ve Terim Anlam 2</a></li>
                 <li><a href="Turkce/harfhece.html">Harf ve Hece Bilgisi</a></li>
@@ -325,7 +323,7 @@
                 <li><a href="Turkce/noktalamaisaretleri.html">Noktalama İşaretleri</a></li>
                 <li><a href="Turkce/pekistirme.html">Pekiştirme Dedektifi 1</a></li>
             </ul>
-            <!-- DEFTER NOTLARI BÖLÜMÜ -->
+        <!-- TÜRKÇE DEFTER NOTLARI BÖLÜMÜ -->
         <div class="page-header" style="margin-top: 20px;">
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
         </div>
@@ -345,22 +343,21 @@
                 <li><a href="Matematik/oruntuler.html">Sayı Örüntüleri</a></li>
                 <li><a href="Matematik/sayilar.html">Sayılar</a></li>
                 <li><a href="Matematik/sayilarikarsilastirsirala.html">Sayıları Karşılaştırma ve Sıralama</a></li>
-                <!-- Yeni eklenen içeriğe id ekledik -->
                 <li><a id="etk-mat-problemler" href="Matematik/sayiproblemleri.html">Sayı Problemleri Atölyesi</a></li>
                 <li><a href="Matematik/toplama.html">Toplama Yapalım</a></li>
                 <li><a href="Matematik/yuvarlama.html">Yuvarlama Macerası 1</a></li>
                 <li><a href="Matematik/yuvarlama2.html">Yuvarlama Macerası 2</a></li>
             </ul>
-            <!-- MATEMATİK DEFTER NOTLARI -->
-       <!-- MATEMATİK DEFTER NOTLARI -->
+        <!-- MATEMATİK DEFTER NOTLARI -->
         <div class="page-header" style="margin-top: 20px;">
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
         </div>
         <ul class="game-list">
             <li><a id="etk-mat-not1" href="Matematik/DefterNotlari/toplama.png" target="_blank">Doğal Sayılarla Toplama İşlemi Notu 📸</a></li>
             <li><a id="etk-mat-not2" href="Matematik/DefterNotlari/cikarmadefternotu.png" target="_blank">Doğal Sayılarla Çıkarma İşlemi Notu 📸</a></li>
-            <!-- YENİ EKLENEN NOT -->
-            <li><a id="etk-mat-not3" href="Matematik/DefterNotlari/cikarmadaverilmeyen.png" target="_blank">Çıkarmada Verilmeyeni Bulma Notu 📸</a></li>
+            <li><a id="etk-mat-not3" href="Matematik/DefterNotlari/cikarmadaverilmeyen.png?v=1" target="_blank">Çıkarmada Verilmeyeni Bulma Notu 📸</a></li>
+            <li><a id="etk-mat-not4" href="Matematik/DefterNotlari/zihindentoplama.png" target="_blank">Zihinden Toplama İşlemi Notu 📸</a></li>
+            <li><a id="etk-mat-not5" href="Matematik/DefterNotlari/zihindencikarma.png" target="_blank">Zihinden Çıkarma İşlemi Notu 📸</a></li>
         </ul>
         </div>
 
@@ -378,7 +375,6 @@
                 <li><a href="Fen/gecegunduz3d.html">🌍 Gece, Gündüz ve Saatler (3B Simülasyon)</a></li>
                 <li><a href="Fen/madenler.html">Madenler 1</a></li>
                 <li><a href="Fen/madenler2.html">Madenler 2</a></li>
-                <!-- YENİ EKLENEN TEST -->
                 <li><a id="etk-fen-unite1" href="Fen/unitedegerlendirme1.html">F.4.1 Ünite Değerlendirme Testi</a></li>
             </ul>
         </div>
@@ -390,13 +386,12 @@
                 <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
             </div>
             <ul class="game-list">
-                <!-- Yeni eklenen içeriklere id ekledik -->
                 <li><a id="etk-sosyal-aile" href="Sosyal/ailetarihi.html">Aile Tarihi</a></li>
                 <li><a href="Sosyal/kendinionunyerinekoy.html">Kendini Onun Yerine Koy</a></li>
                 <li><a id="etk-sosyal-milli" href="Sosyal/millimucadele.html">Milli Mücadele Dönemi</a></li>
                 <li><a href="Sosyal/ilgiihtiyacyetenek.html">İlgi, İhtiyaç ve Yeteneklerimiz</a></li>
             </ul>
-            <!-- SOSYAL BİLGİLER DEFTER NOTLARI -->
+        <!-- SOSYAL BİLGİLER DEFTER NOTLARI -->
         <div class="page-header" style="margin-top: 20px;">
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
         </div>
@@ -414,7 +409,6 @@
             </div>
             <ul class="game-list">
                 <li><a href="Insanhaklari/hakozgurluksorumluluk.html">Hak Özgürlük ve Sorumluluk</a></li>
-                <!-- Yeni eklenen içeriğe id ekledik -->
                 <li><a id="etk-insan-cocuk" href="Insanhaklari/cocukveyetiskinfarklar.html">Yetişkinler ve Çocuklar</a></li>
             </ul>
         </div>
@@ -449,12 +443,12 @@
         document.addEventListener("DOMContentLoaded", function() {
             // ANA MENÜ BUTONLARI İÇİN UYARILAR
             showNewBadge('btn-turkce', '2026-10-12');
-            showNewBadge('btn-matematik', '2026-10-12');
             showNewBadge('btn-sosyal', '2026-10-12');
             showNewBadge('btn-insan', '2026-10-12');
             showNewBadge('btn-fen', '2026-10-12');
+            showNewBadge('btn-matematik', '2026-10-17');
             
-            // ALT SAYFALARDAKİ LİNKLER İÇİN UYARILAR (3 gün boyunca iç sayfalarda da görünecek)
+            // ALT SAYFALARDAKİ LİNKLER İÇİN UYARILAR
             showNewBadge('etk-turkce-mecaz1', '2026-10-12', true);
             showNewBadge('etk-turkce-mecaz2', '2026-10-12', true);
             showNewBadge('etk-turkce-not1', '2026-10-12', true);
@@ -464,11 +458,11 @@
             showNewBadge('etk-mat-problemler', '2026-10-12', true);
             showNewBadge('etk-mat-not1', '2026-10-12', true);
             showNewBadge('etk-mat-not2', '2026-10-12', true);
-            // Matematik ana menü butonunun tarihini güncelleyip süresini uzatıyoruz
-            showNewBadge('btn-matematik', '2026-10-17');
             
-            // Yeni notun üzerindeki küçük ışığı yakıyoruz
+            // Yeni yüklenen matematik notları (17 Ekim uyarılı)
             showNewBadge('etk-mat-not3', '2026-10-17', true);
+            showNewBadge('etk-mat-not4', '2026-10-17', true);
+            showNewBadge('etk-mat-not5', '2026-10-17', true);
             
             showNewBadge('etk-sosyal-aile', '2026-10-12', true);
             showNewBadge('etk-sosyal-milli', '2026-10-12', true);
@@ -476,11 +470,9 @@
             showNewBadge('etk-sosyal-not2', '2026-10-12', true);
             
             showNewBadge('etk-insan-cocuk', '2026-10-12', true);
-
             showNewBadge('etk-fen-unite1', '2026-10-12', true);
         });
 
-        // isSmallBadge parametresi ekledim. İç sayfalardaki linklerin üzerinde kocaman durmaması için.
         function showNewBadge(elementId, dateString, isSmallBadge = false) {
             const addedDate = new Date(dateString);
             const today = new Date();
@@ -496,7 +488,6 @@
                 if (element) {
                     if (!element.querySelector('.badge-yeni') && !element.querySelector('.badge-yeni-kucuk')) {
                         const badge = document.createElement('span');
-                        // Linklerin içindeyse daha küçük sınıfı kullan
                         badge.className = isSmallBadge ? 'badge-yeni-kucuk' : 'badge-yeni';
                         badge.innerText = 'YENİ';
                         element.appendChild(badge);
