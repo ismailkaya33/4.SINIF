@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilinçli Vatandaş Kasabası</title>
+    <style>
+        :root {
+            --primary: #2980b9;
+            --secondary: #8e44ad;
+            --success: #27ae60;
+            --danger: #c0392b;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --warning: #f39c12;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #d1d8e0;
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #game-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 900px;
+            min-height: 650px;
+            border-radius: 12px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid #1f6391;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #stats {
+            display: flex;
+            gap: 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Scene Map */
+        #scene-map {
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            background: var(--light);
+            border-bottom: 2px solid #bdc3c7;
+        }
+
+        .map-node {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #95a5a6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 8px;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            border: 2px solid transparent;
+        }
+
+        .map-node.active {
+            background: var(--warning);
+            transform: scale(1.2);
+            border-color: #fff;
+            box-shadow: 0 0 10px var(--warning);
+        }
+
+        .map-node.completed {
+            background: var(--success);
+        }
+
+        .map-node.skipped {
+            background: #e74c3c;
+        }
+
+        /* Game Area */
+        #game-area {
+            flex-grow: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #f8f9fa;
+        }
+
+        /* Question Container */
+        #question-container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #question-text {
+            width: 100%;
+            text-align: center;
+        }
+
+        #question-text h3 {
+            color: var(--secondary);
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        #question-text p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* Visual Element */
+        #visual-element {
+            min-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .svg-icon {
+            width: 90px;
+            height: 90px;
+        }
+
+        #interactive-area {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        /* Options (MC & TF) */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 15px;
+            font-size: 1.05rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .option-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* Free Text */
+        .free-text-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .free-text-input:focus {
+            box-shadow: 0 0 8px rgba(41, 128, 185, 0.5);
+        }
+
+        /* Touch Friendly Drag & Drop Alternative (Tap to match/classify) */
+        .dnd-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .dnd-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tap-item {
+            background: white;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .tap-item.selected {
+            background: var(--secondary);
+            color: white;
+            transform: scale(1.05);
+        }
+        .tap-item.matched {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+            cursor: default;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fdfbfd;
+            cursor: pointer;
+            gap: 5px;
+        }
+        .drop-zone.hover-target {
+            background: #f3e5f5;
+            border-style: solid;
+        }
+        .drop-zone-title {
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        .placed-item {
+            background: var(--success);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Sorting */
+        .sort-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .sort-item {
+            background: white;
+            border: 2px solid var(--primary);
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .sort-item.selected {
+            background: #d6eaf8;
+        }
+        .sort-item::before {
+            content: "↕";
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        /* Navigation */
+        #navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 25px;
+            background: #fff;
+            border-top: 2px solid var(--light);
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .nav-btn:active { transform: scale(0.95); }
+
+        #btn-prev { background: #95a5a6; color: white; }
+        #btn-prev:hover:not(:disabled) { background: #7f8c8d; }
+        
+        #btn-skip { background: #e67e22; color: white; }
+        #btn-skip:hover:not(:disabled) { background: #d35400; }
+        
+        #btn-next-task { background: var(--primary); color: white; }
+        #btn-next-task:hover:not(:disabled) { background: #1f6391; }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Feedback Modal */
+        #feedback-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(44, 62, 80, 0.9);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #feedback-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .fb-icon { font-size: 4rem; margin-bottom: 15px; }
+        .fb-title { font-size: 1.8rem; margin-bottom: 10px; font-weight: bold; }
+        .fb-desc { font-size: 1.1rem; line-height: 1.5; margin-bottom: 25px; color: #34495e;}
+
+        .action-btn {
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.1s;
+        }
+        .action-btn:active { transform: scale(0.95); }
+        .btn-continue { background: var(--success); }
+        .btn-retry { background: var(--warning); }
+
+        /* Final Report */
+        #final-report {
+            display: none;
+            width: 100%;
+        }
+
+        .report-header {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .report-stat {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+        }
+        .report-stat span { display: block; font-size: 1.5rem; font-weight: bold; color: var(--dark); margin-top: 5px;}
+
+        .review-section {
+            background: white;
+            border-radius: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+        }
+
+        .review-item {
+            background: #fff9c4;
+            border-left: 4px solid #f39c12;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .review-item h4 { margin: 0 0 5px 0; color: #d35400; }
+        .review-item p { margin: 0 0 10px 0; font-size: 0.95rem; }
+        .review-btn {
+            background: #d35400; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+        }
+
+        .btn-center { display: flex; justify-content: center; margin-top: 20px; }
+
+        @media (max-width: 650px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .dnd-container { flex-direction: column; }
+            .report-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <header>
+        <h1>🏛️ Bilinçli Vatandaş Kasabası</h1>
+        <div id="stats">
+            <span id="score-display">Puan: 0</span>
+            <span id="progress-display">1/16</span>
+        </div>
+    </header>
+
+    <div id="scene-map">
+        <!-- Nodes generated dynamically -->
+    </div>
+
+    <div id="game-area">
+        <div id="question-container">
+            <div id="visual-element"></div>
+            <div id="question-text"></div>
+            <div id="interactive-area"></div>
+        </div>
+        
+        <div id="final-report">
+            <div class="report-header">
+                <h2>🎉 Tebrikler! Kasaba Turunu Tamamladın!</h2>
+                <p>İşte senin Vatandaşlık Raporun:</p>
+            </div>
+            <div class="report-grid">
+                <div class="report-stat">Toplam Görev<span id="r-total">0</span></div>
+                <div class="report-stat">Doğru (İlk)<span id="r-first">0</span></div>
+                <div class="report-stat">Yanlış Deneme<span id="r-wrong">0</span></div>
+                <div class="report-stat">Geçilen<span id="r-skipped">0</span></div>
+                <div class="report-stat">İpuçları<span id="r-hints">0</span></div>
+                <div class="report-stat">Toplam Puan<span id="r-score">0</span></div>
+            </div>
+            <h3>İnceleme Alanı (Hatalı veya Geçilen Görevler)</h3>
+            <div class="review-section" id="review-list"></div>
+            <div class="btn-center">
+                <button class="action-btn btn-continue" onclick="resetGame()">Yeniden Başla</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="navigation">
+        <button id="btn-prev" class="nav-btn" onclick="navPrev()">Önceki</button>
+        <button id="btn-skip" class="nav-btn" onclick="skipTask()">Geç</button>
+        <button id="btn-next-task" class="nav-btn" onclick="navNext()">Sonraki</button>
+    </div>
+
+    <div id="feedback-overlay">
+        <div id="feedback-box">
+            <div id="fb-icon" class="fb-icon"></div>
+            <div id="fb-title" class="fb-title"></div>
+            <div id="fb-desc" class="fb-desc"></div>
+            <button id="fb-action-btn" class="action-btn"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- SVGs ---
+    const svgs = {
+        justice: `<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M12 3v9"/><path d="M7 12l-4 8h8l-4-8z"/><path d="M17 12l-4 8h8l-4-8z"/></svg>`,
+        school: `<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`,
+        users: `<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+        shield: `<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+        book: `<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+        nature: `<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-7"/><path d="M12 8c2.5-3 6.5-2.5 8 0-1.5 2.5-5 3.5-8 0z"/><path d="M12 15c-2.5-3-6.5-2.5-8 0 1.5 2.5 5 3.5 8 0z"/></svg>`
+    };
+
+    // --- State ---
+    const state = {
+        currentIndex: 0,
+        score: 0,
+        wrongCount: 0,
+        skippedCount: 0,
+        hintCount: 0,
+        results: {}, // stores status for each task
+    };
+
+    // --- Data ---
+    // 16 Tasks covering Hak (Right), Özgürlük (Freedom), Sorumluluk (Responsibility)
+    const baseTasks = [
+        {
+            id: "t1", type: "tf", skill: "tanıma",
+            title: "Özgürlüğün Sınırı",
+            text: "Özgürlük, canımızın istediği her şeyi, başkalarına zarar verse bile sınırsızca yapabilmektir.",
+            visual: svgs.justice, isTrue: false,
+            wrongMsg: "Başkalarına zarar verdiğimizde, onların haklarını çiğnemiş oluruz. O halde özgürlüğümüz sınırsız olabilir mi?",
+            explanation: "Özgürlük, başkalarının haklarına zarar vermeden dilediğimizi yapabilmektir. Başkalarının hakkının başladığı yerde bizim özgürlüğümüz biter.",
+            mechanic: "Kasabanın giriş kapısındaki güvenlik kilidi açıldı!"
+        },
+        {
+            id: "t2", type: "classify", skill: "sınıflandırma",
+            title: "Hak mı, Sorumluluk mu?",
+            text: "Aşağıdaki durumları 'Hak' veya 'Sorumluluk' kutularına doğru şekilde yerleştir.",
+            visual: svgs.school,
+            items: [
+                { id: "i1", text: "Eğitim Almak", cat: "hak" },
+                { id: "i2", text: "Okul Eşyalarını Korumak", cat: "sorumluluk" },
+                { id: "i3", text: "Sağlık Hizmeti Almak", cat: "hak" },
+                { id: "i4", text: "Odamı Toplamak", cat: "sorumluluk" }
+            ],
+            targets: [ { id: "hak", label: "HAKLARIMIZ" }, { id: "sorumluluk", label: "SORUMLULUKLARIMIZ" } ],
+            wrongMsg: "Hak, bizim sahip olduğumuz ayrıcalıklardır. Sorumluluk ise bizim yapmakla yükümlü olduğumuz görevlerdir. Hangisi bizim görevimiz?",
+            explanation: "Eğitim ve sağlık gibi hizmetlerden yararlanmak devletin bize sağladığı Haklardır. Eşyaları korumak ve odamızı toplamak ise bizim Sorumluluklarımızdır.",
+            mechanic: "Okul ve Hastane yolları haritada aydınlandı!"
+        },
+        {
+            id: "t3", type: "mc", skill: "hata analizi",
+            title: "Gece Yarısı Gürültüsü",
+            text: "Ahmet, gece geç saatte yüksek sesle müzik dinlemektedir. Komşusu Ayşe teyze bu durumdan rahatsız olup uyuyamamıştır. Ahmet burada hangi kavramı ihlal etmiştir?",
+            visual: svgs.users,
+            options: [
+                { id: "o1", text: "Başkalarının Hak ve Özgürlüklerini", isCorrect: true },
+                { id: "o2", text: "Kendi Dinlenme Hakkını", isCorrect: false },
+                { id: "o3", text: "Müzik Dinleme Özgürlüğünü", isCorrect: false },
+                { id: "o4", text: "Eğitim Alma Hakkını", isCorrect: false }
+            ],
+            wrongMsg: "Ahmet kendi özgürlüğünü kullanırken başkasına (Ayşe Teyze'ye) zarar veriyor.",
+            explanation: "Ahmet müzik dinleme özgürlüğüne sahiptir ancak bu özgürlük, komşularının dinlenme ve huzur hakkını ihlal edemez. Özgürlüklerimiz, sorumluluk bilinciyle kullanılmalıdır.",
+            mechanic: "Mahalledeki gürültü sorunu çözüldü, komşular artık huzurlu!"
+        },
+        {
+            id: "t4", type: "matching", skill: "ilişki kurma",
+            title: "Hak ve Sorumluluk Dengesi",
+            text: "Sahip olduğumuz her hakkın getirdiği bir sorumluluk vardır. Bunları eşleştir.",
+            visual: svgs.shield,
+            pairs: [
+                { left: "Eğitim Hakkı", right: "Ödevleri yapmak", id: "p1" },
+                { left: "Sağlık Hakkı", right: "Kişisel temizliğe dikkat etmek", id: "p2" },
+                { left: "Temiz Çevre Hakkı", right: "Çöpleri çöp kutusuna atmak", id: "p3" }
+            ],
+            wrongMsg: "Her hakkın doğrudan bağlantılı olduğu bir görevimiz (sorumluluğumuz) var. Çevrenin temiz olması için ne yapmalısın?",
+            explanation: "Haklarımızdan tam olarak yararlanabilmek için önce üzerimize düşen sorumlulukları yerine getirmeliyiz. Temiz bir çevre istiyorsak, önce çöp atmamalıyız.",
+            mechanic: "Kasabanın anayasası güncellendi!"
+        },
+        {
+            id: "t5", type: "free_text", skill: "çıkarım",
+            title: "Dedektif Şifresi",
+            text: "Kişinin kendi davranışlarının sonuçlarını üstlenmesine ve üzerine düşen görevleri yerine getirmesine ne ad verilir? (Tek kelime yazın)",
+            visual: svgs.book, expected: ["sorumluluk", "sorumluluktur"],
+            wrongMsg: "Bu kavram 'Hak' veya 'Özgürlük' değil. Görevlerimizi yapmak ve sonuçlarına katlanmakla ilgilidir. S... ile başlar.",
+            explanation: "Kişinin üzerine düşen görevleri yapması ve kararlarının sonuçlarını üstlenmesi SORUMLULUK kavramını ifade eder.",
+            mechanic: "Gizli kasanın şifresi çözüldü!"
+        },
+        {
+            id: "t6", type: "mc", skill: "tanıma",
+            title: "Çocukların Hakları",
+            text: "Aşağıdakilerden hangisi çocukların temel haklarından biri DEĞİLDİR?",
+            visual: svgs.users,
+            options: [
+                { id: "o1", text: "Oyun oynamak", isCorrect: false },
+                { id: "o2", text: "Bir işte çalışıp para kazanmak", isCorrect: true },
+                { id: "o3", text: "Eğitim almak", isCorrect: false },
+                { id: "o4", text: "Yeterli beslenmek", isCorrect: false }
+            ],
+            wrongMsg: "Çocukların bedensel ve ruhsal gelişimi için bazı şeyler yasalarla güvence altına alınmıştır ancak çocuklardan aile geçindirmesi beklenmez.",
+            explanation: "Çocukların oyun oynama, eğitim alma, barınma ve beslenme hakları vardır. Ancak çocukların çalıştırılması (işçi yapılması) çocuk haklarına aykırıdır.",
+            mechanic: "Çocuk parkının yenilenmesi için onay verdin!"
+        },
+        {
+            id: "t7", type: "sorting", skill: "sıralama",
+            title: "Haklarımızı Kullanma Süreci",
+            text: "Bilinçli bir vatandaşın aşağıdaki adımları hangi sırayla izlemesi gerekir? Mantıklı bir sıraya koy.",
+            visual: svgs.school,
+            items: [
+                { id: "s1", text: "Haklarımızın ve özgürlüklerimizin ne olduğunu öğreniriz." },
+                { id: "s2", text: "Kurallara uygun olarak özgürce seçimler yaparız." },
+                { id: "s3", text: "Yaptığımız seçimlerin sorumluluğunu üstleniriz." },
+                { id: "s4", text: "Haklarını bilen ve sorumluluk alan iyi bir vatandaş oluruz." }
+            ],
+            wrongMsg: "Önce öğrenmeliyiz, sonra seçim yapmalıyız, en son ise iyi bir vatandaş olma sonucuna ulaşırız.",
+            explanation: "Bilinçli vatandaşlık süreci: Öğrenme -> Seçim yapma (Özgürlük) -> Sonuçları üstlenme (Sorumluluk) -> Topluma faydalı olma şeklindedir.",
+            mechanic: "Kasabanın onur madalyasını kazandın!"
+        },
+        {
+            id: "t8", type: "tf", skill: "hata analizi",
+            title: "Sorumluluk Çemberi",
+            text: "İnsanların yalnızca kendilerine karşı sorumlulukları vardır. Topluma, doğaya veya hayvanlara karşı sorumluluğumuz yoktur.",
+            visual: svgs.nature, isTrue: false,
+            wrongMsg: "Sadece kendimizi düşünerek yaşayabilir miyiz? Çöpleri sokağa atarsak doğaya zarar vermiş olmaz mıyız?",
+            explanation: "Sorumluluklarımız sadece kendimizle sınırlı değildir. Ailemize, çevremize, doğaya, hayvanlara ve ülkemize karşı da sorumluluklarımız vardır.",
+            mechanic: "Doğa koruma alanı başarıyla temizlendi!"
+        },
+        {
+            id: "t9", type: "mc", skill: "uygulama",
+            title: "Parktaki Olay",
+            text: "Parkta oyun oynarken, bir çocuğun yediği bisküvinin paketini yere attığını gördün. Bilinçli bir vatandaş olarak en doğru davranış hangisidir?",
+            visual: svgs.nature,
+            options: [
+                { id: "o1", text: "Görmezden gelip oyun oynamaya devam etmek", isCorrect: false },
+                { id: "o2", text: "Ona bağırarak kızmak ve kavga etmek", isCorrect: false },
+                { id: "o3", text: "Onu nazikçe uyarıp çöp kutusuna atmasını rica etmek", isCorrect: true },
+                { id: "o4", text: "Ben de çöpümü yere atmak", isCorrect: false }
+            ],
+            wrongMsg: "Kavga etmek veya görmezden gelmek doğru değildir. Ortak yaşam alanlarımızı korumak için iletişim kurmalıyız.",
+            explanation: "Temiz bir çevre hakkımızı korumak için, başkalarını kurallara uygun ve nazik bir dille uyarmak bizim vatandaşlık sorumluluğumuzdur.",
+            mechanic: "Parktaki çevre kirliliği önlendi!"
+        },
+        {
+            id: "t10", type: "classify", skill: "sınıflandırma",
+            title: "Kavramları Yerleştir",
+            text: "Aşağıdaki ifadeleri 'Hak' veya 'Özgürlük' kavramlarına uygun olarak sınıflandır.",
+            visual: svgs.book,
+            items: [
+                { id: "i1", text: "Hastanede tedavi olmak", cat: "hak" },
+                { id: "i2", text: "Hangi kitabı okuyacağını seçmek", cat: "ozg" },
+                { id: "i3", text: "Devlet okullarında eğitim görmek", cat: "hak" },
+                { id: "i4", text: "Düşüncelerini serbestçe ifade etmek", cat: "ozg" }
+            ],
+            targets: [ { id: "hak", label: "HAKLARIMIZ" }, { id: "ozg", label: "ÖZGÜRLÜKLERİMİZ" } ],
+            wrongMsg: "Devletin bize sunduğu temel güvenceler (Eğitim, Sağlık) 'Hak'tır. Bizim kendi tercihimizle serbestçe yaptığımız eylemler (Düşünmek, Seçmek) 'Özgürlük'tür.",
+            explanation: "Hak, devlet veya yasalar tarafından bize tanınan yetkilerdir (Sağlık, Eğitim). Özgürlük ise dışarıdan bir baskı olmadan karar verebilme serbestliğimizdir.",
+            mechanic: "Kavram haritası başarıyla tamamlandı!"
+        },
+        {
+            id: "t11", type: "free_text", skill: "tanıma",
+            title: "Kimlik Kartı",
+            text: "Bir insanın doğuştan sahip olduğu, yasalarla güvence altına alınmış ayrıcalık ve yetkilere ne ad verilir? (Tek kelime yazın)",
+            visual: svgs.shield, expected: ["hak", "haktır"],
+            wrongMsg: "Bu kavram, eğitim alma, yaşama, sağlık hizmetlerinden yararlanma gibi durumların genel adıdır. Üç harflidir.",
+            explanation: "Devletin ve yasaların bireylere tanıdığı, herkesin doğuştan sahip olduğu yetki ve ayrıcalıklara HAK denir.",
+            mechanic: "Vatandaşlık kayıtları başarıyla güncellendi!"
+        },
+        {
+            id: "t12", type: "matching", skill: "karşılaştırma",
+            title: "Olay ve Kavram Eşleştirmesi",
+            text: "Aşağıdaki günlük yaşam durumlarını, temsil ettikleri kavramlarla eşleştir.",
+            visual: svgs.school,
+            pairs: [
+                { left: "Teneffüste oyun oynamak", right: "Hak", id: "p1" },
+                { left: "Hangi oyunu oynayacağını seçmek", right: "Özgürlük", id: "p2" },
+                { left: "Oyun sırasında arkadaşlarına zarar vermemek", right: "Sorumluluk", id: "p3" }
+            ],
+            wrongMsg: "Oynamak senin doğal yasal yetkindir. Seçim yapmak senin serbestliğindir. Kurallara uymak ise senin görevindir.",
+            explanation: "Çocukların oyun oynama hakkı vardır. Oyun seçimi özgürlüktür. Ancak oyun sırasında başkalarının hakkını ihlal etmemek (zarar vermemek) bir sorumluluktur.",
+            mechanic: "Okul bahçesinde adalet sağlandı!"
+        },
+        {
+            id: "t13", type: "tf", skill: "ilişki kurma",
+            title: "Dengenin Bozulması",
+            text: "Kişiler sadece kendi haklarını kullanıp, sorumluluklarını yerine getirmezlerse toplumda adalet ve düzen sağlanır.",
+            visual: svgs.justice, isTrue: false,
+            wrongMsg: "Sorumlulukların yerine getirilmediği bir yerde düzen olabilir mi? Çöplerin alınmadığı, kurallara uyulmadığı bir kasaba düşün.",
+            explanation: "Hak, özgürlük ve sorumluluk bir bütündür. Sorumlulukların yerine getirilmediği bir toplumda başkalarının hakları zarar görür, adalet ve düzen bozulur.",
+            mechanic: "Kasaba meclisinde düzen sağlandı!"
+        },
+        {
+            id: "t14", type: "mc", skill: "çıkarım",
+            title: "Kütüphane Kuralları",
+            text: "Zeynep, kasaba kütüphanesinden kitap okumayı çok seviyor. Ancak aldığı kitapların sayfalarını yırtmış. Zeynep için aşağıdakilerden hangisi söylenebilir?",
+            visual: svgs.book,
+            options: [
+                { id: "o1", text: "Özgürlüğünü kullanmıştır, istediğini yapabilir.", isCorrect: false },
+                { id: "o2", text: "Eğitim hakkını kullanırken, sorumluluğunu yerine getirmemiştir.", isCorrect: true },
+                { id: "o3", text: "Kütüphanenin kuralları Zeynep'in haklarını engellemektedir.", isCorrect: false },
+                { id: "o4", text: "Kitap okumak bir sorumluluktur, hak değildir.", isCorrect: false }
+            ],
+            wrongMsg: "Zeynep'in kitap okuması bir haktır. Ancak kitabı koruması gerekmez mi?",
+            explanation: "Kütüphaneden kitap alarak eğitim/bilgi edinme hakkımızı kullanırız. Ancak kamu mallarını (kitapları) korumak bizim sorumluluğumuzdur. Zeynep bu sorumluluğu ihlal etmiştir.",
+            mechanic: "Kütüphane kitapları onarıldı ve güvene alındı!"
+        },
+        {
+            id: "t15", type: "sorting", skill: "sıralama",
+            title: "Hayvan Sahiplenme",
+            text: "Barınaktan bir köpek sahiplenmek isteyen Ali'nin yaşadığı süreci mantıklı bir sıraya koy.",
+            visual: svgs.nature,
+            items: [
+                { id: "s1", text: "Hayvan sevme ve sahiplenme hakkımızı fark ederiz." },
+                { id: "s2", text: "Hangi köpeği sahipleneceğimize özgürce karar veririz." },
+                { id: "s3", text: "Köpeğin mamasını verme ve bakımını yapma sorumluluğunu alırız." },
+                { id: "s4", text: "Köpeğimizle sağlıklı ve uzun ömürlü bir dostluk kurarız." }
+            ],
+            wrongMsg: "Önce hakkımızı biliriz, sonra seçim yaparız, ardından ona bakma sorumluluğunu alırız ve sonucunda dostluk kurarız.",
+            explanation: "Bir hayvan sahiplenmek bir haktır, seçmek özgürlüktür. Ancak bir canlının bakımını üstlenmek ömür boyu süren bir sorumluluktur.",
+            mechanic: "Barınaktaki dostlarımız çok mutlu!"
+        },
+        {
+            id: "t16", type: "mc", skill: "transfer",
+            title: "FİNAL: Kasaba Toplantısı",
+            text: "Kasabaya yeni bir park yapılması için toplantı düzenleniyor. Vatandaşlar 'Parkın nereye yapılacağını OYLAYALIM', 'Park yapılınca orayı TEMİZ TUTALIM' ve 'Hepimizin DİNLENME ihtiyacı var' diyorlar. Bu üç cümle sırasıyla hangi kavramları temsil eder?",
+            visual: svgs.justice,
+            options: [
+                { id: "o1", text: "Sorumluluk - Özgürlük - Hak", isCorrect: false },
+                { id: "o2", text: "Özgürlük - Sorumluluk - Hak", isCorrect: true },
+                { id: "o3", text: "Hak - Özgürlük - Sorumluluk", isCorrect: false },
+                { id: "o4", text: "Sorumluluk - Hak - Özgürlük", isCorrect: false }
+            ],
+            wrongMsg: "Oylamak/Seçmek bir serbestliktir. Temiz tutmak bir görevdir. Dinlenme ihtiyacı ise devletin güvence altına alması gereken bir yetkidir.",
+            explanation: "Oylamaya katılıp fikir belirtmek 'Özgürlük', ortak alanı temiz tutmak 'Sorumluluk', dinlenme ve eğlenme ihtiyacının karşılanması ise 'Hak'tır.",
+            mechanic: "Tebrikler! Kasaba harika bir parka kavuştu ve sen mükemmel bir dedektifsin!"
+        }
+    ];
+
+    let tasks = [];
+
+    // --- Core Logic ---
+    function initGame() {
+        // Shuffle multiple choice options specifically to satisfy rules
+        tasks = JSON.parse(JSON.stringify(baseTasks)).map(task => {
+            if (task.type === "mc") {
+                task.options = task.options.sort(() => Math.random() - 0.5);
+            }
+            if (task.type === "sorting") {
+                task.currentOrder = [...task.items].sort(() => Math.random() - 0.5);
+            }
+            if (task.type === "matching" || task.type === "classify") {
+                task.userAnswer = {}; 
+            }
+            return task;
+        });
+
+        state.currentIndex = 0;
+        state.score = 0;
+        state.wrongCount = 0;
+        state.skippedCount = 0;
+        state.hintCount = 0;
+        state.results = {};
+        
+        tasks.forEach(t => {
+            state.results[t.id] = { status: 'pending', firstTry: true, attempts: 0 };
+        });
+
+        document.getElementById('final-report').style.display = 'none';
+        document.getElementById('question-container').style.display = 'flex';
+        renderMap();
+        loadTask(state.currentIndex);
+    }
+
+    function renderMap() {
+        const map = document.getElementById('scene-map');
+        map.innerHTML = '';
+        
+        let start = Math.max(0, state.currentIndex - 3);
+        let end = Math.min(tasks.length - 1, start + 6);
+        if (end - start < 6) start = Math.max(0, end - 6);
+
+        for (let i = start; i <= end; i++) {
+            const node = document.createElement('div');
+            let statusClass = '';
+            if (state.results[tasks[i].id].status === 'completed') statusClass = 'completed';
+            else if (state.results[tasks[i].id].status === 'skipped') statusClass = 'skipped';
+            else if (i === state.currentIndex) statusClass = 'active';
+
+            node.className = `map-node ${statusClass}`;
+            node.textContent = i + 1;
+            map.appendChild(node);
+        }
+    }
+
+    function updateStats() {
+        document.getElementById('score-display').textContent = `Puan: ${state.score}`;
+        document.getElementById('progress-display').textContent = `${state.currentIndex + 1}/${tasks.length}`;
+        
+        document.getElementById('btn-prev').disabled = state.currentIndex === 0;
+        
+        const isDone = state.results[tasks[state.currentIndex].id].status !== 'pending';
+        document.getElementById('btn-next-task').disabled = !isDone;
+    }
+
+    function loadTask(index) {
+        state.currentIndex = index;
+        const task = tasks[index];
+        const res = state.results[task.id];
+        
+        document.getElementById('question-text').innerHTML = `<h3>${task.title}</h3><p>${task.text}</p>`;
+        document.getElementById('visual-element').innerHTML = task.visual;
+        
+        const ia = document.getElementById('interactive-area');
+        ia.innerHTML = '';
+
+        if (task.type === 'mc') renderMC(task, ia, res);
+        else if (task.type === 'tf') renderTF(task, ia, res);
+        else if (task.type === 'free_text') renderFreeText(task, ia, res);
+        else if (task.type === 'matching') renderMatching(task, ia, res);
+        else if (task.type === 'classify') renderClassify(task, ia, res);
+        else if (task.type === 'sorting') renderSorting(task, ia, res);
+
+        renderMap();
+        updateStats();
+    }
+
+    // --- Renderers ---
+    function renderMC(task, container, res) {
+        const grid = document.createElement('div');
+        grid.className = 'options-grid';
+        
+        task.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = opt.text;
+            
+            if (res.status === 'completed') {
+                btn.disabled = true;
+                if (opt.isCorrect) btn.style.backgroundColor = 'var(--success)';
+                else if (res.lastSelection === opt.id) btn.style.backgroundColor = 'var(--danger)';
+            } else {
+                btn.onclick = () => {
+                    res.lastSelection = opt.id;
+                    if (opt.isCorrect) handleCorrect(task);
+                    else handleWrong(task);
+                };
+            }
+            grid.appendChild(btn);
+        });
+        container.appendChild(grid);
+    }
+
+    function renderTF(task, container, res) {
+        const grid = document.createElement('div');
+        grid.className = 'options-grid';
+        
+        const trueBtn = document.createElement('button');
+        trueBtn.className = 'option-btn';
+        trueBtn.textContent = "Doğru";
+        
+        const falseBtn = document.createElement('button');
+        falseBtn.className = 'option-btn';
+        falseBtn.textContent = "Yanlış";
+
+        if (res.status === 'completed') {
+            trueBtn.disabled = true;
+            falseBtn.disabled = true;
+            if (task.isTrue) trueBtn.style.backgroundColor = 'var(--success)';
+            else falseBtn.style.backgroundColor = 'var(--success)';
+        } else {
+            trueBtn.onclick = () => {
+                if (task.isTrue === true) handleCorrect(task);
+                else handleWrong(task);
+            };
+            falseBtn.onclick = () => {
+                if (task.isTrue === false) handleCorrect(task);
+                else handleWrong(task);
+            };
+        }
+
+        grid.appendChild(trueBtn);
+        grid.appendChild(falseBtn);
+        container.appendChild(grid);
+    }
+
+    function renderFreeText(task, container, res) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'free-text-input';
+        input.placeholder = "Cevabını buraya yaz...";
+        
+        const btn = document.createElement('button');
+        btn.className = 'action-btn btn-continue';
+        btn.textContent = "Kontrol Et";
+        btn.style.width = "100%";
+
+        if (res.status === 'completed') {
+            input.value = res.lastSelection || task.expected[0];
+            input.disabled = true;
+            btn.style.display = 'none';
+        } else {
+            btn.onclick = () => {
+                res.lastSelection = input.value;
+                const normVal = input.value.toLocaleLowerCase('tr').trim();
+                const isCorrect = task.expected.some(exp => exp.toLocaleLowerCase('tr') === normVal);
+                if (isCorrect) handleCorrect(task);
+                else handleWrong(task);
+            };
+        }
+
+        container.appendChild(input);
+        container.appendChild(btn);
+    }
+
+    // Touch-friendly Matching
+    function renderMatching(task, container, res) {
+        const dnd = document.createElement('div');
+        dnd.className = 'dnd-container';
+        
+        const leftCol = document.createElement('div');
+        leftCol.className = 'dnd-col';
+        const rightCol = document.createElement('div');
+        rightCol.className = 'dnd-col';
+
+        let selectedLeft = null;
+        let matchedCount = Object.keys(task.userAnswer).length;
+
+        // Shuffle arrays for display if not already done
+        if(!task.leftDisp) task.leftDisp = [...task.pairs].sort(()=>Math.random()-0.5);
+        if(!task.rightDisp) task.rightDisp = [...task.pairs].sort(()=>Math.random()-0.5);
+
+        task.leftDisp.forEach(p => {
+            const btn = document.createElement('div');
+            btn.className = 'tap-item';
+            btn.textContent = p.left;
+            
+            if (task.userAnswer[p.id]) {
+                btn.classList.add('matched');
+            } else if (res.status !== 'completed') {
+                btn.onclick = () => {
+                    Array.from(leftCol.children).forEach(c => c.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedLeft = p.id;
+                };
+            }
+            leftCol.appendChild(btn);
+        });
+
+        task.rightDisp.forEach(p => {
+            const btn = document.createElement('div');
+            btn.className = 'tap-item';
+            btn.textContent = p.right;
+            
+            if (Object.values(task.userAnswer).includes(p.id)) {
+                btn.classList.add('matched');
+            } else if (res.status !== 'completed') {
+                btn.onclick = () => {
+                    if (selectedLeft) {
+                        if (selectedLeft === p.id) {
+                            task.userAnswer[p.id] = p.id; // Mark as matched
+                            matchedCount++;
+                            if (matchedCount === task.pairs.length) handleCorrect(task);
+                            else loadTask(state.currentIndex);
+                        } else {
+                            handleWrong(task);
+                        }
+                    }
+                };
+            }
+            rightCol.appendChild(btn);
+        });
+
+        dnd.appendChild(leftCol);
+        dnd.appendChild(rightCol);
+        container.appendChild(dnd);
+    }
+
+    // Touch-friendly Classify
+    function renderClassify(task, container, res) {
+        const dnd = document.createElement('div');
+        dnd.className = 'dnd-container';
+
+        const itemsCol = document.createElement('div');
+        itemsCol.className = 'dnd-col';
+        const zonesCol = document.createElement('div');
+        zonesCol.className = 'dnd-col';
+
+        let selectedItem = null;
+        let matchedCount = Object.keys(task.userAnswer).length;
+
+        if(!task.dispItems) task.dispItems = [...task.items].sort(()=>Math.random()-0.5);
+
+        task.dispItems.forEach(item => {
+            if (!task.userAnswer[item.id]) {
+                const btn = document.createElement('div');
+                btn.className = 'tap-item';
+                btn.textContent = item.text;
+                if (res.status !== 'completed') {
+                    btn.onclick = () => {
+                        Array.from(itemsCol.children).forEach(c => c.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        selectedItem = item;
+                    };
+                }
+                itemsCol.appendChild(btn);
+            }
+        });
+
+        task.targets.forEach(t => {
+            const zone = document.createElement('div');
+            zone.className = 'drop-zone';
+            zone.innerHTML = `<div class="drop-zone-title">${t.label}</div>`;
+            
+            task.items.forEach(item => {
+                if (task.userAnswer[item.id] === t.id) {
+                    zone.innerHTML += `<div class="placed-item">${item.text}</div>`;
+                }
+            });
+
+            if (res.status !== 'completed') {
+                zone.onclick = () => {
+                    if (selectedItem) {
+                        if (selectedItem.cat === t.id) {
+                            task.userAnswer[selectedItem.id] = t.id;
+                            matchedCount++;
+                            if (matchedCount === task.items.length) handleCorrect(task);
+                            else loadTask(state.currentIndex);
+                        } else {
+                            handleWrong(task);
+                        }
+                    }
+                };
+            }
+            zonesCol.appendChild(zone);
+        });
+
+        dnd.appendChild(itemsCol);
+        dnd.appendChild(zonesCol);
+        container.appendChild(dnd);
+    }
+
+    // Sorting
+    function renderSorting(task, container, res) {
+        const list = document.createElement('div');
+        list.className = 'sort-list';
+        
+        let selectedIdx = null;
+
+        task.currentOrder.forEach((item, idx) => {
+            const row = document.createElement('div');
+            row.className = 'sort-item';
+            row.innerHTML = `<span>${item.text}</span>`;
+            
+            if (res.status !== 'completed') {
+                row.onclick = () => {
+                    if (selectedIdx === null) {
+                        selectedIdx = idx;
+                        row.classList.add('selected');
+                    } else {
+                        // Swap
+                        let temp = task.currentOrder[selectedIdx];
+                        task.currentOrder[selectedIdx] = task.currentOrder[idx];
+                        task.currentOrder[idx] = temp;
+                        selectedIdx = null;
+                        loadTask(state.currentIndex);
+                    }
+                };
+            }
+            list.appendChild(row);
+        });
+        
+        container.appendChild(list);
+
+        if (res.status !== 'completed') {
+            const hint = document.createElement('p');
+            hint.textContent = "Sırasını değiştirmek için önce bir cümleye, sonra yer değiştirmek istediğin diğer cümleye dokun.";
+            hint.style.fontSize = "0.9rem";
+            hint.style.color = "#7f8c8d";
+            hint.style.marginTop = "10px";
+            container.appendChild(hint);
+            
+            const btn = document.createElement('button');
+            btn.className = 'action-btn btn-continue';
+            btn.textContent = "Sıralamayı Kontrol Et";
+            btn.style.width = "100%";
+            btn.style.marginTop = "10px";
+            btn.onclick = () => {
+                let isCorrect = true;
+                for(let i=0; i<task.items.length; i++){
+                    if(task.currentOrder[i].id !== task.items[i].id) {
+                        isCorrect = false; break;
+                    }
+                }
+                if(isCorrect) handleCorrect(task);
+                else handleWrong(task);
+            };
+            container.appendChild(btn);
+        }
+    }
+
+    // --- Logic ---
+    function handleCorrect(task) {
+        const res = state.results[task.id];
+        if (res.status === 'completed') return;
+
+        res.status = 'completed';
+        
+        if (res.firstTry) state.score += 10;
+        else state.score += 5;
+
+        showFeedback(true, `Doğru! Puan: ${res.firstTry ? 10 : 5}`, task.explanation + "<br><br><b>" + task.mechanic + "</b>", () => {
+            updateStats();
+            document.getElementById('btn-next-task').disabled = false;
+        });
+    }
+
+    function handleWrong(task) {
+        const res = state.results[task.id];
+        res.attempts++;
+        res.firstTry = false;
+        state.wrongCount++;
+
+        let msg = task.wrongMsg;
+        if (res.attempts > 1) {
+            msg += "<br><br><b>İpucu:</b> " + task.explanation;
+            if(res.attempts === 2) state.hintCount++; // Count hint once per task
+        }
+
+        showFeedback(false, "Tekrar Düşün!", msg, () => {
+            loadTask(state.currentIndex);
+        });
+    }
+
+    function skipTask() {
+        const task = tasks[state.currentIndex];
+        const res = state.results[task.id];
+        if (res.status === 'completed') return;
+
+        res.status = 'skipped';
+        state.skippedCount++;
+        navNext();
+    }
+
+    // --- Navigation ---
+    function navNext() {
+        if (state.currentIndex < tasks.length - 1) {
+            loadTask(state.currentIndex + 1);
+        } else {
+            showFinalReport();
+        }
+    }
+
+    function navPrev() {
+        if (state.currentIndex > 0) {
+            loadTask(state.currentIndex - 1);
+        }
+    }
+
+    // --- Feedback Modal ---
+    function showFeedback(isSuccess, title, desc, callback) {
+        const overlay = document.getElementById('feedback-overlay');
+        const btn = document.getElementById('fb-action-btn');
+        
+        document.getElementById('fb-icon').textContent = isSuccess ? '✅' : '❌';
+        document.getElementById('fb-title').textContent = title;
+        document.getElementById('fb-title').style.color = isSuccess ? 'var(--success)' : 'var(--danger)';
+        document.getElementById('fb-desc').innerHTML = desc;
+        
+        btn.textContent = isSuccess ? "Devam Et" : "Tekrar Dene";
+        btn.className = `action-btn ${isSuccess ? 'btn-continue' : 'btn-retry'}`;
+        
+        overlay.style.display = 'flex';
+        btn.onclick = () => {
+            overlay.style.display = 'none';
+            if (callback) callback();
+        };
+    }
+
+    // --- Final Report ---
+    function showFinalReport() {
+        document.getElementById('question-container').style.display = 'none';
+        document.getElementById('navigation').style.display = 'none';
+        document.getElementById('scene-map').style.display = 'none';
+        const report = document.getElementById('final-report');
+        report.style.display = 'block';
+
+        let completed = 0, firstTry = 0;
+        const reviewList = document.getElementById('review-list');
+        reviewList.innerHTML = '';
+
+        tasks.forEach(t => {
+            const res = state.results[t.id];
+            if (res.status === 'completed') {
+                completed++;
+                if (res.firstTry) firstTry++;
+            }
+
+            if (!res.firstTry || res.status === 'skipped') {
+                const item = document.createElement('div');
+                item.className = 'review-item';
+                item.innerHTML = `
+                    <h4>Görev: ${t.title}</h4>
+                    <p><strong>Durum:</strong> ${res.status === 'skipped' ? 'Geçildi' : 'Yanlış deneme yapıldı'}</p>
+                    <p><strong>Öğretici Bilgi:</strong> ${t.explanation}</p>
+                    <button class="review-btn" onclick="reviewTask('${t.id}')">Bu Görevi Tekrar Çöz</button>
+                `;
+                reviewList.appendChild(item);
+            }
+        });
+
+        if(reviewList.innerHTML === '') {
+            reviewList.innerHTML = '<p style="text-align:center; font-weight:bold; color:var(--success);">Harika! Tüm görevleri ilk denemede hatasız tamamladın!</p>';
+        }
+
+        document.getElementById('r-total').textContent = tasks.length;
+        document.getElementById('r-first').textContent = firstTry;
+        document.getElementById('r-wrong').textContent = state.wrongCount;
+        document.getElementById('r-skipped').textContent = state.skippedCount;
+        document.getElementById('r-hints').textContent = state.hintCount;
+        document.getElementById('r-score').textContent = state.score;
+    }
+
+    function reviewTask(taskId) {
+        const idx = tasks.findIndex(t => t.id === taskId);
+        if (idx !== -1) {
+            document.getElementById('final-report').style.display = 'none';
+            document.getElementById('question-container').style.display = 'flex';
+            document.getElementById('navigation').style.display = 'flex';
+            document.getElementById('scene-map').style.display = 'flex';
+            
+            // Allow re-attempting if skipped
+            if(state.results[taskId].status === 'skipped') {
+                state.results[taskId].status = 'pending';
+                state.skippedCount--;
+            }
+            loadTask(idx);
+        }
+    }
+
+    function resetGame() {
+        document.getElementById('final-report').style.display = 'none';
+        document.getElementById('question-container').style.display = 'flex';
+        document.getElementById('navigation').style.display = 'flex';
+        document.getElementById('scene-map').style.display = 'flex';
+        initGame();
+    }
+
+    // Initialize
+    initGame();
+</script>
+
+</body>
+</html>
