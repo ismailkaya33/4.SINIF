@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Besin Akademisi - 4. Sınıf Fen Bilimleri</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+    :root {
+        --bg: #f4f7f6;
+        --primary: #2a9d8f;
+        --primary-dark: #1e7a6f;
+        --secondary: #e9c46a;
+        --accent: #f4a261;
+        --text: #264653;
+        --white: #ffffff;
+        --shadow: 0 6px 0 rgba(0,0,0,0.08);
+        --shadow-hover: 0 2px 0 rgba(0,0,0,0.08);
+        --radius: 16px;
+    }
+
+    * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+        margin: 0;
+        font-family: 'Nunito', sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    /* ÜST MENÜ (NAVİGASYON) */
+    header {
+        width: 100%;
+        background: var(--white);
+        padding: 10px 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .logo-area { font-size: 1.4rem; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 10px; justify-content: center; }
+    
+    nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; justify-content: center; flex-wrap: wrap; }
+    .nav-btn {
+        background: #eef2f1; border: none; padding: 10px 18px; border-radius: 30px;
+        font-weight: 900; color: #667; cursor: pointer; transition: 0.2s; font-family: inherit; font-size: 0.95rem;
+        display: flex; align-items: center; gap: 5px;
+    }
+    .nav-btn:hover { background: #dce4e2; }
+    .nav-btn.active { background: var(--primary); color: var(--white); box-shadow: 0 4px 10px rgba(42,157,143,0.3); }
+
+    main { width: 100%; max-width: 950px; padding: 20px; flex: 1; }
+
+    /* İÇERİK ALANLARI */
+    .module { display: none; animation: fadeIn 0.4s ease; }
+    .module.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    h2 { font-size: 1.8rem; text-align: center; color: var(--primary); margin-bottom: 5px; }
+    .subtitle { text-align: center; font-size: 1.1rem; color: #667; margin-bottom: 30px; font-weight: 700; }
+
+    /* KUTULAR VE KARTLAR */
+    .card {
+        background: var(--white); border-radius: var(--radius); padding: 20px;
+        box-shadow: var(--shadow); margin-bottom: 20px; border-top: 5px solid var(--primary);
+    }
+    .info-box { background: #e0f2f1; border-left: 5px solid var(--primary); padding: 15px; border-radius: 0 10px 10px 0; margin-top: 15px; font-weight: 700;}
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+    
+    /* BUTONLAR */
+    .btn {
+        background: var(--accent); color: white; border: none; border-radius: 12px;
+        padding: 12px 24px; font-size: 1.1rem; font-weight: 900; cursor: pointer;
+        box-shadow: var(--shadow); transition: 0.2s; font-family: inherit;
+    }
+    .btn:hover { transform: translateY(4px); box-shadow: var(--shadow-hover); }
+    .btn-primary { background: var(--primary); }
+    .btn-next { display: block; margin: 30px auto; width: 100%; max-width: 300px; font-size: 1.2rem; }
+
+    /* KAVRAM HARİTASI (CSS ile) */
+    .concept-map { text-align: center; margin: 20px 0; padding: 10px; background: #fdfdfd; border-radius: 10px;}
+    .cm-root { background: var(--primary); color: white; display: inline-block; padding: 10px 20px; border-radius: 30px; font-weight: 900; margin-bottom: 20px;}
+    .cm-branches { display: flex; justify-content: space-around; position: relative; }
+    .cm-branches::before { content: ''; position: absolute; top: -20px; left: 50%; width: 2px; height: 20px; background: #ccc; }
+    .cm-branch { flex: 1; position: relative; }
+    .cm-branch::before { content: ''; position: absolute; top: -20px; left: 50%; width: 50%; height: 2px; background: #ccc; }
+    .cm-branch:first-child::before { display: none; }
+    .cm-title { background: #e9c46a; color: #333; display: inline-block; padding: 8px 15px; border-radius: 20px; font-weight: 900; margin-bottom: 10px; z-index: 2; position: relative;}
+    .cm-item { background: white; border: 1px solid #ddd; padding: 5px 10px; border-radius: 10px; margin: 5px auto; display: block; max-width: 150px; font-size: 0.9rem; font-weight: 700; box-shadow: 0 2px 0 #eee;}
+
+    /* YENİ DENEY LABORATUVARI TASARIMI */
+    .lab-container { display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start; }
+    .exp-menu { background: var(--white); border-radius: var(--radius); padding: 15px; box-shadow: var(--shadow); }
+    .exp-btn { width: 100%; text-align: left; padding: 15px; margin-bottom: 10px; background: #f4f7f6; border: 2px solid transparent; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit; font-size: 1rem;}
+    .exp-btn:hover { background: #e0f2f1; }
+    .exp-btn.active { background: #e0f2f1; border-color: var(--primary); color: var(--primary-dark); }
+    
+    .exp-stage { background: var(--white); border-radius: var(--radius); padding: 25px; box-shadow: var(--shadow); min-height: 400px; position: relative; }
+    
+    /* DENEY AŞAMALARI */
+    .exp-view { display: none; animation: fadeIn 0.4s ease; }
+    .exp-view.active { display: block; }
+    
+    .exp-title { font-size: 1.5rem; color: var(--primary); margin-top: 0; border-bottom: 2px solid var(--bg); padding-bottom: 10px; margin-bottom: 15px;}
+    .exp-info-block { background: #fdfbf7; border-left: 4px solid var(--secondary); padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 20px; }
+    .exp-info-block h4 { margin: 0 0 5px 0; color: var(--primary-dark); }
+    
+    /* DENEY GÖRSEL ALANI */
+    .test-bench { display: flex; gap: 20px; align-items: center; justify-content: center; min-height: 250px; background: #f8f9fa; border-radius: 15px; padding: 20px; position: relative; overflow: hidden; border: 2px dashed #cce;}
+    .food-sample { transition: 0.5s; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;}
+    .food-sample svg { width: 100px; height: 100px; }
+    
+    /* ANİMASYONLAR */
+    @keyframes colorChange { to { fill: #4a148c; } }
+    @keyframes spreadStain { from { r: 0; opacity: 1;} to { r: 60; opacity: 0.5;} }
+    
+    .anim-lugol { animation: colorChange 1.5s forwards; }
+    .drop-anim { position: absolute; top: -20px; width: 15px; height: 15px; border-radius: 50%; z-index: 1; animation: dropFall 0.5s forwards; }
+    @keyframes dropFall { to { top: 50px; opacity: 0;} }
+
+    .result-area { margin-top: 20px; text-align: center; font-size: 1.2rem; font-weight: 900; min-height: 30px;}
+    .result-area.success { color: #2e7d32; }
+    .result-area.error { color: #d32f2f; }
+
+    /* ETKİLEŞİMLİ ALANLAR (Eski kısımlar) */
+    .match-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .match-col { display: flex; flex-direction: column; gap: 10px; }
+    .match-item { background: var(--white); padding: 15px; border-radius: 12px; box-shadow: 0 3px 0 #ddd; cursor: pointer; font-weight: 700; text-align: center; border: 2px solid transparent; transition: 0.2s;}
+    .match-item.selected { border-color: var(--accent); background: #fff3e0; }
+    .match-item.matched { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; cursor: default; box-shadow: none; opacity: 0.7;}
+
+    .fill-blank { font-size: 1.2rem; line-height: 2.2; font-weight: 700; }
+    .blank-input { border: none; border-bottom: 3px solid var(--primary); background: #f9f9f9; font-family: inherit; font-size: 1.1rem; font-weight: 900; color: var(--primary-dark); width: 120px; text-align: center; outline: none; padding: 2px; }
+    .blank-input.correct { color: #2e7d32; border-color: #4caf50; }
+    .blank-input.wrong { color: #c62828; border-color: #f44336; text-decoration: line-through; }
+
+    .tf-item { background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 0 #eee; font-weight: 700;}
+    .tf-btns { display: flex; gap: 10px; }
+    .tf-btn { padding: 8px 15px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; background: #eee; transition: 0.2s; }
+    .tf-btn:hover { background: #ddd; }
+    .tf-btn.selected-true { background: #4caf50; color: white; }
+    .tf-btn.selected-false { background: #f44336; color: white; }
+    .tf-feedback { margin-top: 5px; font-size: 0.9rem; font-weight: 900; }
+
+    .quiz-card { background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; max-width: 600px; margin: 0 auto; }
+    .quiz-question { font-size: 1.3rem; font-weight: 900; margin-bottom: 20px; }
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+    .quiz-opt { background: #f4f7f6; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; border: 2px solid transparent; transition: 0.2s; font-size: 1.1rem;}
+    .quiz-opt:hover { background: #e0f2f1; border-color: var(--primary); }
+    .quiz-opt.correct { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+    .quiz-opt.wrong { background: #ffebee; border-color: #f44336; color: #c62828; }
+    .quiz-progress { font-weight: 900; color: #888; margin-bottom: 10px; }
+
+    .highlight-card { background: linear-gradient(135deg, #2a9d8f, #264653); color: white; padding: 25px; border-radius: var(--radius); margin-top: 30px; }
+    .highlight-card h3 { color: var(--secondary); margin-top: 0; }
+
+    @media (max-width: 768px) {
+        .grid-2, .match-container, .cm-branches, .lab-container { grid-template-columns: 1fr; display: flex; flex-direction: column; }
+        .cm-branches::before, .cm-branch::before { display: none; }
+        .tf-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .exp-menu { display: flex; overflow-x: auto; padding: 10px; }
+        .exp-btn { white-space: nowrap; width: auto; margin-bottom: 0; margin-right: 10px; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">🍏 Besin Akademisi</div>
+    <nav>
+        <button class="nav-btn active" onclick="switchTab('konu')">📖 Konu Anlatımı</button>
+        <button class="nav-btn" onclick="switchTab('lab')">🧪 Deney Laboratuvarı</button>
+        <button class="nav-btn" onclick="switchTab('etkinlik')">🎯 Etkinlikler</button>
+        <button class="nav-btn" onclick="switchTab('test')">📝 Test</button>
+        <button class="nav-btn" onclick="switchTab('ekstra')">💡 Ek Bilgiler</button>
+    </nav>
+</header>
+
+<main>
+    <!-- 1. KONU ANLATIMI (DEĞİŞMEDİ) -->
+    <div id="mod-konu" class="module active">
+        <h2>Besinlerin Gizli Dünyası</h2>
+        <p class="subtitle">Vücudumuz bir makine gibidir, yakıtı ise besinlerdir!</p>
+
+        <div class="card">
+            <h3>🍽️ Neden Besleniriz?</h3>
+            <p>İnsan ve hayvanlar hareket ettikleri için sürekli enerji harcarlar. Uyurken bile organlarımız çalışır. Vücudumuzun ihtiyaç duyduğu bu enerjiyi <b>besinlerden</b> alırız.</p>
+            <div class="info-box">Besin: Yaşamımızı sürdürmek için yediğimiz ve içtiğimiz maddelere denir.</div>
+        </div>
+
+        <div class="card">
+            <h3>🌿 Besinlerin Sınıflandırılması</h3>
+            <div class="grid-2">
+                <div>
+                    <h4>Organik Besinler (Canlılardan)</h4>
+                    <ul>
+                        <li><b>Hayvansal:</b> Et, süt, yumurta, bal, peynir...</li>
+                        <li><b>Bitkisel:</b> Meyve, sebze, tahıl, kuru yemiş...</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>İnorganik Besinler (Cansızlardan)</h4>
+                    <ul>
+                        <li>Su, hava, tuz, mineraller...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🧬 Besin İçerikleri ve Görevleri</h3>
+            <p>Her besinin içinde tek bir madde yoktur. Örneğin sütte protein, yağ, vitamin ve mineral vardır. İşte vücudumuzdaki görevlerine göre besin içerikleri:</p>
+            
+            <div class="concept-map">
+                <div class="cm-root">BESİN İÇERİKLERİ</div>
+                <div class="cm-branches">
+                    <div class="cm-branch">
+                        <div class="cm-title">⚡ Enerji Verenler</div>
+                        <div class="cm-item">Karbonhidrat</div>
+                        <div class="cm-item">Yağlar</div>
+                    </div>
+                    <div class="cm-branch">
+                        <div class="cm-title">🧱 Yapıcı ve Onarıcılar</div>
+                        <div class="cm-item">Proteinler</div>
+                    </div>
+                    <div class="cm-branch">
+                        <div class="cm-title">🛡️ Düzenleyiciler</div>
+                        <div class="cm-item">Vitaminler</div>
+                        <div class="cm-item">Su</div>
+                        <div class="cm-item">Mineraller</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top: 20px;">
+                <div class="info-box" style="background:#fff3e0; border-color:#f4a261;">
+                    <b>Karbonhidrat:</b> Hızlı enerji verir. Ekmek, patates, makarna, bal, şeker.
+                </div>
+                <div class="info-box" style="background:#e8f5e9; border-color:#4caf50;">
+                    <b>Protein:</b> Büyüme, yaraların iyileşmesi ve kas gelişimi. Et, süt, yumurta, baklagiller.
+                </div>
+                <div class="info-box" style="background:#fff8e1; border-color:#ffc107;">
+                    <b>Yağ:</b> Depo enerjisi, vücudu korur, vitaminleri taşır. Zeytinyağı, ceviz, fındık, tereyağı.
+                </div>
+                <div class="info-box" style="background:#e3f2fd; border-color:#2196f3;">
+                    <b>Vitaminler:</b> Hastalıklardan korur. Meyve ve sebzeler.
+                </div>
+                <div class="info-box" style="background:#f3e5f5; border-color:#9c27b0;">
+                    <b>Mineraller:</b> Kemik ve diş sağlığı, su dengesi. Süt (Kalsiyum), Tuz (Sodyum), Et (Demir).
+                </div>
+                <div class="info-box" style="background:#e0f7fa; border-color:#00bcd4;">
+                    <b>Su:</b> Vücudun %70'i sudur. Kanı akıtır, hayati önem taşır.
+                </div>
+            </div>
+            <p style="margin-top:15px; font-size:0.9rem; color:#666;"><i>*Unutma: Vitamin, su ve mineral BÜTÜN besinlerde bulunur. Sadece oranları değişir.</i></p>
+        </div>
+
+        <button class="btn btn-primary btn-next" onclick="switchTab('lab')">Deney Zamanı! 🧪</button>
+    </div>
+
+    <!-- 2. YENİ DENEY LABORATUVARI -->
+    <div id="mod-lab" class="module">
+        <h2>Sanal Laboratuvar</h2>
+        <p class="subtitle">Gerçek bir bilim insanı gibi deney yapmaya hazır mısın?</p>
+        
+        <div class="lab-container">
+            <!-- Sol Menü: Deney Seçimi -->
+            <div class="exp-menu" id="exp-menu">
+                <!-- JS ile doldurulacak -->
+            </div>
+            
+            <!-- Sağ Alan: Deney Aşamaları -->
+            <div class="exp-stage">
+                
+                <!-- Boş Durum -->
+                <div id="exp-empty" class="exp-view active" style="text-align:center; padding-top:100px; color:#aaa;">
+                    <svg width="80" height="80" fill="#ddd" viewBox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    <h3>Soldan bir deney seçerek başla</h3>
+                </div>
+
+                <!-- 1. Aşama: Deney Bilgisi (Ön Bilgi) -->
+                <div id="exp-info" class="exp-view">
+                    <h3 class="exp-title" id="info-title">Deney Adı</h3>
+                    <div class="exp-info-block">
+                        <h4>🎯 Deneyin Amacı</h4>
+                        <p id="info-aim">Amaç buraya gelecek.</p>
+                    </div>
+                    <div class="exp-info-block" style="border-color: var(--accent);">
+                        <h4>🔬 Malzemeler ve Yöntem</h4>
+                        <p id="info-method">Yöntem buraya gelecek.</p>
+                    </div>
+                    <div style="text-align:center; margin-top:30px;">
+                        <button class="btn btn-primary" onclick="startTestPhase()">Anladım, Deneye Başla! 🚀</button>
+                    </div>
+                </div>
+
+                <!-- 2. Aşama: Test Uygulama -->
+                <div id="exp-test" class="exp-view">
+                    <h3 class="exp-title" id="test-title">Deney Uygulaması</h3>
+                    <div class="test-bench" id="test-bench">
+                        <!-- Animasyon alanı -->
+                    </div>
+                    <div style="text-align:center; margin-top:20px;">
+                        <button class="btn" id="btn-run-test" onclick="runTestAnim()">Testi Uygula 🧪</button>
+                    </div>
+                    <div class="result-area" id="test-result"></div>
+                    <div style="text-align:center; margin-top:30px;">
+                        <button class="btn btn-primary hidden" id="btn-finish-test" onclick="finishTest()">Sonucu Kaydet ve Bitir</button>
+                    </div>
+                </div>
+
+                <!-- 3. Aşama: Sonuç Raporu -->
+                <div id="exp-result" class="exp-view" style="text-align:center;">
+                    <h2 style="font-size: 3rem; margin: 0;">🔬</h2>
+                    <h3 style="color:var(--primary);">Deney Başarıyla Tamamlandı!</h3>
+                    <p style="font-weight:700; font-size:1.1rem;" id="final-result-text">Sonuç metni</p>
+                    <div class="info-box" style="text-align:left; margin-top:20px;" id="final-result-exp"></div>
+                    <button class="btn btn-primary" style="margin-top:20px;" onclick="resetLab()">Başka Bir Deney Yap</button>
+                </div>
+
+            </div>
+        </div>
+        
+        <button class="btn btn-primary btn-next" onclick="switchTab('etkinlik')">Etkinliklere Geç ➡️</button>
+    </div>
+
+    <!-- 3. ETKİNLİKLER (DEĞİŞMEDİ) -->
+    <div id="mod-etkinlik" class="module">
+        <h2>Bilgiyi Pekiştir</h2>
+        <p class="subtitle">Eşleştir, doldur ve doğruyu bul!</p>
+
+        <div class="card">
+            <h3>🎯 Etkinlik 1: İçerik ve Görev Eşleştirme</h3>
+            <p style="font-weight:700; color:#666; margin-bottom: 15px;">Soldaki içeriği seç, sonra sağdaki görevine tıkla.</p>
+            <div class="match-container">
+                <div class="match-col" id="match-left"></div>
+                <div class="match-col" id="match-right"></div>
+            </div>
+            <p id="match-msg" style="text-align:center; font-weight:900; color:var(--primary); margin-top:15px;"></p>
+        </div>
+
+        <div class="card">
+            <h3>✍️ Etkinlik 2: Boşluk Doldurma</h3>
+            <div class="fill-blank">
+                1. Vücudumuzun yaralarını iyileştiren ve bizi büyüten içerik <input type="text" class="blank-input" data-ans="protein" size="10">'dir.<br>
+                2. Kemiklerimizin güçlenmesi için sütte bulunan <input type="text" class="blank-input" data-ans="mineral" size="10"> (Kalsiyum) gereklidir.<br>
+                3. Ekmek ve patateste bolca bulunan, bize enerji veren içerik <input type="text" class="blank-input" data-ans="karbonhidrat" size="15">'tır.<br>
+                4. Vücudumuzun %70'ini oluşturan ve hayati önem taşıyan inorganik madde <input type="text" class="blank-input" data-ans="su" size="5">'dur.<br>
+                5. Hastalıklardan korunmak için meyve ve sebzelerden aldığımız <input type="text" class="blank-input" data-ans="vitamin" size="10">'ler önemlidir.
+            </div>
+            <button class="btn btn-primary" style="margin-top:20px;" onclick="checkBlanks()">Cevapları Kontrol Et</button>
+            <span id="blank-msg" style="font-weight:900; margin-left:10px;"></span>
+        </div>
+
+        <div class="card">
+            <h3>⚖️ Etkinlik 3: Doğru mu, Yanlış mı?</h3>
+            <div id="tf-container"></div>
+            <button class="btn btn-primary" style="margin-top:20px;" onclick="checkTF()">Cevapları Kontrol Et</button>
+            <span id="tf-msg" style="font-weight:900; margin-left:10px;"></span>
+        </div>
+        
+        <button class="btn btn-primary btn-next" onclick="switchTab('test')">Sınava Gir ➡️</button>
+    </div>
+
+    <!-- 4. TEST (DEĞİŞMEDİ) -->
+    <div id="mod-test" class="module">
+        <h2>Bilgi Sınavı</h2>
+        <p class="subtitle">Öğrendiklerini test etme zamanı!</p>
+        <div id="quiz-container"></div>
+    </div>
+
+    <!-- 5. EK BİLGİLER (DEĞİŞMEDİ) -->
+    <div id="mod-ekstra" class="module">
+        <h2>Sağlıklı Yaşam Rehberi</h2>
+        <div class="highlight-card">
+            <h3>👩‍⚕️ Diyetisyenden Tavsiyeler</h3>
+            <p>Sevgili öğrenciler, sağlıklı büyümek için şu altın kurallara dikkat edin:</p>
+            <ul style="line-height: 1.8; font-size: 1.1rem;">
+                <li><b>Tabak Modeli:</b> Tabağınızın yarısını sebze ve meyve, çeyreğini tahıl (ekmek/pilav), çeyreğini ise protein (et/süt/yumurta) ile doldurun.</li>
+                <li><b>Su İçmeyi Unutmayın:</b> Günde en az 6-8 bardak su için. Susamayı beklemeden için.</li>
+                <li><b>Abur Cubura Dikkat:</b> Cips, kola ve şekerli atıştırmalıklar sizi kısa süre mutlu eder ama hasta eder. Bunlar yerine kuruyemiş, meyve veya yoğurt tercih edin.</li>
+                <li><b>Hareket Edin:</b> Aldığınız enerjinin bir kısmını spor yaparak, oynayarak harcayın. Obeziteden korunun.</li>
+                <li><b>Paketli Gıdaları İnceleyin:</b> Alışverişte annenize/babanıza yardım edin, etiket okuyun. Son tüketim tarihine ve içindekiler kısmına bakın.</li>
+            </ul>
+        </div>
+    </div>
+</main>
+
+<!-- GÖMÜLÜ SVG İKONLAR -->
+<svg style="display:none;">
+    <defs>
+        <g id="i-ekmek"><path fill="#e0a458" d="M10,30 Q10,10 50,10 Q90,10 90,30 L90,80 L10,80 Z"/><path fill="#a96d2a" d="M20,25 Q30,20 40,25 M50,25 Q60,20 70,25" stroke-width="3" stroke="#a96d2a" fill="none"/></g>
+        <g id="i-sut"><path d="M30,30 L40,10 L60,10 L70,30 L80,90 L20,90 Z" fill="#fff" stroke="#2f7fb8" stroke-width="3"/><rect x="20" y="50" width="60" height="20" fill="#bfe0f5"/></g>
+        <g id="i-yumurta"><ellipse cx="50" cy="55" rx="35" ry="45" fill="#fff" stroke="#c9b27c" stroke-width="3"/><circle cx="50" cy="55" r="15" fill="#ffb627"/></g>
+        <g id="i-yag"><rect x="30" y="20" width="40" height="60" rx="10" fill="#8aa629"/><rect x="40" y="80" width="20" height="10" fill="#8aa629"/><rect x="30" y="40" width="40" height="30" fill="#fff7c2"/></g>
+        <g id="i-elma"><circle cx="50" cy="60" r="35" fill="#e9604f"/><path d="M50,25 Q55,10 70,10" stroke="#4b8a3c" stroke-width="6" fill="none"/></g>
+        <g id="i-patates"><ellipse cx="50" cy="60" rx="40" ry="25" fill="#d4a373"/><circle cx="35" cy="55" r="3" fill="#8b5a2b"/><circle cx="60" cy="65" r="4" fill="#8b5a2b"/></g>
+        <g id="i-et"><path d="M20,50 Q20,20 50,20 Q80,20 80,50 Q80,80 50,80 Q20,80 20,50 Z" fill="#d32f2f"/><circle cx="50" cy="50" r="10" fill="#fff"/></g>
+    </defs>
+</svg>
+
+<script>
+    // --- SEKME GEÇİŞİ ---
+    function switchTab(id, btnElement) {
+        document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+        document.getElementById('mod-' + id).classList.add('active');
+        
+        const btns = document.querySelectorAll('.nav-btn');
+        btns.forEach(b => b.classList.remove('active'));
+        if(btnElement) {
+            btnElement.classList.add('active');
+        } else {
+            event.target.classList.add('active');
+        }
+        window.scrollTo(0, 0);
+    }
+
+    // --- VERİLER ---
+    // 4 FARKLI DENEY VERİSİ
+    const experimentsData = [
+        {
+            id: 'lugol',
+            name: "🧪 Nişasta (Karbonhidrat) Testi",
+            title: "Nişasta (Karbonhidrat) Testi",
+            aim: "Ekmek ve patates gibi besinlerde karbonhidrat olup olmadığını gözlemlemek.",
+            method: "Besinlere Lügol (iyot) çözeltisi damlatılır. Karbonhidrat varsa renk mora döner, yoksa renk değişmez.",
+            foods: [{id: 'ekmek', name: 'Ekmek', icon: 'i-ekmek', hasContent: true}, {id: 'patates', name: 'Patates', icon: 'i-patates', hasContent: true}],
+            noContentFood: {name: 'Yumurta', icon: 'i-yumurta'},
+            testType: 'lugol',
+            successText: "Renk mora döndü!",
+            failText: "Renk değişmedi.",
+            successExp: "Lügol çözeltisi karbonhidratla (nişasta) tepkimeye girerek mor renk oluşturur. Bu besinde Karbonhidrat vardır.",
+            failExp: "Bu besinde nişasta (karbonhidrat) yok denecek kadar azdır."
+        },
+        {
+            id: 'kagit',
+            name: "📄 Kağıt (Yağ) Testi",
+            title: "Kağıt (Yağ) Testi",
+            aim: "Zeytinyağı ve fındık gibi besinlerde yağ olup olmadığını gözlemlemek.",
+            method: "Besin bir kağıda sürülür. Kağıt ışığa tutulur. Yağ varsa kağıtta ışık geçiren saydam bir leke kalır.",
+            foods: [{id: 'yag', name: 'Zeytinyağı', icon: 'i-yag', hasContent: true}],
+            noContentFood: {name: 'Elma', icon: 'i-elma'},
+            testType: 'kagit',
+            successText: "Kağıtta saydam leke oluştu!",
+            failText: "Kağıtta leke oluşmadı, sadece su izi kaldı.",
+            successExp: "Kağıda sürülen besin leke bırakıyorsa içinde Yağ vardır.",
+            failExp: "Bu besinde yağ yoktur, sadece su içeriği kağıdı hafifçe ıslatmıştır."
+        },
+        {
+            id: 'kagit2',
+            name: "🥜 Kuruyemiş Yağ Testi",
+            title: "Kuruyemişlerde Yağ Testi",
+            aim: "Ceviz, fındık gibi sert kabuklu yemişlerin içinde yağ olup olmadığını gözlemlemek.",
+            method: "Kuruyemiş temiz bir kağıda iyice ezilir. Kağıt ışığa tutulur. Saydam leke varsa yağ vardır.",
+            foods: [{id: 'ceviz', name: 'Ceviz', icon: 'i-yag', hasContent: true}], // ikon temsili
+            noContentFood: {name: 'Domates', icon: 'i-elma'},
+            testType: 'kagit',
+            successText: "Belirgin bir leke oluştu!",
+            failText: "Leke oluşmadı.",
+            successExp: "Kuruyemişler yağ bakımından çok zengindir. Enerji verirler.",
+            failExp: "Bu besinde yağ oranı çok düşüktür."
+        },
+        {
+            id: 'protein',
+            name: "🥚 Protein Testi (Gözlem)",
+            title: "Protein Testi (Gözlem)",
+            aim: "Et, süt ve yumurta gibi hayvansal besinlerde protein olduğunu kavramak.",
+            method: "Protein testi genellikle biüret çözeltisi ile yapılır. Mor renk proteinin varlığını gösterir.",
+            foods: [{id: 'sut', name: 'Süt', icon: 'i-sut', hasContent: true}, {id: 'et', name: 'Et', icon: 'i-et', hasContent: true}],
+            noContentFood: {name: 'Zeytinyağı', icon: 'i-yag'},
+            testType: 'protein',
+            successText: "Mor renk oluştu!",
+            failText: "Renk değişmedi.",
+            successExp: "Biyüret çözeltisi proteinle birleşince mor renk verir. Bu besin Yapıcı ve Onarıcıdır (Protein).",
+            failExp: "Bu besinde protein bulunmaz."
+        }
+    ];
+
+    const matchData = [
+        { left: 'Protein', right: 'Büyüme ve onarım' },
+        { left: 'Karbonhidrat', right: 'Hızlı enerji' },
+        { left: 'Yağ', right: 'Depo enerjisi ve koruma' },
+        { left: 'Mineral', right: 'Kemik ve diş sağlığı' },
+        { left: 'Vitamin', right: 'Hastalıklardan koruma' }
+    ];
+
+    const tfData = [
+        { text: "Bütün besinlerde su ve mineral bulunur.", ans: true, exp: "Doğru, oranları değişse de hepsinde vardır." },
+        { text: "Sadece ekmek yiyerek dengeli beslenebiliriz.", ans: false, exp: "Yanlış, diğer besinlere de ihtiyacımız var." },
+        { text: "Meyve ve sebzeler protein bakımından çok zengindir.", ans: false, exp: "Yanlış, vitamin ve mineral bakımından zengindir." },
+        { text: "Sigara dumanı sadece içene zarar verir.", ans: false, exp: "Yanlış, pasif içicilere de zarar verir." },
+        { text: "Et, süt ve yumurta hayvansal besinlerdir.", ans: true, exp: "Doğru, hayvanlardan elde edilir." }
+    ];
+
+    const quizData = [
+        { q: "Aşağıdakilerden hangisi vücudumuz için 'yapıcı ve onarıcı' besin içeriğidir?", opts: ["Karbonhidrat", "Protein", "Yağ", "Su"], a: 1 },
+        { q: "Hangi besinde bol miktarda karbonhidrat bulunur?", opts: ["Zeytinyağı", "Peynir", "Patates", "Yumurta"], a: 2 },
+        { q: "Kemik ve diş sağlığımız için gerekli olan mineral hangi besinde bolca bulunur?", opts: ["Süt", "Ekmek", "Elma", "Makarna"], a: 0 },
+        { q: "Vücudumuzun düzenli çalışmasını sağlayan ve hastalıklardan koruyan içerik hangisidir?", opts: ["Karbonhidrat", "Vitamin", "Yağ", "Protein"], a: 1 },
+        { q: "Aşağıdakilerden hangisi inorganik (cansız) bir besindir?", opts: ["Bal", "Yumurta", "Maden Suyu", "Muz"], a: 2 }
+    ];
+
+    // --- 1. LABORATUVAR (YENİ MANTIK) ---
+    let currentExp = null;
+    let currentFoodItem = null; // Test aşamasında seçilen besin
+
+    function initLabMenu() {
+        const menu = document.getElementById('exp-menu');
+        menu.innerHTML = ''; // temizle
+        experimentsData.forEach(exp => {
+            const btn = document.createElement('button');
+            btn.className = 'exp-btn';
+            btn.innerHTML = exp.name;
+            btn.onclick = () => selectExperiment(exp, btn);
+            menu.appendChild(btn);
+        });
+    }
+
+    function selectExperiment(exp, btnElement) {
+        currentExp = exp;
+        // Menü aktifliğini güncelle
+        document.querySelectorAll('.exp-btn').forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        // Görünümleri ayarla
+        document.querySelectorAll('.exp-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('exp-info').classList.add('active');
+
+        // Bilgi ekranını doldur
+        document.getElementById('info-title').innerText = exp.title;
+        document.getElementById('info-aim').innerText = exp.aim;
+        document.getElementById('info-method').innerText = exp.method;
+    }
+
+    function startTestPhase() {
+        // Bilgi ekranından test ekranına geç
+        document.querySelectorAll('.exp-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('exp-test').classList.add('active');
+        document.getElementById('test-title').innerText = currentExp.title;
+        
+        document.getElementById('btn-finish-test').classList.add('hidden');
+        document.getElementById('test-result').innerHTML = '';
+        document.getElementById('test-result').className = 'result-area';
+        
+        // Test tezgahını hazırla (Besinleri göster)
+        const bench = document.getElementById('test-bench');
+        bench.innerHTML = '';
+        
+        // Rastgele bir besin seç (içerikli veya içeriksiz)
+        const useContentFood = Math.random() > 0.4; // %60 ihtimalle içerikli besin
+        let foodToShow;
+        if (useContentFood && currentExp.foods.length > 0) {
+            foodToShow = currentExp.foods[Math.floor(Math.random() * currentExp.foods.length)];
+            foodToShow.hasContent = true;
+        } else {
+            foodToShow = currentExp.noContentFood;
+            foodToShow.hasContent = false;
+        }
+        
+        currentFoodItem = foodToShow;
+
+        // Görseli yerleştir
+        const foodDiv = document.createElement('div');
+        foodDiv.className = 'food-sample';
+        foodDiv.innerHTML = `<svg id="test-svg"><use href="#${foodToShow.icon}"></use></svg><br><b style="font-size:1.2rem; margin-top:10px;">${foodToShow.name}</b>`;
+        bench.appendChild(foodDiv);
+
+        // Butonu aktif et
+        const runBtn = document.getElementById('btn-run-test');
+        runBtn.disabled = false;
+        runBtn.style.display = 'inline-block';
+        runBtn.innerText = "Testi Uygula 🧪";
+    }
+
+    function runTestAnim() {
+        const runBtn = document.getElementById('btn-run-test');
+        runBtn.disabled = true;
+        runBtn.innerText = "Uygulanıyor...";
+
+        const svgEl = document.getElementById('test-svg');
+        const resultDiv = document.getElementById('test-result');
+        const bench = document.getElementById('test-bench');
+
+        if (currentExp.testType === 'lugol') {
+            // Damla animasyonu oluştur
+            const drop = document.createElement('div');
+            drop.className = 'drop-anim';
+            drop.style.background = '#8B4513'; // İyot rengi
+            drop.style.left = 'calc(50% - 7px)';
+            bench.appendChild(drop);
+
+            setTimeout(() => {
+                drop.remove();
+                if (currentFoodItem.hasContent) {
+                    svgEl.classList.add('anim-lugol');
+                    resultDiv.innerHTML = "🎉 " + currentExp.successText;
+                    resultDiv.classList.add('success');
+                } else {
+                    resultDiv.innerHTML = "🤔 " + currentExp.failText;
+                    resultDiv.classList.add('error');
+                }
+                showFinishBtn();
+            }, 800);
+
+        } else if (currentExp.testType === 'kagit') {
+            // Kağıt lekesi animasyonu
+            resultDiv.innerHTML = "Kağıt inceleniyor... ⏳";
+            setTimeout(() => {
+                if (currentFoodItem.hasContent) {
+                    // Leke ekle
+                    const stain = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    stain.setAttribute("cx", "50%");
+                    stain.setAttribute("cy", "50%");
+                    stain.setAttribute("r", "0");
+                    stain.setAttribute("fill", "rgba(255, 235, 59, 0.7)"); // Yağ lekesi rengi
+                    stain.style.animation = "spreadStain 1.5s forwards";
+                    
+                    const svgWrapper = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svgWrapper.setAttribute("width", "150");
+                    svgWrapper.setAttribute("height", "150");
+                    svgWrapper.appendChild(stain);
+                    
+                    bench.appendChild(svgWrapper);
+                    resultDiv.innerHTML = "🎉 " + currentExp.successText;
+                    resultDiv.classList.add('success');
+                } else {
+                    resultDiv.innerHTML = "🤔 " + currentExp.failText;
+                    resultDiv.classList.add('error');
+                }
+                showFinishBtn();
+            }, 1200);
+
+        } else if (currentExp.testType === 'protein') {
+            // Mor renk animasyonu
+            setTimeout(() => {
+                if (currentFoodItem.hasContent) {
+                    svgEl.style.filter = "hue-rotate(270deg) saturate(3)"; // Mor renk efekti
+                    resultDiv.innerHTML = "🎉 " + currentExp.successText;
+                    resultDiv.classList.add('success');
+                } else {
+                    resultDiv.innerHTML = "🤔 " + currentExp.failText;
+                    resultDiv.classList.add('error');
+                }
+                showFinishBtn();
+            }, 1000);
+        }
+    }
+
+    function showFinishBtn() {
+        document.getElementById('btn-run-test').style.display = 'none';
+        document.getElementById('btn-finish-test').classList.remove('hidden');
+    }
+
+    function finishTest() {
+        document.querySelectorAll('.exp-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('exp-result').classList.add('active');
+
+        const isSuccess = currentFoodItem.hasContent;
+        document.getElementById('final-result-text').innerHTML = `İncelenen Besin: <b>${currentFoodItem.name}</b><br>Sonuç: ${isSuccess ? '<span style="color:#2e7d32">Olumlu (İçerik Var)</span>' : '<span style="color:#d32f2f">Olumsuz (İçerik Yok)</span>'}`;
+        
+        const expBox = document.getElementById('final-result-exp');
+        expBox.innerHTML = `<b>Bilimsel Açıklama:</b> ${isSuccess ? currentExp.successExp : currentExp.failExp}`;
+    }
+
+    function resetLab() {
+        document.querySelectorAll('.exp-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('exp-empty').classList.add('active');
+        document.querySelectorAll('.exp-btn').forEach(b => b.classList.remove('active'));
+        currentExp = null;
+    }
+
+
+    // --- 2. EŞLEŞTİRME ---
+    let selectedMatchLeft = null;
+    let matchedCount = 0;
+    function initMatch() {
+        const leftCol = document.getElementById('match-left');
+        const rightCol = document.getElementById('match-right');
+        
+        matchData.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'match-item';
+            div.innerText = item.left;
+            div.dataset.id = index;
+            div.onclick = () => {
+                if(div.classList.contains('matched')) return;
+                document.querySelectorAll('#match-left .match-item').forEach(el => el.classList.remove('selected'));
+                div.classList.add('selected');
+                selectedMatchLeft = index;
+            };
+            leftCol.appendChild(div);
+        });
+
+        const shuffled = [...matchData].sort(() => Math.random() - 0.5);
+        shuffled.forEach((item) => {
+            const originalIndex = matchData.findIndex(m => m.right === item.right);
+            const div = document.createElement('div');
+            div.className = 'match-item';
+            div.innerText = item.right;
+            div.onclick = () => {
+                if(div.classList.contains('matched')) return;
+                if(selectedMatchLeft === null) {
+                    document.getElementById('match-msg').innerText = "Önce soldan bir içerik seç!";
+                    return;
+                }
+                if(selectedMatchLeft === originalIndex) {
+                    div.classList.add('matched');
+                    document.querySelector(`#match-left .match-item[data-id="${selectedMatchLeft}"]`).classList.add('matched');
+                    selectedMatchLeft = null;
+                    matchedCount++;
+                    document.getElementById('match-msg').innerText = "Harika, doğru eşleşme! ✔";
+                    document.getElementById('match-msg').style.color = "#4caf50";
+                    if(matchedCount === matchData.length) {
+                        document.getElementById('match-msg').innerText = "Tebrikler, hepsini eşleştirdin! 🌟";
+                    }
+                } else {
+                    document.getElementById('match-msg').innerText = "Hatalı eşleşme, tekrar dene. ✘";
+                    document.getElementById('match-msg').style.color = "#f44336";
+                }
+            };
+            rightCol.appendChild(div);
+        });
+    }
+
+    // --- 3. BOŞLUK DOLDURMA ---
+    function checkBlanks() {
+        const inputs = document.querySelectorAll('.blank-input');
+        let correct = 0;
+        inputs.forEach(inp => {
+            const ans = inp.dataset.ans.toLowerCase();
+            const val = inp.value.trim().toLowerCase();
+            if (val === ans) {
+                inp.classList.add('correct');
+                inp.classList.remove('wrong');
+                correct++;
+            } else {
+                inp.classList.add('wrong');
+                inp.classList.remove('correct');
+            }
+        });
+        const msg = document.getElementById('blank-msg');
+        if (correct === inputs.length) {
+            msg.innerText = "Mükemmel! Hepsi doğru. 🌟";
+            msg.style.color = "#4caf50";
+        } else {
+            msg.innerText = `${correct}/${inputs.length} doğru. Kırmızıları tekrar dene.`;
+            msg.style.color = "#f44336";
+        }
+    }
+
+    // --- 4. DOĞRU YANLIŞ ---
+    let tfAnswers = {};
+    function initTF() {
+        const container = document.getElementById('tf-container');
+        tfData.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'tf-item';
+            div.innerHTML = `
+                <div style="flex:1; margin-right:15px;">${item.text}</div>
+                <div class="tf-btns">
+                    <button class="tf-btn" onclick="selectTF(${index}, true, this)">D</button>
+                    <button class="tf-btn" onclick="selectTF(${index}, false, this)">Y</button>
+                </div>
+                <div class="tf-feedback" id="tf-fb-${index}"></div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function selectTF(index, val, btn) {
+        tfAnswers[index] = val;
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.tf-btn').forEach(b => b.className = 'tf-btn');
+        btn.className = `tf-btn ${val ? 'selected-true' : 'selected-false'}`;
+    }
+
+    function checkTF() {
+        let correct = 0;
+        tfData.forEach((item, index) => {
+            const fb = document.getElementById(`tf-fb-${index}`);
+            if (tfAnswers[index] === undefined) {
+                fb.innerText = "Cevap vermedin!";
+                fb.style.color = "orange";
+            } else if (tfAnswers[index] === item.ans) {
+                correct++;
+                fb.innerText = "Doğru! " + item.exp;
+                fb.style.color = "#4caf50";
+            } else {
+                fb.innerText = "Yanlış! " + item.exp;
+                fb.style.color = "#f44336";
+            }
+        });
+        const msg = document.getElementById('tf-msg');
+        msg.innerText = `${correct}/${tfData.length} doğru.`;
+        msg.style.color = correct === tfData.length ? "#4caf50" : "#f44336";
+    }
+
+    // --- 5. TEST ---
+    let qIndex = 0;
+    let qScore = 0;
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        if (qIndex >= quizData.length) {
+            container.innerHTML = `
+                <div class="quiz-card">
+                    <h2 style="font-size: 3rem; margin:0;">🏆</h2>
+                    <h3>Sınav Bitti!</h3>
+                    <p style="font-size: 1.2rem; font-weight: 900;">Puanın: ${qScore} / ${quizData.length}</p>
+                    <button class="btn btn-primary" style="margin-top:15px;" onclick="qIndex=0; qScore=0; renderQuiz();">Tekrar Dene</button>
+                </div>
+            `;
+            return;
+        }
+
+        const q = quizData[qIndex];
+        container.innerHTML = `
+            <div class="quiz-card">
+                <div class="quiz-progress">Soru ${qIndex + 1} / ${quizData.length}</div>
+                <div class="quiz-question">${q.q}</div>
+                <div class="quiz-options">
+                    ${q.opts.map((opt, i) => `<div class="quiz-opt" onclick="answerQuiz(${i}, this)">${opt}</div>`).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    function answerQuiz(selected, el) {
+        const q = quizData[qIndex];
+        const opts = document.querySelectorAll('.quiz-opt');
+        opts.forEach(o => o.style.pointerEvents = 'none');
+
+        if (selected === q.a) {
+            el.classList.add('correct');
+            qScore++;
+        } else {
+            el.classList.add('wrong');
+            opts[q.a].classList.add('correct');
+        }
+
+        setTimeout(() => {
+            qIndex++;
+            renderQuiz();
+        }, 1500);
+    }
+
+    // --- BAŞLAT ---
+    window.onload = () => {
+        initLabMenu();
+        initMatch();
+        initTF();
+        renderQuiz();
+    };
+</script>
+</body>
+</html>
