@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zihinden Toplama Ustaları | 4. Sınıf</title>
+<style>
+:root{--ink:#17233b;--muted:#52627a;--blue:#1677df;--pink:#ed3d87;--green:#16a765;--purple:#7b35e8;--orange:#f47a14;--yellow:#e8aa00;--paper:#fffdf8;--line:#d9e5f2}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,#eef7ff,#fff5fb 55%,#f4fff2);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.45}
+button,input,textarea{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #ffbf36;outline-offset:2px}
+.app{max-width:1050px;margin:auto;padding:18px}
+.hero{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:#fff;border:2px solid #d6e7ff;border-radius:24px;padding:20px;box-shadow:0 8px 24px #193a6712}
+.eyebrow{font-size:.84rem;font-weight:800;color:#2259a7;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(1.7rem,4vw,2.8rem);line-height:1.06;margin:.25rem 0 .55rem;color:#e92f48}
+.hero p{margin:0;color:#40516a;max-width:650px}
+.stamp{background:#fff0a9;border:2px solid #f2c64c;border-radius:16px;padding:12px;text-align:center;font-weight:900;min-width:112px}
+.statusbar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.stat{background:white;border:1px solid #dce7f5;border-radius:14px;padding:10px 12px}
+.stat span{display:block;color:var(--muted);font-size:.78rem;font-weight:700}.stat strong{font-size:1.15rem}
+.progress{height:9px;background:#e0e9f4;border-radius:99px;overflow:hidden;margin:0 0 18px}.progress>div{height:100%;background:linear-gradient(90deg,#ed3d87,#1677df,#16a765);width:0;transition:width .2s}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:16px;align-items:start}
+.panel{background:#fff;border:1px solid #dce7f5;border-radius:20px;padding:18px;box-shadow:0 5px 18px #17375b0a}
+.kicker{font-size:.78rem;font-weight:900;color:#2464b7;letter-spacing:.08em;text-transform:uppercase}
+.tasktop{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:5px 0 12px}
+.tasktop h2{font-size:1.2rem;margin:0}
+.pill{font-size:.8rem;font-weight:800;border-radius:999px;padding:6px 10px;background:#eaf4ff;color:#1456a2;white-space:nowrap}
+.operation{font-size:clamp(2.3rem,7vw,3.5rem);font-weight:900;text-align:center;letter-spacing:.02em;background:linear-gradient(120deg,#fff1f7,#edf7ff);border:2px solid #d5e7ff;border-radius:18px;padding:15px;margin:10px 0 6px;color:#182743}
+.instruction{text-align:center;font-weight:750;margin:0 0 16px;color:#41516a}
+.strategy-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.strategy{display:flex;align-items:center;gap:9px;text-align:left;padding:10px;border:2px solid #dbe4f0;border-radius:13px;background:#fff;color:#1b2b44;min-height:52px;font-weight:750}
+.strategy:hover{background:#f6faff;border-color:#8bb9f3}
+.strategy[aria-pressed="true"]{border-color:#176ed0;background:#eaf4ff;box-shadow:inset 0 0 0 1px #176ed0}
+.num{display:inline-grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:50%;font-weight:900;color:white}
+.s1 .num{background:var(--pink)}.s2 .num{background:#168fe5}.s3 .num{background:var(--green)}.s4 .num{background:var(--purple)}.s5 .num{background:var(--orange)}.s6 .num{background:var(--yellow);color:#322400}
+.workbox{margin-top:16px;padding:15px;border-radius:16px;border:2px dashed #b8c9de;background:#fbfdff}
+.workbox h3{margin:0 0 5px;font-size:1.05rem}
+.strategy-help{color:#34465f;margin:0 0 12px}
+.steps{display:grid;gap:8px;margin:10px 0}
+.practice{margin:12px 0;padding:12px;border:2px solid #b7d7ff;border-radius:14px;background:#eef7ff;color:#172d4c}.practice h4{margin:0 0 6px;font-size:1rem}.practice-number{font-size:1.8rem;font-weight:900;text-align:center;margin:8px 0;color:#145ba8}.count-track{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.count-chip{background:white;border:1px solid #aac9ee;border-radius:9px;padding:6px 9px;font-weight:800;color:#1d3c65}.practice-controls{display:flex;flex-wrap:wrap;gap:8px}.practice-controls .btn{flex:1 1 130px}.practice-note{font-size:.87rem;color:#344c6c;margin:6px 0 0}
+.step{background:white;border:1px solid #d9e4f2;border-radius:10px;padding:10px;color:#24344e}
+.step strong{color:#145ba8}
+.fields{display:grid;grid-template-columns:1fr 160px;gap:10px;align-items:end}
+label{display:block;font-size:.86rem;font-weight:800;margin-bottom:5px;color:#33455f}
+input,textarea{width:100%;border:2px solid #cbd8e8;border-radius:11px;background:#fff;color:#14223b;padding:11px 12px;min-width:0}
+input{min-height:46px}textarea{min-height:76px;resize:vertical}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{border:0;border-radius:12px;padding:11px 15px;min-height:44px;font-weight:850}
+.primary{background:#176ed0;color:white}.secondary{background:#eaf1fa;color:#1e3554;border:1px solid #c9d9ed}.warning{background:#fff2d7;color:#6c4100;border:1px solid #f4d58e}.success{background:#e3f9ec;color:#075d32;border:1px solid #a8e5c0}
+.btn:disabled{opacity:1;background:#edf0f4;color:#68768a;border:1px solid #d4dbe5;cursor:not-allowed}
+.feedback{margin-top:12px;padding:12px 14px;border-radius:12px;font-weight:750;display:none}.feedback.show{display:block}.feedback.good{background:#e6f9ed;border:1px solid #9bdfb4;color:#075a31}.feedback.bad{background:#fff0f0;border:1px solid #f2b3b3;color:#8d2020}.feedback.neutral{background:#fff8df;border:1px solid #f0d581;color:#664a00}
+.sidebar h3{margin:0 0 10px}.side-strategy{display:flex;gap:9px;align-items:flex-start;margin:11px 0;font-size:.88rem;color:#35455d}.side-strategy .num{width:25px;height:25px;flex-basis:25px;font-size:.82rem}
+.side-strategy strong{display:block;color:#182943}.tip{margin-top:14px;padding:12px;border-radius:13px;background:#fff5cb;border:1px solid #f2d56a;color:#5e4700;font-size:.88rem}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:15px}
+.final{display:none}.final.show{display:block}.final h2{margin-top:0}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.result{background:#f5f9ff;border:1px solid #dce8f6;border-radius:13px;padding:12px}.result span{display:block;font-size:.8rem;color:#53647a}.result strong{font-size:1.35rem}
+.review-list{display:grid;gap:9px}.review-item{padding:12px;border:1px solid #dce6f2;border-radius:12px;background:#fff}.review-item strong{display:block;margin-bottom:4px}
+.hidden{display:none!important}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{order:2}.statusbar{grid-template-columns:repeat(2,1fr)}.hero{grid-template-columns:1fr}.stamp{justify-self:start}.strategy-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.app{padding:10px}.panel{padding:13px}.strategy-grid{grid-template-columns:1fr}.fields{grid-template-columns:1fr}.nav .btn{flex:1}.operation{padding:12px}.result-grid{grid-template-columns:repeat(2,1fr)}}
+@media print{body{background:white}.app{max-width:none}.sidebar,.statusbar,.progress,.actions,.nav{display:none!important}.panel,.hero{box-shadow:none}}
+
+.decomp-rows{display:grid;gap:9px;margin:12px 0}.decomp-row{border:1px solid #d8e5f2;background:#fbfdff;border-radius:12px;padding:10px}.decomp-place{font-size:.82rem;font-weight:900;color:#315b85;margin-bottom:5px}.decomp-equation{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:1.05rem}.decomp-equation input{width:105px;min-height:43px;text-align:center;font-weight:800}.decomp-equation .btn{min-height:42px}.part-feedback{font-size:.9rem;font-weight:750;margin-top:5px;color:#40536c}.part-feedback.good-part{color:#12643a}.part-feedback.bad-part{color:#9a2c3d}.decomp-rows input:disabled{background:#e5f8eb;color:#155b37;border-color:#9ddbb1}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="hero">
+  <div><div class="eyebrow">4. sınıf matematik · Zihinden toplama</div><h1>🧠 Zihinden Toplama Ustaları</h1><p>Her işlem için en uygun stratejiyi seç, adımlarını uygula ve sonucunu zihinden bul. İstersen farklı bir stratejiyle de kontrol et!</p></div>
+  <div class="stamp">STRATEJİ<br>SEÇ • UYGULA<br>✓ KONTROL ET</div>
+</header>
+<div class="statusbar" aria-label="Etkinlik durumu">
+  <div class="stat"><span>Görev</span><strong id="statTask">1 / 12</strong></div>
+  <div class="stat"><span>Puan</span><strong id="statScore">0</strong></div>
+  <div class="stat"><span>Enerji</span><strong id="statEnergy">❤️❤️❤️</strong></div>
+  <div class="stat"><span>İpucu</span><strong id="statHints">0</strong></div>
+</div>
+<div class="progress" aria-label="İlerleme"><div id="progressFill"></div></div>
+<div class="layout" id="mainLayout">
+<main class="panel" id="taskPanel">
+  <div class="kicker" id="stageName">1. Aşama · Uygun stratejiyi bul</div>
+  <div class="tasktop"><h2 id="taskTitle">Görev 1</h2><span class="pill" id="taskStatus">Yeni görev</span></div>
+  <div class="operation" id="operation">738 − 50</div>
+  <p class="instruction">Bu toplama işleminde hangi strateji işini kolaylaştırır?</p>
+  <div class="strategy-grid" id="strategyGrid" aria-label="Zihinden toplama stratejileri"></div>
+  <section class="workbox" id="workbox">
+    <h3 id="workTitle">Önce stratejini seç!</h3>
+    <p class="strategy-help" id="workHelp">Yukarıdaki stratejilerden birine dokun. Ardından toplama adımlarını uygula.</p>
+    <div class="steps" id="stepsArea"></div>
+    <div class="practice" id="interactiveArea" aria-live="polite"><h4>İşlem alanı</h4><p>Stratejini seçtiğinde burada uygulayabileceksin.</p></div>
+    <div class="fields">
+      <div><label for="workNotes">İşlem adımlarım</label><textarea id="workNotes" placeholder="Örn. 738 − 50 = 738 − 5 onluk ..."></textarea></div>
+      <div><label for="answerInput">Sonuç</label><input id="answerInput" inputmode="numeric" autocomplete="off" placeholder="Sonucu yaz"></div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="checkBtn">✓ Cevabımı kontrol et</button>
+      <button class="btn warning" id="hintBtn">💡 İpucu</button>
+      <button class="btn secondary" id="clearBtn">Temizle</button>
+    </div>
+    <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+  </section>
+  <div class="nav">
+    <button class="btn secondary" id="prevBtn">⬅️ Önceki</button>
+    <button class="btn warning" id="skipBtn">⏭️ Soruyu geç</button>
+    <button class="btn primary" id="nextBtn" disabled>Sonraki ➡️</button>
+  </div>
+</main>
+<aside class="panel sidebar">
+  <h3>🧠 Strateji rehberi</h3>
+  <div id="strategyGuide"></div>
+  <div class="tip"><strong>Unutma!</strong><br>Tek bir doğru yol olmak zorunda değil. Sayılara bak, sana kolay gelen ve doğru sonuca ulaştıran yöntemi seç. Zihinden işlemde adımları açıklayabilmek de önemlidir.</div>
+</aside>
+</div>
+<section class="panel final" id="finalPanel">
+  <div class="kicker">Etkinlik tamamlandı</div><h2>🏆 Toplama Ustası Raporu</h2>
+  <p>Sonuçların yaptığın işlemlerden hesaplandı. Yanlış veya geçtiğin görevleri inceleyebilir, sonra istersen yeniden başlayabilirsin.</p>
+  <div class="result-grid" id="resultGrid"></div>
+  <h3>Yanlış / Geçilen Görevleri İncele</h3><div class="review-list" id="reviewList"></div>
+  <div class="actions"><button class="btn primary" id="replayBtn">↻ Yeniden başla</button><button class="btn secondary" id="backReviewBtn">İnceleme görevine dön</button></div>
+</section>
+</div>
+<script>
+(function(){
+"use strict";
+const strategies=[
+{id:1,name:"Onlukları ekleme",short:"Onlukları ekleme",color:"s1",desc:"Eklenen sayı 10’un katıysa o kadar onluk ekle.",how:"Eklenen onluk sayısını bul. Örneğin 50 = 5 onluk; sayıya beş onluk ekle.",hint:"30 = 3 onluk, 70 = 7 onluk."},
+{id:2,name:"Yüzlükleri ekleme",short:"Yüzlükleri ekleme",color:"s2",desc:"Eklenen sayı 100’ün katıysa o kadar yüzlük ekle.",how:"Eklenen yüzlük sayısını belirle. Örneğin 300, 3 yüzlüktür; sayıya 3 yüzlük ekle.",hint:"200 = 2 yüzlük, 400 = 4 yüzlük."},
+{id:3,name:"Parçalara ayırma",short:"Parçalara ayırma",color:"s3",desc:"Eklenen sayıyı yüzlük, onluk ve birliklerine ayır.",how:"Sayıyı parçalara ayır, her parçayı sırayla ekle. Örneğin 248 = 200 + 40 + 8.",hint:"Önce yüzlükleri, sonra onlukları, en son birlikleri ekleyebilirsin."},
+{id:4,name:"Dengeli toplama",short:"Dengeli toplama",color:"s4",desc:"Bir toplananı artırırken diğerini aynı miktarda azalt; toplam değişmez.",how:"Toplananlardan birini yuvarlak sayıya tamamla, diğerinden aynı miktarı çıkar. Örneğin 398 + 27 = 400 + 25.",hint:"Bir toplanana +2 eklersen diğerinden 2 çıkar; toplam değişmez."},
+{id:5,name:"Onar ileri sayma",short:"Onar ileri sayma",color:"s5",desc:"Onlukları eklerken 10’ar 10’ar ileri say.",how:"Her dokunuşta 10 ekle. İstediğin kadar ilerleyebilir, sonra sonucu yazabilirsin.",hint:"70 eklemek, 7 kez 10 ileri gitmek demektir."},
+{id:6,name:"Yüzer ileri sayma",short:"Yüzer ileri sayma",color:"s6",desc:"Yüzlükleri eklerken 100’er 100’er ileri say.",how:"Her dokunuşta 100 ekle. İstediğin kadar ilerleyebilir, sonra sonucu yazabilirsin.",hint:"400 eklemek, 4 kez 100 ileri gitmek demektir."}
+];
+const rawTasks=[
+{id:"t01",stage:1,expr:"738 + 50",a:738,b:50,answer:788,recommended:[1,5],prompt:"738 sayısına 50 ekle.",hint:"50 = 5 onluk. 738’den başlayıp beş onluk ileri git.",explain:"738’e 5 onluk eklersek 788 olur."},
+{id:"t02",stage:1,expr:"642 + 200",a:642,b:200,answer:842,recommended:[2,6],prompt:"642 sayısına 200 ekle.",hint:"200 = 2 yüzlük. 642’ye iki yüzlük ekle.",explain:"642 + 200 = 842."},
+{id:"t03",stage:1,expr:"487 + 30",a:487,b:30,answer:517,recommended:[1,5],prompt:"487 sayısına 30 ekle.",hint:"30 = 3 onluk. Üç kez 10 ileri git.",explain:"487’ye 3 onluk eklersek 517 olur."},
+{id:"t04",stage:2,expr:"560 + 300",a:560,b:300,answer:860,recommended:[2,6],prompt:"560 sayısına 300 ekle.",hint:"560’a 100, sonra 100, sonra 100 ekle.",explain:"560 + 300 = 560 + 100 + 100 + 100 = 860."},
+{id:"t05",stage:2,expr:"425 + 80",a:425,b:80,answer:505,recommended:[1,3,5],prompt:"425 sayısına 80 ekle.",hint:"80 = 8 onluk. 425’ten başlayıp sekiz onluk ileri git.",explain:"425 + 80 = 505."},
+{id:"t06",stage:2,expr:"710 + 400",a:710,b:400,answer:1110,recommended:[2,6],prompt:"710 sayısına 400 ekle.",hint:"710’a dört yüzlük ekle.",explain:"710 + 400 = 1110."},
+{id:"t07",stage:2,expr:"321 + 40",a:321,b:40,answer:361,recommended:[1,5],prompt:"321 sayısına 40 ekle.",hint:"40 = 4 onluk. Dört kez 10 ekle.",explain:"321 + 40 = 361."},
+{id:"t08",stage:3,expr:"900 + 248",a:900,b:248,answer:1148,recommended:[3],prompt:"900 sayısına 248 ekle.",hint:"248 = 200 + 40 + 8. Parçaları sırayla ekle.",explain:"900 + 200 = 1100; 1100 + 40 = 1140; 1140 + 8 = 1148."},
+{id:"t09",stage:3,expr:"536 + 200",a:536,b:200,answer:736,recommended:[2,6],prompt:"536 sayısına 200 ekle.",hint:"536’ya iki yüzlük ekle.",explain:"536 + 200 = 736."},
+{id:"t10",stage:3,expr:"398 + 27",a:398,b:27,answer:425,recommended:[4,3],prompt:"398 + 27 işlemini dengeli toplama ile kolaylaştır.",hint:"398’i 400 yapmak için 2 ekle. Toplam değişmesin diye 27’den 2 çıkar.",explain:"398 + 27 = 400 + 25 = 425. Bir toplanana eklenen miktar diğerinden çıkarılınca toplam değişmez."},
+{id:"t11",stage:3,expr:"800 + 400",a:800,b:400,answer:1200,recommended:[2,6],prompt:"800 sayısına 400 ekle.",hint:"800’den başlayıp dört kez 100 ileri git.",explain:"800 + 400 = 1200."},
+{id:"t12",stage:3,expr:"940 + 300",a:940,b:300,answer:1240,recommended:[2,6],prompt:"940 sayısına 300 ekle.",hint:"940’a üç yüzlük ekle.",explain:"940 + 300 = 1240."},
+{id:"t13",stage:3,expr:"420 + 60",a:420,b:60,answer:480,recommended:[5,1],prompt:"420 sayısına 60 ekle. Onar ileri sayma stratejisini deneyebilirsin.",hint:"60, altı onluktur. Her dokunuşta 10 ekle; istersen hedefi geçecek kadar da sayabilirsin.",explain:"420’den başlayıp altı kez 10 ileri sayınca 480 olur."},
+{id:"t14",stage:3,expr:"543 + 235",a:543,b:235,answer:778,recommended:[3],prompt:"543 + 235 işlemini parçalara ayırma stratejisiyle çöz. Aynı basamaktaki parçaları sırayla topla.",hint:"543 = 500 + 40 + 3; 235 = 200 + 30 + 5. Yüzlükleri, onlukları ve birlikleri ayrı ayrı topla.",explain:"500 + 200 = 700; 40 + 30 = 70; 3 + 5 = 8. 700 + 70 + 8 = 778."},
+{id:"t15",stage:3,expr:"2756 + 1658",a:2756,b:1658,answer:4414,recommended:[3],prompt:"2756 + 1658 işlemini basamak değerlerine ayırarak çöz.",hint:"2756 = 2000 + 700 + 50 + 6; 1658 = 1000 + 600 + 50 + 8. Aynı basamaktaki parçaları topla.",explain:"2000 + 1000 = 3000; 700 + 600 = 1300; 50 + 50 = 100; 6 + 8 = 14. 3000 + 1300 + 100 + 14 = 4414."}
+];
+const tasks=rawTasks.map(t=>({...t,status:"pending",selected:null,answerText:"",notes:"",attempts:0,firstTry:false,hintUsed:false,wrongFirst:"",lastResult:"",rewardGranted:false,locked:false,stepCurrent:t.a,stepHistory:[],balanced:null,partsDone:[],partInputs:[],partFinalText:""}));
+const state={currentIndex:0,score:0,energy:3,wrongCount:0,skippedCount:0,hintCount:0,tasks,history:[],startedAt:Date.now(),finalReviewIndex:null};
+const $=id=>document.getElementById(id);
+function normalizeNumber(v){return String(v??"").trim().replace(/[٬,\s]/g,"").replace(/[−–]/g,"-");}
+function current(){return state.tasks[state.currentIndex]}
+function showFeedback(msg,type){const el=$("feedback");el.textContent=msg;el.className="feedback show "+type}
+function clearFeedback(){const el=$("feedback");el.textContent="";el.className="feedback"}
+function renderGuide(){
+$("strategyGuide").innerHTML=strategies.map(s=>`<div class="side-strategy ${s.color}"><span class="num">${s.id}</span><div><strong>${s.name}</strong>${s.desc}</div></div>`).join("");
+}
+function render(){
+const t=current();
+$("taskPanel").classList.remove("hidden");$("finalPanel").classList.remove("show");
+$("statTask").textContent=(state.currentIndex+1)+" / "+state.tasks.length;
+$("statScore").textContent=state.score;$("statEnergy").textContent="❤️".repeat(state.energy)+"♡".repeat(3-state.energy);$("statHints").textContent=state.hintCount;
+$("progressFill").style.width=(state.tasks.filter(x=>x.status!=="pending").length/state.tasks.length*100)+"%";
+$("stageName").textContent=t.stage===1?"1. Aşama · Stratejiyi tanı":t.stage===2?"2. Aşama · Uygula ve hızlan":"3. Aşama · Ustalık ve transfer";
+$("taskTitle").textContent="Görev "+(state.currentIndex+1);
+$("operation").textContent=t.expr;
+$("taskStatus").textContent=t.status==="success"?"✓ Tamamlandı":t.status==="skipped"?"Geçildi":t.attempts?"Yeniden dene":"Yeni görev";
+$("strategyGrid").innerHTML=strategies.map(s=>`<button type="button" class="strategy ${s.color}" data-strategy="${s.id}" aria-pressed="${t.selected===s.id}"><span class="num">${s.id}</span><span>${s.name}</span></button>`).join("");
+$("strategyGrid").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>selectStrategy(Number(b.dataset.strategy))));
+$("workNotes").value=t.notes;$("answerInput").value=t.answerText;
+$("prevBtn").disabled=state.currentIndex===0;
+$("nextBtn").disabled=!(t.status==="success"||t.status==="skipped")||state.currentIndex===state.tasks.length-1;
+$("skipBtn").disabled=t.status==="success";
+$("checkBtn").disabled=t.status==="success";
+$("hintBtn").disabled=t.hintUsed||t.status==="success";
+if(t.selected) renderWork(t); else {$("workTitle").textContent="Önce stratejini seç!";$("workHelp").textContent="Yukarıdaki stratejilerden birine dokun. Ardından toplama adımlarını uygula.";$("stepsArea").innerHTML="";}
+if(t.lastResult){showFeedback(t.lastResult,t.status==="success"?"good":t.status==="skipped"?"neutral":t.attempts?"bad":"neutral")}else clearFeedback();
+}
+function selectStrategy(id){const t=current();if(t.status==="success")return;if(t.selected!==id){t.stepCurrent=t.a;t.stepHistory=[];t.balanced=null;}t.selected=id;render();$("workNotes").focus()}
+function renderWork(t){
+const s=strategies.find(x=>x.id===t.selected);
+$("workTitle").textContent="Seçtiğin strateji: "+s.name;
+$("workHelp").textContent=s.how;
+let steps=[];
+if(t.selected===1)steps=[`<strong>1.</strong> ${t.b} kaç onluk eder?`,`<strong>2.</strong> Her dokunuşta 10 ekleyerek ilerle; istediğin zaman durabilirsin.`];
+if(t.selected===2)steps=[`<strong>1.</strong> ${t.b} kaç yüzlük eder?`,`<strong>2.</strong> Her dokunuşta 100 ekleyerek ilerle; istediğin zaman durabilirsin.`];
+if(t.selected===3)steps=[`<strong>1.</strong> ${t.b} sayısını yüzlük, onluk ve birliklerine ayır.`,`<strong>2.</strong> Aşağıdaki düğmelerle parçaları sırayla ekle.`];
+if(t.selected===4)steps=[`<strong>1.</strong> İlk toplananı kolay bir sayıya tamamlamak için gereken miktarı düşün.`,`<strong>2.</strong> Aynı miktarı diğer toplanandan çıkar. Toplam değişmez.`];
+if(t.selected===5)steps=[`<strong>1.</strong> ${t.b/10} kez 10’ar ileri saymayı hedefleyebilirsin.`,`<strong>2.</strong> Her dokunuşta 10 eklenir. Sayma doğru sonuca gelince kendiliğinden durmaz; istersen devam edebilirsin.`];
+if(t.selected===6)steps=[`<strong>1.</strong> ${t.b/100} kez 100’er ileri saymayı hedefleyebilirsin.`,`<strong>2.</strong> Her dokunuşta 100 eklenir. Sayma doğru sonuca gelince kendiliğinden durmaz; istersen devam edebilirsin.`];
+$("stepsArea").innerHTML=steps.map(x=>`<div class="step">${x}</div>`).join("");
+const area=$("interactiveArea");
+if(t.selected===5||t.selected===6||t.selected===1||t.selected===2){
+ const unit=(t.selected===5||t.selected===1)?10:100;
+ if(!Array.isArray(t.stepHistory))t.stepHistory=[];
+ area.innerHTML=`<h4>${t.selected===5||t.selected===6?'İleri sayma alanı':'Adım adım toplama alanı'}</h4><p class="practice-note">Başlangıç sayısı: ${t.a}. Her düğmeye bastığında ${unit} eklenir. İstediğin kadar ilerle; doğru sonuca ulaşınca durmak zorunda değilsin.</p><div class="practice-number">Şu an: <span id="stepCurrentValue">${t.stepCurrent}</span></div><div class="count-track" id="countTrack">${t.stepHistory.length?t.stepHistory.map((v,i)=>`<span class="count-chip">${i+1}. ${v}</span>`).join(""):'<span class="count-chip">Henüz adım yok</span>'}</div><div class="practice-controls"><button type="button" class="btn primary" id="stepBtn">+ ${unit} ${unit===10?'(10’ar ileri say)':'(100’er ileri say)'}</button><button type="button" class="btn secondary" id="undoStepBtn">↶ Bir adım geri</button><button type="button" class="btn secondary" id="resetStepBtn">Baştan başla</button></div>`;
+ $("stepBtn").addEventListener("click",()=>{t.stepCurrent+=unit;t.stepHistory.push(t.stepCurrent);renderWork(t)});
+ $("undoStepBtn").addEventListener("click",()=>{if(t.stepHistory.length){t.stepHistory.pop();t.stepCurrent=t.stepHistory.length?t.stepHistory[t.stepHistory.length-1]:t.a;renderWork(t)}});
+ $("resetStepBtn").addEventListener("click",()=>{t.stepCurrent=t.a;t.stepHistory=[];renderWork(t)});
+}else if(t.selected===3){
+ // Her iki toplananı basamak değerlerine ayır; aynı basamaktaki parçaları sırayla toplat.
+ const placeValues=[1000,100,10,1];
+ const placeNames={1000:"Binlikler",100:"Yüzlükler",10:"Onluklar",1:"Birlikler"};
+ const partsA=placeValues.map(v=>Math.floor(t.a/v)%10*v);
+ const partsB=placeValues.map(v=>Math.floor(t.b/v)%10*v);
+ const rows=placeValues.map((v,i)=>({v,i,a:partsA[i],b:partsB[i]})).filter(r=>r.a!==0||r.b!==0);
+ if(!Array.isArray(t.partsDone))t.partsDone=[];
+ if(!Array.isArray(t.partInputs))t.partInputs=[];
+ const partials=rows.map(r=>r.a+r.b);
+ const allDone=rows.every((r,i)=>t.partsDone[i]===true);
+ const totalFromParts=partials.reduce((sum,n)=>sum+n,0);
+ area.innerHTML=`<h4>Sayıları parçala, aynı basamakları topla</h4>
+ <p class="practice-note">Her iki sayıyı basamak değerlerine ayır. Önce aynı basamaktaki parçaları topla; her satırın sonucunu kendin yazıp kontrol et. Bütün satırlar bitince ara sonuçları birleştirerek toplamı bul.</p>
+ <div class="step"><strong>${t.a}</strong> = ${partsA.filter((n,i)=>n!==0).join(" + ")}<br><strong>${t.b}</strong> = ${partsB.filter((n,i)=>n!==0).join(" + ")}</div>
+ <div class="decomp-rows">${rows.map((r,i)=>`<div class="decomp-row"><div class="decomp-place">${placeNames[r.v]}</div><div class="decomp-equation"><strong>${r.a} + ${r.b} =</strong> <input inputmode="numeric" aria-label="${placeNames[r.v]} toplamı" id="partInput${i}" value="${t.partInputs[i]||''}" ${t.partsDone[i]?'disabled':''} placeholder="Sonuç"><button type="button" class="btn ${t.partsDone[i]?'green':'primary'}" data-check-part="${i}" ${t.partsDone[i]?'disabled':''}>${t.partsDone[i]?'✓ Doğru':'Kontrol et'}</button></div><div class="part-feedback" id="partFeedback${i}" role="status">${t.partsDone[i]?'✓ Bu basamağı doğru topladın.':''}</div></div>`).join("")}</div>
+ <div class="completion"><strong>Ara sonuçlar</strong><p>${rows.map((r,i)=>t.partsDone[i]?partials[i]:"□").join(" + ")}</p>
+ ${allDone?`<div class="step">Şimdi ara sonuçları birleştir: <strong>${partials.join(" + ")}</strong></div><label for="partFinalInput">Son toplamı yaz:</label><input id="partFinalInput" inputmode="numeric" value="${t.partFinalText||''}" placeholder="Toplam kaç?" aria-label="Ara sonuçları birleştirerek toplamı yaz"><div class="btnrow"><button type="button" class="btn primary" id="checkPartFinal">Toplamı kontrol et</button></div><div id="partFinalFeedback" class="part-feedback" role="status"></div>`:'<p class="practice-note">Önce her basamak satırını doğru tamamla. Yanlış cevapta yeniden deneyebilirsin; doğru cevap hemen gösterilmez.</p>'}
+ </div>`;
+ area.querySelectorAll("[data-check-part]").forEach(b=>b.addEventListener("click",()=>{
+   const i=Number(b.dataset.checkPart),input=$("partInput"+i),value=String(input.value).trim().replace(/[,\s]/g,"");
+   t.partInputs[i]=input.value;
+   if(value!==""&&Number(value)===partials[i]){t.partsDone[i]=true;renderWork(t);const msg=$("partFeedback"+i);if(msg)msg.textContent="✓ Doğru! Bu basamağı topladın.";}
+   else {const msg=$("partFeedback"+i);msg.textContent="Henüz doğru değil. Aynı basamaktaki parçaları yeniden topla ve tekrar dene.";msg.className="part-feedback bad-part";}
+ }));
+ if(allDone){
+   const fin=$("partFinalInput");
+   fin.addEventListener("input",()=>{t.partFinalText=fin.value});
+   $("checkPartFinal").addEventListener("click",()=>{
+     t.partFinalText=fin.value;
+     if(String(fin.value).trim()!==""&&Number(String(fin.value).trim().replace(/[,\s]/g,""))===t.answer){
+       $("partFinalFeedback").textContent="✓ Ara sonuçları doğru birleştirdin. Şimdi genel cevap alanına da toplamı yazabilirsin.";
+       $("partFinalFeedback").className="part-feedback good-part";
+       $("answerInput").value=fin.value;t.answerText=fin.value;
+     }else{
+       $("partFinalFeedback").textContent="Ara sonuçları yeniden birleştir. Basamak toplamlarının hepsini kullanmayı unutma.";
+       $("partFinalFeedback").className="part-feedback bad-part";
+     }
+   });
+ }
+}else if(t.selected===4){
+ const delta=(100-(t.a%100))%100 || 100;
+ area.innerHTML=`<h4>Dengeli toplama alanı</h4><p class="practice-note">İlk toplananı bir sonraki yüzlüğe tamamla. Aynı miktarı ikinci toplanandan çıkar; toplam değişmez.</p><div class="practice-number">${t.a} + ${t.b}</div><div class="step">Kolaylaştırılmış işlem: <strong>${t.a+delta} + ${t.b-delta}</strong></div><div class="practice-controls"><button type="button" class="btn primary" id="applyBalanceBtn">İşlemi kolaylaştır</button><button type="button" class="btn secondary" id="resetStepBtn">Sıfırla</button></div><div id="balanceResult" class="practice-note">${t.balanced?`Uygulanan işlem: ${t.a+delta} + ${t.b-delta}. Şimdi sonucu zihinden bul.`:'Önce düğmeye basarak işlemi dönüştür.'}</div>`;
+ $("applyBalanceBtn").addEventListener("click",()=>{t.balanced=true;$("balanceResult").textContent=`Yeni işlem: ${t.a+delta} + ${t.b-delta}. Birinci toplanana +${delta}, ikinci toplanana −${delta} uygulandı. Şimdi sonucu zihinden bul ve aşağıya yaz.`;});
+ $("resetStepBtn").addEventListener("click",()=>{t.balanced=null;renderWork(t)});
+}
+}
+function check(){
+const t=current();if(t.status==="success"||!t.selected)return;
+t.answerText=$("answerInput").value;t.notes=$("workNotes").value.trim();t.attempts++;
+const ans=normalizeNumber(t.answerText);
+if(ans!==""&&Number(ans)===t.answer){
+t.status="success";t.lastResult="✓ Doğru! "+t.explain;
+if(!t.rewardGranted){state.score+=t.attempts===1&&!t.hintUsed?10:6;t.rewardGranted=true;t.locked=true;if(t.attempts===1&&!t.hintUsed)t.firstTry=true;}
+state.history.push({id:t.id,result:"success",answer:t.answerText,attempts:t.attempts});
+render();
+if(state.tasks.every(x=>x.status!=="pending"))setTimeout(showFinal,120);
+}else{
+if(!t.wrongFirst)t.wrongFirst=t.answerText||"(cevap yazılmadı)";
+state.wrongCount++;state.energy=Math.max(0,state.energy-1);
+const s=strategies.find(x=>x.id===t.selected);
+t.lastResult="✗ Henüz doğru değil. "+(t.selected===t.recommended[0]?"Seçtiğin stratejiyi adım adım tekrar kontrol et. ":"Bu strateji kullanılabilir; işlem adımlarını yeniden gözden geçir. ")+"İpucu: "+s.hint+" Sonucu hemen göstermiyoruz; aynı görevde yeniden dene.";
+state.history.push({id:t.id,result:"wrong",answer:t.answerText,attempts:t.attempts});
+render();
+}
+}
+function hint(){const t=current();if(t.hintUsed||t.status==="success")return;t.hintUsed=true;state.hintCount++;t.lastResult="💡 İpucu: "+t.hint;render();showFeedback(t.lastResult,"neutral")}
+function clearWork(){const t=current();if(t.status==="success")return;t.answerText="";t.notes="";$("answerInput").value="";$("workNotes").value="";clearFeedback()}
+function skip(){const t=current();if(t.status==="success")return;t.status="skipped";t.lastResult="Bu görev geçildi. İstersen sonuç raporundan geri dönüp çözebilirsin.";state.skippedCount++;state.history.push({id:t.id,result:"skipped"});if(state.currentIndex<state.tasks.length-1){state.currentIndex++;render()}else showFinal()}
+function navigate(index){if(index<0||index>=state.tasks.length)return;const t=current();if(index>state.currentIndex&&t.status!=="success"&&t.status!=="skipped")return;state.currentIndex=index;render()}
+function showFinal(){
+$("taskPanel").classList.add("hidden");$("finalPanel").classList.add("show");$("progressFill").style.width="100%";
+const done=state.tasks.filter(t=>t.status==="success").length;
+const first=state.tasks.filter(t=>t.firstTry).length;
+const wrong=state.tasks.reduce((n,t)=>n+Math.max(0,t.attempts-(t.status==="success"&&t.firstTry?1:0)-(t.status==="success"&&!t.firstTry?1:0)),0);
+const elapsed=Math.max(0,Math.round((Date.now()-state.startedAt)/1000));
+const values=[["Toplam görev",state.tasks.length],["Tamamlanan",done],["İlk denemede doğru",first],["Yanlış deneme",state.wrongCount],["Geçilen",state.tasks.filter(t=>t.status==="skipped").length],["İpucu",state.hintCount],["Puan",state.score],["Süre",Math.floor(elapsed/60)+" dk "+elapsed%60+" sn"]];
+$("resultGrid").innerHTML=values.map(([a,b])=>`<div class="result"><span>${a}</span><strong>${b}</strong></div>`).join("");
+const needs=state.tasks.filter(t=>t.status!=="success"||t.attempts>1);
+$("reviewList").innerHTML=needs.length?needs.map(t=>`<div class="review-item"><strong>${t.expr} · ${t.status==="skipped"?"Geçildi":"Tekrar incelenebilir"}</strong><div>Öğrenci cevabı: ${t.answerText?escapeHtml(t.answerText):"Cevap verilmedi"}</div><div>Doğru sonuç: ${t.answer}</div><div>Neden doğru? ${escapeHtml(t.explain)}</div>${t.wrongFirst?`<div>İlk yanlış cevap: ${escapeHtml(t.wrongFirst)}</div>`:""}<button class="btn secondary" data-review="${t.id}">Bu göreve dön</button></div>`).join(""):"Tüm görevleri ilk denemede doğru tamamladın. Harika iş!";
+$("reviewList").querySelectorAll("[data-review]").forEach(b=>b.addEventListener("click",()=>{const idx=state.tasks.findIndex(t=>t.id===b.dataset.review);state.currentIndex=idx;$("finalPanel").classList.remove("show");$("taskPanel").classList.remove("hidden");render()}));
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function replay(){location.reload()}
+$("checkBtn").addEventListener("click",check);$("hintBtn").addEventListener("click",hint);$("clearBtn").addEventListener("click",clearWork);
+$("prevBtn").addEventListener("click",()=>navigate(state.currentIndex-1));$("nextBtn").addEventListener("click",()=>navigate(state.currentIndex+1));$("skipBtn").addEventListener("click",skip);
+$("replayBtn").addEventListener("click",replay);$("backReviewBtn").addEventListener("click",()=>{const idx=state.tasks.findIndex(t=>t.status!=="success");if(idx>=0){state.currentIndex=idx;$("finalPanel").classList.remove("show");$("taskPanel").classList.remove("hidden");render()}});
+$("answerInput").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();check()}});
+renderGuide();render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Çıkarma Dedektifleri | 4. Sınıf Matematik</title>
+<style>
+:root{--ink:#18243a;--muted:#526176;--paper:#fffdf7;--blue:#2457a7;--blue2:#e9f1ff;--orange:#f3a43b;--green:#176b45;--greenbg:#e6f7ed;--red:#a52b2b;--redbg:#fff0ed;--line:#d7deea;--purple:#6a4db4}
+*{box-sizing:border-box}body{margin:0;background:#eef3fa;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}
+.app{max-width:1050px;margin:auto;padding:18px}.hero{background:linear-gradient(120deg,#173d77,#2d68b8);color:#fff;border-radius:22px;padding:22px;box-shadow:0 8px 24px #173d7720}
+.kicker{font-size:.82rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#ffe0a2}.hero h1{margin:4px 0;font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.12}.hero p{margin:8px 0 0;color:#f3f7ff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px}.stat small{display:block;color:var(--muted);font-weight:700}.stat strong{font-size:1.25rem}
+.progress{height:10px;background:#d9e3f3;border-radius:99px;overflow:hidden;margin:14px 0}.progress>div{height:100%;background:var(--orange);width:0%;transition:width .2s}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:clamp(16px,3vw,28px);box-shadow:0 8px 24px #22324a0b}.stage{display:inline-block;background:#fff0d6;color:#704500;border-radius:999px;padding:5px 10px;font-size:.82rem;font-weight:800}.tasktop{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.tasktitle{color:var(--muted);font-weight:800}.prompt{font-size:clamp(1.15rem,2.6vw,1.5rem);font-weight:800;margin:18px 0 8px}.prompt-copy{display:block}.column-op{display:inline-flex;flex-direction:column;align-items:stretch;vertical-align:middle;margin:12px 0 4px;padding:10px 16px;background:#f0f5ff;border:2px solid #c5d7f5;border-radius:14px;color:#18243a;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:clamp(1.2rem,3vw,1.6rem);font-weight:800;line-height:1.35;min-width:150px}.column-op .num{display:block;text-align:right;white-space:pre;letter-spacing:.08em}.column-op .bottom{border-bottom:2px solid #2457a7;padding-bottom:5px}.instruction{color:var(--muted);margin:0 0 16px}
+.workarea{min-height:150px}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.option,.tile,.target{border:2px solid #b9c7dc;background:#fff;color:var(--ink);border-radius:13px;padding:13px 15px;text-align:left;font-weight:750;min-height:52px}.option:hover,.tile:hover,.target:hover{border-color:var(--blue);background:var(--blue2)}.option.selected,.tile.selected,.target.selected{border-color:var(--blue);background:#dceaff;box-shadow:inset 0 0 0 1px var(--blue)}.option:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f3a43b;outline-offset:2px}
+.answerrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.answerrow input{width:min(100%,300px);min-height:52px;border:2px solid #9aabc4;border-radius:12px;padding:10px 14px;background:#fff;color:var(--ink);font-size:1.15rem}
+.primary,.secondary,.danger{border:0;border-radius:12px;padding:12px 16px;min-height:48px;font-weight:800}.primary{background:var(--blue);color:#fff}.primary:hover{background:#173f82}.secondary{background:#e8edf5;color:#1b2b44}.secondary:hover{background:#d7e1ef}.danger{background:#fff0ed;color:#8e2020}.primary:disabled,.secondary:disabled{background:#e5e8ee;color:#596579;cursor:not-allowed;opacity:1}
+.feedback{margin-top:14px;border-radius:13px;padding:12px 14px;font-weight:700}.feedback.good{background:var(--greenbg);color:#145735;border:1px solid #a6d8b8}.feedback.bad{background:var(--redbg);color:#8a2020;border:1px solid #edb7ad}.feedback.info{background:#edf3ff;color:#203f75;border:1px solid #c4d5f4}
+.hintbox{margin-top:10px;background:#fff5d9;color:#694b00;border:1px solid #ead18a;border-radius:12px;padding:12px}
+.nav{display:flex;gap:9px;justify-content:space-between;flex-wrap:wrap;margin-top:18px}.nav .group{display:flex;gap:9px;flex-wrap:wrap}.subtle{font-size:.9rem;color:var(--muted)}
+.matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.matchcol{display:grid;gap:8px}.matchcol h3{margin:0 0 4px;font-size:.95rem;color:var(--muted)}.matchitem{border:2px solid #c2cde0;background:#fff;color:var(--ink);border-radius:12px;padding:12px;text-align:center;min-height:48px;font-weight:750}.matchitem.picked{border-color:var(--purple);background:#f0eaff}.matchitem.done{border-color:#62a87d;background:var(--greenbg);color:#145735}
+.sortlist,.classgrid{display:grid;gap:9px}.sortrow{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff}.sortrow span{flex:1;font-weight:750}.sortrow button{border:1px solid #c5d0df;border-radius:9px;background:#edf2f9;color:var(--ink);min-width:42px;min-height:40px;font-weight:900}
+.classgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.classcard{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}.classcard h3{margin:0 0 8px;font-size:1rem}.classcard button{width:100%;margin:4px 0;text-align:left}
+.reviewitem{border-top:1px solid var(--line);padding:14px 0}.reviewitem h3{font-size:1rem;margin:0 0 6px}.reviewitem p{margin:4px 0}
+.hidden{display:none!important}.finalscore{font-size:2rem;font-weight:900;color:var(--blue)}.finalgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}.finalgrid .stat{padding:14px}
+@media(max-width:620px){.app{padding:10px}.stats{grid-template-columns:repeat(2,1fr)}.options,.matchgrid,.classgrid{grid-template-columns:1fr}.nav{display:grid}.nav .group{display:grid;grid-template-columns:1fr 1fr}.nav button{width:100%}.finalgrid{grid-template-columns:repeat(2,1fr)}.hero{padding:18px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="hero">
+<div class="kicker">4. Sınıf • Matematik • M.4.1.3.1</div>
+<h1>🕵️ Çıkarma Dedektifleri</h1>
+<p>Basamakları dikkatle incele, gerektiğinde onluk/yüzlük/binlik boz ve işlemin izini sür. Her doğru cevap bir ipucu daha!</p>
+</header>
+<div class="stats" aria-label="Etkinlik durumu">
+<div class="stat"><small>Görev</small><strong id="statTask">1 / 16</strong></div>
+<div class="stat"><small>Puan</small><strong id="statScore">0</strong></div>
+<div class="stat"><small>Enerji</small><strong id="statEnergy">100</strong></div>
+<div class="stat"><small>Yanlış deneme</small><strong id="statWrong">0</strong></div>
+</div>
+<div class="progress" aria-label="İlerleme"><div id="progressFill"></div></div>
+<main id="game" class="card">
+<div class="tasktop"><span class="stage" id="stageBadge">1. Aşama • Isınma</span><span class="tasktitle" id="taskLabel">Görev 1</span></div>
+<div class="prompt" id="prompt"></div><p class="instruction" id="instruction"></p>
+<div class="workarea" id="workarea"></div>
+<div id="feedback" aria-live="polite"></div><div id="hintBox" class="hintbox hidden"></div>
+<div class="nav">
+ <div class="group"><button id="prevBtn" class="secondary">⬅️ Önceki Soru</button><button id="nextBtn" class="secondary" disabled>➡️ Sonraki Soru</button></div>
+ <div class="group"><button id="hintBtn" class="secondary">💡 İpucu</button><button id="skipBtn" class="danger">⏭️ Soruyu Geç</button></div>
+</div>
+<p class="subtle">Yanlış cevap görevi bitirmez. Açıklamayı incele ve aynı soruda yeniden dene.</p>
+</main>
+<section id="final" class="card hidden"></section>
+</div>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const normalize=s=>String(s??"").toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i").replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim();
+const tasks=[
+{id:"t01",stage:0,type:"mcq",prompt:"4 682 − 2 341 işleminin sonucu kaçtır?",instruction:"Basamakları alt alta düşün ve çıkar.",data:{options:["2 341","2 241","2 441","3 341"]},correctAnswer:"2 341",explanation:"Birler, onlar, yüzler ve binler basamağını sırayla çıkarırız.",hint:"Her basamakta üstteki rakamdan alttakini çıkar."},
+{id:"t02",stage:0,type:"numeric",prompt:"7 856 − 3 214 = ?",instruction:"Sonucu rakamlarla yaz. Boşluk bırakmadan da yazabilirsin.",data:{},correctAnswer:4642,acceptedAnswers:["4 642","4642"],explanation:"7 856 − 3 000 = 4 856; ardından 214 çıkarınca 4 642 kalır.",hint:"Önce binlikleri, sonra kalan yüzlük-onluk-birlikleri çıkar."},
+{id:"t03",stage:0,type:"tf",prompt:"5 403 − 2 101 işleminin sonucu 3 302'dir.",instruction:"İfadenin doğru mu yanlış mı olduğunu seç.",data:{options:["Doğru","Yanlış"]},correctAnswer:"Doğru",explanation:"5 403 − 2 101 = 3 302. Basamaklar doğru çıkarılmıştır.",hint:"Binlikleri ve yüzlükleri ayrı ayrı kontrol et."},
+{id:"t04",stage:0,type:"mcq",prompt:"6 000 − 2 475 işleminde neden onluk/yüzlük bozma gerekir?",instruction:"İşlemin yapısını düşün.",data:{options:["Üst sayıda bazı basamaklar sıfır olduğu için","Çıkarma işleminde her zaman gerekir","Sonuç dört basamaklı olacağı için","Alt sayı daha küçük olduğu için"]},correctAnswer:"Üst sayıda bazı basamaklar sıfır olduğu için",explanation:"Birler ve onlar basamağında 0 bulunduğundan uygun basamaklardan bozma yaparız.",hint:"Birler basamağında 0 − 5 işlemi yapılabilir mi?"},
+{id:"t05",stage:1,type:"numeric",prompt:"5 243 − 1 876 = ?",instruction:"Basamak bozmayı düşünerek işlemi çöz.",data:{},correctAnswer:3367,acceptedAnswers:["3 367","3367"],explanation:"5 243 − 1 876 = 3 367. Bozma gerektiğinde komşu basamaktan bir birim alınır.",hint:"Birler basamağında 3 − 6 olmaz; önce onlar basamağından boz."},
+{id:"t06",stage:1,type:"mcq",prompt:"4 002 − 1 568 işleminin sonucu hangisidir?",instruction:"Sıfır bulunan basamaklarda bozma yapmayı unutma.",data:{options:["2 434","2 534","3 434","2 444"]},correctAnswer:"2 434",explanation:"4 002 − 1 568 = 2 434. Binlikten bozma yapılarak yüzlük, onluk ve birliklere değer aktarılır.",hint:"4 002 sayısında 0 olan basamaklara ulaşmak için binlikten bozma gerekir."},
+{id:"t07",stage:1,type:"numeric",prompt:"9 000 − 4 386 = ?",instruction:"İşlem sonucunu yaz.",data:{},correctAnswer:4614,acceptedAnswers:["4 614","4614"],explanation:"9 000 − 4 000 = 5 000; 5 000 − 386 = 4 614.",hint:"9 000'den önce 4 000 çıkar, sonra 386 çıkar."},
+{id:"t08",stage:1,type:"order",prompt:"Çıkarma işlemini yaparken izlenecek adımları sırala.",instruction:"Yukarı/aşağı düğmeleriyle adımları doğru sıraya getir.",data:{items:[{id:"a",text:"Birler basamağından başla."},{id:"b",text:"Gerekirse komşu basamaktan boz."},{id:"c",text:"Her basamaktaki çıkarma işlemini yap."},{id:"d",text:"Sonucu ve basamakları kontrol et."}],correct:["a","b","c","d"]},correctAnswer:["a","b","c","d"],explanation:"İşleme birler basamağından başlanır; gerektiğinde bozma yapılır, basamaklar çıkarılır ve sonuç kontrol edilir.",hint:"Önce hangi basamakta işlem yapacağını belirle; en son sonucu kontrol et."},
+{id:"t09",stage:2,type:"mcq",prompt:"8 314 − 3 758 işleminin sonucu hangisidir?",instruction:"Birden fazla basamakta bozma gerekebilir.",data:{options:["4 556","4 656","5 556","4 566"]},correctAnswer:"4 556",explanation:"8 314 − 3 758 = 4 556. Özellikle birler ve onlar basamaklarında bozma yapılır.",hint:"4 − 8 olmadığı için onluk boz; sonraki basamağı yeniden kontrol et."},
+{id:"t10",stage:2,type:"numeric",prompt:"7 020 − 2 685 = ?",instruction:"Sonucu yaz; boşluk kullanman gerekmez.",data:{},correctAnswer:4335,acceptedAnswers:["4 335","4335"],explanation:"7 020 − 2 685 = 4 335. Sıfır olan basamaklardan dolayı binlikten bozma dikkatle yapılır.",hint:"Önce 7 020 sayısındaki sıfırları ele al: bozma adımlarını sırayla düşün."},
+{id:"t11",stage:2,type:"match",prompt:"İşlemleri sonuçlarıyla eşleştir.",instruction:"Önce soldaki işlemi, sonra sağdaki doğru sonucu seç.",data:{left:[{id:"l1",text:"3 500 − 1 200"},{id:"l2",text:"6 040 − 2 010"},{id:"l3",text:"5 000 − 2 675"}],right:[{id:"r1",text:"2 325"},{id:"r2",text:"4 030"},{id:"r3",text:"2 300"}],pairs:{l1:"r3",l2:"r2",l3:"r1"}},correctAnswer:{l1:"r3",l2:"r2",l3:"r1"},explanation:"3 500−1 200=2 300; 6 040−2 010=4 030; 5 000−2 675=2 325.",hint:"Her işlemi önce zihinden yaklaşık hesapla, sonra tam sonucu kontrol et."},
+{id:"t12",stage:2,type:"classify",prompt:"Hangi işlemlerde en az bir basamakta bozma gerekir?",instruction:"Her işlemi uygun kutuya yerleştir. Kartı seç, ardından hedef kutuya dokun.",data:{items:[{id:"a",text:"6 428 − 2 315"},{id:"b",text:"5 000 − 1 768"},{id:"c",text:"8 765 − 4 321"},{id:"d",text:"7 102 − 3 458"}],targets:[{id:"yes",text:"Bozma gerekir"},{id:"no",text:"Bozma gerekmez"}],answers:{a:"no",b:"yes",c:"no",d:"yes"}},correctAnswer:{a:"no",b:"yes",c:"no",d:"yes"},explanation:"6 428−2 315 ve 8 765−4 321 işlemlerinde her basamakta üst rakam yeterlidir. Diğer iki işlemde bozma gerekir.",hint:"Üstteki her basamak rakamını alttakiyle karşılaştır."},
+{id:"t13",stage:3,type:"numeric",prompt:"Bir kütüphanede 6 250 kitap vardı. 2 785 kitap ödünç verildi. Kütüphanede kaç kitap kaldı?",instruction:"Problemi çıkarma işlemiyle çöz.",data:{},correctAnswer:3465,acceptedAnswers:["3 465","3465"],explanation:"Kalan kitap sayısı 6 250 − 2 785 = 3 465'tir.",hint:"Başlangıçtaki kitap sayısından ödünç verilen kitapları çıkar."},
+{id:"t14",stage:3,type:"mcq",prompt:"Bir okulun hedefi 8 000 kitap toplamaktır. Şimdiye kadar 5 675 kitap toplandı. Hedefe ulaşmak için kaç kitap daha gerekir?",instruction:"Toplam hedef ile toplanan miktar arasındaki farkı bul.",data:{options:["2 325","2 425","3 325","1 325"]},correctAnswer:"2 325",explanation:"8 000 − 5 675 = 2 325 kitap daha gerekir.",hint:"Hedefe ulaşmak için gereken miktar = hedef − mevcut miktar."},
+{id:"t15",stage:3,type:"numeric",prompt:"Bir çiftlikte 4 305 elma toplandı. Bunların 1 879'u satıldı. Geriye kaç elma kaldı?",instruction:"Dört basamaklı çıkarma işlemini kur ve çöz.",data:{},correctAnswer:2426,acceptedAnswers:["2 426","2426"],explanation:"4 305 − 1 879 = 2 426 elma kalır.",hint:"Birler ve onlar basamağında bozma gerekip gerekmediğini kontrol et."},
+{id:"t16",stage:3,type:"mcq",prompt:"Dedektif finali: 9 004 − 5 687 işleminin doğru sonucu ve gerekçesi hangisidir?",instruction:"Hem sonucu hem de bozma mantığını dikkate al.",data:{options:["3 317; sıfır bulunan basamaklar için bozma yapılır.","4 317; sıfırlar çıkarma işlemini etkilemez.","3 417; yalnızca birler basamağında bozma yapılır.","3 327; her basamak doğrudan çıkarılır."]},correctAnswer:"3 317; sıfır bulunan basamaklar için bozma yapılır.",explanation:"9 004 − 5 687 = 3 317. Sıfır bulunan basamaklarda uygun komşu basamaklardan bozma yapılmalıdır.",hint:"9 004 sayısındaki sıfırlar yüzünden bozma adımlarını dikkatle izle."}
+];
+const stageNames=["1. Aşama • Isınma","2. Aşama • Basamak Laboratuvarı","3. Aşama • İşlem Ustası","4. Aşama • Gerçek Hayat ve Final"];
+let state;
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function freshTask(t){
+ let data=JSON.parse(JSON.stringify(t.data||{}));
+ if(data.options){data.options=shuffle(data.options.map((text,i)=>({id:t.id+"_o"+i,text})))}
+ if(data.items&&t.type==="order"){data.items=shuffle(data.items)}
+ if(data.items&&t.type==="classify"){data.items=shuffle(data.items)}
+ if(data.left&&data.right){data.left=shuffle(data.left);data.right=shuffle(data.right)}
+ return {...t,data,status:"pending",answer:null,attempts:0,firstTry:false,hintUsed:false,lastResult:null,firstWrong:null,rewardGranted:false,locked:false,selected:null,matches:{},placements:{},order:data.items?data.items.map(x=>x.id):[],feedback:"",hintText:""};
+}
+function reset(){state={currentIndex:0,score:0,energy:100,wrongCount:0,skippedCount:0,hintCount:0,tasks:tasks.map(freshTask),history:[],startedAt:Date.now()};$("final").classList.add("hidden");$("game").classList.remove("hidden");render();}
+function current(){return state.tasks[state.currentIndex]}
+function setFeedback(kind,msg){const el=$("feedback");el.className="feedback "+kind;el.textContent=msg;}
+function renderStats(){const done=state.tasks.filter(t=>t.status==="success"||t.status==="skipped").length;$("statTask").textContent=(state.currentIndex+1)+" / "+state.tasks.length;$("statScore").textContent=state.score;$("statEnergy").textContent=state.energy;$("statWrong").textContent=state.wrongCount;$("progressFill").style.width=(done/state.tasks.length*100)+"%";}
+function renderPrompt(t){
+ const el=$("prompt");el.innerHTML="";
+ const re=/(\d{1,2}(?: \d{3}){1,2}|\d{1,4})\s*[−-]\s*(\d{1,2}(?: \d{3}){1,2}|\d{1,4})/;
+ const m=re.exec(t.prompt);
+ if(!m){el.textContent=t.prompt;return;}
+ const before=t.prompt.slice(0,m.index),after=t.prompt.slice(m.index+m[0].length);
+ if(before){const span=document.createElement("span");span.className="prompt-copy";span.textContent=before;el.appendChild(span);}
+ const op=document.createElement("div");op.className="column-op";const top=document.createElement("span");top.className="num";top.textContent=m[1];const bottom=document.createElement("span");bottom.className="num bottom";bottom.textContent="− "+m[2];op.append(top,bottom);el.appendChild(op);
+ if(after){const span=document.createElement("span");span.className="prompt-copy";span.textContent=after;el.appendChild(span);}
+}
+function render(){
+ renderStats();const t=current();$("stageBadge").textContent=stageNames[t.stage];$("taskLabel").textContent="Görev "+(state.currentIndex+1);renderPrompt(t);$("instruction").textContent=t.instruction;$("workarea").innerHTML="";$("feedback").textContent="";$("feedback").className="";$("hintBox").classList.toggle("hidden",!t.hintUsed);$("hintBox").textContent=t.hintUsed?"💡 "+t.hint:"";$("prevBtn").disabled=state.currentIndex===0;$("nextBtn").disabled=!(t.status==="success"||t.status==="skipped")||state.currentIndex===state.tasks.length-1;$("hintBtn").disabled=t.hintUsed||t.status==="success";$("skipBtn").disabled=t.status==="success"||t.status==="skipped";
+ if(t.status==="success"){setFeedback("good","✓ Doğru! "+t.explanation)}else if(t.status==="skipped"){setFeedback("info","Bu görev geçildi. İstersen önceki sorulara dönebilirsin.")}
+ const area=$("workarea");
+ if(t.type==="mcq"||t.type==="tf"){
+  const wrap=document.createElement("div");wrap.className="options";
+  t.data.options.forEach(opt=>{const b=document.createElement("button");b.className="option";b.textContent=opt.text;b.disabled=t.status==="success";b.onclick=()=>answer(opt.text);wrap.appendChild(b)});area.appendChild(wrap);
+ }else if(t.type==="numeric"){
+  const row=document.createElement("div");row.className="answerrow";const inp=document.createElement("input");inp.id="answerInput";inp.inputMode="numeric";inp.autocomplete="off";inp.placeholder="Sonucu yaz";inp.setAttribute("aria-label","Cevabın");inp.disabled=t.status==="success";const b=document.createElement("button");b.className="primary";b.textContent="Cevabı Kontrol Et";b.disabled=t.status==="success";b.onclick=()=>answer(inp.value);inp.addEventListener("keydown",e=>{if(e.key==="Enter")answer(inp.value)});row.append(inp,b);area.appendChild(row);
+ }else if(t.type==="order"){renderOrder(t,area)}
+ else if(t.type==="match"){renderMatch(t,area)}
+ else if(t.type==="classify"){renderClassify(t,area)}
+}
+function renderOrder(t,area){
+ const list=document.createElement("div");list.className="sortlist";
+ t.order.forEach((id,i)=>{const item=t.data.items.find(x=>x.id===id);const row=document.createElement("div");row.className="sortrow";const s=document.createElement("span");s.textContent=(i+1)+". "+item.text;row.appendChild(s);[-1,1].forEach(delta=>{const b=document.createElement("button");b.textContent=delta<0?"↑":"↓";b.setAttribute("aria-label",delta<0?"Yukarı taşı":"Aşağı taşı");b.disabled=t.status==="success"||(delta<0&&i===0)||(delta>0&&i===t.order.length-1);b.onclick=()=>{const j=i+delta;[t.order[i],t.order[j]]=[t.order[j],t.order[i]];render()};row.appendChild(b)});list.appendChild(row)});area.appendChild(list);const check=document.createElement("button");check.className="primary";check.style.marginTop="12px";check.textContent="Sıralamayı Kontrol Et";check.disabled=t.status==="success";check.onclick=()=>answer(t.order.slice());area.appendChild(check);
+}
+function renderMatch(t,area){
+ const grid=document.createElement("div");grid.className="matchgrid";const left=document.createElement("div"),right=document.createElement("div");left.className=right.className="matchcol";
+ const h1=document.createElement("h3");h1.textContent="İŞLEMLER";left.appendChild(h1);const h2=document.createElement("h3");h2.textContent="SONUÇLAR";right.appendChild(h2);
+ t.data.left.forEach(item=>{const b=document.createElement("button");b.className="matchitem";b.textContent=item.text;b.disabled=t.status==="success"||!!t.matches[item.id];if(t.selected===item.id)b.classList.add("picked");if(t.matches[item.id])b.classList.add("done");b.onclick=()=>{t.selected=item.id;render()};left.appendChild(b)});
+ t.data.right.forEach(item=>{const b=document.createElement("button");b.className="matchitem";b.textContent=item.text;b.disabled=t.status==="success"||Object.values(t.matches).includes(item.id);if(Object.values(t.matches).includes(item.id))b.classList.add("done");b.onclick=()=>{if(!t.selected){setFeedback("info","Önce soldan bir işlem seç.");return}const leftId=t.selected;t.matches[leftId]=item.id;t.selected=null;render();if(Object.keys(t.matches).length===t.data.left.length)answer({...t.matches})};right.appendChild(b)});
+ grid.append(left,right);area.appendChild(grid);const resetB=document.createElement("button");resetB.className="secondary";resetB.style.marginTop="12px";resetB.textContent="Eşleştirmeleri Sıfırla";resetB.disabled=t.status==="success";resetB.onclick=()=>{t.matches={};t.selected=null;render()};area.appendChild(resetB);
+}
+function renderClassify(t,area){
+ const targets=document.createElement("div");targets.className="classgrid";
+ t.data.targets.forEach(target=>{const box=document.createElement("div");box.className="classcard";const h=document.createElement("h3");h.textContent=target.text;box.appendChild(h);const assigned=t.data.items.filter(it=>t.placements[it.id]===target.id);if(!assigned.length){const p=document.createElement("p");p.className="subtle";p.textContent="Kart seçip bu kutuya dokun.";box.appendChild(p)}assigned.forEach(it=>{const b=document.createElement("button");b.className="tile";b.textContent="✓ "+it.text;b.disabled=t.status==="success";b.onclick=()=>{t.placements[it.id]=null;render()};box.appendChild(b)});const place=document.createElement("button");place.className="secondary";place.textContent=(t.selected?"Seçili kartı buraya koy":"Hedefi seç");place.disabled=t.status==="success"||!t.selected;place.onclick=()=>{t.placements[t.selected]=target.id;t.selected=null;render()};box.appendChild(place);targets.appendChild(box)});area.appendChild(targets);
+ const cards=document.createElement("div");cards.className="options";cards.style.marginTop="14px";t.data.items.filter(it=>!t.placements[it.id]).forEach(it=>{const b=document.createElement("button");b.className="option";b.textContent=it.text;b.disabled=t.status==="success";if(t.selected===it.id)b.classList.add("selected");b.onclick=()=>{t.selected=it.id;render()};cards.appendChild(b)});area.appendChild(cards);
+ const check=document.createElement("button");check.className="primary";check.style.marginTop="12px";check.textContent="Sınıflandırmayı Kontrol Et";check.disabled=t.status==="success";check.onclick=()=>answer({...t.placements});area.appendChild(check);
+}
+function equivalent(t,val){
+ if(t.type==="order")return Array.isArray(val)&&val.join("|")===t.correctAnswer.join("|");
+ if(t.type==="match"||t.type==="classify")return Object.keys(t.correctAnswer).every(k=>val&&val[k]===t.correctAnswer[k]);
+ if(t.type==="numeric"){const s=String(val).replace(/[ .]/g,"");return Number(s)===Number(t.correctAnswer)}
+ return normalize(val)===normalize(t.correctAnswer);
+}
+function answer(val){
+ const t=current();if(t.locked||t.status==="success")return;
+ t.attempts++;if(t.attempts===1)t.firstTry=true;else t.firstTry=false;
+ if(equivalent(t,val)){
+  t.status="success";t.answer=val;t.lastResult="success";t.locked=true;
+  if(!t.rewardGranted){t.rewardGranted=true;state.score+=t.hintUsed?5:(t.attempts===1?10:7);if(t.attempts===1&&!t.hintUsed)state.energy=Math.min(100,state.energy+2)}
+  t.firstTry=t.attempts===1;t.feedback="Doğru";state.history.push({id:t.id,result:"success",attempts:t.attempts});if(state.currentIndex===state.tasks.length-1){render();showFinal()}else{render()}return;
+ }
+ if(t.firstWrong===null)t.firstWrong=val;t.lastResult="wrong";state.wrongCount++;state.energy=Math.max(0,state.energy-3);if(t.type==="match"){t.matches={};t.selected=null;render()}
+ renderStats();setFeedback("bad","✗ Henüz doğru değil. "+specificError(t,val)+" Tekrar dene; doğru cevap hemen gösterilmiyor.");
+}
+function specificError(t,val){
+ if(t.type==="numeric")return "Sonucu ve basamak bozma adımlarını yeniden kontrol et.";
+ if(t.type==="order")return "Adımların sırasını yeniden düşün.";
+ if(t.type==="match")return "Eşleşmelerden en az biri yanlış. Yanlış eşleşme temizlenir; yeniden eşleştir.";
+ if(t.type==="classify")return "En az bir kart yanlış kutuda. Kartları yeniden yerleştir.";
+ return "Seçtiğin seçenek işlemin sonucuyla uyuşmuyor.";
+}
+function showHint(){const t=current();if(t.hintUsed||t.status==="success")return;t.hintUsed=true;state.hintCount++;$("hintBox").textContent="💡 "+t.hint;$("hintBox").classList.remove("hidden");$("hintBtn").disabled=true;}
+function skip(){const t=current();if(t.status==="success"||t.status==="skipped")return;t.status="skipped";t.lastResult="skipped";state.skippedCount++;state.history.push({id:t.id,result:"skipped"});if(state.currentIndex===state.tasks.length-1){render();showFinal()}else{state.currentIndex++;render()}}
+function navigate(delta){const target=state.currentIndex+delta;if(target<0||target>=state.tasks.length)return;if(delta>0&&!["success","skipped"].includes(current().status))return;state.currentIndex=target;render()}
+function showFinal(){
+ $("game").classList.add("hidden");const f=$("final");f.classList.remove("hidden");const completed=state.tasks.filter(t=>t.status==="success").length;const first=state.tasks.filter(t=>t.status==="success"&&t.attempts===1&&!t.hintUsed).length;const wrong=state.wrongCount;const skipped=state.tasks.filter(t=>t.status==="skipped").length;const secs=Math.max(0,Math.floor((Date.now()-state.startedAt)/1000));const duration=Math.floor(secs/60)+" dk "+(secs%60)+" sn";
+ f.innerHTML=`<div class="stage">🧾 Dedektif Raporu</div><h2>Görev tamamlandı!</h2><p>Çıkarma dosyasını bitirdin. Şimdi sonuçlarını incele.</p><div class="finalscore">${state.score} puan</div><div class="finalgrid"><div class="stat"><small>Toplam görev</small><strong>${state.tasks.length}</strong></div><div class="stat"><small>Tamamlanan</small><strong>${completed}</strong></div><div class="stat"><small>İlk denemede doğru</small><strong>${first}</strong></div><div class="stat"><small>Yanlış deneme</small><strong>${wrong}</strong></div><div class="stat"><small>Geçilen</small><strong>${skipped}</strong></div><div class="stat"><small>İpucu</small><strong>${state.hintCount}</strong></div><div class="stat"><small>Enerji</small><strong>${state.energy}</strong></div><div class="stat"><small>Süre</small><strong>${duration}</strong></div></div><button class="primary" id="reviewBtn">Yanlış/Geçilen Görevleri İncele</button> <button class="secondary" id="replayBtn">↻ Yeniden Başla</button><div id="review"></div>`;
+ $("reviewBtn").onclick=renderReview;$("replayBtn").onclick=reset;
+}
+function renderReview(){
+ const box=$("review");box.innerHTML="<h2>Görev incelemesi</h2>";const relevant=state.tasks.filter(t=>t.status!=="success"||t.attempts>1||t.hintUsed);
+ if(!relevant.length){box.innerHTML+="<p>Harika! Yanlış deneme, ipucu veya geçilen görev yok.</p>";return}
+ relevant.forEach(t=>{const div=document.createElement("div");div.className="reviewitem";const h=document.createElement("h3");h.textContent="Görev "+(state.tasks.indexOf(t)+1)+": "+t.prompt;div.appendChild(h);const p1=document.createElement("p");p1.textContent="Öğrenci cevabı: "+(t.status==="skipped"?"Geçildi":displayAnswer(t.answer));div.appendChild(p1);const p2=document.createElement("p");p2.textContent="Doğru cevap: "+displayAnswer(t.correctAnswer);div.appendChild(p2);const p3=document.createElement("p");p3.textContent="Neden doğru? "+t.explanation;div.appendChild(p3);if(t.firstWrong!==null){const p4=document.createElement("p");p4.textContent="İlk yanlış cevap: "+displayAnswer(t.firstWrong);div.appendChild(p4)}const b=document.createElement("button");b.className="secondary";b.textContent="Bu göreve dön";b.onclick=()=>{state.currentIndex=state.tasks.indexOf(t);$("final").classList.add("hidden");$("game").classList.remove("hidden");render()};div.appendChild(b);box.appendChild(div)});
+}
+function displayAnswer(a){if(a===null||a===undefined)return"—";if(typeof a==="object"){if(Array.isArray(a))return a.map(id=>{const t=current();return t.data?.items?.find(x=>x.id===id)?.text||id}).join(" → ");return Object.entries(a).map(([k,v])=>k+": "+v).join(", ")}return String(a)}
+$("prevBtn").onclick=()=>navigate(-1);$("nextBtn").onclick=()=>{if(state.currentIndex===state.tasks.length-1){showFinal()}else navigate(1)};$("hintBtn").onclick=showHint;$("skipBtn").onclick=skip;
+reset();
+})();
+</script>
+</body>
+</html>
