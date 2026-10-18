@@ -59,14 +59,12 @@
         margin: 0 auto;
     }
 
-    /* ANA MENÜ IZGARASI */
     .menu-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 30px;
     }
 
-    /* DERS BUTONLARI */
     .subject-btn {
         background: white;
         border: none;
@@ -89,7 +87,6 @@
         box-shadow: 0 20px 35px rgba(0,0,0,0.15);
     }
 
-    /* YENİ UYARI ETİKETİ TASARIMI */
     .badge-yeni {
         position: absolute;
         top: -10px;
@@ -147,7 +144,6 @@
     .btn-trafik { border-color: var(--trafik); }
     .btn-oyunlar { border-color: var(--oyunlar); }
 
-    /* DERS SAYFALARI (İÇERİK) */
     .subject-page {
         display: none;
         background: white;
@@ -199,7 +195,6 @@
         transform: translateX(-5px);
     }
 
-    /* OYUN LİNKLERİ */
     .game-list {
         list-style: none;
         padding: 0;
@@ -261,38 +256,31 @@
 
     <div class="container">
         
-        <!-- ANA MENÜ (DERS SEÇİMİ) -->
         <div id="main-menu" class="menu-grid">
             <button id="btn-turkce" class="subject-btn btn-turkce" onclick="openSubject('turkce')">
                 <span class="subject-icon">📚</span>
                 <span class="subject-name">TÜRKÇE</span>
             </button>
-            
             <button id="btn-matematik" class="subject-btn btn-matematik" onclick="openSubject('matematik')">
                 <span class="subject-icon">🧮</span>
                 <span class="subject-name">MATEMATİK</span>
             </button>
-
             <button id="btn-fen" class="subject-btn btn-fen" onclick="openSubject('fen')">
                 <span class="subject-icon">🔬</span>
                 <span class="subject-name">FEN BİLİMLERİ</span>
             </button>
-
             <button id="btn-sosyal" class="subject-btn btn-sosyal" onclick="openSubject('sosyal')">
                 <span class="subject-icon">🌍</span>
                 <span class="subject-name">SOSYAL BİLGİLER</span>
             </button>
-
             <button id="btn-insan" class="subject-btn btn-insan" onclick="openSubject('insan')">
                 <span class="subject-icon">🤝</span>
                 <span class="subject-name">İNSAN HAKLARI</span>
             </button>
-
             <button id="btn-trafik" class="subject-btn btn-trafik" onclick="openSubject('trafik')">
                 <span class="subject-icon">🚦</span>
                 <span class="subject-name">TRAFİK GÜVENLİĞİ</span>
             </button>
-
             <button id="btn-oyunlar" class="subject-btn btn-oyunlar" onclick="openSubject('oyunlar')">
                 <span class="subject-icon">🎮</span>
                 <span class="subject-name">OYUNLAR</span>
@@ -323,7 +311,6 @@
                 <li><a href="Turkce/noktalamaisaretleri.html">Noktalama İşaretleri</a></li>
                 <li><a href="Turkce/pekistirme.html">Pekiştirme Dedektifi 1</a></li>
             </ul>
-        <!-- TÜRKÇE DEFTER NOTLARI BÖLÜMÜ -->
         <div class="page-header" style="margin-top: 20px;">
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
         </div>
@@ -347,15 +334,17 @@
                 <li><a href="Matematik/toplama.html">Toplama Yapalım</a></li>
                 <li><a href="Matematik/yuvarlama.html">Yuvarlama Macerası 1</a></li>
                 <li><a href="Matematik/yuvarlama2.html">Yuvarlama Macerası 2</a></li>
+                <li><a id="etk-mat-zihintop" href="Matematik/zihindentoplama.html">Zihinden Toplama Ustaları</a></li>
+                <li><a id="etk-mat-zihincik" href="Matematik/zihindencikarma.html">Zihinden Çıkarma Ustaları</a></li>
+                <li><a id="etk-mat-cikarma" href="Matematik/cikarmaislemi.html">Çıkarma Dedektifleri</a></li>
             </ul>
-        <!-- MATEMATİK DEFTER NOTLARI -->
         <div class="page-header" style="margin-top: 20px;">
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
         </div>
         <ul class="game-list">
             <li><a id="etk-mat-not1" href="Matematik/DefterNotlari/toplama.png" target="_blank">Doğal Sayılarla Toplama İşlemi Notu 📸</a></li>
             <li><a id="etk-mat-not2" href="Matematik/DefterNotlari/cikarmadefternotu.png" target="_blank">Doğal Sayılarla Çıkarma İşlemi Notu 📸</a></li>
-            <li><a id="etk-mat-not3" href="Matematik/DefterNotlari/cikarmadaverilmeyen.png?v=1" target="_blank">Çıkarmada Verilmeyeni Bulma Notu 📸</a></li>
+            <li><a id="etk-mat-not3" href="Matematik/DefterNotlari/cikarmadaverilmeyen.png?v=2" target="_blank">Çıkarmada Verilmeyeni Bulma Notu 📸</a></li>
             <li><a id="etk-mat-not4" href="Matematik/DefterNotlari/zihindentoplama.png" target="_blank">Zihinden Toplama İşlemi Notu 📸</a></li>
             <li><a id="etk-mat-not5" href="Matematik/DefterNotlari/zihindencikarma.png" target="_blank">Zihinden Çıkarma İşlemi Notu 📸</a></li>
         </ul>
@@ -368,6 +357,8 @@
                 <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
             </div>
             <ul class="game-list">
+                <li><a id="etk-fen-besin1" href="Fen/besinkasifleri.html">Besin Kaşifleri: Görev Haritası</a></li>
+                <li><a id="etk-fen-besin2" href="Fen/besinakademisi.html">Besin Akademisi</a></li>
                 <li><a href="Fen/dunyaninhareketleri2.html">Dünya'nın Hareketleri 1</a></li>
                 <li><a href="Fen/dunyaninhareketleri3.html">Dünya'nın Hareketleri 2</a></li>
                 <li><a href="Fen/fosiller.html">Fosil Keşfi 1</a></li>
@@ -391,7 +382,6 @@
                 <li><a id="etk-sosyal-milli" href="Sosyal/millimucadele.html">Milli Mücadele Dönemi</a></li>
                 <li><a href="Sosyal/ilgiihtiyacyetenek.html">İlgi, İhtiyaç ve Yeteneklerimiz</a></li>
             </ul>
-        <!-- SOSYAL BİLGİLER DEFTER NOTLARI -->
         <div class="page-header" style="margin-top: 20px;">
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
         </div>
@@ -409,6 +399,7 @@
             </div>
             <ul class="game-list">
                 <li><a href="Insanhaklari/hakozgurluksorumluluk.html">Hak Özgürlük ve Sorumluluk</a></li>
+                <li><a id="etk-insan-bilinci" href="Insanhaklari/hakozgurluksorumluluk2.html">Bilinçli Vatandaş Kasabası</a></li>
                 <li><a id="etk-insan-cocuk" href="Insanhaklari/cocukveyetiskinfarklar.html">Yetişkinler ve Çocuklar</a></li>
             </ul>
         </div>
@@ -441,36 +432,18 @@
     <!-- SAYFA GEÇİŞ VE YENİ ETKİNLİK SCRİPTİ -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // ANA MENÜ BUTONLARI İÇİN UYARILAR
-            showNewBadge('btn-turkce', '2026-10-12');
-            showNewBadge('btn-sosyal', '2026-10-12');
-            showNewBadge('btn-insan', '2026-10-12');
-            showNewBadge('btn-fen', '2026-10-12');
-            showNewBadge('btn-matematik', '2026-10-17');
+            // ANA MENÜ UYARILARI
+            showNewBadge('btn-matematik', '2026-10-18');
+            showNewBadge('btn-fen', '2026-10-18');
+            showNewBadge('btn-insan', '2026-10-18');
             
-            // ALT SAYFALARDAKİ LİNKLER İÇİN UYARILAR
-            showNewBadge('etk-turkce-mecaz1', '2026-10-12', true);
-            showNewBadge('etk-turkce-mecaz2', '2026-10-12', true);
-            showNewBadge('etk-turkce-not1', '2026-10-12', true);
-            showNewBadge('etk-turkce-not2', '2026-10-12', true);
-            showNewBadge('etk-turkce-dilmuhafizlari', '2026-10-12', true);
-            
-            showNewBadge('etk-mat-problemler', '2026-10-12', true);
-            showNewBadge('etk-mat-not1', '2026-10-12', true);
-            showNewBadge('etk-mat-not2', '2026-10-12', true);
-            
-            // Yeni yüklenen matematik notları (17 Ekim uyarılı)
-            showNewBadge('etk-mat-not3', '2026-10-17', true);
-            showNewBadge('etk-mat-not4', '2026-10-17', true);
-            showNewBadge('etk-mat-not5', '2026-10-17', true);
-            
-            showNewBadge('etk-sosyal-aile', '2026-10-12', true);
-            showNewBadge('etk-sosyal-milli', '2026-10-12', true);
-            showNewBadge('etk-sosyal-not1', '2026-10-12', true);
-            showNewBadge('etk-sosyal-not2', '2026-10-12', true);
-            
-            showNewBadge('etk-insan-cocuk', '2026-10-12', true);
-            showNewBadge('etk-fen-unite1', '2026-10-12', true);
+            // ALT SAYFALARDAKİ YENİ OYUNLARIN UYARILARI
+            showNewBadge('etk-mat-zihintop', '2026-10-18', true);
+            showNewBadge('etk-mat-zihincik', '2026-10-18', true);
+            showNewBadge('etk-mat-cikarma', '2026-10-18', true);
+            showNewBadge('etk-fen-besin1', '2026-10-18', true);
+            showNewBadge('etk-fen-besin2', '2026-10-18', true);
+            showNewBadge('etk-insan-bilinci', '2026-10-18', true);
         });
 
         function showNewBadge(elementId, dateString, isSmallBadge = false) {
