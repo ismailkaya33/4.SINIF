@@ -430,7 +430,7 @@
     </div>
 
     <!-- SAYFA GEÇİŞ VE YENİ ETKİNLİK SCRİPTİ -->
-    <script>
+   <script>
         document.addEventListener("DOMContentLoaded", function() {
             // ANA MENÜ UYARILARI
             showNewBadge('btn-matematik', '2026-10-18');
@@ -444,6 +444,11 @@
             showNewBadge('etk-fen-besin1', '2026-10-18', true);
             showNewBadge('etk-fen-besin2', '2026-10-18', true);
             showNewBadge('etk-insan-bilinci', '2026-10-18', true);
+            
+            // YENİ DEFTER NOTLARI UYARILARI
+            showNewBadge('etk-mat-not3', '2026-10-18', true);
+            showNewBadge('etk-mat-not4', '2026-10-18', true);
+            showNewBadge('etk-mat-not5', '2026-10-18', true);
         });
 
         function showNewBadge(elementId, dateString, isSmallBadge = false) {
