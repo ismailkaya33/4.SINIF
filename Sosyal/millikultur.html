@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Türk Kültürünü Keşfediyorum!</title>
+<style>
+:root{
+--kirmizi:#C62828;--turkuaz:#1F9D9A;--lacivert:#17324D;--krem:#FFF7E8;
+--altin:#F4C542;--acikmavi:#EAF6FF;--mercan:#FF8A70;--yesil:#2E7D32;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:var(--krem);color:var(--lacivert);line-height:1.6;font-size:17px}
+h1,h2,h3{line-height:1.3}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:12px}
+button:focus-visible,a:focus-visible{outline:3px solid var(--altin);outline-offset:2px}
+img{max-width:100%;display:block}
+
+/* ---- HEADER ---- */
+header.top{position:sticky;top:0;z-index:50;background:linear-gradient(135deg,var(--lacivert),#1d4266);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.top-in{max-width:1200px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.bayrak{width:64px;height:43px;background:#E30A17;border-radius:5px;position:relative;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.bayrak .ay{position:absolute;top:50%;left:38%;transform:translate(-50%,-50%);width:21px;height:21px;background:#fff;border-radius:50%}
+.bayrak .ay2{position:absolute;top:50%;left:44%;transform:translate(-50%,-50%);width:17px;height:17px;background:#E30A17;border-radius:50%}
+.bayrak .yildiz{position:absolute;top:50%;left:66%;transform:translate(-50%,-50%);width:0;height:0;border-left:9px solid #fff;border-top:5.5px solid transparent;border-bottom:5.5px solid transparent;transform:translate(-50%,-50%) rotate(-18deg)}
+.top-title{font-size:1.15rem;font-weight:700}
+.top-title small{display:block;font-weight:400;font-size:.8rem;opacity:.85}
+nav.menu{max-width:1200px;margin:0 auto;display:flex;gap:6px;flex-wrap:wrap;padding:0 10px 10px}
+nav.menu button{background:rgba(255,255,255,.12);color:#fff;padding:7px 12px;font-size:.88rem;border-radius:20px;transition:.2s}
+nav.menu button:hover,nav.menu button.aktif{background:var(--altin);color:var(--lacivert)}
+.puan-kutu{margin-left:auto;background:var(--kirmizi);color:#fff;padding:6px 14px;border-radius:20px;font-weight:700;font-size:.95rem}
+
+/* ---- GENEL ---- */
+main{max-width:1200px;margin:0 auto;padding:18px 14px 60px}
+.bolum{display:none;animation:fade .35s}
+.bolum.acik{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.kilim-kenar{height:16px;background:
+ repeating-linear-gradient(45deg,var(--kirmizi) 0 14px,var(--altin) 14px 28px,var(--turkuaz) 28px 42px)}
+.kart{background:#fff;border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 3px 12px rgba(23,50,77,.12);border-top:5px solid var(--turkuaz)}
+.kart.k-k{border-top-color:var(--kirmizi)}.kart.k-a{border-top-color:var(--altin)}.kart.k-m{border-top-color:var(--mercan)}
+.buton{background:var(--kirmizi);color:#fff;padding:12px 22px;font-size:1rem;font-weight:700;transition:.2s;box-shadow:0 3px 8px rgba(0,0,0,.15)}
+.buton:hover{background:#a31f1f;transform:translateY(-2px)}
+.buton.turkuaz{background:var(--turkuaz)}.buton.turkuaz:hover{background:#177d7b}
+.buton.altin{background:var(--altin);color:var(--lacivert)}.buton.altin:hover{background:#e0b02f}
+.buton.lacivert{background:var(--lacivert)}.buton.lacivert:hover{background:#0f2236}
+.buton.kucuk{padding:7px 14px;font-size:.9rem}
+.buton:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.geri-bildirim{border-radius:12px;padding:12px 16px;margin:12px 0;font-weight:600}
+.geri-bildirim.dogru{background:#e6f4ea;color:var(--yesil);border:2px solid var(--yesil)}
+.geri-bildirim.yanlis{background:#fdeceb;color:var(--kirmizi);border:2px solid var(--kirmizi)}
+.geri-bildirim.bilgi{background:var(--acikmavi);border:2px solid var(--turkuaz)}
+.ipucu{background:#fff8e1;border:2px dashed var(--altin);border-radius:12px;padding:10px 14px;margin:10px 0}
+.secim-dugme{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cfd8dc;padding:12px 16px;margin:8px 0;font-size:1rem;border-radius:12px;transition:.15s}
+.secim-dugme:hover:not(:disabled){border-color:var(--turkuaz);background:var(--acikmavi)}
+.secim-dugme.dogru-secim{border-color:var(--yesil);background:#e6f4ea}
+.secim-dugme.yanlis-secim{border-color:var(--kirmizi);background:#fdeceb}
+.ilerleme-outer{background:#e0e0e0;border-radius:20px;height:14px;overflow:hidden;margin:10px 0}
+.ilerleme-inner{height:100%;background:linear-gradient(90deg,var(--turkuaz),var(--altin));transition:width .4s}
+.rozet{display:inline-block;background:linear-gradient(135deg,var(--altin),#e8b53a);color:var(--lacivert);border-radius:30px;padding:8px 18px;font-weight:700;margin:4px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.rozet.kilit{background:#ccc;color:#777}
+.grid{display:grid;gap:16px}
+.gorsel-kart{border-radius:14px;overflow:hidden;position:relative}
+.gorsel-hata{min-height:125px;display:flex;align-items:center;justify-content:center;padding:18px;background:#f3f5f7;color:#536273;text-align:center;font-size:.9rem;border:1px dashed #9aa7b4;border-radius:12px}
+.gorsel-kart img{width:100%;height:190px;object-fit:cover}
+.etiket{position:absolute;top:10px;left:10px;background:var(--lacivert);color:#fff;padding:3px 12px;border-radius:20px;font-size:.78rem}
+.rozet-yildiz{color:var(--altin);font-size:1.2rem}
+.selcuklu{background-image:radial-gradient(circle at 25% 25%, rgba(31,157,154,.15) 2px, transparent 3px),radial-gradient(circle at 75% 75%, rgba(198,40,40,.12) 2px, transparent 3px);background-size:60px 60px}
+input[type=text],textarea,select{width:100%;padding:10px;border:2px solid #b0bec5;border-radius:10px;font-family:inherit;font-size:1rem;margin:6px 0}
+input:focus,textarea:focus{border-color:var(--turkuaz);outline:none}
+
+/* ---- ANA EKRAN ---- */
+.hero{background:linear-gradient(160deg,var(--acikmavi),#fff);border-radius:20px;padding:30px 20px;text-align:center;position:relative;overflow:hidden}
+.hero h1{color:var(--kirmizi);font-size:2.2rem}
+.hero p.sub{color:var(--lacivert);font-size:1.15rem;margin:8px 0 18px}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;max-width:900px;margin:22px auto 0}
+.menu-grid button{padding:18px 12px;font-size:1.05rem;font-weight:700;border-radius:16px;color:#fff;box-shadow:0 4px 10px rgba(0,0,0,.18);transition:.2s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.menu-grid button:hover{transform:translateY(-4px)}
+.menu-grid button .sim{font-size:1.9rem}
+.mg1{background:var(--kirmizi)}.mg2{background:var(--turkuaz)}.mg3{background:var(--altin);color:var(--lacivert)}
+.mg4{background:var(--mercan)}.mg5{background:var(--lacivert)}.mg6{background:#6A3FA0}.mg7{background:#0d7a4f}.mg8{background:#B3541E}
+.hero-gorseller{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.hero-gorseller .hg{width:130px;height:95px;border-radius:12px;object-fit:cover;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.hero-gorseller .gorsel-hata{width:130px;height:95px;min-height:95px;padding:6px;font-size:.72rem}
+
+/* ---- KARTLAR ---- */
+.filtre-bar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.filtre-bar button{background:#fff;border:2px solid var(--turkuaz);color:var(--lacivert);padding:7px 14px;border-radius:20px;font-size:.88rem}
+.filtre-bar button.aktif{background:var(--turkuaz);color:#fff}
+.kart-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.ogrenim-kart{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 3px 10px rgba(23,50,77,.12);display:flex;flex-direction:column;border:3px solid transparent}
+.ogrenim-kart.ogrenildi{border-color:var(--yesil)}
+.ogrenim-kart img{height:150px;width:100%;object-fit:cover}
+.ogrenim-kart img.img-tam-gorun,.gorsel-kart img.img-tam-gorun{object-fit:contain;background:#f5f3ed;padding:8px}
+.galeri-baslik{margin:18px 0 8px;color:var(--kirmizi)}
+.mekan-galeri{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:12px 0 18px}
+.mekan-kart{min-width:0;overflow:hidden;background:#fff;border:1px solid #d9e2e8;border-radius:12px;box-shadow:0 2px 7px rgba(23,50,77,.08)}
+.mekan-kart img{display:block;width:100%;height:142px;object-fit:cover}
+.mekan-kart h4{font-size:.94rem;line-height:1.3;color:var(--kirmizi);padding:8px 10px 10px;margin:0}
+
+.ok-body{padding:12px;flex:1}
+.ok-body h4{color:var(--kirmizi);font-size:1.02rem}
+.ok-body .kat{font-size:.75rem;color:var(--turkuaz);font-weight:700;text-transform:uppercase}
+.ok-body p{font-size:.9rem;margin:6px 0}
+.ok-body button{width:100%;background:var(--acikmavi);color:var(--lacivert);border:2px solid var(--turkuaz);padding:8px;border-radius:10px;font-weight:700}
+.ogrenim-kart.ogrenildi .ok-body button{background:var(--yesil);color:#fff;border-color:var(--yesil)}
+
+/* ---- ESLESTIRME ---- */
+.es-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.es-kolon button{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--lacivert);padding:11px 14px;margin:7px 0;border-radius:12px;font-size:.98rem;transition:.15s}
+.es-kolon button.secili{border-color:var(--altin);background:#fff8e1;box-shadow:0 0 0 3px rgba(244,197,66,.4)}
+.es-kolon button.eslesen{border-color:var(--yesil);background:#e6f4ea;opacity:.75;pointer-events:none}
+.es-kolon button:hover:not(.eslesen){border-color:var(--turkuaz)}
+
+/* ---- HARİTA ---- */
+.sehir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sehir{background:var(--acikmavi);border:2px solid var(--turkuaz);border-radius:14px;padding:12px;font-weight:700;transition:.2s}
+.sehir:hover{background:var(--turkuaz);color:#fff}
+
+/* ---- OGRETMEN ---- */
+.tablo{width:100%;border-collapse:collapse;background:#fff}
+.tablo th,.tablo td{border:1px solid #b0bec5;padding:8px;text-align:left;font-size:.92rem}
+.tablo th{background:var(--lacivert);color:#fff}
+
+@media(max-width:640px){
+ body{font-size:16px}
+ .hero h1{font-size:1.5rem}
+ .es-grid{grid-template-columns:1fr}
+ .gorsel-kart img{height:160px}
+}
+@media print{
+ header.top,nav.menu,.buton,.filtre-bar,.no-print{display:none!important}
+ body{background:#fff}
+ .bolum{display:block!important}
+ .kart{box-shadow:none;border:1px solid #999;page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="kilim-kenar"></div>
+<header class="top">
+ <div class="top-in">
+  <div class="bayrak" role="img" aria-label="Türk bayrağı"><div class="ay"></div><div class="ay2"></div><div class="yildiz"></div></div>
+  <div class="top-title">Türk Kültürünü Keşfediyorum!<small>4. Sınıf Sosyal Bilgiler • Kültür ve Miras • SB.4.2.2</small></div>
+  <div class="puan-kutu" id="puanKutu" title="Kültür Kaşifi puanın">⭐ 0 puan</div>
+ </div>
+ <nav class="menu" id="anaMenu">
+  <button data-sec="home" class="aktif">Ana Sayfa</button>
+  <button data-sec="ders">Ders</button>
+  <button data-sec="tekrar">Konu Tekrarı</button>
+  <button data-sec="eslestirme">Eşleştirme</button>
+  <button data-sec="dy">Doğru–Yanlış</button>
+  <button data-sec="bf">Boşluk Doldur</button>
+  <button data-sec="test">Test</button>
+  <button data-sec="tahmin">Tahmin Oyunu</button>
+  <button data-sec="harita">Kültür Haritası</button>
+  <button data-sec="panel">Başarılarım</button>
+  <button data-sec="ogretmen">Öğretmen Modu</button>
+ </nav>
+</header>
+<main>
+
+<!-- ==================== ANA SAYFA ==================== -->
+<section id="home" class="bolum acik selcuklu">
+ <div class="hero">
+  <h1>Türk Kültürünü Keşfediyorum!</h1>
+  <p class="sub">Geçmişten günümüze uzanan kültürel hazinemizi keşfet!</p>
+  <div class="hero-gorseller" id="heroGorseller"></div>
+  <div class="menu-grid">
+   <button class="mg1" data-sec="ders"><span class="sim">📖</span>Derse Başla</button>
+   <button class="mg2" data-sec="tekrar"><span class="sim">🃏</span>Konu Tekrarı</button>
+   <button class="mg3" data-sec="eslestirme"><span class="sim">🔗</span>Eşleştirme Oyunu</button>
+   <button class="mg4" data-sec="dy"><span class="sim">✔️</span>Doğru – Yanlış</button>
+   <button class="mg5" data-sec="bf"><span class="sim">✏️</span>Boşluk Doldurma</button>
+   <button class="mg6" data-sec="test"><span class="sim">📝</span>Test Çöz</button>
+   <button class="mg7" data-sec="tahmin"><span class="sim">🔍</span>Tahmin Oyunu</button>
+   <button class="mg8" data-sec="harita"><span class="sim">🗺️</span>Kültür Haritası</button>
+  </div>
+  <p style="margin-top:18px"><span id="homeRozet" class="rozet"></span></p>
+  <div style="max-width:420px;margin:14px auto 0;text-align:left">
+   <strong>Kültür Kaşifi ilerlemen:</strong>
+   <div class="ilerleme-outer"><div class="ilerleme-inner" id="homeIlerleme" style="width:0%"></div></div>
+   <small id="homeIlerlemeYazi"></small>
+  </div>
+ </div>
+</section>
+
+<!-- ==================== 1. DERS ==================== -->
+<section id="ders" class="bolum">
+ <h2>📖 Ders: Millî Kültürümüz</h2>
+ <div id="dersMetin">
+ <div class="kart k-k">
+  <h3>5.1. Millî Kültür Nedir?</h3>
+  <p><strong>Kültür</strong>, bir toplumun ortak değerlerinin tümüdür: dilimiz, yemeklerimiz, geleneklerimiz, müziğimiz, oyunlarımız ve tarihî eserlerimiz kültürümüzün parçasıdır. <strong>Millî kültür</strong>, bir milleti diğer milletlerden ayıran ortak değerler bütünüdür. <strong>Kültürel miras</strong>, geçmişten günümüze aktarılan bu değerlerin tümüdür. <strong>Gelenek ve görenek</strong> ise toplumda uzun süredir sürdürülen davranış biçimleridir. Kültür, aileler aracılığıyla <strong>kuşaktan kuşağa</strong> aktarılır.</p>
+  <p>Millî kültür yalnızca eski binalardan ibaret değildir! Bayram kutlamalarımızdan çay sofralarımıza, türkülerimizden el sanatlarımıza kadar günlük yaşamımızın her parçası kültürümüzdür.</p>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> UNESCO, dünyanın ortak mirası sayılan değerleri korur. Türkiye'den Karagöz gölge oyunu ve fasıl geleneği bu listeye girmiştir.</div>
+  <p><em>Düşünme sorusu: Senin ailende hangi gelenekler yaşatılıyor? Bayram sabahları neler yapılıyor?</em></p>
+ </div>
+ <div class="kart">
+  <h3>5.2. Ailemizde Yaşatılan Kültürel Ögeler</h3>
+  <p>Aile büyüklerimizden birçok gelenek öğreniriz: <strong>bayram ziyaretleri</strong>, <strong>büyüklerimize saygı</strong>, <strong>misafir ağırlama</strong>, aile sofralarında birlikte yemek yeme, düğünler ve kutlamalar. Büyüklerimizin anlattığı <strong>masallar, türküler ve anılar</strong> da kültürümüzün aktarılmasına yardım eder. Anneanne ve babaannelerimizden öğrendiğimiz yemek tarifleri de birer kültürel hazinedir!</p>
+  <p>Unutma: Her aile farklı gelenekler yaşatır. Bazı ailelerde bayram sabahı kahvaltı yapılır, bazılarında ziyaretlerle başlanır. Bu farklılıklar zenginliğimizdir.</p>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> "Büyüklerin eli öpülür" geleneği, saygı ve sevgi göstergesidir. Bayram sabahı en yaşlı büyüğün evinde başlayan ziyaretler kültürümüzdedir.</div>
+  <p><em>Düşünme sorusu: Ailenden öğrendiğin bir yemek tarifi veya bir türkü var mı?</em></p>
+ </div>
+ <div class="kart k-a">
+  <h3>5.3. Yöresel Yemekler ve İçecekler</h3>
+  <p>Türkiye'nin her yöresinin kendine özgü lezzetleri vardır. <strong>Baklava</strong> Gaziantep, <strong>etli ekmek</strong> Konya, <strong>mantı</strong> Kayseri ile ünlüdür. <strong>Tarhana çorbası</strong> yazın hazırlanıp kışın pişirilir. <strong>Simit</strong> her yerde sevilir ama İstanbul ile özdeşleşmiştir. <strong>Türk kahvesi</strong> ise misafir ağırlama kültürümüzün simgesidir; "Bir fincan kahvenin kırk yıl hatırı vardır" deriz.</p>
+  <div class="gorsel-kart" id="dersGorsel1"></div>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> Bir yemek bir şehirle anılabilir ama o yemeği yalnızca o şehirde yiyenek anlamına gelmez! Baklavayı Türkiye'nin her yerinde bulabilirsin.</div>
+  <p><em>Düşünme sorusu: Senin yaşadığın yörenin meşhur yemeği nedir?</em></p>
+ </div>
+ <div class="kart">
+  <h3>5.4. Giyim ve El Sanatları</h3>
+  <p><strong>Yöresel kıyafetler</strong>, her yörenin kumaş, renk ve desen tercihini yansıtır. Gelinlerin giydiği <strong>bindallı</strong> düğün geleneğimizdedir. <strong>Halı ve kilim dokumacılığı</strong> kadınlarımızın ustalıkla sürdürdüğü bir sanattır; kilim desenlerinin her birinin bir anlamı vardır. <strong>Ebru</strong>, su üzerinde boyayla kâğıda desen yapma sanatıdır. <strong>Çini</strong>, kaplama işçiliğinin en güzel örneğidir. <strong>Bakır işlemeciliği</strong>, <strong>çömlekçilik</strong>, <strong>ahşap oymacılığı</strong> ve <strong>hat sanatı</strong> da kültürümüzün değerli el sanatlarıdır.</p>
+  <div class="gorsel-kart" id="dersGorsel2"></div>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> Ebru sanatına Unesco tarafından "İnsanlığın Somut Olmayan Kültürel Mirası Listesi"ne alınmıştır.</div>
+  <p><em>Düşünme sorusu: Ebru ve çini sanatları birbirine benziyor mu? Farkları neler?</em></p>
+ </div>
+ <div class="kart k-m">
+  <h3>5.5. Halk Oyunları ve Müzik</h3>
+  <p><strong>Horon</strong> Karadeniz'in hızlı ve coşkulu oyunudur. <strong>Zeybek</strong> Ege yöresinin ağır ve kahramanlık dolu oyunudur. <strong>Halay</strong> özellikle Doğu ve Güneydoğu'da oynanır. <strong>Bar</strong> oyunu ise Doğu Anadolu'ya özgüdür. <strong>Bağlama</strong> en bilinen telli çalgımızdır. <strong>Kemençe</strong> Karadeniz'in, <strong>davul-zurna</strong> düğünlerimizin sesidir. Her yörenin kendine özgü halk oyunları ve türküleri vardır; bu farklılıklar kültürel zenginliğimizdir.</p>
+  <div class="gorsel-kart" id="dersGorsel3"></div>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> Zeybek oyununda oynayanlara "zeybek" denir ve oyun figürleri tarihî kahramanlıkları anlatır.</div>
+  <p><em>Düşünme sorusu: Halk oyunları neden genellikle toplu oynanır?</em></p>
+ </div>
+ <div class="kart">
+  <h3>5.6. Gelenek ve Görenekler</h3>
+  <p><strong>Bayram ziyaretleri</strong>, <strong>misafirperverlik</strong> ve <strong>komşuluk</strong> ilişkilerimiz geleneklerimizdir. <strong>Düğünlerde</strong> davul-zurna eşliğinde halay çekilir. <strong>Kına gecesi</strong>, gelin adayına veda gecesidir. <strong>Hıdırellez</strong> (6 Mayıs) baharın gelişini, <strong>Nevruz</strong> (21 Mart) doğanın uyanışını kutlar. Gelenekler yöreden yöreye ve aileden aileye değişebilir; bu çok doğaldır.</p>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> Hıdırellez'de dileklerinin gerçekleşmesi için dilekler suya bırakılır veya gül ağacının altına yazılır.</div>
+  <p><em>Düşünme sorusu: Senin çevrende hangi kutlamalar yapılıyor?</em></p>
+ </div>
+ <div class="kart k-a">
+  <h3>5.7. Geleneksel Oyunlar ve Sporlar</h3>
+  <p><strong>Yağlı güreş</strong> Edirne Kırkpınar'da yapılan tarihî bir spordur. <strong>Cirit</strong>, at üzerinde cirit adı verilen kısa mızrakların atıldığı geleneksel bir binicilik sporudur. <strong>Geleneksel okçuluk</strong> köklü bir spor geleneğimizdir. <strong>Mangala</strong> ise taşlı strateji oyunumuzdur; fiziksel bir spor değil, <strong>zekâ oyunu</strong>dur. Bu örneklerin hepsi aynı türden değildir: biri spor, diğeri masa oyunu olabilir.</p>
+  <div class="gorsel-kart" id="dersGorsel4"></div>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> Kırkpınar Yağlı Güreşleri 650 yılı aşkın süredir düzenlenir ve Unesco listesindedir.</div>
+  <p><em>Düşünme sorusu: Mangala oynamak hangi becerilerini geliştirir?</em></p>
+ </div>
+ <div class="kart">
+  <h3>5.8. Tarihî Eserler ve Kültürel Mekânlar</h3>
+  <p><strong>Göbeklitepe</strong>, <strong>Safranbolu Evleri</strong>, <strong>Ayasofya</strong>, <strong>Sultanahmet Camii</strong>, <strong>Topkapı Sarayı</strong>, <strong>Dolmabahçe Sarayı</strong>, <strong>Galata Kulesi</strong>, <strong>Süleymaniye Camii</strong>, <strong>Kız Kulesi</strong>, <strong>Anıtkabir</strong>, <strong>Selimiye Camii</strong>, <strong>Mevlana Müzesi</strong>, <strong>Sümela Manastırı</strong>, <strong>Efes Celsus Kütüphanesi</strong>, <strong>Aspendos Antik Tiyatrosu</strong>, <strong>Rumeli Hisarı</strong>, <strong>Yerebatan Sarnıcı</strong>, <strong>İshak Paşa Sarayı</strong> ve <strong>Kapadokya</strong>, Türkiye'nin tanınmış tarihî ve kültürel mekânları arasındadır. Bu yapılar; farklı dönemlerin mimarisini, sanatını, inançlarını ve yaşam biçimlerini tanımamıza yardım eder. Tarihî eserleri korumak, ortak kültürel mirasımızı gelecek kuşaklara aktarmamızı sağlar.</p>
+  <h4 class="galeri-baslik">Türkiye'den 19 tanınmış tarihî mekân</h4>
+  <div class="mekan-galeri" id="tarihiMekanGaleri"></div>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> Safranbolu, tarihî evleriyle 1994'ten beri Unesco Dünya Mirası Listesi'ndedir.</div>
+  <p><em>Düşünme sorusu: Şehrinde veya yakın çevrende hangi tarihî eserler var?</em></p>
+ </div>
+ <div class="kart k-m">
+  <h3>5.9. Sözlü Kültür ve Edebiyat</h3>
+  <p><strong>Nasrettin Hoca fıkraları</strong> bizi güldürürken düşündürür. <strong>Karagöz ve Hacivat</strong> gölge oyunu, arkadan aydınlatılan perde üzerinde deri figürlerle oynanır. <strong>Meddah</strong>, tek başına farklı karakterleri canlandırarak hikâye anlatır. <strong>Âşık geleneği</strong> ve türkülerimiz, <strong>masallarımız</strong>, <strong>atasözlerimiz</strong> ve <strong>Dede Korkut hikâyeleri</strong> sözlü kültürümüzün zenginlikleridir. Bunlar, kültürümüzün yazılı olmadan da gelecek kuşaklara aktarıldığını gösterir.</p>
+  <div class="gorsel-kart" id="dersGorsel6"></div>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> Karagöz oyunu 2009'da Unesco Somut Olmayan Kültürel Miras Listesi'ne girmiştir.</div>
+  <p><em>Düşünme sorusu: Dede Korkut hikâyeleri nasıl günümüze kadar ulaşmış olabilir?</em></p>
+ </div>
+ <div class="kart k-k">
+  <h3>5.10. Millî Bayramlar ve Ortak Değerler</h3>
+  <p><strong>23 Nisan</strong> Ulusal Egemenlik ve Çocuk Bayramı, <strong>19 Mayıs</strong> Atatürk'ü Anma, Gençlik ve Spor Bayramı, <strong>30 Ağustos</strong> Zafer Bayramı, <strong>29 Ekim</strong> ise Cumhuriyet Bayramı'dır. <strong>Türkçemiz</strong>, <strong>bayrağımız</strong>, <strong>İstiklâl Marşımız</strong> ortak değerlerimizdir. Aile büyüklerinden gençlere aktarılan bu değerler, millî kültürümüzü bir arada tutar.</p>
+  <div class="ipucu">💡 <strong>Bunu biliyor muydun?</strong> 23 Nisan, dünyada çocuklara armağan edilen ilk bayramdır ve dünya çocuklarını da kapsar.</div>
+  <p><em>Düşünme sorusu: Okulunda 23 Nisan'da neler yapıyorsunuz?</em></p>
+ </div>
+ </div>
+ <div class="gercek-bildirim bilgi geri-bildirim" style="background:#e6f4ea;border-color:var(--yesil);color:var(--yesil)">
+  <h3>🎉 Konu Tamamlandı!</h3><p>Harikasın! Şimdi öğrendiklerini tekrar edip oyunlarla pekiştirebilirsin.</p>
+ </div>
+ <button class="buton turkuaz" data-sec="tekrar">Konu Tekrarına Geç →</button>
+ <button class="buton" data-sec="test" style="margin-left:10px">Hemen Test Çöz →</button>
+</section>
+
+<!-- ==================== 2. KONU TEKRARI ==================== -->
+<section id="tekrar" class="bolum">
+ <h2>🃏 Görsel Konu Tekrarı</h2>
+ <p>Kartları incele, "Öğrendim" düğmesiyle işaretle. İşaretlediğin kartlar yeşil olur!</p>
+ <div class="filtre-bar" id="filtreBar"></div>
+ <p><strong id="kartSayi"></strong></p>
+ <div class="kart-grid" id="kartGrid"></div>
+</section>
+
+<!-- ==================== 3. ESLESTIRME ==================== -->
+<section id="eslestirme" class="bolum">
+ <h2>🔗 Eşleştirme Oyunu</h2>
+ <p>Soldaki kültürel ögeye sağdan uygun açıklamayı eşleştir. Dokun veya tıkla!</p>
+ <div class="ilerleme-outer"><div class="ilerleme-inner" id="esIlerleme"></div></div>
+ <div class="es-grid">
+  <div class="es-kolon"><h3>Kültürel Ögeler</h3><div id="esSol"></div></div>
+  <div class="es-kolon"><h3>Açıklamalar</h3><div id="esSag"></div></div>
+ </div>
+ <div id="esBilgi"></div>
+ <div id="esSonuc"></div>
+ <button class="buton altin" id="esYeniTur" style="display:none">Yeni Tur Başlat</button>
+ <button class="buton turkuaz" id="esBaslat">Oyunu Başlat</button>
+</section>
+
+<!-- ==================== 4. DOGRU YANLIS ==================== -->
+<section id="dy" class="bolum">
+ <h2>✔️ Doğru – Yanlış</h2>
+ <div class="ilerleme-outer"><div class="ilerleme-inner" id="dyIlerleme"></div></div>
+ <div class="kart" id="dyKart" style="display:none">
+  <h3 id="dySoru"></h3>
+  <button class="secim-dugme" id="dyD">✔️ Doğru</button>
+  <button class="secim-dugme" id="dyY">✖️ Yanlış</button>
+  <div id="dyGeri"></div>
+ </div>
+ <div id="dySonuc"></div>
+ <button class="buton turkuaz" id="dyBaslat">Sorulara Başla</button>
+</section>
+
+<!-- ==================== 5. BOSLUK DOLDURMA ==================== -->
+<section id="bf" class="bolum">
+ <h2>✏️ Boşluk Doldurma</h2>
+ <div class="ilerleme-outer"><div class="ilerleme-inner" id="bfIlerleme"></div></div>
+ <div class="kart" id="bfKart" style="display:none">
+  <h3 id="bfSoru"></h3>
+  <input type="text" id="bfCevap" placeholder="Cevabını yaz..." autocomplete="off">
+  <div style="margin-top:10px">
+   <button class="buton turkuaz kucuk" id="bfKontrol">Kontrol Et</button>
+   <button class="buton lacivert kucuk" id="bfGoster">Cevabı Göster</button>
+  </div>
+  <div id="bfIpuclari"></div>
+  <div id="bfGeri"></div>
+ </div>
+ <div id="bfSonuc"></div>
+ <button class="buton turkuaz" id="bfBaslat">Sorulara Başla</button>
+</section>
+
+<!-- ==================== 6. TEST ==================== -->
+<section id="test" class="bolum">
+ <h2>📝 Çoktan Seçmeli Test</h2>
+ <p id="testDurum"></p>
+ <div id="testAna"></div>
+ <div id="testSonuc"></div>
+ <button class="buton turkuaz" id="testBaslat">Testi Başlat</button>
+</section>
+
+<!-- ==================== 7. TAHMIN ==================== -->
+<section id="tahmin" class="bolum">
+ <h2>🔍 Görsel Kültür Tahmin Oyunu</h2>
+ <p>Görsele bak ve bu kültürel ögenin hangi kategoride olduğunu tahmin et!</p>
+ <div class="ilerleme-outer"><div class="ilerleme-inner" id="thIlerleme"></div></div>
+ <div class="kart" id="thKart" style="display:none">
+  <div class="gorsel-kart" id="thGorsel"></div>
+  <div id="thSecenekler" style="margin-top:14px"></div>
+  <div id="thGeri"></div>
+ </div>
+ <div id="thSonuc"></div>
+ <button class="buton turkuaz" id="thBaslat">Oyuna Başla</button>
+</section>
+
+<!-- ==================== HARİTA ==================== -->
+<section id="harita" class="bolum">
+ <h2>🗺️ Kültür Haritası</h2>
+ <p>Anadolu'nun kültür zenginliğini keşfetmek için bir şehre tıkla! (Her kültürel öge birden çok yerde de yaşatılabilir.)</p>
+ <div class="sehir-grid" id="sehirGrid"></div>
+ <div id="sehirBilgi"></div>
+</section>
+
+<!-- ==================== PANEL ==================== -->
+<section id="panel" class="bolum">
+ <h2>🏆 Kültür Kaşifi Başarı Paneli</h2>
+ <div class="kart k-a">
+  <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center">
+   <div style="text-align:center"><div style="font-size:3rem">⭐</div><strong id="panPuan" style="font-size:1.4rem;color:var(--kirmizi)"></strong><br>Toplam Puan</div>
+   <div><strong>🎖️ Mevcut Rozetin:</strong><br><span class="rozet" id="panRozet"></span></div>
+   <div><strong>✅ Tamamlanan Bölümler:</strong><br><span id="panBolumler"></span></div>
+   <div><strong>🎯 Toplam Doğru Cevap:</strong><br><span id="panDogru" style="font-size:1.3rem;font-weight:700;color:var(--turkuaz)"></span></div>
+   <div><strong>🃏 İncelenen Kültürel Kart:</strong><br><span id="panKart" style="font-size:1.3rem;font-weight:700;color:var(--mercan)"></span> / <span id="panKartToplam"></span></div>
+  </div>
+ </div>
+ <div class="kart">
+  <h3>Rozet Yolculuğun</h3>
+  <div id="panRozetler"></div>
+  <div class="ilerleme-outer" style="margin-top:10px"><div class="ilerleme-inner" id="panIlerleme"></div></div>
+  <small>250 puana ulaşarak Kültür Elçisi olabilirsin!</small>
+ </div>
+ <button class="buton lacivert" onclick="if(confirm('Tüm ilerlemen silinsin mi?')){localStorage.removeItem('tkk');location.reload()}">İlerlemeyi Sıfırla</button>
+</section>
+
+<!-- ==================== OGRETMEN ==================== -->
+<section id="ogretmen" class="bolum">
+ <h2>👩‍🏫 Öğretmen Modu</h2>
+ <p class="ipucu">Bu alan derste akıllı tahta kullanımı içindir. Cevap anahtarları ve istatistikler aşağıdadır.</p>
+ <div class="kart">
+  <h3>Bölüm Bazında Başarı (bu cihazdaki kayıtlar)</h3>
+  <table class="tablo"><tr><th>Bölüm</th><th>Durum</th></tr>
+  <tr><td>Ders anlatımı</td><td id="obDers">—</td></tr>
+  <tr><td>Doğru–Yanlış</td><td id="obDY">—</td></tr>
+  <tr><td>Boşluk Doldurma</td><td id="obBF">—</td></tr>
+  <tr><td>Eşleştirme</td><td id="obES">—</td></tr>
+  <tr><td>Test</td><td id="obTest">—</td></tr>
+  <tr><td>Tahmin Oyunu</td><td id="obTH">—</td></tr>
+  <tr><td>Öğrenilen kart</td><td id="obKart">—</td></tr></table>
+ </div>
+ <div class="kart">
+  <h3>Test Cevap Anahtarı (kazanım: SB.4.2.2)</h3>
+  <table class="tablo"><tr><th>#</th><th>Soru (kısa)</th><th>Cevap</th><th>Beceri</th></tr><tbody id="anahtarTablo"></tbody></table>
+ </div>
+</section>
+</main>
+<div class="kilim-kenar"></div>
+
+<script>
+/* ================= VERİLER ================= */
+const CATS = ["Yemekler ve içecekler","Giyim ve el sanatları","Halk oyunları ve müzik","Gelenek ve görenekler","Geleneksel sporlar ve oyunlar","Tarihî eserler ve mimari","Sözlü kültür ve edebiyat","Millî bayramlar ve ortak değerler"];
+const IMG = n => "https://commons.wikimedia.org/wiki/Special:FilePath/" + encodeURIComponent(n).replace(/'/g, "%27") + "?width=600";
+/* Fotoğraf yüklenemezse başka bir görselle değiştirme; açıklayıcı bir uyarı göster. */
+function imgYuklenemedi(el, ad){
+ if(!el || !el.parentNode) return;
+ const uyari = document.createElement("div");
+ uyari.className = "gorsel-hata";
+ uyari.textContent = ad + " fotoğrafı yüklenemedi. İnternet bağlantısını kontrol et.";
+ el.replaceWith(uyari);
+}
+function imgHTML(ad, dosya){
+ const src = IMG(dosya);
+ const safeAlt = String(ad).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+ const safeName = JSON.stringify(String(ad)).replace(/</g,"\\u003c");
+ const tamGoster = ["Ayran", "Kemençe", "Yaprak Sarma"].includes(String(ad));
+ const cls = tamGoster ? " class='img-tam-gorun'" : "";
+ return "<img"+cls+" src='"+src+"' alt='"+safeAlt+"' loading='lazy' onerror='imgYuklenemedi(this,"+safeName+")'>";
+}
+
+/* Kültür kartları (65 adet) */
+const CARDS = [
+{n:"Türk Kahvesi",c:0,d:"Telvesiyle pişirilen geleneksel içeceğimizdir; misafir ağırlamada ikram edilir.",i:"Turkish coffee.jpg"},
+{n:"Baklava",c:0,d:"İnce hamur ve ceviz/fıstıkla yapılan, Gaziantep ile ünlü tatlımızdır.",i:"Baklava.jpg"},
+{n:"Mantı",c:0,d:"Kayseri ile ünlü, küçük hamur parçaları içinde kıyma olan yemeğimizdir.",i:"Manti from Kayseri.jpg"},
+{n:"Etli Ekmek",c:0,d:"Konya'nın meşhur, üzeri kıymalı ince ve uzun ekmeğidir.",i:"Etli ekmek.jpg"},
+{n:"Tarhana Çorbası",c:0,d:"Yazın kurutulup kışın pişirilen geleneksel çorbamızdır.",i:"Tarhana çorbası.jpg"},
+{n:"Simit",c:0,d:"Susamlı halka ekmek; özellikle İstanbul ile özdeşleşmiştir.",i:"Simit.jpg"},
+{n:"Ayran",c:0,d:"Yoğurt ve suyla hazırlanan, özellikle yemeklerin yanında içilen geleneksel içeceğimizdir.",i:"Selbst gemachter Ayran im original-türkischen Glas.jpg"},
+{n:"Yaprak Sarma",c:0,d:"Asma yaprağına pirinç ve çeşitli iç malzemeler sarılarak hazırlanan geleneksel yemeğimizdir.",i:"Yaprak sarma.jpg"},
+{n:"Bayram Tatlıları",c:0,d:"Bayramlarda ikram edilen baklava, kurabiye ve şekerlemelerdir.",i:"Bayram tatlıları.jpg"},
+{n:"Yöresel Kıyafetler",c:1,d:"Her yörenin kumaş, renk ve desen tercihini yansıtan giysilerdir.",i:"Traditional clothing of Turkish women.jpg"},
+{n:"Bindallı",c:1,d:"Kırmızı kadife üzerine altın işlemeli geleneksel gelinliktir.",i:"Bindallı.jpg"},
+{n:"Kilim Dokuma",c:1,d:"Desenlerinin anlamları olan, yünle dokunan geleneksel halı türüdür.",i:"Weaving turkish carpets.jpg"},
+{n:"Ebru Sanatı",c:1,d:"Su üzerine serilen boyaların kâğıda aktarılması sanatıdır.",i:"Turkish ebru sample.jpg"},
+{n:"Çini Sanatı",c:1,d:"Renkli sırlı taşla kaplama işçiliğinin en güzel örneğidir.",i:"Antalya Museum Iznik tile from Ottoman Period 5012.jpg"},
+{n:"Bakır İşlemeciliği",c:1,d:"Bakır kaplara el dövmesi kabartma desenler yapma sanatıdır.",i:"Coppersmiths’ Bazaar, Malatya 01.jpg"},
+{n:"Çömlekçilik",c:1,d:"Toprağın şekillendirilip ateşte pişirilerek kap yapma sanatıdır.",i:"Çömlek.jpg"},
+{n:"Hat Sanatı",c:1,d:"Özel kalemlerle güzel yazı yazma sanatıdır.",i:"Türk Hat.jpg"},
+{n:"Horon",c:2,d:"Karadeniz yöresinin hızlı, coşkulu ve kolları bağlı oynanan oyunudur.",i:"Horon.jpg"},
+{n:"Zeybek",c:2,d:"Ege yöresinin ağır, kahramanlık dolu halk oyunudur.",i:"Zeybek.jpg"},
+{n:"Halay",c:2,d:"Eller kenetlenerek oynanan toplu halk oyunumuzdur.",i:"Halay Dansı.jpg"},
+{n:"Bar Oyunu",c:2,d:"Doğu Anadolu'ya özgü, silahlı figürleri içeren halk oyunudur.",i:"Turkey folk dance.jpg"},
+{n:"Bağlama",c:2,d:"Telli telli çalgılarımızdan en bilineni, halk müziğimizin sesidir.",i:"Baglama Sokak Muzigi.jpg"},
+{n:"Kemençe",c:2,d:"Karadeniz yöresinin yaylı halk çalgısıdır.",i:"Pontianlyraside.jpg"},
+{n:"Davul ve Zurna",c:2,d:"Düğünlerimizin ve bayramlarımızın vazgeçilmez sesidir.",i:"Davul zurna.jpg"},
+{n:"Misafir Ağırlama",c:3,d:"Misafire en güzel şekilde ikram etme geleneğimizdir.",i:"A table for family gathering.jpg"},
+{n:"Bayram Ziyaretleri",c:3,d:"Bayram sabahı büyüklerin eli öpülüp evler ziyaret edilir.",i:"Türklerde Bayramlaşma ve El Öpme Geleneği; Saygı ve Sevginin İfadesi.jpg"},
+{n:"Düğün Törenleri",c:3,d:"Davul-zurna eşliğinde gelin alma ve halay çekme geleneklerimizdir.",i:"Turkish wedding cultures.jpg"},
+{n:"Kına Gecesi",c:3,d:"Gelin adayına evlenmeden önceki veda gecesidir.",i:"The henna night.jpg"},
+{n:"Hıdırellez",c:3,d:"6 Mayıs'ta baharın gelişinin kutlandığı gelenektir.",i:"2013 Ahırkapı Hıdırellez Şenlikleri Klarnet.jpg"},
+{n:"Nevruz",c:3,d:"21 Mart'ta doğanın uyanışı kutlanır; bahar bayramıdır.",i:"People watching Nowruz celebrations.jpg"},
+{n:"Yağlı Güreş",c:4,d:"Pehlivanların yağlanarak karşılaştığı geleneksel spordur.",i:"Yağlı güreş.jpg"},
+{n:"Cirit",c:4,d:"At üzerinde cirit adı verilen kısa mızrakların atıldığı geleneksel bir binicilik sporudur.",i:"Cirit.jpg"},
+{n:"Geleneksel Okçuluk",c:4,d:"Osmanlı döneminden gelen atlı ve yaya okçuluk sporudur.",i:"5. Islamic Solidarity Games 2021 Konya Archery Traditional Turkish 20220815 1.jpg"},
+{n:"Mangala",c:4,d:"Taşlı, stratejiye dayalı geleneksel zekâ oyunumuzdur.",i:"Mancala Board.jpg"},
+{n:"Göbeklitepe",c:5,d:"Şanlıurfa'daki 12 bin yıllık tapınak alanıdır.",i:"Göbekli Tepe.jpg"},
+{n:"Safranbolu Evleri",c:5,d:"Ahşap iskeletli, cumbalı geleneksel konut mimarimizdir.",i:"Safranbolu traditional houses.jpg"},
+{n:"Ayasofya",c:5,d:"İstanbul'da yer alan, farklı dönemlerde önemli bir ibadet ve mimari yapı olarak kullanılmış tarihî eserdir.",i:"Hagia Sophia (Aya Sofya) front facade, Istanbul, Turkey (9606808746).jpg"},
+{n:"Kapadokya",c:5,d:"Peribacaları ve yeraltı şehirleriyle ünlü tarihî bölgedir.",i:"Cappadocia Goreme 2024-06-07 fairy chimneys.jpg"},
+{n:"Karagöz ve Hacivat",c:6,d:"Geleneksel gölge oyunumuzun sevilen karakterleridir.",i:"Karagoez-davul-Hacivat-zurna.jpg"},
+{n:"Nasrettin Hoca",c:6,d:"Fıkralarıyla bilgeli ve espirili halk hikâyeleri kahramanıdır.",i:"Nasreddin Hoca.jpg"},
+{n:"Masal Anlatıcılığı",c:6,d:"Büyüklerin çocuklara hikâye anlatması sözlü kültür geleneğimizdir.",i:"Masal anlatıcısı.jpg"},
+{n:"Türk Bayrağı",c:7,d:"Ay-yıldızlı al sancağımız, bağımsızlığımızın simgesidir.",i:"Flag of Turkey.svg"},
+{n:"İstiklâl Marşı",c:7,d:"Millî marşımız; Mehmet Akif Ersoy tarafından yazılmıştır.",i:"İstiklal Marşı.jpg"},
+{n:"23 Nisan",c:7,d:"Ulusal Egemenlik ve Çocuk Bayramı'dır.",i:"23 April National Sovereignty and Children's Day.jpg"},
+{n:"29 Ekim",c:7,d:"Cumhuriyet Bayramı'dır; Cumhuriyetimizin ilanını kutlarız.",i:"Republic day of turkey, October 29, 2023.jpg"}
+,{n:"Sultanahmet Camii",c:5,d:"İstanbul'un siluetiyle özdeşleşmiş, mavi çinileriyle tanınan tarihî camidir.",i:"SultanAhmetMosqueIstanbul.jpg"}
+,{n:"Topkapı Sarayı",c:5,d:"Osmanlı padişahlarının uzun süre yaşadığı ve devlet işlerini yürüttüğü tarihî saraydır.",i:"Topkapi palace.jpg"}
+,{n:"Dolmabahçe Sarayı",c:5,d:"İstanbul Boğazı kıyısında yer alan, Osmanlı döneminden kalma görkemli saraydır.",i:"Istanbul - Dolmabahçe Palace.jpg"}
+,{n:"Galata Kulesi",c:5,d:"İstanbul'un tarihî kent siluetinin tanınan simgelerindendir.",i:"Galata Tower, Istanbul.jpg"}
+,{n:"Süleymaniye Camii",c:5,d:"Mimar Sinan'ın eserlerinden biri olan, İstanbul'daki tarihî camidir.",i:"Suleymaniye Mosque, Istanbul.jpg"}
+,{n:"Kız Kulesi",c:5,d:"İstanbul Boğazı'nda küçük bir ada üzerinde bulunan tarihî kuledir.",i:"Maiden's Tower, Istanbul.jpg"}
+,{n:"Anıtkabir",c:5,d:"Mustafa Kemal Atatürk'ün anıt mezarıdır; Ankara'da bulunur.",i:"Anıtkabir - Ankara.jpg"}
+,{n:"Selimiye Camii",c:5,d:"Edirne'de bulunan ve Mimar Sinan'ın ustalık eseri olarak bilinen camidir.",i:"Selimiye Mosque Edirne.jpg"}
+,{n:"Mevlana Müzesi",c:5,d:"Konya'da Mevlana Celaleddin Rumi'nin türbesini ve eserlerini barındıran tarihî mekândır.",i:"MevlanaMuseum.jpg"}
+,{n:"Sümela Manastırı",c:5,d:"Trabzon'da sarp kayalıklar üzerine kurulmuş tarihî manastırdır.",i:"Sumela Monastery!.jpg"}
+,{n:"Efes Celsus Kütüphanesi",c:5,d:"İzmir Selçuk'taki Efes Antik Kenti'nin en tanınmış Roma dönemi yapılarındandır.",i:"Celsus library in Ephesus.jpg"}
+,{n:"Aspendos Antik Tiyatrosu",c:5,d:"Antalya yakınlarında yer alan, Roma döneminden günümüze ulaşmış antik tiyatrodur.",i:"Aspendos Theatre, Turkey.jpg"}
+,{n:"Rumeli Hisarı",c:5,d:"İstanbul Boğazı kıyısında, Fatih Sultan Mehmet döneminde yaptırılan kaledir.",i:"Rumeli Hisari Istanbul.JPG"}
+,{n:"Yerebatan Sarnıcı",c:5,d:"İstanbul'da Bizans döneminden kalan, sütunlarıyla tanınmış yer altı su yapısıdır.",i:"Yerebatan Sarnıcı Istanbul.jpg"}
+,{n:"İshak Paşa Sarayı",c:5,d:"Ağrı'nın Doğubayazıt ilçesinde bulunan, farklı mimari etkileri bir araya getiren tarihî saraydır.",i:"00 2404 Ishak Pasha Palace - Turkey.jpg"}
+,{n:"Lahmacun",c:0,d:"İnce hamurun üzerine kıymalı, sebzeli ve baharatlı harç sürülerek pişirilen yemeğimizdir.",i:"Lahmacun.jpg"}
+,{n:"Tantuni",c:0,d:"Mersin ile özdeşleşmiş, ince doğranmış etin lavaş veya ekmekle sunulduğu yöresel yemektir.",i:"Tantuni sokak yemeği.jpg"}
+,{n:"Adana Kebap",c:0,d:"Adana yöresiyle özdeşleşmiş, baharatlı kıymanın şişte pişirilmesiyle hazırlanan yemektir.",i:"Adana Kebap.jpg"}
+,{n:"19 Mayıs",c:7,d:"Atatürk'ü Anma, Gençlik ve Spor Bayramı'dır.",i:"Festival of Youth and Sports, 1939, Turkey.jpg"}
+,{n:"30 Ağustos",c:7,d:"Zafer Bayramı'dır; Kurtuluş Savaşı'ndaki büyük zaferimizi anarız.",i:"2022 30 ağustos'ta anıtkabirdekiler.jpg"}
+];
+
+/* Eşleştirme çiftleri */
+const ESLES = [
+["Baklava","Yöresel tatlı"],["Horon","Halk oyunu"],["Zeybek","Ege ile özdeşleşen halk oyunu"],
+["Kemençe","Müzik aleti"],["Ebru","Geleneksel sanat"],["Kilim","Dokumacılık"],
+["Cirit","Geleneksel atlı spor"],["Yağlı güreş","Geleneksel spor"],["Mangala","Geleneksel zekâ oyunu"],
+["Karagöz ve Hacivat","Gölge oyunu"],["Nasrettin Hoca","Fıkralar"],["Göbeklitepe","Tarihî arkeolojik alan"],
+["Safranbolu evleri","Geleneksel mimari"],["Bayram ziyareti","Gelenek ve görenek"],["Türk kahvesi","Geleneksel içecek kültürü"]
+];
+
+/* Doğru-Yanlış soruları */
+const DY = [
+["Horon, Türkiye'de oynanan halk oyunlarından biridir.",true,"Horon, Karadeniz yöresinin ünlü halk oyunudur."],
+["Ebru sanatı bir halk oyunudur.",false,"Ebru, su üzerine boya ile desen yapma sanatıdır; halk oyunu değildir."],
+["Halı ve kilim dokumacılığı kültürel mirasımızın örneklerindendir.",true,"Dokumacılık, kuşaktan kuşağa aktarılan bir el sanatımızdır."],
+["Millî kültür yalnızca tarihî binalardan oluşur.",false,"Millî kültür; dil, yemek, müzik, gelenek ve tarihî eserlerin tümünü kapsar."],
+["Aile büyüklerinden öğrenilen gelenekler kültürün aktarılmasına katkı sağlar.",true,"Kültür en çok aile içinde kuşaktan kuşağa aktarılır."],
+["Mangala, geleneksel bir zekâ oyunudur.",true,"Mangala, taşlarla oynanan strateji ve zekâ oyunudur."],
+["Bütün yörelerde aynı halk oyunları oynanır.",false,"Her yörenin kendine özgü oyunları vardır; örneğin horon Karadeniz'e, zeybek Ege'ye özgüdür."],
+["Karagöz ve Hacivat, geleneksel gölge oyunu karakterleridir.",true,"Bu iki karakter perde arkasından oynanan gölge oyunumuzun kahramanlarıdır."],
+["Kültürel ögeler geçmişten günümüze aktarılabilir.",true,"İşte buna kültürel miras ve aktarım denir."],
+["Bir gelenek her ailede aynı biçimde uygulanmak zorundadır.",false,"Gelenekler aileden aileye ve yöreden yöreye farklılık gösterebilir; bu çok doğaldır."],
+["Göbeklitepe Şanlıurfa ilimizdedir.",true,"Göbeklitepe, Şanlıurfa'da bulunan 12 bin yıllık tapınak alanıdır."],
+["Kemençe bir yemek çeşididir.",false,"Kemençe, Karadeniz yöresine özgü yaylı bir müzik aletidir."],
+["Bayram sabahı büyüklerin eli öpülebilir.",true,"Bu, saygı ve sevgi göstergesi olan bir geleneğimizdir."],
+["Okçuluk geleneksel sporlarımızdan biridir.",true,"Okçuluk, köklü bir geleneğe sahip sporlarımızdan biridir."],
+["Türk kahvesi sadece İzmir'de içilir.",false,"Türk kahvesi tüm ülkemizde sevilir; yalnızca tek bir şehre ait değildir."],
+["Safranbolu evleri geleneksel mimarimize örnektir.",true,"Cumbalı ahşap evleriyle ünlü Safranbolu Unesco Dünya Mirası Listesi'ndedir."],
+["Nasrettin Hoca fıkraları sözlü kültürümüze aittir.",true,"Fıkralar, sözlü yolla kuşaktan kuşağa aktarılmıştır."],
+["Davul ve zurna sadece konserlerde çalınır.",false,"Davul-zurna özellikle düğünlerde ve bayramlarda geleneksel olarak çalınır."],
+["23 Nisan çocuklara armağan edilen bir bayramdır.",true,"23 Nisan, dünyada çocuklara armağan edilen ilk bayramdır."],
+["Bir kültürel ögeyi korumak önemsizdir.",false,"Kültürel mirası korumak, geçmişimizi geleceğe taşımak demektir."]
+];
+
+/* Boşluk doldurma */
+const BF = [
+{s:"Horon, bir ______ oyunudur.",a:["halk"],ip:"5 harfli, 'h' ile başlar."},
+{s:"Baklava, kültürümüzde önemli bir yere sahip geleneksel bir ______ örneğidir.",a:["tatlı","tatlisi"],ip:"Yemek sonrası yenir, 't' ile başlar."},
+{s:"Ebru, geleneksel ______ sanatlarımızdan biridir.",a:["kâğıt süsleme","kağıt süsleme"],ip:"İki kelime: kağıt + süsleme."},
+{s:"Karagöz ve Hacivat, geleneksel ______ oyununun karakterleridir.",a:["gölge"],ip:"Perde üzerine düşen karakterler... 5 harfli."},
+{s:"Geçmişten günümüze aktarılan değerlerimiz kültürel ______ oluşturur.",a:["miras"],ip:"Babamızdan kalan değerli şeye denir."},
+{s:"Kilim dokumacılığı geleneksel ______ sanatına örnektir.",a:["el"],ip:"Vücudumuzun iki parçasından biri..."},
+{s:"Mangala geleneksel bir ______ oyunudur.",a:["zekâ","zeka"],ip:"Akıl ve düşünmeyle ilgili..."},
+{s:"Zeybek, ______ Bölgesi ile özdeşleşen halk oyunudur.",a:["ege"],ip:"İzmir'in de içinde olduğu bölge..."},
+{s:"Yağlı güreş, ______ şehrimizdeki Kırkpınar'da yapılır.",a:["edirne"],ip:"Trakya'daki şehir..."},
+{s:"Göbeklitepe, ______ ilimizdedir.",a:["şanlıurfa","sanliurfa","urfa"],ip:"Güneydoğu'da, gülyeni ile ünlü il..."},
+{s:"Kemençe, ______ yöresinin yaylı çalgısıdır.",a:["karadeniz"],ip:"Horonun da oynandığı bölge..."},
+{s:"İstiklâl Marşı'nın şairi Mehmet Akif ______'dir.",a:["ersoy"],ip:"Soyadı..."},
+{s:"23 Nisan ______ ve Çocuk Bayramı'dır.",a:["ulusal egemenlik"],ip:"İki kelime: ulusal + egemenlik."},
+{s:"Cumhuriyet Bayramı ______ Ekim'de kutlanır.",a:["29"],ip:"Ayın sonlarına doğru..."},
+{s:"Hıdırellez ______ Mayıs'ta kutlanır.",a:["6"],ip:"Baharın gelişini simgeler..."}
+];
+
+/* Çoktan seçmeli test */
+const TEST = [
+{q:"Bir öğrenci ailesinden baklava yapmayı öğrenmiş ve bu geleneği kendi çocuklarına da öğretmek istediğini söylemiştir. Bu durum aşağıdakilerden hangisine örnektir?",o:["Kültürün kuşaktan kuşağa aktarılmasına","Tarihî eserlerin korunmasına","Halk oyunu öğrenilmesine","Doğal çevrenin değişmesine"],a:0,e:"Aile içinde öğrenilen becerinin gelecek kuşağa aktarılması kültür aktarımıdır.",img:1},
+{q:"Aşağıdakilerden hangisi millî kültürümüzün parçası DEĞİLDİR?",o:["Halk oyunlarımız","Yöresel yemeklerimiz","Geleneksel el sanatlarımız","Başka ülkelerin marşları"],a:3,e:"Millî kültür, bir millete özgü ortak değerlerdir.",img:-1},
+{q:"Görseldeki dokuma ürünü aşağıdakilerden hangisidir?",o:["Halı ve kilim","Ebru tablosu","Çini tabak","Hat levhası"],a:0,e:"Desenli dokuma ürünleri halı ve kilimdir.",img:11},
+{q:"Horon halk oyunu hangi yöremizle özdeşleşmiştir?",o:["Ege","Karadeniz","Marmara","Akdeniz"],a:1,e:"Horon, Karadeniz yöresinin hızlı ve coşkulu oyunudur.",img:17},
+{q:"Ebru sanatı nedir?",o:["Taş oymacılığı","Su üzerinde boyayla kâğıda desen yapma sanatı","Ok atma yarışması","Gölge oyunu"],a:1,e:"Ebru, su üzerine serilen boyaların kâğıda aktarılması sanatıdır.",img:12},
+{q:"Göbeklitepe aşağıdaki illerimizden hangisindedir?",o:["İzmir","Edirne","Şanlıurfa","Trabzon"],a:2,e:"Göbeklitepe, Şanlıurfa'da bulunan 12 bin yıllık tapınak alanıdır.",img:34},
+{q:"Mangala nasıl bir oyundur?",o:["Fiziksel güç oyunu","Su sporu","Geleneksel zekâ oyunu","Takım oyunu"],a:2,e:"Mangala, taşlarla oynanan strateji ve zekâ oyunudur.",img:33},
+{q:"Karagöz ve Hacivat hangi tür bir gösterinin karakterleridir?",o:["Kukla oyunu","Gölge oyunu","Tiyatro","Opera"],a:1,e:"Perdenin arkasından ışıkla oynatılan figürlerle yapılan gösteridir.",img:38},
+{q:"23 Nisan hangi bayramımızdır?",o:["Zafer Bayramı","Cumhuriyet Bayramı","Ulusal Egemenlik ve Çocuk Bayramı","Gençlik ve Spor Bayramı"],a:2,e:"23 Nisan 1920'de TBMM açılmıştır; çocuklara armağan edilen bayramdır.",img:43},
+{q:"Misafir ağırlamak kültürümüzde aşağıdaki değerlerden hangisini yansıtır?",o:["Misafirperverlik","Rekabetçilik","Bireysellik","Tüketimcilik"],a:0,e:"Misafire ikram etmek ve güzel davranmak geleneklerimizdedir.",img:24},
+{q:"Görseldeki geleneksel konutlar hangi şehrimizde bulunur?",o:["Safranbolu","Antalya","Bursa","Erzurum"],a:0,e:"Cumbalı ahşap evleriyle Safranbolu, Unesco Dünya Mirası Listesi'ndedir.",img:35},
+{q:"Kemençe hangi yöremize özgü bir çalgıdır?",o:["Ege","İç Anadolu","Karadeniz","Güneydoğu"],a:2,e:"Kemençe, Karadeniz yöresinin yaylı halk çalgısıdır.",img:22},
+{q:"Kırkpınar Yağlı Güreşleri hangi ilimizde yapılır?",o:["Samsun","Edirne","Muğla","Adana"],a:1,e:"Kırkpınar, Edirne'de 650 yılı aşkın süredir düzenlenir.",img:30},
+{q:"'Dünkü çocuk, bugünün büyüğü' sözü aşağıdakilerden hangisini anlatır?",o:["Kültürün kuşaktan kuşağa aktarılmasını","Doğal afetleri","Şehirleşmeyi","Sanayileşmeyi"],a:0,e:"Her kuşak bir öncekinden öğrenir ve sonrakine aktarır.",img:-1},
+{q:"Görseldeki sanat dalı aşağıdakilerden hangisidir?",o:["Çini","Hat","Ebru","Tezhip"],a:2,e:"Su üzerindeki boyaların kâğıda aktarılması ebru sanatıdır.",img:12},
+{q:"Zeybek halk oyunu hangi bölgemizle özdeşleşmiştir?",o:["Ege","Karadeniz","Doğu Anadolu","Marmara"],a:0,e:"Zeybek, Ege yöresinin ağır ve kahramanlık dolu oyunudur.",img:18},
+{q:"Tarihî eserler bize ne hakkında bilgi verir?",o:["Sadece hava durumu hakkında","Geçmişteki yaşam biçimi, mimari ve sanat anlayışı hakkında","Sadece spor hakkında","Sadece yemek tarifleri hakkında"],a:1,e:"Tarihî eserler geçmiş toplumların yaşamını anlatır.",img:36},
+{q:"Türk bayrağımızda bulunan semboller nelerdir?",o:["Ay ve yıldız","Güneş ve dalga","Kuş ve ağaç","Dağ ve nehir"],a:0,e:"Kırmızı zemin üzerinde beyaz ay-yıldız vardır.",img:41},
+{q:"Tarhana çorbası nasıl hazırlanır?",o:["Yazın kurutulur, kışın pişirilir","Sadece çiğ tüketilir","Denizden toplanır","Hiç pişirilmez"],a:0,e:"Tarhana, yazın hazırlanıp kurutulur, kışın çorba olarak pişirilir.",img:4},
+{q:"Görseldeki taşlı oyun hangisidir?",o:["Satranç","Mangala","Tavla","Domino"],a:1,e:"Taşlarla iki oyuncu arasında strateji oyunu mangaladır.",img:33},
+{q:"Hıdırellez ne zaman kutlanır?",o:["21 Mart","6 Mayıs","29 Ekim","23 Nisan"],a:1,e:"Hıdırellez, 6 Mayıs'ta baharın gelişini kutlar.",img:28},
+{q:"Aile büyüklerinden türkü öğrenmek aşağıdakilerden hangisine örnektir?",o:["Sözlü kültürün aktarımına","Tarihî eser inşasına","Doğa sporlarına","Teknoloji kullanımına"],a:0,e:"Türküler sözlü yolla kuşaktan kuşağa aktarılır.",img:21},
+{q:"Görseldeki çalgılar düğünlerimizin vazgeçilmezi olan hangisidir?",o:["Davul ve zurna","Piyano","Gitar","Keman"],a:0,e:"Davul-zurna, düğün ve bayramlarımızın geleneksel sesidir.",img:23},
+{q:"Aşağıdakilerden hangisi geleneksel bir spor değildir?",o:["Yağlı güreş","Cirit","Geleneksel okçuluk","Basketbol"],a:3,e:"Basketbol, dünyada yeni gelişen bir spor dalıdır.",img:31},
+{q:"Görseldeki kaplama sanatı hangi yöremizle ünlüdür?",o:["Çini (İznik-Kütahya)","Cam (İsviçre)","Porselen (Çin)","Seramik (Japonya)"],a:0,e:"Renkli çini işçiliği İznik ve Kütahya ile ünlüdür.",img:13}
+];
+
+/* Tahmin kategorileri */
+const TH_CATS = ["Yemek ve içecek","El sanatı","Halk oyunu","Gelenek ve görenek","Spor veya oyun","Tarihî eser","Sözlü kültür","Millî değer"];
+const TH_MAP = [0,1,2,3,4,5,6,7];
+
+/* Harita şehirleri */
+const SEHIRLER = [
+{n:"Gaziantep",b:"Baklava ve bakırcılık"},
+{n:"Konya",b:"Mevlevî kültürü ve etli ekmek"},
+{n:"Trabzon",b:"Horon ve kemençe"},
+{n:"Ege Bölgesi",b:"Zeybek ve zeytin kültürü"},
+{n:"Safranbolu",b:"Geleneksel evler"},
+{n:"Edirne",b:"Kırkpınar yağlı güreşleri"},
+{n:"Şanlıurfa",b:"Göbeklitepe ve sıra geceleri"},
+{n:"Kayseri",b:"Mantı ve pastırma"},
+{n:"Kapadokya",b:"Yeraltı şehirleri ve çömlek"},
+{n:"Antalya",b:"Tarihî çarşılar ve yörük kültürü"}
+];
+</script>
+
+<script>
+/* ================= DURUM ================= */
+const varsayilanDurum = {puan:0, odul:[], ogrenilen:[], dogru:0, bolum:{}};
+function guvenliJSONOku(anahtar, varsayilan){
+ try { const ham = localStorage.getItem(anahtar); return ham ? JSON.parse(ham) : varsayilan; }
+ catch(e) { return varsayilan; }
+}
+let durum = guvenliJSONOku("tkk", varsayilanDurum);
+function kaydet(){ localStorage.setItem("tkk", JSON.stringify(durum)); guncellePuan(); }
+const norm = s => s.toLocaleLowerCase("tr").replace(/â/g,"a").replace(/î/g,"i").trim().replace(/\s+/g," ");
+const karistir = a => { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; };
+
+function puanEkle(n, anahtar){
+ if(anahtar){ if(durum.odul.includes(anahtar)) return; durum.odul.push(anahtar); }
+ durum.puan += n; kaydet();
+}
+function bolumTamamla(b, detay){
+ durum.bolum[b] = detay || true; kaydet();
+}
+function guncellePuan(){
+ document.getElementById("puanKutu").textContent = "⭐ " + durum.puan + " puan";
+ const r = rozetBul(durum.puan);
+ document.getElementById("homeRozet").textContent = "🎖️ " + r.ad;
+ document.getElementById("homeIlerleme").style.width = Math.min(100, durum.puan/2.5) + "%";
+ document.getElementById("homeIlerlemeYazi").textContent = durum.puan + " puan • " + r.ad;
+}
+function rozetBul(p){
+ if(p>=200) return {ad:"Kültür Elçisi",i:"🌍"};
+ if(p>=150) return {ad:"Kültür Ustası",i:"🏆"};
+ if(p>=100) return {ad:"Kültür Dedektifi",i:"🕵️"};
+ if(p>=50)  return {ad:"Anadolu Gezgini",i:"🧭"};
+ return {ad:"Kültür Kaşifi Adayı",i:"🌱"};
+}
+
+
+/* ================= NAVİGASYON ================= */
+function gosterSec(id){
+ document.querySelectorAll(".bolum").forEach(s=>s.classList.remove("acik"));
+ const sec = document.getElementById(id);
+ if(sec) sec.classList.add("acik");
+ document.querySelectorAll("#anaMenu button").forEach(b=>b.classList.toggle("aktif", b.dataset.sec===id));
+ window.scrollTo({top:0, behavior:"smooth"});
+ if(id==="ders") bolumTamamla("ders");
+ if(id==="panel") panelGoster();
+ if(id==="ogretmen") ogretmenGoster();
+}
+document.addEventListener("click", e=>{
+ const b = e.target.closest("[data-sec]");
+ if(b) gosterSec(b.dataset.sec);
+});
+
+/* ================= ANA SAYFA GÖRSELLERİ ================= */
+(function(){
+ const havuz = [1,12,17,21,24,30,34,35,38];
+ const el = document.getElementById("heroGorseller");
+ el.innerHTML = havuz.map(i=>imgHTML(CARDS[i].n, CARDS[i].i)).join("");
+ el.querySelectorAll("img").forEach((im,k)=>{ im.className="hg"; im.alt=CARDS[havuz[k]].n; });
+ const dg = [1,12,17,33,34,38];
+ dg.forEach((i,k)=>{
+  const alan = document.getElementById("dersGorsel"+(k+1));
+  if(alan) alan.innerHTML = imgHTML(CARDS[i].n, CARDS[i].i) + "<div class='etiket'>"+CARDS[i].n+"</div>";
+ });
+ const tarihGaleri = document.getElementById("tarihiMekanGaleri");
+ if(tarihGaleri){
+  tarihGaleri.innerHTML = CARDS.filter(c=>c.c===5).map(c=>
+   `<article class="mekan-kart">${imgHTML(c.n,c.i)}<h4>${c.n}</h4></article>`
+  ).join("");
+ }
+})();
+
+/* ================= KONU TEKRARI ================= */
+let aktifFiltre = -1;
+(function(){
+ const bar = document.getElementById("filtreBar");
+ bar.innerHTML = `<button class="aktif" data-f="-1">Tümü</button><button data-f="-2">Karışık 🎲</button>` +
+  CATS.map((c,i)=>`<button data-f="${i}">${c}</button>`).join("");
+ bar.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  aktifFiltre = +b.dataset.f;
+  bar.querySelectorAll("button").forEach(x=>x.classList.toggle("aktif",x===b));
+  kartlariCiz();
+ });
+ kartlariCiz();
+})();
+function kartlariCiz(){
+ let liste = CARDS.map((c,i)=>i);
+ if(aktifFiltre===-2) liste = karistir(liste);
+ else if(aktifFiltre>=0) liste = liste.filter(i=>CARDS[i].c===aktifFiltre);
+ document.getElementById("kartSayi").textContent = liste.length + " kart gösteriliyor";
+ document.getElementById("kartGrid").innerHTML = liste.map(i=>{
+  const c = CARDS[i], og = durum.ogrenilen.includes(i);
+  return `<div class="ogrenim-kart ${og?'ogrenildi':''}">
+   ${imgHTML(c.n,c.i)}
+   <div class="ok-body">
+    <span class="kat">${CATS[c.c]}</span>
+    <h4>${c.n}</h4><p>${c.d}</p>
+    <button onclick="ogrenToggle(${i},this)">${og?'✓ Öğrendim!':'Öğrendim'}</button>
+   </div></div>`;
+ }).join("");
+}
+function ogrenToggle(i,btn){
+ const ix = durum.ogrenilen.indexOf(i);
+ if(ix>=0){ durum.ogrenilen.splice(ix,1); btn.textContent="Öğrendim"; btn.closest(".ogrenim-kart").classList.remove("ogrenildi"); }
+ else{
+  durum.ogrenilen.push(i); btn.textContent="✓ Öğrendim!"; btn.closest(".ogrenim-kart").classList.add("ogrenildi");
+  if(durum.ogrenilen.length===1) puanEkle(5,"kart1");
+  if(durum.ogrenilen.length===15) puanEkle(10,"kart15");
+  if(durum.ogrenilen.length===30) puanEkle(15,"kart30");
+  if(durum.ogrenilen.length===CARDS.length) puanEkle(30,"kartAll");
+  if(!durum.odul.includes("kart"+i)) puanEkle(1,"kart"+i);
+ }
+ kaydet();
+}
+
+/* ================= EŞLEŞTİRME ================= */
+let esSorular=[], esSecilen=null, esDogru=0, esTur=0;
+document.getElementById("esBaslat").onclick = ()=>{ esTur=0; esYeni(); document.getElementById("esBaslat").style.display="none"; };
+document.getElementById("esYeniTur").onclick = ()=>esYeni();
+function esYeni(){
+ esSecilen=null; esDogru=0;
+ const sec = karistir(ESLES.map((x,i)=>i)).slice(0,8);
+ esSorular = sec;
+ const solEl=document.getElementById("esSol"), sagEl=document.getElementById("esSag");
+ solEl.innerHTML = karistir(sec).map(i=>`<button data-i="${i}">${ESLES[i][0]}</button>`).join("");
+ sagEl.innerHTML = karistir(sec).map(i=>`<button data-i="${i}">${ESLES[i][1]}</button>`).join("");
+ document.getElementById("esBilgi").innerHTML="";
+ document.getElementById("esSonuc").innerHTML="";
+ document.getElementById("esYeniTur").style.display="none";
+ document.getElementById("esIlerleme").style.width="0%";
+}
+function esTik(btn){
+ if(btn.classList.contains("eslesen")) return;
+ const kolon = btn.closest("#esSol") ? "sol" : "sag";
+ if(!esSecilen){ esSecilen={btn,kolon}; btn.classList.add("secili"); return; }
+ if(esSecilen.kolon===kolon){ esSecilen.btn.classList.remove("secili"); esSecilen={btn,kolon}; btn.classList.add("secili"); return; }
+ const ilk = esSecilen.btn;
+ if(ilk.dataset.i===btn.dataset.i){
+  ilk.classList.remove("secili"); ilk.classList.add("eslesen"); btn.classList.add("eslesen");
+  esDogru++;
+  const i=+btn.dataset.i;
+  puanEkle(10,"es"+esTur+"_"+i);
+  durum.dogru++; kaydet();
+  document.getElementById("esBilgi").innerHTML = `<div class="gercek-bildirim geri-bildirim dogru">✅ Tebrikler! <strong>${ESLES[i][0]}</strong>: ${ESLES[i][1]}.</div>`;
+  document.getElementById("esIlerleme").style.width = (esDogru/esSorular.length*100)+"%";
+  if(esDogru===esSorular.length){
+   bolumTamamla("eslestirme", {tur:esTur+1, dogru:esDogru});
+   document.getElementById("esSonuc").innerHTML = `<div class="gercek-bildirim geri-bildirim bilgi">🎉 Tur bitti! ${esDogru}/${esSorular.length} doğru, %${Math.round(esDogru/esSorular.length*100)} başarı, +${esSorular.length*10} puan!</div>`;
+   document.getElementById("esYeniTur").style.display="inline-block";
+   esTur++;
+  }
+ } else {
+  ilk.classList.remove("secili");
+  document.getElementById("esBilgi").innerHTML = `<div class="gercek-bildirim geri-bildirim bilgi">🤔 Olmadı, ama denemeye devam! Tekrar dene.</div>`;
+ }
+ esSecilen=null;
+}
+document.getElementById("esSol").addEventListener("click",e=>{const b=e.target.closest("button"); if(b) esTik(b);});
+document.getElementById("esSag").addEventListener("click",e=>{const b=e.target.closest("button"); if(b) esTik(b);});
+
+/* ================= DOĞRU - YANLIŞ ================= */
+let dyListe=[], dyIx=0, dySkor=0;
+document.getElementById("dyBaslat").onclick = ()=>{
+ dyListe = karistir(DY.map((x,i)=>i)); dyIx=0; dySkor=0;
+ document.getElementById("dyBaslat").style.display="none";
+ document.getElementById("dyKart").style.display="block";
+ document.getElementById("dySonuc").innerHTML="";
+ dySoruGoster();
+};
+function dySoruGoster(){
+ const [s,c,a] = DY[dyListe[dyIx]];
+ document.getElementById("dySoru").textContent = (dyIx+1)+". "+s;
+ document.getElementById("dyGeri").innerHTML="";
+ document.getElementById("dyD").disabled=false; document.getElementById("dyY").disabled=false;
+ document.getElementById("dyD").className="secim-dugme"; document.getElementById("dyY").className="secim-dugme";
+ document.getElementById("dyIlerleme").style.width=(dyIx/dyListe.length*100)+"%";
+
+}
+function dyCevap(secim, btn){
+ const [s,c,a] = DY[dyListe[dyIx]];
+ document.getElementById("dyD").disabled=true; document.getElementById("dyY").disabled=true;
+ if(secim===c){
+  btn.classList.add("dogru-secim"); dySkor++;
+  durum.dogru++;
+  puanEkle(5,"dy"+dyListe[dyIx]);
+  document.getElementById("dyGeri").innerHTML = `<div class="gercek-bildirim geri-bildirim dogru">✅ Doğru! ${a}</div>`;
+ } else {
+  btn.classList.add("yanlis-secim");
+  (c?document.getElementById("dyD"):document.getElementById("dyY")).classList.add("dogru-secim");
+  document.getElementById("dyGeri").innerHTML = `<div class="gercek-bildirim geri-bildirim yanlis">🤔 ${a} Yeni bir kültürel bilgi öğrendin!</div>`;
+ }
+ kaydet();
+ setTimeout(()=>{
+  dyIx++;
+  if(dyIx<dyListe.length) dySoruGoster();
+  else{
+   document.getElementById("dyKart").style.display="none";
+   bolumTamamla("dy", {dogru:dySkor, toplam:dyListe.length});
+   document.getElementById("dySonuc").innerHTML = `<div class="gercek-bildirim geri-bildirim bilgi">🎉 Bölüm bitti! ${dySkor}/${dyListe.length} doğru (%${Math.round(dySkor/dyListe.length*100)}).</div><button class="buton altin" onclick="document.getElementById('dyBaslat').click()">Tekrar Oyna</button>`;
+   document.getElementById("dyIlerleme").style.width="100%";
+   document.getElementById("dyBaslat").style.display="inline-block";
+  }
+ },1800);
+}
+document.getElementById("dyD").onclick = e=>dyCevap(true, e.target);
+document.getElementById("dyY").onclick = e=>dyCevap(false, e.target);
+
+/* ================= BOŞLUK DOLDURMA ================= */
+let bfListe=[], bfIx=0, bfSkor=0, bfHak={};
+document.getElementById("bfBaslat").onclick = ()=>{
+ bfListe = karistir(BF.map((x,i)=>i)); bfIx=0; bfSkor=0; bfHak={};
+ document.getElementById("bfBaslat").style.display="none";
+ document.getElementById("bfKart").style.display="block";
+ document.getElementById("bfSonuc").innerHTML="";
+ bfSoruGoster();
+};
+function bfSoruGoster(){
+ const q = BF[bfListe[bfIx]];
+ document.getElementById("bfSoru").textContent = (bfIx+1)+". "+q.s;
+ document.getElementById("bfCevap").value=""; document.getElementById("bfCevap").disabled=false;
+ document.getElementById("bfGeri").innerHTML="";
+ document.getElementById("bfIpuclari").innerHTML = `<div class="ipucu">💡 İpucu: ${q.ip}</div>`;
+ document.getElementById("bfKontrol").disabled=false;
+ document.getElementById("bfIlerleme").style.width=(bfIx/bfListe.length*100)+"%";
+
+}
+document.getElementById("bfKontrol").onclick = ()=>{
+ const q = BF[bfListe[bfIx]];
+ const cevap = norm(document.getElementById("bfCevap").value);
+ if(!cevap){ document.getElementById("bfGeri").innerHTML=`<div class="gercek-bildirim geri-bildirim yanlis">Önce bir cevap yazmalısın.</div>`; return; }
+ if(q.a.some(x=>norm(x)===cevap)){
+  const i = bfListe[bfIx];
+  const ilk = !bfHak[i];
+  if(ilk){ bfSkor++; durum.dogru++; puanEkle(8,"bf"+i); }
+  document.getElementById("bfGeri").innerHTML=`<div class="gercek-bildirim geri-bildirim dogru">✅ Doğru! "${q.a[0]}" ${ilk?"(+8 puan)":"(ilk denemede bilemezdin ama öğrendin!)"}</div>`;
+  document.getElementById("bfCevap").disabled=true; document.getElementById("bfKontrol").disabled=true;
+  kaydet();
+  setTimeout(bfSonraki,1500);
+ } else {
+  bfHak[bfListe[bfIx]]=true;
+  document.getElementById("bfGeri").innerHTML=`<div class="gercek-bildirim geri-bildirim yanlis">🤔 Bir kez daha dene! İpucuna bak.</div>`;
+ }
+};
+document.getElementById("bfGoster").onclick = ()=>{
+ const q = BF[bfListe[bfIx]];
+ document.getElementById("bfGeri").innerHTML=`<div class="gercek-bildirim geri-bildirim bilgi">📖 Cevap: <strong>${q.a[0]}</strong>. Güzel ilerliyorsun, öğrenmek de kazançtır!</div>`;
+ document.getElementById("bfCevap").disabled=true; document.getElementById("bfKontrol").disabled=true;
+ setTimeout(bfSonraki,1800);
+};
+document.getElementById("bfCevap").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("bfKontrol").click();});
+function bfSonraki(){
+ bfIx++;
+ if(bfIx<bfListe.length) bfSoruGoster();
+ else{
+  document.getElementById("bfKart").style.display="none";
+  bolumTamamla("bf",{dogru:bfSkor,toplam:bfListe.length});
+  document.getElementById("bfSonuc").innerHTML = `<div class="gercek-bildirim geri-bildirim bilgi">🎉 Bölüm bitti! ${bfSkor}/${bfListe.length} doğru (%${Math.round(bfSkor/bfListe.length*100)}).</div><button class="buton altin" onclick="document.getElementById('bfBaslat').click()">Tekrar Oyna</button>`;
+  document.getElementById("bfIlerleme").style.width="100%";
+  document.getElementById("bfBaslat").style.display="inline-block";
+ }
+}
+
+/* ================= TEST ================= */
+let tSorular=[], tIx=0, tCevap=[], tYanlis=[], tTur=0;
+document.getElementById("testBaslat").onclick = ()=>testBaslat(TEST.map((x,i)=>i));
+function testBaslat(ixler){
+ tTur++;
+ tSorular = karistir(ixler).map(i=>{
+  const q = TEST[i];
+  const sirali = karistir(q.o.map((o,j)=>({o,d:j===q.a})));
+  return {qi:i, sec:sirali};
+ });
+ tIx=0; tCevap = Array(tSorular.length).fill(null); tYanlis=[];
+ document.getElementById("testBaslat").style.display="none";
+ document.getElementById("testSonuc").innerHTML="";
+ tGoster();
+}
+function tGoster(){
+ const s = tSorular[tIx], q = TEST[s.qi];
+ let html = `<div class="kart"><h3>Soru ${tIx+1} / ${tSorular.length}</h3>`;
+ if(q.img>=0){ const c = CARDS[q.img]; html += `<div class="gorsel-kart" style="max-width:400px;margin:10px 0">${imgHTML(c.n,c.i,180)}</div>`; }
+ html += `<p style="font-size:1.05rem;margin:10px 0"><strong>${q.q}</strong></p>`;
+ s.sec.forEach((op,j)=>{
+  const secili = tCevap[tIx]===j;
+  html += `<button class="secim-dugme ${secili?'dogru-secim':''}" data-j="${j}">${"ABCD"[j]}) ${op.o}</button>`;
+ });
+ html += `<div style="margin-top:12px">`;
+ html += tIx>0 ? `<button class="buton lacivert kucuk" id="tGeri">← Önceki Soru</button>` : "";
+ html += tIx<tSorular.length-1 ? ` <button class="buton turkuaz kucuk" id="tIleri">Sonraki Soru →</button>` : "";
+ html += `</div></div>`;
+ html += `<div class="kart k-a"><strong>Soru Navigasyonu:</strong> <span id="tNav">`;
+ tSorular.forEach((x,j)=>{
+  html += `<button style="display:inline-block;width:36px;height:36px;margin:3px;border-radius:8px;border:2px solid ${tCevap[j]!==null?'var(--yesil)':'#b0bec5'};background:${j===tIx?'var(--altin)':'#fff'};font-weight:700" data-nav="${j}">${j+1}</button>`;
+ });
+ const bos = tCevap.filter(x=>x===null).length;
+ html += `</span><p style="margin-top:8px">${bos===0?"Tüm sorular cevaplandı! ✓":bos+" soru cevapsız."}</p>`;
+ if(bos===0) html += `<button class="buton" id="tBitir">Testi Bitir 🏁</button>`;
+ document.getElementById("testAna").innerHTML = html;
+ document.getElementById("testDurum").textContent = "Test çözülüyor... (Tur "+tTur+")";
+ document.getElementById("testAna").querySelectorAll("[data-j]").forEach(b=>{
+  b.onclick = ()=>{ tCevap[tIx]=+b.dataset.j; tGoster(); };
+ });
+ document.getElementById("testAna").querySelectorAll("[data-nav]").forEach(b=>{
+  b.onclick = ()=>{ tIx=+b.dataset.nav; tGoster(); };
+ });
+ const g=document.getElementById("tGeri"); if(g) g.onclick=()=>{tIx--; tGoster();};
+ const il=document.getElementById("tIleri"); if(il) il.onclick=()=>{tIx++; tGoster();};
+ const bit=document.getElementById("tBitir"); if(bit) bit.onclick=tBitir;
+}
+function tBitir(){
+ let dogru=0;
+ tSorular.forEach((s,j)=>{ if(s.sec[tCevap[j]].d){dogru++; puanEkle(4,"t"+tTur+"_"+s.qi);} else tYanlis.push(s.qi); });
+ durum.dogru += dogru; kaydet();
+ const yanlis = tSorular.length-dogru, yuzde = Math.round(dogru/tSorular.length*100);
+ bolumTamamla("test",{dogru,toplam:tSorular.length,yuzde});
+ let html = `<div class="gercek-bildirim geri-bildirim ${yuzde>=70?'dogru':'bilgi'}">🎉 Test bitti!<br>Doğru: <strong>${dogru}</strong> • Yanlış: <strong>${yanlis}</strong> • Boş: <strong>0</strong><br>Başarı yüzdesi: <strong>%${yuzde}</strong>${yuzde>=70?" • Harika iş!":yuzde>=50?" • Güzel ilerliyorsun!":" • Bir kez daha dene, olacak!"}</div>`;
+ if(tYanlis.length){
+  html += `<div class="kart k-k"><h3>Yanlışlarının Doğru Cevapları</h3>`;
+  tYanlis.forEach(qi=>{
+   const q=TEST[qi];
+   html += `<p><strong>• ${q.q}</strong><br>✅ Doğru cevap: <strong>${q.o[q.a]}</strong><br><small>${q.e}</small></p>`;
+  });
+  html += `</div><button class="buton turkuaz" id="tYanlis">Yanlışlarımı Tekrar Çöz</button> `;
+ }
+ html += `<button class="buton altin" id="tYeni">Testi Yeniden Başlat</button>`;
+ document.getElementById("testAna").innerHTML="";
+ document.getElementById("testDurum").textContent = "Son test sonucun: %"+yuzde;
+ document.getElementById("testSonuc").innerHTML = html;
+ document.getElementById("testBaslat").style.display="inline-block";
+ document.getElementById("testBaslat").textContent="Yeni Test Turu Başlat";
+ const y=document.getElementById("tYanlis"); if(y) y.onclick=()=>{ testBaslat(tYanlis); document.getElementById("testSonuc").innerHTML=""; };
+ const n=document.getElementById("tYeni"); if(n) n.onclick=()=>{ testBaslat(TEST.map((x,i)=>i)); document.getElementById("testSonuc").innerHTML=""; };
+}
+
+/* ================= TAHMİN OYUNU ================= */
+let thListe=[], thIx=0, thSkor=0, thTur=0, thHak={};
+document.getElementById("thBaslat").onclick = ()=>{
+ thTur++;
+ thListe = karistir(CARDS.map((c,i)=>i)).slice(0,20);
+ thIx=0; thSkor=0; thHak={};
+ document.getElementById("thBaslat").style.display="none";
+ document.getElementById("thKart").style.display="block";
+ document.getElementById("thSonuc").innerHTML="";
+ thGoster();
+};
+function thGoster(){
+ const ci = thListe[thIx], c = CARDS[ci];
+ document.getElementById("thGorsel").innerHTML = imgHTML(c.n, c.i, 220);
+ document.getElementById("thGeri").innerHTML="";
+ const secenekler = karistir(TH_CATS.map((t,j)=>j));
+ document.getElementById("thSecenekler").innerHTML = secenekler.map(j=>
+  `<button class="secim-dugme" data-j="${j}">${TH_CATS[j]}</button>`).join("");
+ document.getElementById("thSecenekler").querySelectorAll("button").forEach(b=>{
+  b.onclick = ()=>thCevap(ci, +b.dataset.j, b);
+ });
+ document.getElementById("thIlerleme").style.width=(thIx/thListe.length*100)+"%";
+}
+function thCevap(ci, j, btn){
+ const c = CARDS[ci];
+ if(TH_MAP[c.c]===j){
+  const ilk = !thHak[ci];
+  if(ilk){ thSkor++; durum.dogru++; puanEkle(6,"th"+thTur+"_"+ci); }
+  btn.classList.add("dogru-secim");
+  document.getElementById("thSecenekler").querySelectorAll("button").forEach(x=>x.disabled=true);
+  document.getElementById("thGeri").innerHTML = `<div class="gercek-bildirim geri-bildirim dogru">✅ Doğru kategori! <strong>${c.n}</strong>: ${c.d}</div>`;
+  kaydet();
+  setTimeout(thSonraki, 2200);
+ } else {
+  thHak[ci]=true;
+  btn.classList.add("yanlis-secim"); btn.disabled=true;
+  const ipucu = "Bu öge "+CATS[c.c].toLocaleLowerCase("tr")+" kategorisinde.";
+  document.getElementById("thGeri").innerHTML = `<div class="gercek-bildirim geri-bildirim bilgi">💡 İpucu: ${ipucu} Tekrar dene!</div>`;
+ }
+}
+function thSonraki(){
+ thIx++;
+ if(thIx<thListe.length) thGoster();
+ else{
+  document.getElementById("thKart").style.display="none";
+  bolumTamamla("tahmin",{dogru:thSkor,toplam:thListe.length});
+  document.getElementById("thSonuc").innerHTML = `<div class="gercek-bildirim geri-bildirim bilgi">🎉 Tur bitti! ${thSkor}/${thListe.length} doğru tahmin (%${Math.round(thSkor/thListe.length*100)}). Yeni bir kültürel bilgi öğrendin!</div><button class="buton altin" onclick="document.getElementById('thBaslat').click()">Yeni Tur</button>`;
+  document.getElementById("thIlerleme").style.width="100%";
+  document.getElementById("thBaslat").style.display="inline-block";
+ }
+}
+
+/* ================= HARİTA ================= */
+(function(){
+ const g = document.getElementById("sehirGrid");
+ g.innerHTML = SEHIRLER.map((s,i)=>`<button class="sehir" data-i="${i}">📍 ${s.n}</button>`).join("");
+ g.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  const s = SEHIRLER[+b.dataset.i];
+  const ornekler = CARDS.filter(c=> norm(s.b).includes(norm(c.n).split(" ")[0]) || norm(c.n).includes(norm(s.n)) ).slice(0,3);
+  let ek = ornekler.length ? `<p><strong>İlgili kartlar:</strong> ${ornekler.map(c=>c.n).join(", ")}</p>` : "";
+  document.getElementById("sehirBilgi").innerHTML = `<div class="kart k-a"><h3>📍 ${s.n}</h3><p><strong>Kültürel zenginlikleri:</strong> ${s.b}</p>${ek}<p><em>Not: Bu ögeler başka yörelerde de yaşatılabilir; kültürümüz ortak zenginliğimizdir.</em></p></div>`;
+ });
+})();
+
+
+/* ================= PANEL ================= */
+function panelGoster(){
+ const r = rozetBul(durum.puan);
+ document.getElementById("panPuan").textContent = durum.puan;
+ document.getElementById("panRozet").textContent = r.i+" "+r.ad;
+ document.getElementById("panDogru").textContent = durum.dogru;
+ document.getElementById("panKart").textContent = durum.ogrenilen.length;
+ document.getElementById("panKartToplam").textContent = CARDS.length;
+ const rozetler=[["Kültür Kaşifi Adayı",0],["Anadolu Gezgini",50],["Kültür Dedektifi",100],["Kültür Ustası",150],["Kültür Elçisi",200]];
+ document.getElementById("panRozetler").innerHTML = rozetler.map(([ad,es])=>
+  `<span class="rozet ${durum.puan>=es?'':'kilit'}">${durum.puan>=es?'🎖️':'🔒'} ${ad} (${es}+)</span>`).join(" ");
+ document.getElementById("panIlerleme").style.width = Math.min(100,durum.puan/2.5)+"%";
+ const bl = [["ders","Ders"],["tekrar","Konu Tekrarı"],["eslestirme","Eşleştirme"],["dy","Doğru–Yanlış"],["bf","Boşluk Doldurma"],["test","Test"],["tahmin","Tahmin Oyunu"]];
+ document.getElementById("panBolumler").innerHTML = bl.map(([k,ad])=>
+  `<span class="rozet ${durum.bolum[k]?'':'kilit'}" style="font-size:.85rem">${durum.bolum[k]?'✓':'○'} ${ad}</span>`).join(" ");
+}
+
+/* ================= ÖĞRETMEN MODU ================= */
+function ogretmenGoster(){
+ document.getElementById("obDers").textContent = durum.bolum.ders ? "Tamamlandı ✓" : "Henüz yok";
+ const y = (id,b)=>document.getElementById(id).textContent = durum.bolum[b] ? `${durum.bolum[b].dogru}/${durum.bolum[b].toplam} doğru (%${Math.round(durum.bolum[b].dogru/durum.bolum[b].toplam*100)})` : "Henüz yok";
+ y("obDY","dy"); y("obBF","bf"); y("obTest","test"); y("obTH","tahmin");
+ document.getElementById("obES").textContent = durum.bolum.eslestirme ? durum.bolum.eslestirme.tur+" tur tamamlandı" : "Henüz yok";
+ document.getElementById("obKart").textContent = durum.ogrenilen.length + " / " + CARDS.length;
+ const beceri = ["Kültür aktarımı","Millî kültür kapsamı","Görsel tanıma","Yöresel bilgi","Sanat tanıma","Tarihî miras","Kavram bilgisi","Görsel tanıma","Değer bilgisi","Gelenek bilgisi"];
+ document.getElementById("anahtarTablo").innerHTML = TEST.map((q,i)=>
+  `<tr><td>${i+1}</td><td>${q.q.slice(0,55)}...</td><td><strong>${"ABCD"[q.a]})</strong></td><td>${beceri[i]||"Genel"}</td></tr>`).join("");
+}
+
+guncellePuan();
+</script>
+</body>
+</html>
