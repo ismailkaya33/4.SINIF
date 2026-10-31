@@ -246,6 +246,16 @@
     .page-oyunlar { border-color: var(--oyunlar); }
     .page-oyunlar .game-list li a:hover { border-color: var(--oyunlar); background: #FDEDF3; transform: scale(1.03); }
 
+
+    /* Duyurular: ana sayfanın mevcut ders menüsünü değiştirmez */
+    .portal-duyurular {max-width:1000px;margin:0 auto 24px;padding:20px 24px;background:white;border:2px solid #d9e6f4;border-radius:20px;box-shadow:0 6px 18px #20365012}
+    .portal-duyurular h2{font-size:1.4rem;margin:0 0 12px;color:#24466b}
+    .duyuru-kart{border-top:1px solid #e2e8f0;padding:14px 0}
+    .duyuru-kart h3{font-size:1.05rem;margin:0 0 6px;color:#243b53}
+    .duyuru-kart p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 7px;line-height:1.55}
+    .duyuru-kart time{font-size:.8rem;color:#67788b}
+    .duyuru-durum{color:#64748b;margin:0}
+
 </style>
 </head>
 <body>
@@ -253,6 +263,12 @@
     <div class="header">
         <h1>İnteraktif Öğrenme Portalı</h1>
     </div>
+
+
+    <section class="portal-duyurular" id="portal-duyurular" aria-labelledby="duyuru-baslik">
+       <h2 id="duyuru-baslik">📢 Sınıf Duyuruları</h2>
+       <div id="duyuru-listesi" aria-live="polite"><p class="duyuru-durum">Duyurular yükleniyor...</p></div>
+    </section>
 
     <div class="container">
         
@@ -532,6 +548,42 @@
             document.getElementById('main-menu').style.display = 'grid';
         }
     </script>
+
+
+<script type="module">
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyArEQt8alG-UcD4-BrNEgqr1aJnIRfdt58",
+    authDomain: "sinif-egitim-portali.firebaseapp.com",
+    projectId: "sinif-egitim-portali",
+    appId: "1:972010232888:web:6a9d59f16b9cd28cefdacd"
+  };
+  const app = getApps()[0] || initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const liste = document.getElementById("duyuru-listesi");
+  const txt = (tag, value) => {const node=document.createElement(tag);node.textContent=value;return node;};
+
+  try {
+    const kayitlar = await getDocs(query(collection(db,"announcements"), orderBy("createdAt","desc"), limit(5)));
+    liste.replaceChildren();
+    if (kayitlar.empty) liste.append(txt("p","Henüz duyuru yayınlanmadı."));
+    kayitlar.forEach(docu => {
+      const d=docu.data();
+      const kart=document.createElement("article");kart.className="duyuru-kart";
+      kart.append(txt("h3",String(d.title||"Duyuru").slice(0,120)));
+      kart.append(txt("p",String(d.body||"").slice(0,3000)));
+      const tarih=d.createdAt?.toDate?.();
+      if(tarih){const t=txt("time",tarih.toLocaleDateString("tr-TR"));t.dateTime=tarih.toISOString();kart.append(t);}
+      liste.append(kart);
+    });
+  } catch(err) {
+    liste.replaceChildren(txt("p",err.code==="permission-denied"
+      ?"Duyuruların görüntülenmesi için Firestore okuma izni henüz açılmadı."
+      :"Duyurular şu an yüklenemedi. Lütfen daha sonra yeniden deneyin."));
+  }
+</script>
 
 </body>
 </html>
