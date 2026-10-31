@@ -1,117 +1,138 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1">
-  <title>4. Sınıf | Öğretmen Girişi</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      margin: 0;
-    }
-    .panel {
-      background: white;
-      padding: 35px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px #0001;
-      text-align: center;
-      width: min(360px, 85vw);
-    }
-    h1 { color: #1e293b; }
-    button {
-      padding: 14px 22px;
-      border: none;
-      border-radius: 9px;
-      background: #2563eb;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    #bilgi { margin-top: 20px; }
-    #kimlik {
-      overflow-wrap: anywhere;
-      font-family: monospace;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4. Sınıf | Öğretmen Paneli</title>
+<style>
+:root{font-family:system-ui,-apple-system,Arial,sans-serif;color:#172335;background:#f4f7fb}
+*{box-sizing:border-box}body{margin:0}.wrap{max-width:1100px;margin:auto;padding:24px 16px}
+header{background:#173455;color:white}header .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:18px;padding-bottom:18px}
+h1{font-size:1.35rem;margin:0}h2{font-size:1.1rem;margin:0 0 15px}p{line-height:1.5}
+.card{background:white;border:1px solid #e2e8f0;border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 3px 16px #1b34550b}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.stat{background:#edf3fb;border-radius:12px;padding:15px}.stat strong{display:block;font-size:1.7rem}
+input,textarea{width:100%;padding:12px;border:1px solid #b7c5d4;border-radius:9px;font:inherit;margin:6px 0 12px}textarea{min-height:105px;resize:vertical}
+button{background:#2463c5;border:0;border-radius:9px;padding:11px 17px;color:#fff;font:inherit;cursor:pointer}button:disabled{opacity:.6;cursor:wait}.secondary{background:#586879}.danger{background:#a82d35}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #7db2fc;outline-offset:2px}
+.list{display:grid;gap:10px}.item{padding:14px;border:1px solid #e1e7ef;border-radius:10px;overflow-wrap:anywhere}
+.itemtop{display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap}
+.muted{color:#63758a;font-size:.89rem}.notice{padding:12px;background:#eff6ff;border-radius:9px;margin:12px 0}.error{background:#fff1f0;color:#8d1e20}
+table{width:100%;border-collapse:collapse}th,td{padding:10px;text-align:left;border-bottom:1px solid #e4eaf1} .scroll{overflow-x:auto}
+[hidden]{display:none!important}@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <main class="panel">
-    <h1>Öğretmen Paneli</h1>
-    <p>4. Sınıf Eğitim Portalı</p>
-    <button id="giris">Google ile Giriş Yap</button>
-    <div id="bilgi" role="status"></div>
-  </main>
-
-  <script type="module">
-    import { initializeApp }
-      from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
-
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
-
-    import { getFirestore, doc, getDoc }
-      from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
-
-    // Firebase proje bilgileri
-    const firebaseConfig = {
+<header><div class="wrap"><div><h1>4. Sınıf | Öğretmen Paneli</h1><small>Eğitim portalı yönetimi</small></div><button id="cikis" class="secondary" hidden>Çıkış Yap</button></div></header>
+<main class="wrap">
+<section id="girisAlani" class="card">
+<h2>Öğretmen Girişi</h2>
+<p>Bu bölüme yalnız yetkili öğretmen hesabı erişebilir.</p>
+<button id="giris">Google ile Giriş Yap</button>
+</section>
+<div id="bilgi" class="notice" role="status">Oturum kontrol ediliyor...</div>
+<div id="panel" hidden>
+<div class="grid">
+ <div class="stat"><span>Öğrenci sonuç kaydı</span><strong id="toplam">0</strong></div>
+ <div class="stat"><span>Başarı ortalaması</span><strong id="ortalama">—</strong></div>
+ <div class="stat"><span>Duyurular</span><strong id="duyuruSayi">0</strong></div>
+</div>
+<section class="card" style="margin-top:18px">
+<h2>Yeni Duyuru</h2>
+<p class="muted">Bu ilk sürümde duyurular yalnızca öğretmen panelinde görünür. Öğrenci ana sayfası bağlantısı sonraki aşamada eklenecek.</p>
+<form id="duyuruForm">
+<label for="baslik">Duyuru başlığı</label>
+<input id="baslik" required maxlength="120" placeholder="Örneğin: Pazartesi matematik etkinliği">
+<label for="icerik">Duyuru metni</label>
+<textarea id="icerik" required maxlength="3000" placeholder="Duyuru metnini yazın"></textarea>
+<button id="kaydet" type="submit">Duyuruyu Kaydet</button>
+</form>
+<div id="duyurular" class="list" style="margin-top:18px"></div>
+</section>
+<section class="card">
+<h2>Etkinlik Sonuçları</h2>
+<p class="muted">Etkinliklere sonuç gönderme kodunu henüz eklemedik. Bu nedenle liste başlangıçta boş olacaktır.</p>
+<div class="scroll"><table><thead><tr><th>Öğrenci kodu</th><th>Etkinlik</th><th>Doğru</th><th>Yanlış</th><th>Başarı</th></tr></thead><tbody id="sonuclar"><tr><td colspan="5">Henüz sonuç kaydı yok.</td></tr></tbody></table></div>
+</section>
+</div>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,collection,addDoc,deleteDoc,getDocs,query,orderBy,limit,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+const firebaseConfig = {
       apiKey: "AIzaSyArEQt8alG-UcD4-BrNEgqr1aJnIRfdt58",
       authDomain: "sinif-egitim-portali.firebaseapp.com",
       projectId: "sinif-egitim-portali",
       appId: "1:972010232888:web:6a9d59f16b9cd28cefdacd",
     };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
-
-    const bilgi = document.getElementById("bilgi");
-    const giris = document.getElementById("giris");
-
-    async function yoneticiKontrol(user) {
-      if (!user) {
-        giris.hidden = false;
-        bilgi.textContent = "Google hesabınızla giriş yapın.";
-        return;
-      }
-
-      giris.hidden = true;
-      bilgi.textContent = "Öğretmen yetkisi kontrol ediliyor...";
-
-      try {
-        const kayit = await getDoc(doc(db, "teachers", user.uid));
-        if (kayit.exists() && kayit.data().role === "admin") {
-          bilgi.textContent = "✅ Yönetici doğrulandı! Öğretmen paneline hoş geldiniz.";
-        } else {
-          bilgi.textContent = "⛔ Bu hesap için öğretmen yetkisi tanımlanmamış.";
-        }
-      } catch (error) {
-        bilgi.textContent = "Yetki kontrolü başarısız: " + (error.code || "bilinmeyen-hata");
-      }
-    }
-
-    giris.addEventListener("click", async () => {
-      giris.disabled = true;
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (error) {
-        bilgi.textContent = "Giriş hatası: " + (error.code || "bilinmeyen-hata");
-      } finally {
-        giris.disabled = false;
-      }
-    });
-
-    onAuthStateChanged(auth, yoneticiKontrol);
-  </script>
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
+const el=id=>document.getElementById(id);
+let isAdmin=false;
+function mesaj(m,hata=false){el("bilgi").textContent=m;el("bilgi").className=hata?"notice error":"notice"}
+function textNode(tag,txt,cls){const n=document.createElement(tag);n.textContent=txt;if(cls)n.className=cls;return n}
+async function yenile(){
+ if(!isAdmin)return;
+ const [a,b]=await Promise.all([
+   getDocs(query(collection(db,"announcements"),orderBy("createdAt","desc"),limit(50))),
+   getDocs(query(collection(db,"attempts"),limit(200)))
+ ]);
+ el("duyuruSayi").textContent=a.size;
+ const box=el("duyurular");box.replaceChildren();
+ if(a.empty)box.append(textNode("p","Henüz duyuru yok.","muted"));
+ a.forEach(s=>{
+  const d=s.data(),item=textNode("article","","item"),top=textNode("div","","itemtop"),left=document.createElement("div");
+  left.append(textNode("strong",d.title||"Başlıksız"));
+  const date=d.createdAt?.toDate?.();
+  left.append(textNode("div",date?date.toLocaleString("tr-TR"):"Yeni kayıt","muted"));
+  const del=textNode("button","Sil","danger");del.type="button";
+  del.onclick=async()=>{
+   if(!confirm("Bu duyuruyu silmek istiyor musunuz?"))return;
+   del.disabled=true;
+   try{await deleteDoc(doc(db,"announcements",s.id));await yenile();mesaj("Duyuru silindi.")}
+   catch(e){mesaj("Silme hatası: "+e.code,true);del.disabled=false}
+  };
+  top.append(left,del);item.append(top,textNode("p",d.body||""));box.append(item);
+ });
+ el("toplam").textContent=b.size;
+ const body=el("sonuclar");body.replaceChildren();let sum=0,count=0;
+ b.forEach(s=>{
+  const d=s.data(),correct=Number(d.correct),wrong=Number(d.wrong),total=Number(d.total);
+  const valid=Number.isFinite(correct)&&Number.isFinite(total)&&total>0;
+  const pct=valid?Math.round(100*correct/total):null;
+  if(pct!==null){sum+=pct;count++}
+  const tr=document.createElement("tr");
+  for(const v of [d.studentId||"—",d.activityId||"—",Number.isFinite(correct)?correct:"—",Number.isFinite(wrong)?wrong:"—",pct===null?"—":"%"+pct]){
+    tr.append(textNode("td",String(v)));
+  }
+  body.append(tr);
+ });
+ if(b.empty){const tr=document.createElement("tr"),td=textNode("td","Henüz sonuç kaydı yok.");td.colSpan=5;tr.append(td);body.append(tr)}
+ el("ortalama").textContent=count?"%"+Math.round(sum/count):"—";
+}
+async function kontrol(user){
+ isAdmin=false;el("panel").hidden=true;el("cikis").hidden=true;
+ if(!user){el("girisAlani").hidden=false;mesaj("Google hesabınızla giriş yapın.");return}
+ el("girisAlani").hidden=true;mesaj("Öğretmen yetkisi kontrol ediliyor...");
+ try{
+  const d=await getDoc(doc(db,"teachers",user.uid));
+  if(!d.exists()||d.data().role!=="admin"){mesaj("Bu hesap öğretmen paneline yetkili değil.",true);el("cikis").hidden=false;return}
+  isAdmin=true;el("panel").hidden=false;el("cikis").hidden=false;
+  mesaj("Yönetici doğrulandı. Hoş geldiniz!");
+  try{await yenile()}catch(e){mesaj("Yönetici girişi başarılı ancak veriler yüklenemedi: "+e.code,true)}
+ }catch(e){mesaj("Yetki kontrol hatası: "+e.code,true);el("cikis").hidden=false}
+}
+el("giris").onclick=async()=>{el("giris").disabled=true;try{await signInWithPopup(auth,provider)}catch(e){mesaj("Giriş hatası: "+e.code,true)}finally{el("giris").disabled=false}};
+el("cikis").onclick=()=>signOut(auth);
+el("duyuruForm").onsubmit=async e=>{
+ e.preventDefault();if(!isAdmin)return;
+ const btn=el("kaydet"),title=el("baslik").value.trim(),body=el("icerik").value.trim();
+ if(!title||!body)return;btn.disabled=true;
+ try{
+  await addDoc(collection(db,"announcements"),{title,body,createdAt:serverTimestamp(),authorUid:auth.currentUser.uid});
+  el("duyuruForm").reset();await yenile();mesaj("Duyuru kaydedildi (şimdilik yalnız öğretmen panelinde).");
+ }catch(err){mesaj("Duyuru kaydedilemedi: "+err.code,true)}finally{btn.disabled=false}
+};
+onAuthStateChanged(auth,kontrol);
+</script>
 </body>
 </html>
-
