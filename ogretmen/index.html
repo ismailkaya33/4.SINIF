@@ -1,12 +1,105 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Öğretmen Paneli</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>4. Sınıf | Öğretmen Girişi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      margin: 0;
+    }
+    .panel {
+      background: white;
+      padding: 35px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px #0001;
+      text-align: center;
+      width: min(360px, 85vw);
+    }
+    h1 { color: #1e293b; }
+    button {
+      padding: 14px 22px;
+      border: none;
+      border-radius: 9px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #bilgi { margin-top: 20px; }
+    #kimlik {
+      overflow-wrap: anywhere;
+      font-family: monospace;
+    }
+  </style>
 </head>
 <body>
-  <h1>4. Sınıf Öğretmen Paneli</h1>
-  <p>Giriş sistemi hazırlanıyor.</p>
+  <main class="panel">
+    <h1>Öğretmen Paneli</h1>
+    <p>4. Sınıf Eğitim Portalı</p>
+    <button id="giris">Google ile Giriş Yap</button>
+    <div id="bilgi" role="status"></div>
+  </main>
+
+  <script type="module">
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+
+    // Firebase proje bilgilerini buraya ekle
+    const firebaseConfig = {
+      apiKey: "AIzaSyArEQt8alG-UcD4-BrNEgqr1aJnIRfdt58",
+      authDomain: "sinif-egitim-portali.firebaseapp.com",
+      projectId: "sinif-egitim-portali",
+      appId: "1:972010232888:web:6a9d59f16b9cd28cefdacd",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const bilgi = document.getElementById("bilgi");
+    const giris = document.getElementById("giris");
+
+    function kullaniciGoster(user) {
+      if (!user) return;
+      giris.hidden = true;
+
+      const baslik = document.createElement("p");
+      baslik.textContent = "Giriş başarılı: " +
+        (user.displayName || "Kullanıcı");
+
+      const kimlik = document.createElement("p");
+      kimlik.id = "kimlik";
+      kimlik.textContent = "UID: " + user.uid;
+
+      bilgi.replaceChildren(baslik, kimlik);
+    }
+
+    giris.addEventListener("click", async () => {
+      try {
+        const sonuc = await signInWithPopup(auth, provider);
+        kullaniciGoster(sonuc.user);
+      } catch (error) {
+        bilgi.textContent = "Giriş hatası: " + error.code;
+      }
+    });
+
+    onAuthStateChanged(auth, kullaniciGoster);
+  </script>
 </body>
 </html>
+
