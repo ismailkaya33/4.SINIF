@@ -326,7 +326,7 @@ body{background:radial-gradient(ellipse at 13% 3%,color-mix(in srgb,var(--realm-
   function next(){clearTimeout(state.advanceTimer);if(state.finished||result().status==='pending')return;if(state.currentIndex===state.tasks.length-1){if(state.results.every(r=>r.status!=='pending'))finishGame();return;}state.currentIndex++;state.maxUnlocked=Math.max(state.maxUnlocked,state.currentIndex);state.feedback=null;render();}
   function previous(){go(state.currentIndex-1);}
   function skip(){if(result().status!=='pending')return;result().status='skipped';result().answer=writtenCode(current())||null;state.skippedCount++;feedback('info','Bu kasa geçildi. Puan veya yanlış eklenmedi. Dilersen sonuç raporunda inceleyebilirsin.');render();const n=state.currentIndex;clearTimeout(state.advanceTimer);state.advanceTimer=setTimeout(()=>{if(state.currentIndex===n&&result().status==='skipped')next();},700);}
-  function finishGame(){state.finished=true;state.endedAt=Date.now();state.feedback=null;clearTimeout(state.advanceTimer);render();window.scrollTo({top:0,behavior:'smooth'});}
+  function finishGame(){state.finished=true;state.endedAt=Date.now();state.feedback=null;clearTimeout(state.advanceTimer);render();window.dispatchEvent(new CustomEvent('portal:finished',{detail:{activityId:'mat-kayipsayilar',correct:state.results.filter(r=>r.status==='solved').length,wrong:state.results.filter(r=>r.status==='skipped').length,total:state.tasks.length,wrongAttempts:state.wrongCount,firstTry:state.results.filter(r=>r.firstTry).length,durationSeconds:elapsed()}}));window.scrollTo({top:0,behavior:'smooth'});}
   function replay(){clearTimeout(state.advanceTimer);state=createState();render();window.scrollTo({top:0,behavior:'smooth'});}
   function keypadUI(){
     const t=current(),count=enteredDigits(t).length,total=passwordLength(t);
@@ -407,5 +407,77 @@ body{background:radial-gradient(ellipse at 13% 3%,color-mix(in srgb,var(--realm-
   render();
 })();
 </script>
+
+<script type="module">
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+  const config = {
+    apiKey: "AIzaSyArEQt8alG-UcD4-BrNEgqr1aJnIRfdt58",
+    authDomain: "sinif-egitim-portali.firebaseapp.com",
+    projectId: "sinif-egitim-portali",
+    appId: "1:972010232888:web:6a9d59f16b9cd28cefdacd"
+  };
+  const app = getApps()[0] || initializeApp(config);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  let finalResult = null;
+  let saved = false;
+
+  window.addEventListener("portal:finished", (event) => {
+    finalResult = event.detail;
+    saved = false;
+    const report = document.querySelector(".report");
+    if (!report) return;
+    const section = document.createElement("section");
+    section.style.cssText = "background:#122e45;border:1px solid #d2ae65;border-radius:15px;padding:18px;margin:18px 0;color:#fff";
+    const heading = document.createElement("h3");
+    heading.textContent = "📊 Sonucunu Öğretmenine Gönder (Deneme)";
+    const p = document.createElement("p");
+    p.textContent = "Bu denemede yalnızca örnek kod kullanın (örn. TEST-01). Gerçek öğrenci adı yazmayın.";
+    const label = document.createElement("label");
+    label.textContent = "Öğrenci test kodu";
+    label.setAttribute("for","portal-kod");
+    const input = document.createElement("input");
+    input.id="portal-kod";
+    input.placeholder="TEST-01";
+    input.maxLength=12;
+    input.autocomplete="off";
+    input.style.cssText="display:block;padding:12px;margin:9px 0 12px;border-radius:9px;max-width:260px;width:100%;color:#142b46;background:#fff";
+    const button = document.createElement("button");
+    button.textContent="Sonucu Kaydet";
+    button.type="button";
+    button.className="main-btn";
+    const status=document.createElement("p");
+    status.setAttribute("role","status");
+    section.append(heading,p,label,input,button,status);
+    report.append(section);
+    button.addEventListener("click",async()=>{
+      if(saved)return;
+      const studentId=input.value.trim().toUpperCase();
+      if(!/^[A-Z0-9-]{4,12}$/.test(studentId)){
+        status.textContent="4–12 karakterlik, harf/rakam/tire içeren örnek kod yazın.";return;
+      }
+      button.disabled=true;
+      status.textContent="Kayıt gönderiliyor...";
+      try {
+        let user=auth.currentUser;
+        if(!user) user=(await signInAnonymously(auth)).user;
+        if(!user.isAnonymous) throw new Error("Bu tarayıcıda farklı oturum açık; deneme için ayrı bir tarayıcı profili kullanın.");
+        await addDoc(collection(db,"attempts"),{
+          ...finalResult, studentId, uid:user.uid, createdAt:serverTimestamp()
+        });
+        saved=true;
+        status.textContent="✅ Sonuç öğretmen paneline kaydedildi.";
+        button.textContent="Kaydedildi";
+      }catch(err){
+        status.textContent="Kayıt yapılamadı: "+(err.code||err.message||"Bilinmeyen hata");
+        button.disabled=false;
+      }
+    });
+  });
+</script>
+
 </body>
 </html>
