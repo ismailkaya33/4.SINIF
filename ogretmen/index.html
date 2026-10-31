@@ -58,7 +58,10 @@
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
 
-    // Firebase proje bilgilerini buraya ekle
+    import { getFirestore, doc, getDoc }
+      from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+    // Firebase proje bilgileri
     const firebaseConfig = {
       apiKey: "AIzaSyArEQt8alG-UcD4-BrNEgqr1aJnIRfdt58",
       authDomain: "sinif-egitim-portali.firebaseapp.com",
@@ -68,36 +71,46 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
     const bilgi = document.getElementById("bilgi");
     const giris = document.getElementById("giris");
 
-    function kullaniciGoster(user) {
-      if (!user) return;
+    async function yoneticiKontrol(user) {
+      if (!user) {
+        giris.hidden = false;
+        bilgi.textContent = "Google hesabınızla giriş yapın.";
+        return;
+      }
+
       giris.hidden = true;
+      bilgi.textContent = "Öğretmen yetkisi kontrol ediliyor...";
 
-      const baslik = document.createElement("p");
-      baslik.textContent = "Giriş başarılı: " +
-        (user.displayName || "Kullanıcı");
-
-      const kimlik = document.createElement("p");
-      kimlik.id = "kimlik";
-      kimlik.textContent = "UID: " + user.uid;
-
-      bilgi.replaceChildren(baslik, kimlik);
+      try {
+        const kayit = await getDoc(doc(db, "teachers", user.uid));
+        if (kayit.exists() && kayit.data().role === "admin") {
+          bilgi.textContent = "✅ Yönetici doğrulandı! Öğretmen paneline hoş geldiniz.";
+        } else {
+          bilgi.textContent = "⛔ Bu hesap için öğretmen yetkisi tanımlanmamış.";
+        }
+      } catch (error) {
+        bilgi.textContent = "Yetki kontrolü başarısız: " + (error.code || "bilinmeyen-hata");
+      }
     }
 
     giris.addEventListener("click", async () => {
+      giris.disabled = true;
       try {
-        const sonuc = await signInWithPopup(auth, provider);
-        kullaniciGoster(sonuc.user);
+        await signInWithPopup(auth, provider);
       } catch (error) {
-        bilgi.textContent = "Giriş hatası: " + error.code;
+        bilgi.textContent = "Giriş hatası: " + (error.code || "bilinmeyen-hata");
+      } finally {
+        giris.disabled = false;
       }
     });
 
-    onAuthStateChanged(auth, kullaniciGoster);
+    onAuthStateChanged(auth, yoneticiKontrol);
   </script>
 </body>
 </html>
