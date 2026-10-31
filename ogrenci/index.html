@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4. Sınıf | Öğrenci Girişi</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#eef4fa;color:#17324e;font:16px system-ui,Arial,sans-serif;padding:20px}
+main{width:min(440px,100%);background:white;border-radius:20px;padding:28px;box-shadow:0 14px 40px #1a406022}
+h1{margin:0 0 7px;font-size:1.6rem}p{line-height:1.5}
+label{display:block;font-weight:650;margin:16px 0 5px}
+input{display:block;width:100%;font:inherit;padding:13px;border:1px solid #9aafc4;border-radius:10px}
+button{border:0;background:#2466ba;color:white;border-radius:10px;font:inherit;padding:13px 19px;cursor:pointer;margin-top:18px}
+button:disabled{opacity:.65}button.secondary{background:#536d86}
+#status{margin-top:16px;padding:13px;background:#edf5ff;border-radius:10px;overflow-wrap:anywhere}
+nav{margin-top:20px}a{color:#205da6}#student{margin-top:18px;padding:15px;background:#e8f9ee;border-radius:12px}
+[hidden]{display:none!important}</style>
+</head><body><main>
+<h1>🎒 Öğrenci Girişi</h1><p>4. Sınıf Eğitim Portalı</p>
+<div id="status" role="status">Oturum kontrol ediliyor...</div>
+<form id="login" hidden>
+<label for="email">Öğrenci giriş adresi</label><input id="email" type="email" autocomplete="username" required placeholder="Öğretmeninin verdiği giriş adresi">
+<label for="password">Şifre</label><input id="password" type="password" autocomplete="current-password" minlength="8" required>
+<button id="submit" type="submit">Giriş Yap</button>
+</form>
+<div id="student" hidden><strong id="code"></strong><p>Kimliğin doğrulandı. Etkinlik sonuçlarını hesabınla ilişkilendirme özelliği sonraki aşamada eklenecek.</p>
+<a href="../">Etkinliklere Git</a><br><button class="secondary" id="logout" type="button">Çıkış Yap</button></div>
+<nav><a href="../">← Ana sayfaya dön</a></nav>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+const config={apiKey:"AIzaSyArEQt8alG-UcD4-BrNEgqr1aJnIRfdt58",authDomain:"sinif-egitim-portali.firebaseapp.com",projectId:"sinif-egitim-portali",appId:"1:972010232888:web:6a9d59f16b9cd28cefdacd"};
+const app=initializeApp(config),auth=getAuth(app),db=getFirestore(app),el=id=>document.getElementById(id);
+function status(s){el("status").textContent=s}
+onAuthStateChanged(auth,async user=>{
+ el("login").hidden=true;el("student").hidden=true;
+ if(!user){status("Öğretmeninin verdiği hesap bilgileriyle giriş yap.");el("login").hidden=false;return}
+ status("Öğrenci kaydı kontrol ediliyor...");
+ try{
+  const record=await getDoc(doc(db,"students",user.uid));
+  if(record.exists()&&record.data().active===true&&typeof record.data().code==="string"){
+   el("code").textContent="Öğrenci kodu: "+record.data().code;
+   el("student").hidden=false;status("✅ Öğrenci hesabı doğrulandı.");
+  }else{status("Bu hesap için aktif öğrenci kaydı tanımlanmamış. Öğretmenine haber ver.");el("logout").hidden=false;el("student").hidden=false;el("student").querySelector("p").hidden=true;el("student").querySelector("a").hidden=true}
+ }catch(e){status("Öğrenci kaydı okunamadı: "+(e.code||"bilinmeyen hata"));el("student").hidden=false;el("student").querySelector("p").hidden=true;el("student").querySelector("a").hidden=true}
+});
+el("login").addEventListener("submit",async e=>{
+ e.preventDefault();el("submit").disabled=true;status("Giriş yapılıyor...");
+ try{await signInWithEmailAndPassword(auth,el("email").value.trim(),el("password").value)}
+ catch(e){status("Giriş başarısız: "+(e.code==="auth/invalid-credential"?"Giriş adresi veya şifre hatalı.":e.code))}
+ finally{el("submit").disabled=false}
+});
+el("logout").onclick=()=>signOut(auth);
+</script></body></html>
