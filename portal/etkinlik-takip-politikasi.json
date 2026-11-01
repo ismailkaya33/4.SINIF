@@ -1,0 +1,316 @@
+{
+  "aciklama": "Mevcut etkinlikler öğretmen seçene dek takip edilmez. Yeni eklenen her etkinlik için geri bildirim yöntemi zorunludur.",
+  "gelecekEtkinlikTakibi": "zorunlu",
+  "mevcutTakipliler": [
+    {
+      "id": "mat-kayipsayilar",
+      "yontem": "otomatik_sonuc"
+    },
+    {
+      "id": "mat-oruntuler",
+      "yontem": "otomatik_sonuc"
+    }
+  ],
+  "mevcutEtkinlikler": [
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/anafikiranaduygu.html",
+      "baslik": "Ana Fikir ve Ana Duygu Dedektifi",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/dilkoruyucusu.html",
+      "baslik": "Dil Muhafızları",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/dogrusunuyaz.html",
+      "baslik": "Sözcüklerin Doğru Yazımı",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/essesli.html",
+      "baslik": "Eş Sesli Sözcükler",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/essesli2.html",
+      "baslik": "Eş Sesli Sözcükler 2",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/eszitanlam.html",
+      "baslik": "Eş ve Zıt Anlamlılar",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/gercekmecazterim.html",
+      "baslik": "Gerçek Mecaz ve Terim Anlam",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/gercekmecazterim2.html",
+      "baslik": "Gerçek Mecaz ve Terim Anlam 2",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/harfhece.html",
+      "baslik": "Harf ve Hece Bilgisi",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/hikayededektifi.html",
+      "baslik": "Hikaye Dedektifi",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/ikilemeler.html",
+      "baslik": "İkileme Dedektifi",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/metninkonusu.html",
+      "baslik": "Metnin Konusunu Bul",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/metinmimarlari.html",
+      "baslik": "Metnin Mimarları",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/metninbolumleri.html",
+      "baslik": "Metnin Bölümleri",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/noktalamaisaretleri.html",
+      "baslik": "Noktalama İşaretleri",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/pekistirme.html",
+      "baslik": "Pekiştirme Dedektifi 1",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Türkçe",
+      "konum": "Turkce/sozavcıları.html",
+      "baslik": "Atasözleri ve Deyimler",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/oruntuler.html",
+      "baslik": "Sayı Örüntüleri",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/sayilar.html",
+      "baslik": "Sayılar",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/sayilarikarsilastirsirala.html",
+      "baslik": "Sayıları Karşılaştırma ve Sıralama",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/sayiproblemleri.html",
+      "baslik": "Sayı Problemleri Atölyesi",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/toplama.html",
+      "baslik": "Toplama Yapalım",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/yuvarlama.html",
+      "baslik": "Yuvarlama Macerası 1",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/yuvarlama2.html",
+      "baslik": "Yuvarlama Macerası 2",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/zihindentoplama.html",
+      "baslik": "Zihinden Toplama Ustaları",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/zihindencikarma.html",
+      "baslik": "Zihinden Çıkarma Ustaları",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/cikarmaislemi.html",
+      "baslik": "Çıkarma Dedektifleri",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/kayipsayilar.html",
+      "baslik": "Çıkarma İşleminde Verilmeyen Sayılar",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/besinkasifleri.html",
+      "baslik": "Besin Kaşifleri: Görev Haritası",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/besinakademisi.html",
+      "baslik": "Besin Akademisi",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/dunyaninhareketleri2.html",
+      "baslik": "Dünya'nın Hareketleri 1",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/dunyaninhareketleri3.html",
+      "baslik": "Dünya'nın Hareketleri 2",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/fosiller.html",
+      "baslik": "Fosil Keşfi 1",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/fosiller2.html",
+      "baslik": "Fosil Keşfi 2",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/gecegunduz3d.html",
+      "baslik": "🌍 Gece, Gündüz ve Saatler (3B Simülasyon)",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/madenler.html",
+      "baslik": "Madenler 1",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/madenler2.html",
+      "baslik": "Madenler 2",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/unitedegerlendirme1.html",
+      "baslik": "F.4.1 Ünite Değerlendirme Testi",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Sosyal Bilgiler",
+      "konum": "Sosyal/ailetarihi.html",
+      "baslik": "Aile Tarihi",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Sosyal Bilgiler",
+      "konum": "Sosyal/kendinionunyerinekoy.html",
+      "baslik": "Kendini Onun Yerine Koy",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Sosyal Bilgiler",
+      "konum": "Sosyal/millikultur.html",
+      "baslik": "Milli Kültür Öğeleri",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Sosyal Bilgiler",
+      "konum": "Sosyal/millimucadele.html",
+      "baslik": "Milli Mücadele Dönemi",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Sosyal Bilgiler",
+      "konum": "Sosyal/ilgiihtiyacyetenek.html",
+      "baslik": "İlgi, İhtiyaç ve Yeteneklerimiz",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Sosyal Bilgiler",
+      "konum": "Sosyal/oyunzamani.html",
+      "baslik": "Geçmişten Günümüze Çocuk Oyunları",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "İnsan Hakları",
+      "konum": "Insanhaklari/hakozgurluksorumluluk.html",
+      "baslik": "Hak Özgürlük ve Sorumluluk",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "İnsan Hakları",
+      "konum": "Insanhaklari/hakozgurluksorumluluk2.html",
+      "baslik": "Bilinçli Vatandaş Kasabası",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "İnsan Hakları",
+      "konum": "Insanhaklari/cocukveyetiskinfarklar.html",
+      "baslik": "Yetişkinler ve Çocuklar",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Trafik Güvenliği",
+      "konum": "Trafik/temelkavramlar.html",
+      "baslik": "Temel Kavramlar",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Oyunlar",
+      "konum": "Oyunlar/toplamaoyun.html",
+      "baslik": "Uzaylı Toplama Macerası 2D 🚀",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Oyunlar",
+      "konum": "Oyunlar/madenkasifi.html",
+      "baslik": "Maden Kâşifi 💎",
+      "takip": "secim_bekliyor"
+    }
+  ]
+}
