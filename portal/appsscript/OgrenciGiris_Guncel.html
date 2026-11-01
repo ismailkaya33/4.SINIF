@@ -81,13 +81,13 @@ function duyurulariYukle(){
  durum.textContent="Duyurular yükleniyor...";
  google.script.run.withSuccessHandler(function(r){
   liste.replaceChildren();
-  if(!r||r.basarili!==true){durum.textContent="Duyurular alınamadı.";return}
+  if(sessionStorage.getItem(anahtarAdi)!==token)return;\n  if(!r||r.basarili!==true){durum.textContent="Duyurular alınamadı.";return}
   if(!r.duyurular||!r.duyurular.length){durum.textContent="Henüz yayımlanmış duyuru yok.";return}
   durum.textContent="";
   r.duyurular.forEach(function(d){const el=document.createElement("article"),h=document.createElement("h4"),p=document.createElement("p");h.textContent=d.baslik;p.textContent=d.metin;el.append(h,p);liste.appendChild(el)});
- }).withFailureHandler(function(){durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
+ }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
 }
-function tokenTemizle(){sessionStorage.removeItem(anahtarAdi);ekranGoster(false);kodAlani.value=""}
+function tokenTemizle(){sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
 function girisYap(){
  if(buton.disabled)return;
  const kod=kodAlani.value.trim().toUpperCase();
