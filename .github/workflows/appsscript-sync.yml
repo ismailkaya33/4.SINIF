@@ -1,5 +1,10 @@
 name: 4D Apps Script - kontrollu kaynak aktarimi
 on:
+  push:
+    branches:
+      - hazirlik/kazanim-takibi-20261101
+    paths:
+      - 'portal/appsscript/**'
   workflow_dispatch:
     inputs:
       target:
@@ -19,25 +24,30 @@ on:
         required: true
 jobs:
   sync:
-    if: ${{ (inputs.target == 'student' && inputs.confirmation == 'SYNC_STUDENT') || (inputs.target == 'teacher' && inputs.confirmation == 'SYNC_TEACHER') }}
+    if: ${{ github.event_name == 'push' || (inputs.target == 'student' && inputs.confirmation == 'SYNC_STUDENT') || (inputs.target == 'teacher' && inputs.confirmation == 'SYNC_TEACHER') }}
+    concurrency:
+      group: appsscript-${{ github.event_name == 'push' && 'student' || inputs.target }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     permissions:
       contents: read
     environment: appsscript-sync
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: hazirlik/kazanim-takibi-20261101
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Ogrenci sonuc entegrasyonunu dogrula
-        if: ${{ inputs.target == 'student' }}
+        if: ${{ github.event_name == 'push' || inputs.target == 'student' }}
         run: node .github/scripts/verify-appsscript-integration.mjs
       - name: Kimlik bilgilerini ve hedefi hazirla
         env:
           CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
           STUDENT_SCRIPT_ID: ${{ secrets.STUDENT_SCRIPT_ID }}
           TEACHER_SCRIPT_ID: ${{ secrets.TEACHER_SCRIPT_ID }}
-          TARGET: ${{ inputs.target }}
+          TARGET: ${{ github.event_name == 'push' && 'student' || inputs.target }}
         run: |
           set -eu
           test -n "$CLASPRC_JSON" || { echo "CLASPRC_JSON secret eksik"; exit 1; }
@@ -58,12 +68,27 @@ jobs:
         working-directory: ${{ runner.temp }}/4d-script
         run: npx --yes @google/clasp@latest show-file-status
       - name: Kontrol modu sonucu
-        if: ${{ inputs.dry_run == true }}
+        if: ${{ github.event_name != 'push' && inputs.dry_run == true }}
         run: echo "DRY RUN BASARILI - Apps Script kodu degistirilmedi."
       - name: Apps Script kaynaklarini guncelle - DAGITIM DEGIL
-        if: ${{ inputs.dry_run == false }}
+        if: ${{ github.event_name == 'push' || inputs.dry_run == false }}
         working-directory: ${{ runner.temp }}/4d-script
         run: npx --yes @google/clasp@latest push --force
+      - name: Ogrenci mevcut web uygulamasini yayimla
+        if: ${{ github.event_name == 'push' || (inputs.target == 'student' && inputs.dry_run == false) }}
+        working-directory: ${{ runner.temp }}/4d-script
+        env:
+          EXISTING_DEPLOYMENT_ID: AKfycbzXyUUynqADi0RQjqvEq4lvUUnwQ6bJa1aPueWfsgQTMNiuEbrFnZw5phWg_Eztwjer
+        run: |
+          set -eu
+          # Yanlislikla yeni deployment / yeni ogrenci URL'si olusturulmasin.
+          npx --yes @google/clasp@latest list-deployments > "$RUNNER_TEMP/4d-deployments.txt"
+          grep -F -- "$EXISTING_DEPLOYMENT_ID" "$RUNNER_TEMP/4d-deployments.txt" >/dev/null || {
+            echo "::error::Mevcut ogrenci deployment kimligi bulunamadi; yeni deployment olusturulmadi."
+            exit 1
+          }
+          npx --yes @google/clasp@latest create-deployment --deploymentId "$EXISTING_DEPLOYMENT_ID" --description "4D ogrenci portali GitHub Actions"
+          echo "Mevcut ogrenci web uygulamasi dagitimi guncellendi."
       - name: Kimlik dosyasini sil
         if: always()
         run: rm -f "$HOME/.clasprc.json"
