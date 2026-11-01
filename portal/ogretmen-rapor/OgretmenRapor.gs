@@ -31,12 +31,12 @@ function ogretmenRaporVerisi() {
   const seen={};
   rows.forEach(function(r) {
     const no=String(r[1]).trim(),id=String(r[2]).trim(),outcome=String(r[3]).trim();
-    const total=Number(r[6]),correct=Number(r[4]);
-    if(!roster[no]||!id||!outcome||!Number.isSafeInteger(correct)||!Number.isSafeInteger(total)||total<1||correct<0||correct>total)return;
+    const total=Number(r[6]),correct=Number(r[4]),wrong=Number(r[5]);
+    if(!roster[no]||!id||!outcome||!Number.isSafeInteger(correct)||!Number.isSafeInteger(total)||total<1||correct<0||correct>total||!Number.isSafeInteger(wrong)||wrong<0||wrong>total||correct+wrong!==total)return;
     const key=String(r[0]).trim();
     if(!key||seen[key])return;
     seen[key]=true;
-    results.push({no:no,id:id,outcome:outcome,correct:correct,total:total,at:r[10] instanceof Date?r[10].toISOString():''});
+    results.push({no:no,id:id,outcome:outcome,correct:correct,total:total,at:r[10] instanceof Date?r[10].getTime():0,order:results.length});
   });
   const outcomeMap={};
   results.forEach(function(x) {
@@ -60,7 +60,7 @@ function ogretmenRaporVerisi() {
     results.forEach(function(x){
       if(x.id===activityId){
         const current=attempted[x.no];
-        if(!current || (x.at||'')>=(current.at||''))attempted[x.no]=x;
+        if(!current || x.at>current.at || (x.at===current.at && x.order>current.order))attempted[x.no]=x;
       }
     });
     const studentStates=perStudent.map(function(st){
