@@ -67,3 +67,11 @@ GitHub Pages ana sayfası, orijinal oyun ve mevcut Firebase bağımlı özellikl
 - Mevcut pilot `mat-kayipsayilar` korunur. Kaydı olmayan diğer 50 etkinlik otomatik takip edilmiyor.
 - Bu iki dosya **birlikte aktarılmalıdır**; tekini yüklemek sonuç kaydını bozar. Güncel sürüm henüz çalışan Apps Script'e aktarılmadı.
 - 9 doğrulama testi bu iki modül birlikte yüklenmişken tekrar çalıştırıldı, 9/9 geçti.
+
+## İkinci takipli etkinlik — Sayı Örüntüleri (hazırlık)
+- Orijinal `Matematik/oruntuler.html` değiştirilmeden `test/oruntuler.html` takipli kopyası oluşturuldu.
+- `EtkinlikKayitDefteri.gs` içine `mat-oruntuler` kimliği eklendi; kazanım kodu **KAZANIM_DOGRULANACAK** işaretli. Resmî kazanım doğrulanmadan pedagojik analizde kesin bir kazanım olarak sunulmamalı.
+- `OgrenciGiris_Guncel.html` ikinci oyun düğmesi, aktif oyun kimliği ve sonuç gönderme kontrolüyle güncellendi.
+- `portal/etkinlik-katalogu.json` ikinci oyunu `staging-tracked` olarak listeler.
+- Sahte değerlerle sonuç doğrulaması, tanınmayan oyun reddi, düğme ve olay köprüsü kontrol edildi; oyunun gerçek uçtan uca tamamlanışı henüz sınanmadı.
+- **Canlı öğrenci uygulamasına yüklenmedi**. Sunucu kayıt defteri, sonuç modülü ve giriş HTML'si birlikte kurulmadan ikinci oyun öğrencilere takipli olarak gösterilmemeli.
