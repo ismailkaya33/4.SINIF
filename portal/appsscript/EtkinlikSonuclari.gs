@@ -75,3 +75,30 @@ function etkinlikSonucuKaydet(token, veri) {
     lock.releaseLock();
   }
 }
+
+/**
+ * Kendi ilerlemem: yalnız geçerli oturumun öğrenci numarası ile filtreler.
+ * MİSAFİR denemeleri öğretmen sınıf ortalamasına katılmaz.
+ */
+function ogrenciIlerlemeOzeti(token) {
+  const session = oturumKaydi_(token);
+  if (!session) return {basarili:false};
+  const student = kayitNoIle_(session.no);
+  if (!student) return {basarili:false};
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SONUC_SAYFASI_ADI_);
+  if (!sheet || sheet.getLastRow() < 2)
+    return {basarili:true,etkinlikSayisi:0,denemeSayisi:0,dogru:0,toplam:0,oran:0};
+  const rows = sheet.getRange(2,2,sheet.getLastRow()-1,9).getValues();
+  const unique = new Set();
+  let attempts=0, correct=0, total=0;
+  rows.forEach(function(r){
+    if (String(r[0]).trim() !== String(student.no).trim()) return;
+    const activity=String(r[1]).trim();
+    const d=Number(r[3]), t=Number(r[5]);
+    if (!etkinlikTanimi_(activity) || !Number.isSafeInteger(d) ||
+        !Number.isSafeInteger(t) || t<1 || d<0 || d>t) return;
+    unique.add(activity); attempts++; correct+=d; total+=t;
+  });
+  return {basarili:true,etkinlikSayisi:unique.size,denemeSayisi:attempts,
+    dogru:correct,toplam:total,oran:total?Math.round(correct*100/total):0};
+}
