@@ -2,6 +2,8 @@
 <html lang="tr"><head><base target="_top"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>4/D Öğrenci Girişi</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+
 body{font-family:Arial,sans-serif;background:#eef4ff;min-height:100vh;margin:0;display:grid;place-items:center}body.oyunda{display:block;background:#0b172b}
 .kutu{background:#fff;width:min(780px,92%);padding:30px;border-radius:18px;text-align:center;box-shadow:0 8px 25px #0002}
 input{box-sizing:border-box;width:100%;padding:15px;font-size:22px;text-align:center;text-transform:uppercase;letter-spacing:3px;border:2px solid #b7c8e0;border-radius:10px}
@@ -167,7 +169,7 @@ button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
 @media(max-width:800px){.portalTopStrip{grid-template-columns:1fr}.portalTopStrip>.welcomeBar{order:-1}}
 
 /* Nunito ve 4. sinif icin rahat okunabilir tipografi */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+
 body:not(.oyunda),body.oyunda,button,input{font-family:'Nunito',system-ui,Arial,sans-serif}
 #kod{letter-spacing:.35em;font-variant-numeric:tabular-nums;font-weight:900;text-transform:uppercase;padding-inline:21px}
 #kod::placeholder{letter-spacing:.13em;font-weight:600}
