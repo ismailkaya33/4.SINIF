@@ -10,58 +10,58 @@ button:disabled{opacity:.5;cursor:not-allowed}
 #cikis{background:#5a6b7f}#sonuc{margin-top:18px;line-height:1.5}[hidden]{display:none!important}
 a{color:#2459a6}#oyunPanel{position:fixed;inset:0;z-index:50;background:#081427;color:white;display:flex;flex-direction:column}#oyunUst{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:8px 14px;background:#10243d}#oyunCer{display:block;border:0;flex:1;width:100%;min-height:0}#oyunDurum{margin:0;padding:8px 14px;background:#173a52;color:white}#oyunPanel button{margin:0;padding:10px 14px;background:#4a6078}
 .dashboardTitle{font-size:1.25rem;margin:22px 0 6px}.hint{color:#51677d;font-size:.94rem}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:18px 0}.course{padding:18px;text-align:left;border:1px solid #d9e4f2;border-radius:14px;background:#f8fbff;display:flex;flex-direction:column;gap:8px}.course h3{margin:0;font-size:1.05rem}.course p{margin:0;color:#526579;line-height:1.35;font-size:.9rem}.course button{margin-top:auto;width:100%}.course button[disabled]{background:#dfe7ee;color:#5c6c7c;opacity:1;cursor:not-allowed}.course .icon{font-size:1.8rem}.sectionBadge{font-weight:bold;color:#236096;font-size:.8rem}#oturumAlani{text-align:left}#cikis{margin-top:0}.kutu{max-height:none}#oyunPanel{overscroll-behavior:contain}@media(max-width:620px){.kutu{padding:20px}.cards{grid-template-columns:1fr}}\n.cards.seven{grid-template-columns:repeat(auto-fit,minmax(235px,1fr))}.course summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}.course summary::after{content:"⌄";margin-left:auto}.course[open] summary::after{content:"⌃"}.course summary small{font-weight:normal;color:#68788b}.courseLinks{padding-left:19px;max-height:270px;overflow-y:auto;margin:10px 0}.courseLinks li{margin:10px 0}.courseLinks a{line-height:1.3}.sectionBadge{display:block;margin-top:12px}.course button{padding:11px 8px}@media(max-width:620px){.cards.seven{grid-template-columns:1fr}}\n
-/* BILGI ADALARI / responsive portal theme */
-:root{--ink:#133a58;--sea:#38b6e7;--sand:#fff2ce;--wood:#99602e;--violet:#7253bc}
+/* AKILLI SINIF — gerçek HTML/CSS, görsel dosyaya bağımlı değil */
+:root{--ink:#243450;--muted:#597087;--blue:#3874c4;--lav:#8971ce;--mint:#d9f6e9;--line:#dae5f5}
 *{box-sizing:border-box}
-body:not(.oyunda){display:block;margin:0;min-height:100vh;color:var(--ink);background:radial-gradient(ellipse at 8% 17%,#c6faffaa 0 9%,transparent 10%),radial-gradient(ellipse at 88% 20%,#e5feffad 0 8%,transparent 9%),linear-gradient(180deg,#a9e4ff 0%,#e2f8ff 27%,#47c5ed 27.1%,#129fce 100%);background-attachment:fixed;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-body:not(.oyunda)::before{content:"☁️  ☁️       🕊️       ☁️";position:fixed;inset:5px 0 auto;font-size:26px;letter-spacing:5vw;pointer-events:none;opacity:.75}
-.kutu{position:relative;z-index:1;display:block;width:min(1320px,96%);max-width:none;margin:28px auto;padding:20px clamp(15px,3vw,38px) 32px;background:transparent;box-shadow:none;text-align:left}
-.kutu>h1{width:max-content;max-width:100%;margin:4px auto 0;padding:14px 28px;border:5px solid #eab875;border-radius:24px;background:linear-gradient(#f8d69b,#e5a96a);box-shadow:0 7px 0 #8a592d,0 14px 25px #125b7799;color:#183b68;font-size:clamp(27px,4.1vw,54px);font-weight:900;line-height:1.15;text-align:center;text-shadow:2px 2px #fff6df}
-.kutu>h1::before{content:"🚩 "}
-.kutu>h2{width:max-content;margin:11px auto 32px;padding:7px 28px;background:#fff1cc;border:3px solid #bb8852;box-shadow:0 4px 0 #88501e;border-radius:40px;color:#795024;font-size:clamp(18px,2.4vw,27px);text-align:center}
-#girisAlani{max-width:480px;margin:35px auto;padding:30px;background:linear-gradient(155deg,#fffbee,#fbe6b1);border:5px solid #e7bb6a;border-radius:28px;text-align:center;box-shadow:0 15px 0 #286e70,0 20px 32px #064d7770}
-#girisAlani p{font-size:1.2rem;font-weight:700}
-#girisAlani input{background:white;color:#163e5a}
-button{font-weight:800;background:linear-gradient(180deg,#8867dc,#6844b1);box-shadow:0 4px 0 #4c3083}
-button:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}
-button:focus-visible,a:focus-visible,summary:focus-visible{outline:4px solid #f7ce58;outline-offset:3px}
-#oturumAlani{position:relative;padding-top:7px}
-.dashboardTitle{width:max-content;max-width:100%;margin:15px auto 7px;padding:10px 30px;border:4px solid #b47a41;border-radius:14px;background:linear-gradient(#d8a265,#a97037);box-shadow:0 6px 0 #74491d;color:white;font-size:clamp(20px,2.4vw,29px);text-shadow:1px 2px #673d20}
-.dashboardTitle::before{content:"🧭 "}
-#oturumAlani>.hint{max-width:850px;margin:18px auto;text-align:center;color:#12435f;font-weight:650;background:#e8faffdf;padding:9px 18px;border-radius:16px}
-.cards.seven{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;align-items:start;margin:35px 0 27px}
-.course{position:relative;min-width:0;display:block;background:linear-gradient(165deg,#f5e7ad 0%,#e7bc70 100%);border:7px solid #52b36e;border-bottom:13px solid #387c52;border-radius:45% 45% 28% 28%/18% 18% 12% 12%;padding:24px 14px 18px;box-shadow:0 15px 0 #336f80,0 24px 0 #1399bf,0 30px 23px #07578366;transition:transform .18s ease}
-.course:hover{transform:translateY(-4px)}
-.course summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;min-height:56px;padding:9px 8px;border:3px solid #9b683a;border-radius:17px;background:linear-gradient(#fff5d2,#ebc48c);color:#214061;text-align:center;font-size:1.02rem;box-shadow:0 4px 0 #a27646}
-.course summary>span{font-size:26px}
-.course summary small{display:block;width:100%;font-size:.73rem;color:#795a39}
-.course summary::after{content:"⌄";margin-left:0}
+body:not(.oyunda){display:block;margin:0;min-height:100vh;background:linear-gradient(180deg,#d8edff 0,#eff7ff 280px,#f4f8ff 100%);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.kutu{width:min(1240px,96%);max-width:none;min-height:85vh;margin:24px auto 40px;padding:20px clamp(15px,2.8vw,35px) 32px;border:1px solid #e1eaf6;border-radius:26px;background:#ffffffea;box-shadow:0 13px 42px #36659b19;text-align:left}
+.kutu>h1{margin:7px 0 0;font-size:clamp(25px,3vw,40px);color:#252d59;letter-spacing:-.7px;line-height:1.2}
+.kutu>h1::before{content:"📚";font-size:.8em;margin-right:13px}
+.kutu>h2{margin:4px 0 25px;color:#8a70c8;font-size:clamp(16px,1.7vw,23px);font-weight:750}
+#girisAlani{width:min(490px,100%);margin:28px auto;padding:30px;background:linear-gradient(135deg,#f4faff,#f8f3ff);border:1px solid var(--line);border-radius:22px;text-align:center;box-shadow:0 10px 25px #385a8b16}
+#girisAlani p{font-size:1.1rem;color:var(--muted)}
+input{background:white;color:var(--ink)}
+button{background:linear-gradient(135deg,#8069c8,#9675cf);border-radius:12px;font-weight:750;box-shadow:none;transition:transform .12s,filter .12s}
+button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.06)}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #dfac42;outline-offset:3px}
+#oturumAlani{padding-top:8px}
+.dashboardTitle{margin:10px 0 0;padding:14px 18px;background:linear-gradient(100deg,#dfeeff,#eef4ff);border-radius:18px;font-size:clamp(20px,2vw,29px);color:#203c76}
+.dashboardTitle::before{content:"📖 "}
+#oturumAlani>.hint{padding:12px 16px;margin:12px 0 15px;color:#54728a;background:#f5f9ff;border-radius:12px;line-height:1.5}
+.cards.seven{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:20px 0 25px;align-items:start}
+.course{display:block;min-width:0;padding:18px 16px;background:linear-gradient(160deg,#fff,#f5f9ff);border:1px solid #dae6f6;border-radius:18px;box-shadow:0 5px 16px #365b9510;transition:transform .12s,box-shadow .12s}
+.course:hover{transform:translateY(-2px);box-shadow:0 9px 19px #365b9519}
+.course summary{display:flex;flex-wrap:wrap;align-items:center;gap:9px;min-height:42px;list-style:none;cursor:pointer;color:#234b7a;font-size:1.07rem}
+.course summary>span{font-size:27px}
+.course summary small{font-size:.78rem;font-weight:500;color:#75879c}
+.course summary::after{content:"⌄";margin-left:auto;color:#7186ad;font-size:1.3rem}
 .course[open] summary::after{content:"⌃"}
-.course[open]{grid-column:span 2;border-radius:35px}
-.course p.hint,.course .sectionBadge{margin:16px 0 8px;color:#164e5f;font-size:.84rem}
-.course .courseLinks{list-style:"🧭  ";padding-left:28px;max-height:320px;overflow-y:auto;background:#fff9e8e6;border-radius:14px;margin:14px 0 0;padding-top:8px;padding-bottom:8px}
-.courseLinks a{font-weight:650;color:#194e81;text-decoration-thickness:1px}
-.course button{display:inline-block;width:calc(50% - 8px);min-height:65px;margin:8px 4px 0 0;font-size:.91rem;vertical-align:top;white-space:normal}
-.course:nth-child(2){border-color:#f4c460;border-bottom-color:#af7c31;box-shadow:0 15px 0 #2f7278,0 24px 0 #1399bf,0 30px 23px #07578366}
-.course:nth-child(2) summary{background:linear-gradient(#fff2b7,#e9b464)}
-#oturumAlani>section{max-width:620px;margin:50px auto 20px;padding:17px 22px 24px;background:linear-gradient(#fff5d7,#f7dcaa);border:8px solid #a76a38;border-radius:20px;box-shadow:0 13px 0 #2a777a,0 21px 22px #095c8161;color:#4c3a2c}
-#oturumAlani>section h3{margin:0;padding:9px 16px;background:linear-gradient(#bd7a40,#945527);border-radius:10px;color:white;text-align:center;font-size:1.4rem}
-#oturumAlani>section h3::before{content:"📣 "}
-#duyuruDurum{color:#62452b;text-align:center}
+.course:nth-child(2){grid-column:span 2;background:linear-gradient(125deg,#f3faff,#fbf7ff);border-color:#c6dff8}
+.course:nth-child(2) summary{font-size:1.2rem;color:#244f84}
+.course:nth-child(2) button{margin:10px 10px 4px 0;min-height:58px;padding:13px 17px;font-size:1rem}
+.course .sectionBadge{display:block;width:fit-content;margin-top:15px;color:#27705c;background:var(--mint);border-radius:999px;padding:7px 12px;font-size:.85rem}
+.course p.hint{margin:13px 0;color:#60768d;font-size:.87rem;line-height:1.5}
+.courseLinks{margin:14px 0 0;padding:10px 8px 10px 26px;max-height:280px;overflow:auto;background:#fff;border:1px solid #e9eef9;border-radius:12px}
+.courseLinks li{margin:10px 0}
+.courseLinks a{color:#315ea1;font-weight:550;line-height:1.45}
+#oturumAlani>section{margin:20px 0 0;padding:20px;border:1px solid #ddd9f8;border-radius:19px;background:linear-gradient(135deg,#f1eefd,#fafaff)}
+#oturumAlani>section h3{margin:0 0 12px;font-size:1.3rem;color:#5a489b}
+#duyuruDurum{color:#5a6685}
 #duyuruListe{line-height:1.5}
-#cikis{display:block;margin:28px auto 0;background:#bf5054;box-shadow:0 4px 0 #852e31}
-#sonuc{text-align:center;color:#fff;font-weight:800;text-shadow:0 2px 5px #00456f}
+#cikis{display:block;margin:19px 0 4px auto;background:#fef0f2;color:#aa354f;border:1px solid #f0ccd5;box-shadow:none}
+#sonuc{text-align:left;color:#375a82;font-weight:650}
 #oyunPanel{z-index:60}
-@media(min-width:980px){.course:nth-child(2)[open]{grid-column:span 3}}
-@media(max-width:900px){.cards.seven{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:620px){.kutu{width:100%;padding:16px 12px 24px;margin:6px auto}.kutu>h1{font-size:26px;padding:12px 14px}.kutu>h2{margin-bottom:20px}.cards.seven{grid-template-columns:1fr;gap:25px}.course[open],.course:nth-child(2)[open]{grid-column:span 1}.course{border-radius:29px}.course button{width:100%}.dashboardTitle{font-size:20px}#oturumAlani>section{margin-top:38px}}
-@media(prefers-reduced-motion:reduce){.course{transition:none}.course:hover{transform:none}}
+@media(min-width:1000px){.course:nth-child(2)[open]{grid-column:span 2}}
+@media(max-width:850px){.cards.seven{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.kutu{width:100%;margin:0;min-height:100vh;padding:19px 13px;border-radius:0}.cards.seven{grid-template-columns:1fr}.course:nth-child(2),.course:nth-child(2)[open]{grid-column:span 1}.course:nth-child(2) button{width:100%}.kutu>h1{font-size:27px}#cikis{width:100%}}
+@media(prefers-reduced-motion:reduce){button,.course{transition:none}button:hover:not(:disabled),.course:hover{transform:none}}
+
 </style></head><body><main class="kutu">
-<h1>4/D Öğrenci Portalı</h1><h2>🏝️ Bilgi Adaları</h2>
+<h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
 <div id="oturumAlani" hidden>
-<h3 class="dashboardTitle">Ders Adalarını Keşfet</h3>
-<p class="hint">Etkinliğini seç. “Kayıp Sayılar” ve “Sayı Örüntüleri” sonuçları takipli test sürümünde kaydedilir; diğer etkinlikler mevcut sitemdeki gibi açılır.</p>
+<h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
+<p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
 <div class="cards seven"><details class="course"><summary><span aria-hidden="true">📚</span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dilkoruyucusu.html" target="_blank" rel="noopener noreferrer">Dil Muhafızları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dogrusunuyaz.html" target="_blank" rel="noopener noreferrer">Sözcüklerin Doğru Yazımı</a></li>
