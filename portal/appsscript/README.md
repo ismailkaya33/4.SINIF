@@ -1,33 +1,24 @@
-# Sonuç Kaydı — Apps Script kuruluma hazır dosya
+# 4/D | Öğrenci Apps Script kaynakları
 
-Dosya: `EtkinlikSonuclari.gs`. Bu dosya şu an **GitHub'daki hazırlık dalındadır**; Apps Script uygulamasına otomatik yüklenmemiştir.
+**Geçerli dağıtım rehberi:** [Tek seferlik kurulum paketi](../TEK_SEFERLIK_KURULUM_PAKETI.md).
 
-**Bağımlılık:** Mevcut Apps Script'te `oturumKaydi_(token)` ve `kayitNoIle_(no)` işlevleri çalışmalıdır. Bu modül **mevcut giriş/çıkış fonksiyonlarını değiştirmez**.
+## Doğrulanmış pilot davranışı
+- MİSAFİR girişi ve güvenli çıkış, öğretmen tarafından canlı `/dev` ortamında sınandı.
+- Matematik Kayıp Sayılar oyunu sonuç yazmayı başardı.
+- Öğretmen duyuruları: TASLAK → YAYINDA → ARSIV ve öğrenci görünürlüğü test edildi.
+- Öğretmen raporu ayrı projede çalışıyor.
 
-### Yapılanlar
-- Sonuç için izinli etkinlik ve sayısal alan doğrulaması.
-- Oturum token'ı ile **sunucu tarafında** öğrenci numarası bulunması.
-- `ETKINLIK_SONUCLARI` özel e-tablo sayfasına öğrenci sonucu kaydı.
-- Aynı öğrenci + etkinlik + `attemptId` için tekrar kaydın atlanması.
-- Token ve giriş kodunun sonuç tablosuna kaydedilmemesi.
+## GitHub'da hazırlanan, henüz canlı projeye aktarılmamış güncellemeler
+- `OgrenciGiris_Guncel.html`: gecikmiş asenkron yanıt koruması ve oyun ekranı sıfırlama.
+- `EtkinlikSonuclari.gs`: toplam sorular ve doğru+yanlış tutarlılığı.
+- `OgrenciDuyurulari.gs`: geçersiz son kullanma tarihini reddetme.
+- `SonucDogrulamaTestleri.gs`: dokuz veri doğrulama testi.
+- `GirisDenemeKoruma_Oneri.gs`: **henüz canlıya alınmayacak** bağımsız giriş denemesi sınırı taslağı. Mevcut `ogrenciGirisiYap` koduyla bütünleştirilmiş değildir.
 
-### Bilinmesi gerekenler
-- Kullanıcı oyunun JavaScript'ini değiştirerek yüksek bir skor gönderebilir. Bu kayıtlar yalnızca biçimsel olmayan öğretim geri bildirimi içindir.
-- Buradaki `attemptId` oyunda bir kez üretilmelidir; `crypto.randomUUID()` ya da güvenilir eşdeğeri kullanılmalı. Giriş kodu değildir.
-- `google.script.run.etkinlikSonucuKaydet(token, veri)` yalnız Apps Script HTML sayfasından çalışır; `github.io` için doğrudan çalışmaz.
-- Sunucuda deneme başına/öğrenci başına hız sınırı ve etkinlik cevap anahtarı doğrulaması henüz tamamlanmadı. **Öğrenci erişimini açma.**
-- Öğretmen paneli hâlâ Firebase'deki deneme kayıtlarını görür; Apps Script sonuçları henüz bu panele bağlanmaz.
-- Kazanım kodunun ders programına göre öğretmen tarafından doğrulanması gerekir.
-
-### Deneme verisi (yalnız geçerli oturum token'ıyla Apps Script içinde)
-```js
-const veri = {
-  activityId: 'mat-kayipsayilar',
-  attemptId: 'deneme_20261101_00001',
-  correct: 8, wrong: 2, total: 10,
-  wrongAttempts: 3, firstTry: 7, durationSeconds: 312
-};
-// google.script.run.etkinlikSonucuKaydet(token, veri)
-```
-
-Gerçek öğrenci bilgilerini veya token'ı GitHub'a koymayın.
+## Bilinen sınırlamalar
+- Mevcut `Kod.gs`, `GirisGuvenligi.gs`, `OgrenciOturum.gs` dosyalarının temel kaynakları henüz bu dalda yok.
+- Google Apps Script'in gerçek CacheService, LockService, HtmlService davranışı yerel JavaScript testlerinden farklı olabilir.
+- Koddan üretilmiş oyun skorları öğretim geri bildirimi içindir, güvenli sınav kaydı değildir.
+- Eski 50 etkinliğin yalnız pilot Matematik oyunu takip altyapısına bağlıdır.
+- Önce tüm dosyaları tek pakette kontrol edip `/dev` ortamında test et, ardından öğretmen onayıyla yeni dağıtım sürümüne geç.
+- Gerçek öğrenci kodları, isimler, tokenlar ve özel tablo kimlikleri GitHub'a yazılmaz.
