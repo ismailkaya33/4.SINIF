@@ -1,6 +1,6 @@
 /* 4/D etkinlik sonucunu tek biçime dönüştürür.
  * Bu modül sonuç GÖNDERMEZ, oturum token'ına erişmez, öğrenci kimliği içermez.
- * Sunucu kimlik doğrulaması kurulmadan gerçek öğrenci kaydı etkinleştirilmemelidir. */
+ * Bu dosya tarayıcı tarafında veri biçimini denetler; gerçek kimlik doğrulaması Apps Script sunucusunda yapılır. */
 export const RESULT_SCHEMA_VERSION = 1;
 const INTEGER = v => Number.isSafeInteger(v);
 export const ACTIVITY_CATALOG = Object.freeze({
@@ -28,7 +28,7 @@ export function normalizeActivityResult(input) {
   if (input.total < 1 || input.total > 1000 ||
       input.correct > input.total || input.wrong > input.total ||
       input.firstTry > input.correct || input.durationSeconds > 86400 ||
-      input.wrongAttempts > 10000 || input.correct + input.wrong > input.total) {
+      input.wrongAttempts > 10000 || input.correct + input.wrong !== input.total) {
     throw new RangeError("Sonuç alanları birbiriyle uyumsuz.");
   }
   return Object.freeze({
