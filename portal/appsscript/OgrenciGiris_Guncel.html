@@ -3,7 +3,7 @@
 <title>4/D Öğrenci Girişi</title>
 <style>
 body{font-family:Arial,sans-serif;background:#eef4ff;min-height:100vh;margin:0;display:grid;place-items:center}
-.kutu{background:#fff;width:min(380px,85%);padding:30px;border-radius:18px;text-align:center;box-shadow:0 8px 25px #0002}
+.kutu{background:#fff;width:min(780px,92%);padding:30px;border-radius:18px;text-align:center;box-shadow:0 8px 25px #0002}
 input{box-sizing:border-box;width:100%;padding:15px;font-size:22px;text-align:center;text-transform:uppercase;letter-spacing:3px;border:2px solid #b7c8e0;border-radius:10px}
 button{margin-top:16px;padding:14px 24px;background:#2459a6;color:#fff;border:0;border-radius:10px;cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}
@@ -13,8 +13,9 @@ a{color:#2459a6}#testNote{background:#fff7e8;padding:11px;border-radius:9px;font
 <h1>🎒 4/D Sınıfı</h1><h2>Öğrenci Girişi</h2>
 <div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
 <div id="oturumAlani" hidden>
-<p id="testNote">Etkinlik sonuçlarını otomatik kaydetme bağlantısı henüz yayında değil. Oyunu şimdi açarsan sonuç öğretmene otomatik gönderilmez.</p>
-<a href="https://ismailkaya33.github.io/4.SINIF/Matematik/kayipsayilar.html" target="_blank" rel="noopener noreferrer">Matematik oyununu aç (kayıtsız deneme)</a>
+<button id="oyunuAc" type="button">🎮 Matematik Oyununu Aç</button>
+<p id="oyunDurum" role="status"></p>
+<div id="oyunPanel" hidden><iframe id="oyunCer" title="Matematik oyunu" referrerpolicy="no-referrer" style="border:0;width:100%;height:65vh;min-height:440px"></iframe></div>
 </div>
 <button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button>
 <p id="sonuc" role="status" aria-live="polite"></p>
@@ -22,7 +23,7 @@ a{color:#2459a6}#testNote{background:#fff7e8;padding:11px;border-radius:9px;font
 "use strict";
 const buton=document.getElementById("giris"),cikisButonu=document.getElementById("cikis"),sonuc=document.getElementById("sonuc"),kodAlani=document.getElementById("kod"),girisAlani=document.getElementById("girisAlani"),oturumAlani=document.getElementById("oturumAlani"),anahtarAdi="4d_ogrenci_oturumu";
 const tokenFormat=/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
-function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar}
+function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){document.getElementById("oyunPanel").hidden=true;document.getElementById("oyunCer").removeAttribute("src");}}
 function tokenTemizle(){sessionStorage.removeItem(anahtarAdi);ekranGoster(false);kodAlani.value=""}
 function girisYap(){
  if(buton.disabled)return;
@@ -49,6 +50,29 @@ function cikisYap(){
 }
 buton.addEventListener("click",girisYap);cikisButonu.addEventListener("click",cikisYap);
 kodAlani.addEventListener("keydown",function(e){if(e.key==="Enter")girisYap()});
+const oyunButonu=document.getElementById("oyunuAc"),oyunCer=document.getElementById("oyunCer"),oyunDurum=document.getElementById("oyunDurum"),oyunPanel=document.getElementById("oyunPanel");
+let gonderiliyor=false;
+oyunButonu.addEventListener("click",function(){
+ if(!sessionStorage.getItem(anahtarAdi)){oyunDurum.textContent="Önce giriş yap.";return}
+ oyunPanel.hidden=false;oyunButonu.disabled=true;
+ oyunDurum.textContent="Oyun açılıyor. Bitirdiğinde sonucun otomatik gönderilecek.";
+ oyunCer.src="https://ismailkaya33.github.io/4.SINIF/test/kayipsayilar.html";
+});
+window.addEventListener("message",function(e){
+ if(oturumAlani.hidden||gonderiliyor||e.origin!=="https://ismailkaya33.github.io"||e.source!==oyunCer.contentWindow)return;
+ const d=e.data;
+ if(!d||d.type!=="4d:activity-finished"||d.schemaVersion!==1||d.activityId!=="mat-kayipsayilar"||typeof d.attemptId!=="string"||!/^[A-Za-z0-9_-]{12,80}$/.test(d.attemptId))return;
+ const token=sessionStorage.getItem(anahtarAdi);
+ if(!token)return;
+ const veri={activityId:d.activityId,attemptId:d.attemptId,correct:d.correct,wrong:d.wrong,total:d.total,wrongAttempts:d.wrongAttempts,firstTry:d.firstTry,durationSeconds:d.durationSeconds};
+ gonderiliyor=true;oyunDurum.textContent="Sonuç kaydediliyor...";
+ google.script.run.withSuccessHandler(function(r){
+  gonderiliyor=false;
+  if(r&&r.basarili){oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";}
+  else{oyunDurum.textContent="Sonuç kaydedilemedi. Oturumunu kontrol et.";}
+ }).withFailureHandler(function(){gonderiliyor=false;oyunDurum.textContent="Kayıt bağlantısında sorun oldu. Öğretmenine haber ver."}).etkinlikSonucuKaydet(token,veri);
+});
+
 const mevcutToken=sessionStorage.getItem(anahtarAdi);
 if(mevcutToken){
  buton.disabled=true;sonuc.textContent="Oturum kontrol ediliyor...";
