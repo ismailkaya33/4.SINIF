@@ -19,9 +19,22 @@ function duyuruEkleOgretmen(baslik,metin,bitisTarihi) {
   const sh=SpreadsheetApp.openById(id).getSheetByName('DUYURULAR');
   if(!sh)throw Error('DUYURULAR sayfası yok. Önce öğretmen tarafından oluşturulmalı.');
   let expiry='';
-  if(bitisTarihi){const d=new Date(bitisTarihi);if(!Number.isFinite(d.getTime()))throw Error('Tarih geçersiz.');expiry=d;}
+  if(bitisTarihi){
+    const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(bitisTarihi));
+    if(!match)throw Error('Tarih geçersiz.');
+    const y=Number(match[1]),m=Number(match[2]),day=Number(match[3]);
+    const d=new Date(y,m-1,day,23,59,59,999);
+    if(d.getFullYear()!==y||d.getMonth()!==m-1||d.getDate()!==day)throw Error('Tarih geçersiz.');
+    expiry=d;
+  }
   const lock=LockService.getScriptLock();lock.waitLock(10000);
-  try {const next=Date.now();sh.appendRow([next,title,body,'TASLAK',expiry]);return {basarili:true,durum:'TASLAK'};}
+  try {
+    const last=sh.getLastRow(),previous=last>1?Number(sh.getRange(last,1).getValue()):0;
+    const next=Math.max(Date.now(),Number.isSafeInteger(previous)?previous+1:0);
+    const safeText=v=>/^[=+@\-\t\r]/.test(v)?"'"+v:v;
+    sh.appendRow([next,safeText(title),safeText(body),'TASLAK',expiry]);
+    return {basarili:true,durum:'TASLAK'};
+  }
   finally{lock.releaseLock();}
 }
 // Güvenlik: yeni duyuru TASLAK olarak kaydedilir; öğretmen E-Tablodaki durumu
