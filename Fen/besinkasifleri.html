@@ -184,8 +184,10 @@ function showMap(){const view=queryOne('#view');view.innerHTML='';view.append(cr
 function showMission(mission){const view=queryOne('#view');view.innerHTML='';const back=createNode('button','btn','⬅ Haritaya dön');back.onclick=showMap;view.append(back,createNode('h2','',mission.title),createNode('p','tag',mission.goal));
   mission.stations.forEach(station=>{const stars=progress.stars[station.id]||0,button=createNode('button','btn'+(stars?' good':''),(stars?'✔ ':'▶ ')+station.title+'  '+starText(stars));button.style.cssText='display:block;width:100%;margin:12px 0';button.onclick=()=>showStation(mission,station);view.append(button)});updateHud()}
 function showStation(mission,station){const view=queryOne('#view');view.innerHTML='';const back=createNode('button','btn','⬅ '+mission.title),stage=createNode('div');back.onclick=()=>showMission(mission);view.append(back,createNode('h2','',station.title),stage);
-  station.run(stage,stars=>{const wasDone=missionDone(mission);progress.stars[station.id]=Math.max(progress.stars[station.id]||0,stars);saveProgress();updateHud();
+  station.run(stage,stars=>{const wasDone=missionDone(mission);progress.stars[station.id]=Math.max(progress.stars[station.id]||0,stars);saveProgress();updateHud();checkFullCompletion();
     const next=createNode('button','btn go','Görev tamamlandı! Devam ➜');next.onclick=()=>{if(!wasDone&&missionDone(mission))showBadge(mission);else showMission(mission)};stage.append(next);next.scrollIntoView({block:'center'})});scrollTo(0,0)}
+function checkFullCompletion(){if(MISSIONS.every(missionDone)){const total=MISSIONS.reduce((n,m)=>n+m.stations.length,0);recordVerifiedFinish('Fen/besinkasifleri.html',{completed:total,total,stars:MISSIONS.reduce((n,m)=>n+missionStars(m),0)});}}
+
 function showBadge(mission){const overlay=createNode('div','badge'),card=createNode('div','card');card.innerHTML=`<div style="font-size:72px">🏅</div><h2>Rozet kazandın!</h2><p><b>${mission.title}</b> görevini tamamladın.</p>`;const close=createNode('button','btn go','Harika!');close.onclick=()=>{overlay.remove();showMission(mission)};card.append(close);overlay.append(card);document.body.append(overlay);celebrate(close);close.focus()}
 
 /* ---------- Sunum modu, yazdırma, sıfırlama ---------- */
@@ -197,4 +199,16 @@ queryOne('#mapButton').onclick=()=>printSheet('<section class="sheet"><h2>Besinl
 queryOne('#resetButton').onclick=()=>{if(confirm('Tüm yıldızlar ve rozetler silinecek. Emin misin?')){progress={stars:{}};saveProgress();showMap()}};
 document.addEventListener('keydown',keyEvent=>{if(keyEvent.key==='Escape')document.body.classList.remove('presenting')});
 showMap();
+
+// Sonuç kaydı yalnız oyunun kendi bitiş koşulundan çağrılır; öğrenci düğmesi değildir.
+// Bu kayıt tarayıcıda kanıttır; sunucu tarafından doğrulanmış öğretmen kaydı değildir.
+function recordVerifiedFinish(activity,metrics){
+  if(!Number.isFinite(metrics.total)||metrics.completed!==metrics.total)return;
+  const report={schema:"4d-game-result-v1",activity,metrics,recordedAt:new Date().toISOString()};
+  try{localStorage.setItem("4d.result."+activity,JSON.stringify(report));}catch(e){}
+  window.dispatchEvent(new CustomEvent("4d:game-complete",{detail:report}));
+  // Kimlik içermeyen sonuç, onu doğrulayan bir portal dinleyicisine de iletilebilir.
+  if(window.opener&&!window.opener.closed)window.opener.postMessage(report,"*");
+}
+
 </script></body></html>
