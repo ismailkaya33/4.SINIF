@@ -22,6 +22,26 @@
       "studentIdentitySource": "none",
       "integrationStatus": "pilot-tracked",
       "notes": "Öğrenci portalı iframe bağlantısı üzerinden oturum doğrulamasıyla sonuç kaydı yapılıyor. Oyunun bağımsız açılışı sonuç kaydetmez. Kazanım kodu pedagojik yönden öğretmen tarafından gözden geçirilmeli."
+    },
+    {
+      "activityId": "mat-oruntuler",
+      "path": "test/oruntuler.html",
+      "subject": "Matematik",
+      "grade": 4,
+      "outcomeIds": [],
+      "resultEvent": "portal:finished",
+      "resultFields": [
+        "activityId",
+        "correct",
+        "wrong",
+        "total",
+        "wrongAttempts",
+        "firstTry",
+        "durationSeconds"
+      ],
+      "studentIdentitySource": "server-session",
+      "integrationStatus": "staging-tracked",
+      "notes": "Ayrı test kopyası; kazanım kodu öğretmen tarafından doğrulanacak. Canlı öğrenci Apps Script henüz güncellenmedi."
     }
   ]
 }
