@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4/D | Kazanım Analizi (Yerel Pilot)</title>
+<style>
+:root{font:16px system-ui,Arial,sans-serif;color:#183048;background:#f3f6fb}*{box-sizing:border-box}body{margin:0;padding:25px 16px}main{max-width:1000px;margin:auto}h1{font-size:1.8rem}p{line-height:1.55}header,.panel{background:white;border:1px solid #dbe5ef;border-radius:16px;padding:22px;margin-bottom:16px}header{border-top:5px solid #255caa}.hint{color:#526678}.notice{background:#fff7e6;padding:12px;border-radius:10px}input,button{font:inherit}input[type=file]{max-width:100%;padding:12px;border:1px dashed #7a95b5;border-radius:10px}button{background:#255caa;border:0;color:white;padding:10px 15px;border-radius:9px;cursor:pointer}button.secondary{background:#53677d}button:focus-visible,input:focus-visible{outline:3px solid #78b4f5;outline-offset:2px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{background:#eff4fb;padding:14px;border-radius:12px}.metric strong{display:block;font-size:1.7rem}table{border-collapse:collapse;width:100%;min-width:620px}th,td{text-align:left;border-bottom:1px solid #e3eaf2;padding:10px}th{background:#f1f5fa}.scroll{overflow:auto}[hidden]{display:none!important}.bad{color:#a03030}.good{color:#176047}@media(max-width:680px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<header>
+<h1>📊 4/D | Kazanım Analizi</h1>
+<p>Öğretmen için <b>yerel pilot</b>: Etkinlik sonuçlarını tarayıcıda analiz eder. Dosyalar sunucuya gönderilmez; bu sayfa herhangi bir öğrenci hesabına bağlanmaz.</p>
+<p class="notice">Bu sayfa herkese açık depoda bulunabilir; <strong>öğrenci adlarını veya giriş kodlarını içeren dosyaları buraya yüklemeyin.</strong> Yalnızca rastgele takma kimlik içeren sonuç dosyası kullanın. Bu bir kimlik doğrulama ekranı değildir.</p>
+</header>
+<section class="panel">
+<h2>Sonuç dosyası</h2>
+<p class="hint">JSON biçiminde, aşağıdaki veri şemasına uyan bir dosya seçin. Veriler yalnızca bu sekmenin belleğinde tutulur; otomatik kaydedilmez.</p>
+<input id="file" type="file" accept=".json,application/json">
+<button class="secondary" id="demo" type="button">Örnek verilerle incele</button>
+<button class="secondary" id="clear" type="button">Verileri temizle</button>
+<p id="status" role="status" aria-live="polite">Henüz veri yüklenmedi.</p>
+</section>
+<div id="results" hidden>
+<section class="panel">
+<h2>Sınıf görünümü</h2>
+<div class="grid">
+<div class="metric">Etkinlik kaydı<strong id="attempts">0</strong></div>
+<div class="metric">Farklı öğrenci<strong id="students">0</strong></div>
+<div class="metric">Ortalama başarı<strong id="average">—</strong></div>
+</div>
+</section>
+<section class="panel"><h2>Kazanım bazında durum</h2>
+<p class="hint">Her kayıt bir etkinlik denemesidir. Yüzdeler, bu kazanıma ait soru toplamı üzerinden hesaplanır; kazanımın tamamen öğrenildiği anlamına gelmez.</p>
+<div class="scroll"><table><thead><tr><th>Kazanım</th><th>Katılan</th><th>Doğru / Soru</th><th>Başarı</th><th>İzleme önerisi</th></tr></thead><tbody id="byOutcome"></tbody></table></div>
+</section>
+<section class="panel"><h2>Katılım özeti (takma kimlikler)</h2>
+<div class="scroll"><table><thead><tr><th>Öğrenci takma kimliği</th><th>Etkinlik sayısı</th><th>Ortalama başarı</th></tr></thead><tbody id="byStudent"></tbody></table></div>
+</section>
+</div>
+<footer class="hint">4/D pilot • Öğrenci kimlikleri bu sayfada çözümlenmez • Paylaşılacak raporlar için okulun veri koruma usullerine uyun.</footer>
+</main>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const sample=[
+{studentRef:"ORNEK-A",activityId:"mat-kayip",outcomeId:"M.4.1.3.4",correct:8,total:10},
+{studentRef:"ORNEK-B",activityId:"mat-kayip",outcomeId:"M.4.1.3.4",correct:5,total:10},
+{studentRef:"ORNEK-C",activityId:"mat-kayip",outcomeId:"M.4.1.3.4",correct:9,total:10},
+{studentRef:"ORNEK-A",activityId:"fen-besin",outcomeId:"F.4.2.1",correct:7,total:10},
+{studentRef:"ORNEK-B",activityId:"fen-besin",outcomeId:"F.4.2.1",correct:4,total:10}
+];
+function assertRecords(data) {
+ if(!Array.isArray(data)||data.length>20000)throw Error("Dosya bir JSON dizisi olmalı (en çok 20.000 kayıt).");
+ return data.map((r,i)=>{
+  if(!r||typeof r!=="object"||Array.isArray(r))throw Error((i+1)+". kayıt geçersiz.");
+  const keys=["studentRef","activityId","outcomeId"];
+  for(const k of keys)if(typeof r[k]!=="string"||!(/^[A-Za-z0-9_.-]{1,64}$/.test(r[k])))throw Error((i+1)+". kayıtta "+k+" biçimi geçersiz.");
+  if(!Number.isSafeInteger(r.correct)||!Number.isSafeInteger(r.total)||r.total<1||r.total>1000||r.correct<0||r.correct>r.total)throw Error((i+1)+". kayıtta soru/doğru sayısı geçersiz.");
+  return {studentRef:r.studentRef,activityId:r.activityId,outcomeId:r.outcomeId,correct:r.correct,total:r.total};
+ });
+}
+function cell(tr,value){const td=document.createElement("td");td.textContent=String(value);tr.append(td)}
+function summarize(records,keyFn){
+ const map=new Map();
+ for(const r of records){const key=keyFn(r);let x=map.get(key);if(!x){x={count:0,correct:0,total:0,students:new Set(),activities:new Set()};map.set(key,x)}
+ x.count++;x.correct+=r.correct;x.total+=r.total;x.students.add(r.studentRef);x.activities.add(r.activityId)}
+ return [...map.entries()].sort((a,b)=>a[0].localeCompare(b[0],"tr"));
+}
+function render(raw){
+ const rows=assertRecords(raw);
+ $("results").hidden=false;$("attempts").textContent=rows.length;
+ $("students").textContent=new Set(rows.map(r=>r.studentRef)).size;
+ const sum=rows.reduce((x,r)=>({c:x.c+r.correct,t:x.t+r.total}),{c:0,t:0});
+ $("average").textContent=sum.t?"%"+Math.round(100*sum.c/sum.t):"—";
+ $("byOutcome").replaceChildren();$("byStudent").replaceChildren();
+ for(const [id,x] of summarize(rows,r=>r.outcomeId)){
+  const pct=Math.round(100*x.correct/x.total),tr=document.createElement("tr");
+  [id,x.students.size,x.correct+" / "+x.total,"%"+pct,pct<60?"Tekrar ve destek":pct<80?"Pekiştirme":"İzlemeye devam"].forEach(v=>cell(tr,v));
+  $("byOutcome").append(tr);
+ }
+ for(const [id,x] of summarize(rows,r=>r.studentRef)){
+  const tr=document.createElement("tr");
+  [id,x.activities.size,x.total?"%"+Math.round(100*x.correct/x.total):"—"].forEach(v=>cell(tr,v));$("byStudent").append(tr);
+ }
+ $("status").textContent=rows.length+" kayıt tarayıcıda analiz edildi. Sunucuya gönderilmedi.";
+}
+$("demo").addEventListener("click",()=>render(sample));
+$("clear").addEventListener("click",()=>{$("results").hidden=true;$("file").value="";$("status").textContent="Veriler temizlendi.";});
+$("file").addEventListener("change",async e=>{
+ const f=e.target.files[0];if(!f)return;
+ if(f.size>2*1024*1024){$("status").textContent="Dosya 2 MB'tan büyük.";return}
+ try{const data=JSON.parse(await f.text());render(data)}catch(err){$("results").hidden=true;$("status").textContent="Dosya okunamadı: "+err.message;}
+});
+</script></body></html>
