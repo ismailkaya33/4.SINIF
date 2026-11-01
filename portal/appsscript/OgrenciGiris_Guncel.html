@@ -69,6 +69,24 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #df
 .course:nth-child(2) button{background:linear-gradient(110deg,#8669cc,#9975db);border:1px solid #aa92e5}
 .course:nth-child(2) button::after{content:"  →"}
 @media(max-width:600px){.welcomeBar{flex-direction:column;align-items:stretch}.welcomeBar #cikis{width:100%}}
+/* Akilli Sinif — on plana alinmis iki takipli etkinlik */
+.featuredLessons{margin:17px 0 25px;padding:19px;border:1px solid #cfe1f7;border-radius:21px;background:linear-gradient(125deg,#e4f0ff,#f2ecff);box-shadow:0 7px 20px #2a599316}
+.featuredHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.featuredEyebrow{display:inline-block;padding:6px 11px;border-radius:12px;background:#ddf7ed;color:#207460;font-size:.84rem;font-weight:800;letter-spacing:.3px}
+.featuredHeader h3{margin:7px 0 0;font-size:clamp(19px,2.1vw,26px);color:#253b78}
+.trackingPill{padding:8px 13px;background:#dff8eb;border-radius:30px;color:#267d61;font-size:.82rem;font-weight:750;white-space:nowrap}
+.featuredGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.featuredGame{display:flex;gap:13px;align-items:center;flex-wrap:wrap;padding:18px;border-radius:17px;border:1px solid #d6e7fa;background:#ffffffed;box-shadow:0 6px 15px #345f9c11}
+.gameSymbol{display:grid;place-items:center;width:69px;height:69px;flex:none;border-radius:17px;background:#dfefff;font-size:35px}
+.featuredText{flex:1;min-width:150px}
+.featuredText h4{margin:0 0 5px;color:#253763;font-size:1.21rem}
+.featuredText p{margin:0;color:#62738b;line-height:1.45;font-size:.92rem}
+.featuredGame button{margin:0;padding:12px 14px;white-space:nowrap;background:linear-gradient(130deg,#8e73cf,#9972cf)}
+.otherLessonsHeading{margin:24px 0 0;color:#2c477a;font-size:1.2rem}
+.cards.seven{margin-top:14px}
+.course:nth-child(2),.course:nth-child(2)[open]{grid-column:span 1}
+@media(max-width:850px){.featuredGrid{grid-template-columns:1fr}}
+@media(max-width:600px){.featuredHeader{flex-direction:column;align-items:flex-start}.featuredGame button{width:100%}.featuredGame{gap:10px}}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
@@ -76,6 +94,8 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #df
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
 <p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
+<section class="featuredLessons" aria-labelledby="featured-heading"><div class="featuredHeader"><div><span class="featuredEyebrow">🧮 MATEMATİK</span><h3 id="featured-heading">Öne Çıkan Etkinlikler</h3></div><span class="trackingPill">● Sonuç takibi açık</span></div><div class="featuredGrid"><article class="featuredGame"><span class="gameSymbol" aria-hidden="true">🔢</span><div class="featuredText"><h4>Kayıp Sayılar</h4><p>Eksik bırakılan sayıları bul, işlemleri tamamla.</p></div><button id="oyunuAc" type="button">Etkinliği Aç →</button></article><article class="featuredGame"><span class="gameSymbol" aria-hidden="true">🧩</span><div class="featuredText"><h4>Sayı Örüntüleri</h4><p>Artış ve azalış kurallarını keşfet.</p></div><button id="oruntulerAc" type="button">Etkinliği Aç →</button></article></div></section>
+<h3 class="otherLessonsHeading">📚 Diğer Dersler ve Etkinlikler</h3>
 <div class="cards seven"><details class="course"><summary><span aria-hidden="true">📚</span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dilkoruyucusu.html" target="_blank" rel="noopener noreferrer">Dil Muhafızları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dogrusunuyaz.html" target="_blank" rel="noopener noreferrer">Sözcüklerin Doğru Yazımı</a></li>
@@ -93,7 +113,7 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #df
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/noktalamaisaretleri.html" target="_blank" rel="noopener noreferrer">Noktalama İşaretleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/pekistirme.html" target="_blank" rel="noopener noreferrer">Pekiştirme Dedektifi 1</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/sozavcıları.html" target="_blank" rel="noopener noreferrer">Atasözleri ve Deyimler</a></li></ul></details>
-<details class="course"><summary><span aria-hidden="true">🧮</span> <strong>Matematik</strong> <small>11 etkinlik</small></summary><p class="sectionBadge">✅ Kayıp Sayılar ve Sayı Örüntüleri: sonuç takibi açık</p><button id="oyunuAc" type="button">🎮 Kayıp Sayılar (takipli)</button><button id="oruntulerAc" type="button">🧩 Sayı Örüntüleri (takipli)</button><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/oruntuler.html" target="_blank" rel="noopener noreferrer">Sayı Örüntüleri</a></li>
+<details class="course"><summary><span aria-hidden="true">🧮</span> <strong>Matematik</strong> <small>11 etkinlik</small></summary><p class="sectionBadge">✅ Takipli etkinlikler yukarıdaki kartlardan açılır.</p><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/oruntuler.html" target="_blank" rel="noopener noreferrer">Sayı Örüntüleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilar.html" target="_blank" rel="noopener noreferrer">Sayılar</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilarikarsilastirsirala.html" target="_blank" rel="noopener noreferrer">Sayıları Karşılaştırma ve Sıralama</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayiproblemleri.html" target="_blank" rel="noopener noreferrer">Sayı Problemleri Atölyesi</a></li>
