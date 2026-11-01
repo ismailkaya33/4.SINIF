@@ -104,6 +104,57 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #df
 .progressTrack{height:10px;margin-top:14px;border-radius:20px;background:#dce9ee;overflow:hidden}
 #ilerlemeBar{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#43bf9e,#64a6d8);transition:width .25s}
 @media(max-width:620px){.progressStats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* OKUNABILIRLIK GUNCELLEMESI — 4. sinif ogrencileri icin buyuk metin/dokunma alanlari */
+body:not(.oyunda){font-size:18px;line-height:1.55}
+.kutu{width:min(1420px,98%);padding:clamp(18px,2.7vw,40px)}
+.kutu>h1{font-size:clamp(32px,3.5vw,48px)}
+.kutu>h2{font-size:clamp(21px,2.1vw,28px)}
+.dashboardTitle{font-size:clamp(24px,2.4vw,33px);padding:18px 21px}
+#oturumAlani>.hint,.course p.hint{font-size:clamp(16px,1.3vw,19px);line-height:1.6}
+button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
+#girisAlani{max-width:570px}
+#girisAlani p{font-size:20px}
+#kod{font-size:26px;min-height:64px}
+.welcomeLabel{font-size:17px}
+#welcomeName{font-size:clamp(23px,2.4vw,31px)}
+.sessionActive{font-size:16px}
+.welcomeAvatar{width:75px;height:75px;font-size:39px}
+.welcomeBar #cikis{font-size:17px;min-height:57px}
+.featuredEyebrow,.trackingPill{font-size:16px}
+.featuredHeader h3{font-size:clamp(24px,2.6vw,34px)}
+.featuredGame{min-height:165px;padding:23px}
+.gameSymbol{width:85px;height:85px;font-size:45px}
+.featuredText h4{font-size:clamp(21px,1.9vw,27px)}
+.featuredText p{font-size:clamp(17px,1.35vw,19px)}
+.featuredGame button{min-width:160px;min-height:64px;font-size:19px;padding:16px 19px}
+.otherLessonsHeading{font-size:25px}
+.cards.seven{gap:20px}
+.course{padding:21px 19px}
+.course summary,.course:nth-child(2) summary{font-size:clamp(20px,1.7vw,24px);min-height:60px;line-height:1.4}
+.course summary>span{font-size:34px}
+.course summary small{font-size:15px}
+.course .sectionBadge{font-size:16px;line-height:1.45}
+.courseLinks{max-height:380px}
+.courseLinks li{margin:14px 0}
+.courseLinks a{font-size:18px;line-height:1.6}
+.progressTitle h3,#oturumAlani>section h3{font-size:25px}
+.progressTitle>span,#ilerlemeDurum,#duyuruDurum{font-size:17px}
+.progressStats strong{font-size:clamp(25px,2.6vw,36px)}
+.progressStats small{font-size:16px;line-height:1.4}
+#oyunUst{min-height:68px;font-size:19px}
+#oyunPanel button{min-height:50px;font-size:17px}
+#oyunDurum{font-size:18px;line-height:1.5}
+@media(max-width:620px){
+ body:not(.oyunda){font-size:17px}
+ .kutu{padding:18px 14px}
+ .featuredGame{padding:17px;min-height:unset}
+ .featuredGame button{width:100%;font-size:19px}
+ .welcomeAvatar{width:65px;height:65px}
+ .course summary{font-size:21px}
+ .courseLinks a{font-size:18px}
+ .progressStats small{font-size:15px}
+}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
