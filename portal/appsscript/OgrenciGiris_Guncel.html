@@ -254,6 +254,11 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 .noteCard button.done{background:#c9f5df;color:#236c51}
 .sectionEmpty{padding:24px;text-align:center;font-size:19px;color:#576e89}
 @media(max-width:720px){#dersIzgarasi{grid-template-columns:1fr}#dersIzgarasi>.course{min-height:110px}.courseSection .courseLinks,.notebookGrid{grid-template-columns:1fr}.courseTabs button{flex:1;font-size:17px;padding:12px}.lessonBackRow{flex-wrap:wrap}}
+
+/* Yalniz ogretmenin sectigi etkinliklerde ogrenci tamamlama bildirimi */
+.courseLinks li .completionButton{display:block;width:100%;min-height:52px;margin:5px 0 11px;padding:9px 13px;background:#fca311;color:#283347;border-radius:11px;font-size:17px;font-weight:900;text-align:center}
+.courseLinks li .completionButton.done{background:#c8f3dd;color:#236c51;cursor:default}
+.courseLinks li .completionButton:focus-visible{outline:3px solid #305fbd;outline-offset:2px}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
@@ -360,7 +365,7 @@ function duyurulariYukle(){
   r.duyurular.forEach(function(d){const el=document.createElement("article"),h=document.createElement("h4"),p=document.createElement("p");h.textContent=d.baslik;p.textContent=d.metin;el.append(h,p);liste.appendChild(el)});
  }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
 }
-function tokenTemizle(){menuyeDon();yazilanNotlar.clear();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
+function tokenTemizle(){menuyeDon();yazilanNotlar.clear();bitirilenEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
 function girisYap(){
  if(buton.disabled)return;
  const kod=kodAlani.value.trim().toUpperCase();
@@ -371,7 +376,7 @@ function girisYap(){
   if(istekNesli!==oturumNesli)return;
   buton.disabled=false;
   if(cevap&&cevap.basarili===true&&typeof cevap.token==="string"&&tokenFormat.test(cevap.token)){
-   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();
+   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();seciliEtkinlikDurumYukle();
    sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+".";
   }else{sonuc.textContent=cevap&&cevap.mesaj?cevap.mesaj:"Giriş doğrulanamadı."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Giriş sırasında hata oluştu. Tekrar dene."}).ogrenciGirisiYap(kod);
@@ -432,6 +437,47 @@ const defterKatalog={
 "Fen Bilimleri":{dir:"Fen",files:[["besinler1.png","Besinler 1"],["besinler2.png","Besinler 2"],["besinler3.png","Besinler 3"],["besinlerintazeligi.png","Besinlerin Tazeliği"],["besinlerisaklama.png","Besinleri Saklama"]]},
 "Sosyal Bilgiler":{dir:"Sosyal",files:[["ailemcocuk.jpg","Ailem ve Çocuk"],["ailetarihi.png","Aile Tarihi"],["cocukoyun.png","Çocuk Oyunları"],["farkliliklarimizvesaygi.png","Farklılıklara Saygı"],["mersinkultur.png","Mersin Kültürü"],["millikultur.png","Millî Kültür"]]}
 };
+const seciliEtkinlikler=new Set([
+ "Turkce/ikilemeler.html","Turkce/pekistirme.html","Turkce/sozavcıları.html",
+ "Matematik/cikarmaislemi.html","Fen/besinkasifleri.html","Sosyal/oyunzamani.html"
+]);
+let bitirilenEtkinlikler=new Set();
+function seciliEtkinlikButonlariYenile(){
+ document.querySelectorAll(".completionButton").forEach(btn=>{
+  const done=bitirilenEtkinlikler.has(btn.dataset.activity);
+  btn.classList.toggle("done",done);btn.disabled=done;
+  btn.textContent=done?"✓ Tamamladım (Kaydedildi)":"✓ Etkinliği Tamamladım";
+ });
+}
+function seciliEtkinlikDurumYukle(){
+ const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
+ google.script.run.withSuccessHandler(function(r){
+  if(sessionStorage.getItem(anahtarAdi)!==token||!r||!r.basarili)return;
+  bitirilenEtkinlikler=new Set(r.tamamlananlar||[]);
+  seciliEtkinlikButonlariYenile();
+ }).seciliEtkinlikDurumum(token);
+}
+function seciliEtkinlikButonlariKur(){
+ document.querySelectorAll("#dersIzgarasi .courseLinks a").forEach(link=>{
+  let pathname;
+  try{const url=new URL(link.href);if(url.origin!=="https://ismailkaya33.github.io")return;pathname=decodeURI(url.pathname.replace(/^\/4\.SINIF\//,""));}catch(e){return;}
+  if(!seciliEtkinlikler.has(pathname))return;
+  const button=document.createElement("button");button.type="button";
+  button.className="completionButton";button.dataset.activity=pathname;
+  button.textContent="✓ Etkinliği Tamamladım";
+  button.setAttribute("aria-label",link.textContent+" etkinliğini tamamladım");
+  button.addEventListener("click",function(){
+   const token=sessionStorage.getItem(anahtarAdi);if(!token||bitirilenEtkinlikler.has(pathname))return;
+   button.disabled=true;button.textContent="Kaydediliyor...";
+   google.script.run.withSuccessHandler(function(r){
+    if(sessionStorage.getItem(anahtarAdi)!==token)return;
+    if(r&&r.basarili){bitirilenEtkinlikler.add(pathname);seciliEtkinlikButonlariYenile();}
+    else{button.disabled=false;button.textContent="Tekrar Dene";}
+   }).withFailureHandler(function(){button.disabled=false;button.textContent="Tekrar Dene";}).seciliEtkinlikTamamla(token,pathname);
+  });
+  link.parentElement.appendChild(button);
+ });
+}
 const dersKartlari=[...document.querySelectorAll("#dersIzgarasi>.course")];
 const dersGeriSatiri=document.getElementById("dersGeriSatiri");
 const dersSayfaBaslik=document.getElementById("dersSayfaBaslik");
@@ -519,6 +565,7 @@ dersKartlari.forEach(function(card){
  });
 });
 
+seciliEtkinlikButonlariKur();
 const mevcutToken=sessionStorage.getItem(anahtarAdi);
 if(mevcutToken){
  const istekNesli=++oturumNesli;
@@ -526,7 +573,7 @@ if(mevcutToken){
  google.script.run.withSuccessHandler(function(cevap){
   if(istekNesli!==oturumNesli||sessionStorage.getItem(anahtarAdi)!==mevcutToken)return;
   buton.disabled=false;
-  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
+  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();seciliEtkinlikDurumYukle();sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
   else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
 }
