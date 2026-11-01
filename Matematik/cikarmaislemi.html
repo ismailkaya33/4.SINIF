@@ -164,7 +164,7 @@ function emitVerifiedFinish(){
  if(rows.length!==16||rows.some(t=>!["success","skipped"].includes(t.status)))return;
  const correct=rows.filter(t=>t.status==="success").length,wrong=rows.length-correct;
  const firstTry=rows.filter(t=>t.status==="success"&&t.attempts===1&&!t.hintUsed).length;
- const attemptId="ci_"+crypto.randomUUID().replace(/-/g,"");
+ const attemptId="ci_"+(window.crypto&&typeof window.crypto.randomUUID==='function'?window.crypto.randomUUID().replace(/-/g,''):Date.now().toString(36)+Math.random().toString(36).slice(2));
  window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"mat-cikarmaislemi",attemptId,correct,wrong,total:rows.length,wrongAttempts:state.wrongCount,firstTry,durationSeconds:Math.floor((Date.now()-state.startedAt)/1000)},"*");
 }
 function showFinal(){

@@ -1550,7 +1550,7 @@ function showResult(source){
   if(source==="quiz"&&!pekistirmeResultSent&&state.quiz>=15){
     pekistirmeResultSent=true;
     const correct=state.quizCorrect;
-    window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"tur-pekistirme",attemptId:"pk_"+crypto.randomUUID().replace(/-/g,""),correct,wrong:15-correct,total:15,wrongAttempts:15-correct,firstTry:correct,durationSeconds:Math.floor((Date.now()-pekistirmeStart)/1000)},"*");
+    window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"tur-pekistirme",attemptId:"pk_"+(window.crypto&&typeof window.crypto.randomUUID==='function'?window.crypto.randomUUID().replace(/-/g,''):Date.now().toString(36)+Math.random().toString(36).slice(2)),correct,wrong:15-correct,total:15,wrongAttempts:15-correct,firstTry:correct,durationSeconds:Math.floor((Date.now()-pekistirmeStart)/1000)},"*");
   }
 
   let title="";
