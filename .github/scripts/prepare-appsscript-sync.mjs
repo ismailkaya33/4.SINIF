@@ -28,7 +28,7 @@ const sourceFile=(name)=>{
  if(!existsSync(f))throw Error('Missing source '+name);
  return readFileSync(f,'utf8');
 };
-const canonical=(value)=>value.normalize('NFKD').replace(/[\\u0300-\\u036f]/g,'').replace(/ı/g,'i').replace(/İ/g,'I').toLowerCase();
+const canonical=(value)=>value.normalize('NFKD').replace(/\p{M}/gu,'').replace(/ı/g,'i').replace(/İ/g,'I').toLowerCase();
 const findFile=(base, ext)=>{
  const extensions=ext==='gs'?['gs','js']:[ext];
  const matches=remoteFiles.filter(f=>extensions.some(e=>canonical(f)===canonical(base+'.'+e)));
