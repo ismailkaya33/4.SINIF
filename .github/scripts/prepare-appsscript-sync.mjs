@@ -21,6 +21,8 @@ const teacher=[
 const mapping=target==='student'?student:teacher;
 if (!existsSync(join(dest,'appsscript.json'))) throw Error('Remote manifest missing: refuse to push.');
 const remoteFiles=readdirSync(dest);
+const safeNames=remoteFiles.filter(n=>/\.(?:gs|js|html)$/.test(n)).sort();
+process.stdout.write('Remote Apps Script source filenames: '+safeNames.join(', ')+'\n');
 const sourceFile=(name)=>{
  const f=join(root,name);
  if(!existsSync(f))throw Error('Missing source '+name);
@@ -33,7 +35,7 @@ const findFile=(base, ext)=>{
 };
 for(const required of (target==='student'?['Kod','GirisGuvenligi','OgrenciOturum','OgrenciGiris']:['Kod','OgretmenRapor'])){
  const ext=required==='OgrenciGiris'||required==='OgretmenRapor'?'html':'gs';
- if(!findFile(required,ext))throw Error('Expected existing script file missing: '+required+'. Check target script ID.');
+ if(!findFile(required,ext))throw Error('Expected existing script file missing: '+required+'; found: '+safeNames.join(', ')+'. Verify script ID and filename.');
 }
 for(const [src, base] of mapping){
  const extension=extname(src)==='.html'?'html':'gs';
