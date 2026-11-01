@@ -34,6 +34,7 @@
 <p class="hint">Her kayıt bir etkinlik denemesidir. Yüzdeler, bu kazanıma ait soru toplamı üzerinden hesaplanır; kazanımın tamamen öğrenildiği anlamına gelmez.</p>
 <div class="scroll"><table><thead><tr><th>Kazanım</th><th>Katılan</th><th>Doğru / Soru</th><th>Başarı</th><th>İzleme önerisi</th></tr></thead><tbody id="byOutcome"></tbody></table></div>
 </section>
+<section class="panel"><h2>Etkinlik bazında katılım</h2><div class="scroll"><table><thead><tr><th>Etkinlik</th><th>Katılan öğrenci</th><th>Deneme</th><th>Başarı</th></tr></thead><tbody id="byActivity"></tbody></table></div></section>
 <section class="panel"><h2>Katılım özeti (takma kimlikler)</h2>
 <div class="scroll"><table><thead><tr><th>Öğrenci takma kimliği</th><th>Etkinlik sayısı</th><th>Ortalama başarı</th></tr></thead><tbody id="byStudent"></tbody></table></div>
 </section>
@@ -73,11 +74,15 @@ function render(raw){
  $("students").textContent=new Set(rows.map(r=>r.studentRef)).size;
  const sum=rows.reduce((x,r)=>({c:x.c+r.correct,t:x.t+r.total}),{c:0,t:0});
  $("average").textContent=sum.t?"%"+Math.round(100*sum.c/sum.t):"—";
- $("byOutcome").replaceChildren();$("byStudent").replaceChildren();
+ $("byOutcome").replaceChildren();$("byStudent").replaceChildren();$("byActivity").replaceChildren();
  for(const [id,x] of summarize(rows,r=>r.outcomeId)){
   const pct=Math.round(100*x.correct/x.total),tr=document.createElement("tr");
   [id,x.students.size,x.correct+" / "+x.total,"%"+pct,pct<60?"Tekrar ve destek":pct<80?"Pekiştirme":"İzlemeye devam"].forEach(v=>cell(tr,v));
   $("byOutcome").append(tr);
+ }
+ for(const [id,x] of summarize(rows,r=>r.activityId)){
+  const tr=document.createElement("tr");
+  [id,x.students.size,x.count,x.total?"%"+Math.round(100*x.correct/x.total):"—"].forEach(v=>cell(tr,v));$("byActivity").append(tr);
  }
  for(const [id,x] of summarize(rows,r=>r.studentRef)){
   const tr=document.createElement("tr");
