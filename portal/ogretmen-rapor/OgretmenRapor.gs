@@ -70,5 +70,25 @@ function ogretmenRaporVerisi() {
     });
     return {id:activityId,completed:Object.keys(attempted).length,waiting:perStudent.length-Object.keys(attempted).length,students:studentStates};
   });
-  return {studentCount:Object.keys(roster).length,recordCount:results.length,outcomes:outcomes,students:perStudent,activities:activities};
+  const selectedActivities=[
+   'Turkce/ikilemeler.html','Turkce/pekistirme.html','Turkce/sozavcıları.html',
+   'Matematik/cikarmaislemi.html','Fen/besinkasifleri.html','Sosyal/oyunzamani.html'
+  ];
+  const completionSheet=ss.getSheetByName('ETKINLIK_TAMAMLAMA');
+  const completionRows=completionSheet&&completionSheet.getLastRow()>1
+    ?completionSheet.getRange(2,1,completionSheet.getLastRow()-1,4).getDisplayValues():[];
+  const declarations={};
+  completionRows.forEach(function(row){
+   const no=String(row[0]).trim(),activity=String(row[1]).trim(),kind=String(row[3]).trim();
+   if(!roster[no]||selectedActivities.indexOf(activity)<0||kind!=='OGRENCI_BEYANI')return;
+   if(!declarations[activity])declarations[activity]={};
+   declarations[activity][no]=true;
+  });
+  const completionActivities=selectedActivities.map(function(activityId){
+   const done=declarations[activityId]||{};
+   const count=Object.keys(done).length;
+   return {id:activityId,completed:count,waiting:Object.keys(roster).length-count,
+    students:perStudent.map(function(st){return {no:st.no,ad:st.ad,status:done[st.no]?'Tamamladım bildirildi':'Henüz bildirim yok'};})};
+  });
+  return {studentCount:Object.keys(roster).length,recordCount:results.length,outcomes:outcomes,students:perStudent,activities:activities,completionActivities:completionActivities};
 }
