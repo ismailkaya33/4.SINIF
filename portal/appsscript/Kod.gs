@@ -11,10 +11,8 @@ function doGet() {
 function kayitSayfasi_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sayfa = ss.getSheetByName(GIRIS_SAYFA_ADI);
-  if (sayfa) return sayfa;
-  const alternatif = ss.getSheets().find(s => s.getName() !== OTURUM_SAYFA_ADI);
-  if (!alternatif) throw new Error('Öğrenci kayıt sayfası bulunamadı.');
-  return alternatif;
+  if (!sayfa) throw new Error('Öğrenci kayıt sayfası bulunamadı.');
+  return sayfa;
 }
 
 function kayitBul_(kod) {
