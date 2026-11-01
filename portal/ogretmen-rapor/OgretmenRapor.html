@@ -1,21 +1,23 @@
 <!doctype html>
 <html lang="tr"><head><meta charset="utf-8"><base target="_top">
-<style>body{font:15px Arial;margin:20px;color:#20344b}table{border-collapse:collapse;width:100%;margin:12px 0 26px}td,th{padding:10px;text-align:left;border-bottom:1px solid #ddd}th{background:#edf3fa}.stats{display:flex;gap:22px;flex-wrap:wrap}section{margin:22px 0}details{margin:12px 0;border:1px solid #d9e3f0;border-radius:10px;padding:14px}summary{cursor:pointer;font-weight:bold} .subtle{color:#566b7e}</style></head><body>
+<style>body{font:15px Arial;margin:20px;color:#20344b}table{border-collapse:collapse;width:100%;margin:12px 0 26px}td,th{padding:10px;text-align:left;border-bottom:1px solid #ddd}th{background:#edf3fa}.stats{display:flex;gap:22px;flex-wrap:wrap}section{margin:22px 0}.muted{color:#617084}.progress{height:9px;background:#e8eef5;border-radius:9px;overflow:hidden;min-width:90px}.progress span{display:block;height:100%;background:#2d7aaf}.stats p{background:#f0f5fb;padding:14px;border-radius:10px}details{margin:12px 0;border:1px solid #d9e3f0;border-radius:10px;padding:14px}summary{cursor:pointer;font-weight:bold} .subtle{color:#566b7e}</style></head><body>
 <h1>4/D Öğretmen Raporu</h1><p id="status">Yükleniyor...</p>
 <div class="stats"><p>Öğrenci: <strong id="count">—</strong></p><p>Geçerli sonuç: <strong id="results">—</strong></p></div>
-<section><h2>Kazanımlar</h2><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
+<section><h2>Kazanımlar</h2><p class="muted">Henüz gerçek öğrenci kaydı yoksa bu bölüm boş kalır. Başarı oranı, kaydedilmiş tüm tamamlanma denemelerindeki doğru cevapların oranıdır.</p><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
 <section><h2>Etkinliğe göre katılım</h2><p>“Henüz sonuç yok”, öğrencinin oyuna hiç girmediğini kanıtlamaz. Yalnızca tamamlanmış kayıt bulunmadığını gösterir.</p><div id="activitySections"></div></section><section><h2>Öğrenciler</h2><p>Katılım durumu, kaydı bulunan etkinliklere göre hesaplanır. Hiç kaydı olmayan öğrenci için “Henüz kayıt yok” gösterilir; oyuna girip girmediği bu veriden anlaşılamaz.</p><table><thead><tr><th>Öğrenci</th><th>Katılım durumu</th><th>Farklı etkinlik</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="students"></tbody></table></section>
 <script>
 "use strict";
 function renderRows(id,items){const target=document.getElementById(id);items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});target.appendChild(tr)})}
 function ratio(a,b){return b?(100*a/b).toFixed(1)+'%':'—'}
+function activityName(id){return ({'mat-kayipsayilar':'Matematik • Kayıp Sayılar'})[id]||id}
+function outcomeName(k){return ({'M.4.1.3.4':'Çıkarma işleminde verilmeyen eksilen veya çıkanı bulma'})[k]||k}
 google.script.run.withSuccessHandler(function(r){
  document.getElementById('status').textContent='Rapor güncel. MİSAFİR kayıtları hariç.';
  document.getElementById('count').textContent=r.studentCount;
  document.getElementById('results').textContent=r.recordCount;
- renderRows('outcomes',r.outcomes.map(x=>[x.activityId,x.outcome,x.participantCount,x.attempts,ratio(x.correct,x.total)]));
+ renderRows('outcomes',r.outcomes.map(x=>[activityName(x.activityId),outcomeName(x.outcome)+' ('+x.outcome+')',x.participantCount+' / '+r.studentCount+' ('+ratio(x.participantCount,r.studentCount)+')',x.attempts,ratio(x.correct,x.total)]));
  (r.activities||[]).forEach(function(a){
- const wrap=document.createElement('details'),heading=document.createElement('summary');heading.textContent=a.id+' — '+a.completed+' tamamlandı / '+a.waiting+' henüz sonuç yok';wrap.appendChild(heading);
+ const wrap=document.createElement('details'),heading=document.createElement('summary');heading.textContent=activityName(a.id)+' — '+a.completed+'/'+r.studentCount+' tamamlandı ('+ratio(a.completed,r.studentCount)+')';wrap.appendChild(heading);
  const table=document.createElement('table'),thead=document.createElement('thead');thead.innerHTML='<tr><th>Öğrenci</th><th>Sonuç durumu</th><th>Doğru oranı</th></tr>';table.appendChild(thead);
  const body=document.createElement('tbody');a.students.forEach(function(st){const tr=document.createElement('tr');[st.ad,st.status,ratio(st.correct,st.total)].forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});body.appendChild(tr)});
  table.appendChild(body);wrap.appendChild(table);document.getElementById('activitySections').appendChild(wrap);
