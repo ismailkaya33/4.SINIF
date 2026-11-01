@@ -29,6 +29,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Ogrenci sonuc entegrasyonunu dogrula
+        if: ${{ inputs.target == 'student' }}
+        run: node .github/scripts/verify-appsscript-integration.mjs
       - name: Kimlik bilgilerini ve hedefi hazirla
         env:
           CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
