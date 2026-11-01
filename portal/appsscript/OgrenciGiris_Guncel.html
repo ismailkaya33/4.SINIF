@@ -13,8 +13,15 @@ a{color:#2459a6}#oyunPanel{position:fixed;inset:0;z-index:50;background:#081427;
 <h1>🎒 4/D Sınıfı</h1><h2>Öğrenci Girişi</h2>
 <div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
 <div id="oturumAlani" hidden>
-<button id="oyunuAc" type="button">🎮 Matematik Oyununu Aç</button>
-<p>Oyun ekranı tam sayfa açılır. Sonuç otomatik kaydedilir.</p>
+<h3 class="dashboardTitle">Derslerim ve Etkinliklerim</h3>
+<p class="hint">Etkinliğini seç. Tamamladığında sonucun otomatik olarak öğretmenine iletilir.</p>
+<div class="cards">
+<article class="course"><span class="icon" aria-hidden="true">🧮</span><h3>Matematik</h3><p>Gizemli Hazine Kasası • Kayıp Sayılar</p><span class="sectionBadge">Sonuç kaydı etkin · Pilot</span><button id="oyunuAc" type="button">Oyuna Başla</button></article>
+<article class="course"><span class="icon" aria-hidden="true">📖</span><h3>Türkçe</h3><p>Okuma, anlama ve dil bilgisi etkinlikleri</p><button type="button" disabled>Yakında</button></article>
+<article class="course"><span class="icon" aria-hidden="true">🔬</span><h3>Fen Bilimleri</h3><p>Gözlem, deney ve bilim etkinlikleri</p><button type="button" disabled>Yakında</button></article>
+<article class="course"><span class="icon" aria-hidden="true">🌍</span><h3>Sosyal Bilgiler</h3><p>Tarih, çevre ve toplum etkinlikleri</p><button type="button" disabled>Yakında</button></article>
+</div>
+<section aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint">Öğretmen duyuruları bu alanda gösterilecek. Bağlantı henüz etkin değil.</p></section>
 </div>
 <div id="oyunPanel" hidden><div id="oyunUst"><strong>🎮 Matematik • Kayıp Sayılar</strong><button id="oyundanDon" type="button">Portala Dön</button></div><iframe id="oyunCer" title="Matematik oyunu" referrerpolicy="no-referrer"></iframe><p id="oyunDurum" role="status"></p></div>
 <button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button>
