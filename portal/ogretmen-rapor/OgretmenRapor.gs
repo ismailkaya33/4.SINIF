@@ -2,15 +2,17 @@
  * 4/D ÖĞRETMEN RAPORU — YALNIZCA AYRI, ÖĞRETMENE ÖZEL SCRIPT PROJESİ.
  *
  * ÖNEMLİ: Bunu öğrencilerin erişebileceği Apps Script projesine eklemeyin.
- * Rapor özel öğretmen E-Tablosuna bağlı, ayrı bir Apps Script projesinden çalışır.
- * Web uygulaması olarak dağıtılmaz. E-Tabloda üst menüden kullanılır.
+ * Rapor ayrı Apps Script projesinde çalışır. Bu projeyi öğrencilere paylaşmayın.
+ * Yalnız öğretmen hesabından /dev üzerinden önizleme yapılmalıdır.
  */
 const RAPOR_KAYIT_SAYFASI_='Sayfa1';
 const RAPOR_SONUC_SAYFASI_='ETKINLIK_SONUCLARI';
 
 function doGet() { return HtmlService.createHtmlOutputFromFile("OgretmenRapor").setTitle("4/D Ogretmen Raporu"); }
 function ogretmenRaporVerisi() {
-  const ss=SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty("OZEL_TABLO_ID"));
+  const id=PropertiesService.getScriptProperties().getProperty("OZEL_TABLO_ID");
+  if(!id||!/^[A-Za-z0-9_-]{20,}$/.test(id))throw Error("OZEL_TABLO_ID tanımlanmamış.");
+  const ss=SpreadsheetApp.openById(id);
   if(!ss)throw Error('Rapor, özel öğrenci kayıt E-Tablosuna bağlı olmalıdır.');
   const kayit=ss.getSheetByName(RAPOR_KAYIT_SAYFASI_);
   const sonuc=ss.getSheetByName(RAPOR_SONUC_SAYFASI_);
