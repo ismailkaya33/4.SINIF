@@ -38,3 +38,10 @@ GitHub'daki kodlar hazırlık dalındadır ve çalışan Apps Script projelerine
 
 ## Korunanlar
 GitHub Pages ana sayfası, orijinal oyun ve mevcut Firebase bağımlı özellikler değiştirilmez. Her iki Apps Script projesi birbirinden ayrı kalır.
+
+## Son ek doğrulamalar (2026-11-01)
+- `Kod.gs` yinelenen giriş kodunu ve boş öğrenci kimliğini reddeder.
+- `OgrenciOturum.gs` yinelenen öğrenci numarası için kimlik döndürmez.
+- Bu iki kontrol için 5 sahte veri senaryosu geçti; gerçek Google Apps Script testi değildir.
+- Öğretmen duyurularının bitiş tarihi, `toISOString()` ile UTC gününe kaydırılmadan E-Tablo yerel tarihi olarak okunur.
+- **Ayrı giriş limiti taslağı kurulmayacak**; çalışan `GirisGuvenligi.gs` kodu kullanılacak.
