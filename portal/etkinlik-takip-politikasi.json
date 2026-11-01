@@ -76,7 +76,7 @@
       "ders": "Türkçe",
       "konum": "Turkce/ikilemeler.html",
       "baslik": "İkileme Dedektifi",
-      "takip": "secim_bekliyor"
+      "takip": "ogrenci_beyani"
     },
     {
       "ders": "Türkçe",
@@ -106,13 +106,13 @@
       "ders": "Türkçe",
       "konum": "Turkce/pekistirme.html",
       "baslik": "Pekiştirme Dedektifi 1",
-      "takip": "secim_bekliyor"
+      "takip": "ogrenci_beyani"
     },
     {
       "ders": "Türkçe",
       "konum": "Turkce/sozavcıları.html",
       "baslik": "Atasözleri ve Deyimler",
-      "takip": "secim_bekliyor"
+      "takip": "ogrenci_beyani"
     },
     {
       "ders": "Matematik",
@@ -172,7 +172,7 @@
       "ders": "Matematik",
       "konum": "Matematik/cikarmaislemi.html",
       "baslik": "Çıkarma Dedektifleri",
-      "takip": "secim_bekliyor"
+      "takip": "ogrenci_beyani"
     },
     {
       "ders": "Matematik",
@@ -184,7 +184,7 @@
       "ders": "Fen Bilimleri",
       "konum": "Fen/besinkasifleri.html",
       "baslik": "Besin Kaşifleri: Görev Haritası",
-      "takip": "secim_bekliyor"
+      "takip": "ogrenci_beyani"
     },
     {
       "ders": "Fen Bilimleri",
@@ -274,7 +274,7 @@
       "ders": "Sosyal Bilgiler",
       "konum": "Sosyal/oyunzamani.html",
       "baslik": "Geçmişten Günümüze Çocuk Oyunları",
-      "takip": "secim_bekliyor"
+      "takip": "ogrenci_beyani"
     },
     {
       "ders": "İnsan Hakları",
