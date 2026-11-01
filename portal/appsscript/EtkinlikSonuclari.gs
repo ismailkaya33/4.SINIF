@@ -5,9 +5,6 @@
  * Yalnız HtmlService üzerinden google.script.run ile çağrılması amaçlanır.
  */
 const SONUC_SAYFASI_ADI_ = 'ETKINLIK_SONUCLARI';
-const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({
-  'mat-kayipsayilar': {konu: 'Matematik', kazanim: 'M.4.1.3.4'}
-});
 const SONUC_MAX_SURE_SN_ = 86400;
 
 function sonucSayfasi_() {
@@ -24,13 +21,13 @@ function sonucSayfasi_() {
 function etkinlikSonucuDogrula_(veri) {
   if (!veri || typeof veri !== 'object' || Array.isArray(veri)) return null;
   const id = String(veri.activityId || '');
-  const izin = SONUC_IZINLI_ETKINLIKLER_[id];
-  if (!Object.prototype.hasOwnProperty.call(SONUC_IZINLI_ETKINLIKLER_, id) || !izin) return null;
+  const izin = etkinlikTanimi_(id);
+  if (!izin) return null;
   const fields = ['correct', 'wrong', 'total', 'wrongAttempts', 'firstTry', 'durationSeconds'];
   for (const f of fields) {
     if (!Number.isSafeInteger(veri[f]) || veri[f] < 0) return null;
   }
-  if (veri.total < 1 || veri.total > 1000 ||
+  if (veri.total < 1 || veri.total > izin.maxTotal ||
       veri.correct > veri.total || veri.wrong > veri.total ||
       veri.correct + veri.wrong !== veri.total ||
       veri.firstTry > veri.correct || veri.wrongAttempts > 10000 ||
