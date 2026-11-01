@@ -14,7 +14,7 @@ a{color:#2459a6}#oyunPanel{position:fixed;inset:0;z-index:50;background:#081427;
 <div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
 <div id="oturumAlani" hidden>
 <h3 class="dashboardTitle">Derslerim ve Etkinliklerim</h3>
-<p class="hint">Etkinliğini seç. Yalnızca “Kayıp Sayılar (takipli test)” sonuçları şu anda otomatik kaydedilir; diğer etkinlikler mevcut sitemdeki gibi açılır.</p>
+<p class="hint">Etkinliğini seç. “Kayıp Sayılar” ve “Sayı Örüntüleri” sonuçları takipli test sürümünde kaydedilir; diğer etkinlikler mevcut sitemdeki gibi açılır.</p>
 <div class="cards seven"><details class="course"><summary><span aria-hidden="true">📚</span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dilkoruyucusu.html" target="_blank" rel="noopener noreferrer">Dil Muhafızları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dogrusunuyaz.html" target="_blank" rel="noopener noreferrer">Sözcüklerin Doğru Yazımı</a></li>
@@ -32,7 +32,7 @@ a{color:#2459a6}#oyunPanel{position:fixed;inset:0;z-index:50;background:#081427;
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/noktalamaisaretleri.html" target="_blank" rel="noopener noreferrer">Noktalama İşaretleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/pekistirme.html" target="_blank" rel="noopener noreferrer">Pekiştirme Dedektifi 1</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/sozavcıları.html" target="_blank" rel="noopener noreferrer">Atasözleri ve Deyimler</a></li></ul></details>
-<details class="course"><summary><span aria-hidden="true">🧮</span> <strong>Matematik</strong> <small>11 etkinlik</small></summary><p class="sectionBadge">✅ Kayıp Sayılar: otomatik sonuç kaydı testte etkin</p><button id="oyunuAc" type="button">🎮 Kayıp Sayılar (takipli test)</button><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/oruntuler.html" target="_blank" rel="noopener noreferrer">Sayı Örüntüleri</a></li>
+<details class="course"><summary><span aria-hidden="true">🧮</span> <strong>Matematik</strong> <small>11 etkinlik</small></summary><p class="sectionBadge">✅ Kayıp Sayılar: otomatik sonuç kaydı testte etkin</p><button id="oyunuAc" type="button">🎮 Kayıp Sayılar (takipli)</button><button id="oruntulerAc" type="button">🧩 Sayı Örüntüleri (takipli test)</button><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/oruntuler.html" target="_blank" rel="noopener noreferrer">Sayı Örüntüleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilar.html" target="_blank" rel="noopener noreferrer">Sayılar</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilarikarsilastirsirala.html" target="_blank" rel="noopener noreferrer">Sayıları Karşılaştırma ve Sıralama</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayiproblemleri.html" target="_blank" rel="noopener noreferrer">Sayı Problemleri Atölyesi</a></li>
@@ -75,7 +75,7 @@ a{color:#2459a6}#oyunPanel{position:fixed;inset:0;z-index:50;background:#081427;
 const buton=document.getElementById("giris"),cikisButonu=document.getElementById("cikis"),sonuc=document.getElementById("sonuc"),kodAlani=document.getElementById("kod"),girisAlani=document.getElementById("girisAlani"),oturumAlani=document.getElementById("oturumAlani"),anahtarAdi="4d_ogrenci_oturumu";
 let oturumNesli=0;
 const tokenFormat=/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
-function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
+function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
 function duyurulariYukle(){
  const token=sessionStorage.getItem(anahtarAdi),durum=document.getElementById("duyuruDurum"),liste=document.getElementById("duyuruListe");
  if(!token)return;
@@ -119,18 +119,27 @@ function cikisYap(){
 }
 buton.addEventListener("click",girisYap);cikisButonu.addEventListener("click",cikisYap);
 kodAlani.addEventListener("keydown",function(e){if(e.key==="Enter")girisYap()});
+const oruntulerButonu=document.getElementById("oruntulerAc");
+let aktifEtkinlik=null;
+const takipliOyunlar=Object.freeze({"mat-kayipsayilar":"https://ismailkaya33.github.io/4.SINIF/test/kayipsayilar.html","mat-oruntuler":"https://ismailkaya33.github.io/4.SINIF/test/oruntuler.html"});
 const oyunButonu=document.getElementById("oyunuAc"),oyunCer=document.getElementById("oyunCer"),oyunDurum=document.getElementById("oyunDurum"),oyunPanel=document.getElementById("oyunPanel");
 let gonderiliyor=false;
-oyunButonu.addEventListener("click",function(){
+function takipliOyunAc(id){
  if(!sessionStorage.getItem(anahtarAdi)){oyunDurum.textContent="Önce giriş yap.";return}
- oyunPanel.hidden=false;document.body.classList.add("oyunda");oyunButonu.disabled=true;
+ if(!Object.prototype.hasOwnProperty.call(takipliOyunlar,id))return;
+ aktifEtkinlik=id;gonderiliyor=false;
+ oyunPanel.hidden=false;document.body.classList.add("oyunda");
+ oyunButonu.disabled=true;oruntulerButonu.disabled=true;
+ document.querySelector("#oyunUst strong").textContent=id==="mat-oruntuler"?"🧩 Matematik • Sayı Örüntüleri":"🎮 Matematik • Kayıp Sayılar";
  oyunDurum.textContent="Oyun açılıyor. Bitirdiğinde sonucun otomatik gönderilecek.";
- oyunCer.src="https://ismailkaya33.github.io/4.SINIF/test/kayipsayilar.html";
-});
+ oyunCer.src=takipliOyunlar[id];
+}
+oyunButonu.addEventListener("click",function(){takipliOyunAc("mat-kayipsayilar")});
+oruntulerButonu.addEventListener("click",function(){takipliOyunAc("mat-oruntuler")});
 window.addEventListener("message",function(e){
  if(oturumAlani.hidden||gonderiliyor||e.origin!=="https://ismailkaya33.github.io"||e.source!==oyunCer.contentWindow)return;
  const d=e.data;
- if(!d||d.type!=="4d:activity-finished"||d.schemaVersion!==1||d.activityId!=="mat-kayipsayilar"||typeof d.attemptId!=="string"||!/^[A-Za-z0-9_-]{12,80}$/.test(d.attemptId))return;
+ if(!d||d.type!=="4d:activity-finished"||d.schemaVersion!==1||d.activityId!==aktifEtkinlik||typeof d.attemptId!=="string"||!/^[A-Za-z0-9_-]{12,80}$/.test(d.attemptId))return;
  const token=sessionStorage.getItem(anahtarAdi);
  if(!token)return;
  const veri={activityId:d.activityId,attemptId:d.attemptId,correct:d.correct,wrong:d.wrong,total:d.total,wrongAttempts:d.wrongAttempts,firstTry:d.firstTry,durationSeconds:d.durationSeconds};
@@ -143,7 +152,7 @@ window.addEventListener("message",function(e){
  }).withFailureHandler(function(){gonderiliyor=false;if(sessionStorage.getItem(anahtarAdi)===token)oyunDurum.textContent="Kayıt bağlantısında sorun oldu. Öğretmenine haber ver."}).etkinlikSonucuKaydet(token,veri);
 });
 
-document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oyunCer.removeAttribute("src");});
+document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunCer.removeAttribute("src");});
 const mevcutToken=sessionStorage.getItem(anahtarAdi);
 if(mevcutToken){
  const istekNesli=++oturumNesli;
