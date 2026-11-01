@@ -48,7 +48,7 @@ jobs:
         run: node .github/scripts/prepare-appsscript-sync.mjs "$TARGET" "$RUNNER_TEMP/4d-script"
       - name: Aktarimdan once dosyalari listele
         working-directory: ${{ runner.temp }}/4d-script
-        run: npx --yes @google/clasp@latest status
+        run: npx --yes @google/clasp@latest show-file-status
       - name: Apps Script kaynaklarini guncelle - DAGITIM DEGIL
         working-directory: ${{ runner.temp }}/4d-script
         run: npx --yes @google/clasp@latest push --force
