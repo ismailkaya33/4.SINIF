@@ -69,6 +69,8 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #df
 .course:nth-child(2) button{background:linear-gradient(110deg,#8669cc,#9975db);border:1px solid #aa92e5}
 .course:nth-child(2) button::after{content:"  →"}
 @media(max-width:600px){.welcomeBar{flex-direction:column;align-items:stretch}.welcomeBar #cikis{width:100%}}
+/* Dokunmatik ekranlar icin kart ve etkinlik butonlarinda yeterli tiklama alani */
+@media(pointer:coarse){.featuredGame button,.course summary,#cikis{min-height:48px}}
 /* Akilli Sinif — on plana alinmis iki takipli etkinlik */
 .featuredLessons{margin:17px 0 25px;padding:19px;border:1px solid #cfe1f7;border-radius:21px;background:linear-gradient(125deg,#e4f0ff,#f2ecff);box-shadow:0 7px 20px #2a599316}
 .featuredHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
