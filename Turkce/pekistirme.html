@@ -1588,7 +1588,7 @@ function showResult(source){
 
   document.getElementById("resultText").innerHTML=text;
 
-  if(source==="quiz" && state.quiz===15) recordVerifiedFinish('Turkce/pekistirme.html',{completed:state.quiz,total:15,correct:state.quizCorrect,score:state.score});
+  if(source==="quiz" && state.quiz===quizData.length-1) recordVerifiedFinish('Turkce/pekistirme.html',{completed:quizData.length,total:quizData.length,correct:state.quizCorrect,score:state.score});
   document.getElementById("result").classList.add("show");
 
   confetti();
