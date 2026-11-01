@@ -9,6 +9,11 @@ on:
           - student
           - teacher
         required: true
+      dry_run:
+        description: "Sadece kontrol et (kod gonderme)"
+        type: boolean
+        required: true
+        default: true
       confirmation:
         description: "Onay metni: SYNC_STUDENT veya SYNC_TEACHER"
         required: true
@@ -49,7 +54,11 @@ jobs:
       - name: Aktarimdan once dosyalari listele
         working-directory: ${{ runner.temp }}/4d-script
         run: npx --yes @google/clasp@latest show-file-status
+      - name: Kontrol modu sonucu
+        if: ${{ inputs.dry_run == true }}
+        run: echo "DRY RUN BASARILI - Apps Script kodu degistirilmedi."
       - name: Apps Script kaynaklarini guncelle - DAGITIM DEGIL
+        if: ${{ inputs.dry_run == false }}
         working-directory: ${{ runner.temp }}/4d-script
         run: npx --yes @google/clasp@latest push --force
       - name: Kimlik dosyasini sil
