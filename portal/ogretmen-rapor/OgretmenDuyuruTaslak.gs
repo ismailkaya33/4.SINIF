@@ -50,7 +50,7 @@ function ogretmenDuyuruListesi() {
   if(n<1)return [];
   return sh.getRange(2,1,n,5).getValues().reverse().slice(0,50).map(function(r){
     return {kimlik:String(r[0]),baslik:String(r[1]),metin:String(r[2]),durum:String(r[3]),
-      bitis:r[4] instanceof Date?r[4].toISOString().slice(0,10):''};
+      bitis:r[4] instanceof Date&&Number.isFinite(r[4].getTime())?[r[4].getFullYear(),String(r[4].getMonth()+1).padStart(2,'0'),String(r[4].getDate()).padStart(2,'0')].join('-'):''};
   });
 }
 /** Öğretmen yetkili ayrı projede durum değişimi; kayıt kimliğiyle tam eşleşme. */
