@@ -1,5 +1,5 @@
 {
-  "aciklama": "Mevcut etkinlikler öğretmen seçene dek takip edilmez. Yeni eklenen her etkinlik için geri bildirim yöntemi zorunludur.",
+  "aciklama": "Öğrencinin 'Tamamladım' beyanı başarı kaydı değildir. Altı seçili etkinlik yalnız oyun içi bitiş koşulları doğrulandıktan ve güvenli aktarım testleri tamamlandıktan sonra izlenir. Diğer mevcut etkinlikler seçilmedikçe izlenmez.",
   "gelecekEtkinlikTakibi": "zorunlu",
   "mevcutTakipliler": [
     {
@@ -76,7 +76,7 @@
       "ders": "Türkçe",
       "konum": "Turkce/ikilemeler.html",
       "baslik": "İkileme Dedektifi",
-      "takip": "ogrenci_beyani"
+      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
     },
     {
       "ders": "Türkçe",
@@ -106,13 +106,13 @@
       "ders": "Türkçe",
       "konum": "Turkce/pekistirme.html",
       "baslik": "Pekiştirme Dedektifi 1",
-      "takip": "ogrenci_beyani"
+      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
     },
     {
       "ders": "Türkçe",
       "konum": "Turkce/sozavcıları.html",
       "baslik": "Atasözleri ve Deyimler",
-      "takip": "ogrenci_beyani"
+      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
     },
     {
       "ders": "Matematik",
@@ -172,7 +172,7 @@
       "ders": "Matematik",
       "konum": "Matematik/cikarmaislemi.html",
       "baslik": "Çıkarma Dedektifleri",
-      "takip": "ogrenci_beyani"
+      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
     },
     {
       "ders": "Matematik",
@@ -184,7 +184,7 @@
       "ders": "Fen Bilimleri",
       "konum": "Fen/besinkasifleri.html",
       "baslik": "Besin Kaşifleri: Görev Haritası",
-      "takip": "ogrenci_beyani"
+      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
     },
     {
       "ders": "Fen Bilimleri",
@@ -274,7 +274,7 @@
       "ders": "Sosyal Bilgiler",
       "konum": "Sosyal/oyunzamani.html",
       "baslik": "Geçmişten Günümüze Çocuk Oyunları",
-      "takip": "ogrenci_beyani"
+      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
     },
     {
       "ders": "İnsan Hakları",
