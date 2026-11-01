@@ -81,7 +81,8 @@ function duyurulariYukle(){
  durum.textContent="Duyurular yükleniyor...";
  google.script.run.withSuccessHandler(function(r){
   liste.replaceChildren();
-  if(sessionStorage.getItem(anahtarAdi)!==token)return;\n  if(!r||r.basarili!==true){durum.textContent="Duyurular alınamadı.";return}
+  if(sessionStorage.getItem(anahtarAdi)!==token)return;
+  if(!r||r.basarili!==true){durum.textContent="Duyurular alınamadı.";return}
   if(!r.duyurular||!r.duyurular.length){durum.textContent="Henüz yayımlanmış duyuru yok.";return}
   durum.textContent="";
   r.duyurular.forEach(function(d){const el=document.createElement("article"),h=document.createElement("h4"),p=document.createElement("p");h.textContent=d.baslik;p.textContent=d.metin;el.append(h,p);liste.appendChild(el)});
