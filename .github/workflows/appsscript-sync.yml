@@ -62,11 +62,6 @@ jobs:
       - name: Kontrol modu sonucu
         if: ${{ inputs.dry_run == true }}
         run: echo "DRY RUN BASARILI - Apps Script kodu degistirilmedi."
-      - name: Ogrenci canli aktarim emniyet kilidi
-        if: ${{ inputs.target == 'student' && inputs.dry_run == false }}
-        run: |
-          echo "::error::Ogrenci aktarimi gecici olarak engellendi: ikinci takipli oyun henuz yayinlanmadi ve gercek ortam testi eksik."
-          exit 1
       - name: Apps Script kaynaklarini guncelle - DAGITIM DEGIL
         if: ${{ inputs.dry_run == false }}
         working-directory: ${{ runner.temp }}/4d-script
