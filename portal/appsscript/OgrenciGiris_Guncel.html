@@ -87,6 +87,19 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #df
 .course:nth-child(2),.course:nth-child(2)[open]{grid-column:span 1}
 @media(max-width:850px){.featuredGrid{grid-template-columns:1fr}}
 @media(max-width:600px){.featuredHeader{flex-direction:column;align-items:flex-start}.featuredGame button{width:100%}.featuredGame{gap:10px}}
+/* Giriş yapan öğrenciye ait gerçek ilerleme değerleri */
+.progressPanel{margin:20px 0;padding:18px 21px;border:1px solid #bfdfec;border-radius:20px;background:linear-gradient(120deg,#eafaff,#f8fbff)}
+.progressTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.progressTitle h3{margin:0;color:#265774;font-size:1.23rem}
+.progressTitle>span{font-size:.85rem;color:#5a8091}
+#ilerlemeDurum{margin:9px 0;color:#5a738c;font-size:.88rem}
+.progressStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:12px}
+.progressStats>div{padding:13px 9px;background:white;border:1px solid #e0edf3;border-radius:12px;text-align:center}
+.progressStats strong{display:block;font-size:clamp(20px,2.6vw,30px);color:#287c85}
+.progressStats small{color:#597184;font-size:.78rem}
+.progressTrack{height:10px;margin-top:14px;border-radius:20px;background:#dce9ee;overflow:hidden}
+#ilerlemeBar{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#43bf9e,#64a6d8);transition:width .25s}
+@media(max-width:620px){.progressStats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
@@ -95,6 +108,7 @@ button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #df
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
 <p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
 <section class="featuredLessons" aria-labelledby="featured-heading"><div class="featuredHeader"><div><span class="featuredEyebrow">🧮 MATEMATİK</span><h3 id="featured-heading">Öne Çıkan Etkinlikler</h3></div><span class="trackingPill">● Sonuç takibi açık</span></div><div class="featuredGrid"><article class="featuredGame"><span class="gameSymbol" aria-hidden="true">🔢</span><div class="featuredText"><h4>Kayıp Sayılar</h4><p>Eksik bırakılan sayıları bul, işlemleri tamamla.</p></div><button id="oyunuAc" type="button">Etkinliği Aç →</button></article><article class="featuredGame"><span class="gameSymbol" aria-hidden="true">🧩</span><div class="featuredText"><h4>Sayı Örüntüleri</h4><p>Artış ve azalış kurallarını keşfet.</p></div><button id="oruntulerAc" type="button">Etkinliği Aç →</button></article></div></section>
+<section id="ilerlemePanel" class="progressPanel" aria-labelledby="ilerlemeBaslik"><div class="progressTitle"><h3 id="ilerlemeBaslik">📈 Benim İlerlemem</h3><span>Kaydedilmiş etkinliklerim</span></div><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor...</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru cevap</small></div><div><strong id="ilerlemeOran">–</strong><small>Başarı oranı</small></div></div><div class="progressTrack"><span id="ilerlemeBar" style="width:0%"></span></div></section>
 <h3 class="otherLessonsHeading">📚 Diğer Dersler ve Etkinlikler</h3>
 <div class="cards seven"><details class="course"><summary><span aria-hidden="true">📚</span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dilkoruyucusu.html" target="_blank" rel="noopener noreferrer">Dil Muhafızları</a></li>
@@ -157,6 +171,24 @@ let oturumNesli=0;
 const tokenFormat=/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 function hosGeldinAdiGoster_(ad){document.getElementById("welcomeName").textContent=String(ad||"Öğrenci");}
 function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
+function ilerlemeYukle(){
+ const token=sessionStorage.getItem(anahtarAdi);
+ if(!token)return;
+ const status=document.getElementById("ilerlemeDurum");
+ status.textContent="İlerleme bilgileri yükleniyor...";
+ google.script.run.withSuccessHandler(function(r){
+  if(sessionStorage.getItem(anahtarAdi)!==token)return;
+  if(!r||!r.basarili){status.textContent="İlerleme bilgileri alınamadı.";return}
+  document.getElementById("ilerlemeEtkinlik").textContent=r.etkinlikSayisi;
+  document.getElementById("ilerlemeDeneme").textContent=r.denemeSayisi;
+  document.getElementById("ilerlemeDogru").textContent=r.dogru+" / "+r.toplam;
+  document.getElementById("ilerlemeOran").textContent=r.oran+"%";
+  document.getElementById("ilerlemeBar").style.width=Math.max(0,Math.min(100,r.oran))+"%";
+  status.textContent=r.denemeSayisi?"Kaydedilen çalışmalarının özeti.":"Henüz sonuç kaydedilmedi. İlk etkinliğini tamamla!";
+ }).withFailureHandler(function(){
+  if(sessionStorage.getItem(anahtarAdi)===token)status.textContent="İlerleme bilgileri şu anda alınamadı.";
+ }).ogrenciIlerlemeOzeti(token);
+}
 function duyurulariYukle(){
  const token=sessionStorage.getItem(anahtarAdi),durum=document.getElementById("duyuruDurum"),liste=document.getElementById("duyuruListe");
  if(!token)return;
@@ -181,7 +213,7 @@ function girisYap(){
   if(istekNesli!==oturumNesli)return;
   buton.disabled=false;
   if(cevap&&cevap.basarili===true&&typeof cevap.token==="string"&&tokenFormat.test(cevap.token)){
-   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();
+   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();
    sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+".";
   }else{sonuc.textContent=cevap&&cevap.mesaj?cevap.mesaj:"Giriş doğrulanamadı."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Giriş sırasında hata oluştu. Tekrar dene."}).ogrenciGirisiYap(kod);
@@ -228,7 +260,7 @@ window.addEventListener("message",function(e){
  google.script.run.withSuccessHandler(function(r){
   gonderiliyor=false;
   if(sessionStorage.getItem(anahtarAdi)!==token)return;
-  if(r&&r.basarili){oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";}
+  if(r&&r.basarili){ilerlemeYukle();oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";}
   else{oyunDurum.textContent="Sonuç kaydedilemedi. Oturumunu kontrol et.";}
  }).withFailureHandler(function(){gonderiliyor=false;if(sessionStorage.getItem(anahtarAdi)===token)oyunDurum.textContent="Kayıt bağlantısında sorun oldu. Öğretmenine haber ver."}).etkinlikSonucuKaydet(token,veri);
 });
@@ -241,7 +273,7 @@ if(mevcutToken){
  google.script.run.withSuccessHandler(function(cevap){
   if(istekNesli!==oturumNesli||sessionStorage.getItem(anahtarAdi)!==mevcutToken)return;
   buton.disabled=false;
-  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
+  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
   else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
 }
