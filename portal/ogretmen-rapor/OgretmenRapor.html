@@ -4,7 +4,7 @@
 <h1>4/D Öğretmen Raporu</h1><p id="status">Yükleniyor...</p>
 <div class="stats"><p>Öğrenci: <strong id="count">—</strong></p><p>Geçerli sonuç: <strong id="results">—</strong></p></div>
 <section><h2>Kazanımlar</h2><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
-<section><h2>Öğrenciler</h2><p>Katılım durumu, kaydı bulunan etkinliklere göre hesaplanır. Hiç kaydı olmayan öğrenci için “Henüz kayıt yok” gösterilir; oyuna girip girmediği bu veriden anlaşılamaz.</p><table><thead><tr><th>Öğrenci</th><th>Katılım durumu</th><th>Farklı etkinlik</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="students"></tbody></table></section>
+<section><h2>Etkinliğe göre katılım</h2><p>“Henüz sonuç yok”, öğrencinin oyuna hiç girmediğini kanıtlamaz. Yalnızca tamamlanmış kayıt bulunmadığını gösterir.</p><div id="activitySections"></div></section><section><h2>Öğrenciler</h2><p>Katılım durumu, kaydı bulunan etkinliklere göre hesaplanır. Hiç kaydı olmayan öğrenci için “Henüz kayıt yok” gösterilir; oyuna girip girmediği bu veriden anlaşılamaz.</p><table><thead><tr><th>Öğrenci</th><th>Katılım durumu</th><th>Farklı etkinlik</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="students"></tbody></table></section>
 <script>
 "use strict";
 function renderRows(id,items){const target=document.getElementById(id);items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});target.appendChild(tr)})}
@@ -14,6 +14,12 @@ google.script.run.withSuccessHandler(function(r){
  document.getElementById('count').textContent=r.studentCount;
  document.getElementById('results').textContent=r.recordCount;
  renderRows('outcomes',r.outcomes.map(x=>[x.activityId,x.outcome,x.participantCount,x.attempts,ratio(x.correct,x.total)]));
+ (r.activities||[]).forEach(function(a){
+ const wrap=document.createElement('div'),heading=document.createElement('h3');heading.textContent=a.id+' — '+a.completed+' tamamlandı / '+a.waiting+' henüz sonuç yok';wrap.appendChild(heading);
+ const table=document.createElement('table'),thead=document.createElement('thead');thead.innerHTML='<tr><th>Öğrenci</th><th>Sonuç durumu</th><th>Doğru oranı</th></tr>';table.appendChild(thead);
+ const body=document.createElement('tbody');a.students.forEach(function(st){const tr=document.createElement('tr');[st.ad,st.status,ratio(st.correct,st.total)].forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});body.appendChild(tr)});
+ table.appendChild(body);wrap.appendChild(table);document.getElementById('activitySections').appendChild(wrap);
+ });
  renderRows('students',r.students.map(x=>[x.ad,x.activityCount>0?"En az bir etkinlik tamamlandı":"Henüz kayıt yok",x.activityCount,x.attemptCount,ratio(x.correct,x.total)]));
 }).withFailureHandler(function(e){document.getElementById('status').textContent='Rapor hatası: '+(e&&e.message||'Bilinmiyor')}).ogretmenRaporVerisi();
 </script></body></html>
