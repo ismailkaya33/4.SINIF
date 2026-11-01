@@ -1,0 +1,299 @@
+{
+  "version": 1,
+  "source": "index.html",
+  "note": "Yalnızca sitedeki mevcut etkinlik bağlantıları. Bu listenin varlığı otomatik sonuç kaydı anlamına gelmez.",
+  "categories": [
+    {
+      "id": "turkce",
+      "name": "Türkçe",
+      "activities": [
+        {
+          "path": "Turkce/anafikiranaduygu.html",
+          "title": "Ana Fikir ve Ana Duygu Dedektifi",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/dilkoruyucusu.html",
+          "title": "Dil Muhafızları",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/dogrusunuyaz.html",
+          "title": "Sözcüklerin Doğru Yazımı",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/essesli.html",
+          "title": "Eş Sesli Sözcükler",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/essesli2.html",
+          "title": "Eş Sesli Sözcükler 2",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/eszitanlam.html",
+          "title": "Eş ve Zıt Anlamlılar",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/gercekmecazterim.html",
+          "title": "Gerçek Mecaz ve Terim Anlam",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/gercekmecazterim2.html",
+          "title": "Gerçek Mecaz ve Terim Anlam 2",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/harfhece.html",
+          "title": "Harf ve Hece Bilgisi",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/hikayededektifi.html",
+          "title": "Hikaye Dedektifi",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/ikilemeler.html",
+          "title": "İkileme Dedektifi",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/metninkonusu.html",
+          "title": "Metnin Konusunu Bul",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/metinmimarlari.html",
+          "title": "Metnin Mimarları",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/metninbolumleri.html",
+          "title": "Metnin Bölümleri",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/noktalamaisaretleri.html",
+          "title": "Noktalama İşaretleri",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/pekistirme.html",
+          "title": "Pekiştirme Dedektifi 1",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Turkce/sozavcıları.html",
+          "title": "Atasözleri ve Deyimler",
+          "tracking": "not-connected"
+        }
+      ]
+    },
+    {
+      "id": "matematik",
+      "name": "Matematik",
+      "activities": [
+        {
+          "path": "Matematik/oruntuler.html",
+          "title": "Sayı Örüntüleri",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/sayilar.html",
+          "title": "Sayılar",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/sayilarikarsilastirsirala.html",
+          "title": "Sayıları Karşılaştırma ve Sıralama",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/sayiproblemleri.html",
+          "title": "Sayı Problemleri Atölyesi",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/toplama.html",
+          "title": "Toplama Yapalım",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/yuvarlama.html",
+          "title": "Yuvarlama Macerası 1",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/yuvarlama2.html",
+          "title": "Yuvarlama Macerası 2",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/zihindentoplama.html",
+          "title": "Zihinden Toplama Ustaları",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/zihindencikarma.html",
+          "title": "Zihinden Çıkarma Ustaları",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/cikarmaislemi.html",
+          "title": "Çıkarma Dedektifleri",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Matematik/kayipsayilar.html",
+          "title": "Çıkarma İşleminde Verilmeyen Sayılar",
+          "tracking": "not-connected"
+        }
+      ]
+    },
+    {
+      "id": "fen",
+      "name": "Fen Bilimleri",
+      "activities": [
+        {
+          "path": "Fen/besinkasifleri.html",
+          "title": "Besin Kaşifleri: Görev Haritası",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Fen/besinakademisi.html",
+          "title": "Besin Akademisi",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Fen/dunyaninhareketleri2.html",
+          "title": "Dünya'nın Hareketleri 1",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Fen/dunyaninhareketleri3.html",
+          "title": "Dünya'nın Hareketleri 2",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Fen/fosiller.html",
+          "title": "Fosil Keşfi 1",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Fen/fosiller2.html",
+          "title": "Fosil Keşfi 2",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Fen/gecegunduz3d.html",
+          "title": "🌍 Gece, Gündüz ve Saatler (3B Simülasyon)",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Fen/madenler.html",
+          "title": "Madenler 1",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Fen/madenler2.html",
+          "title": "Madenler 2",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Fen/unitedegerlendirme1.html",
+          "title": "F.4.1 Ünite Değerlendirme Testi",
+          "tracking": "not-connected"
+        }
+      ]
+    },
+    {
+      "id": "sosyal",
+      "name": "Sosyal Bilgiler",
+      "activities": [
+        {
+          "path": "Sosyal/ailetarihi.html",
+          "title": "Aile Tarihi",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Sosyal/kendinionunyerinekoy.html",
+          "title": "Kendini Onun Yerine Koy",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Sosyal/millikultur.html",
+          "title": "Milli Kültür Öğeleri",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Sosyal/millimucadele.html",
+          "title": "Milli Mücadele Dönemi",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Sosyal/ilgiihtiyacyetenek.html",
+          "title": "İlgi, İhtiyaç ve Yeteneklerimiz",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Sosyal/oyunzamani.html",
+          "title": "Geçmişten Günümüze Çocuk Oyunları",
+          "tracking": "not-connected"
+        }
+      ]
+    },
+    {
+      "id": "insan",
+      "name": "İnsan Hakları",
+      "activities": [
+        {
+          "path": "Insanhaklari/hakozgurluksorumluluk.html",
+          "title": "Hak Özgürlük ve Sorumluluk",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Insanhaklari/hakozgurluksorumluluk2.html",
+          "title": "Bilinçli Vatandaş Kasabası",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Insanhaklari/cocukveyetiskinfarklar.html",
+          "title": "Yetişkinler ve Çocuklar",
+          "tracking": "not-connected"
+        }
+      ]
+    },
+    {
+      "id": "trafik",
+      "name": "Trafik Güvenliği",
+      "activities": [
+        {
+          "path": "Trafik/temelkavramlar.html",
+          "title": "Temel Kavramlar",
+          "tracking": "not-connected"
+        }
+      ]
+    },
+    {
+      "id": "oyunlar",
+      "name": "Oyunlar",
+      "activities": [
+        {
+          "path": "Oyunlar/toplamaoyun.html",
+          "title": "Uzaylı Toplama Macerası 2D 🚀",
+          "tracking": "not-connected"
+        },
+        {
+          "path": "Oyunlar/madenkasifi.html",
+          "title": "Maden Kâşifi 💎",
+          "tracking": "not-connected"
+        }
+      ]
+    }
+  ]
+}
