@@ -9,7 +9,7 @@
 <label for="duyuruBaslik">Başlık</label><input id="duyuruBaslik" maxlength="120" style="display:block;max-width:600px;width:95%;padding:9px;margin:6px 0 12px">
 <label for="duyuruMetin">Duyuru metni</label><textarea id="duyuruMetin" maxlength="1500" rows="4" style="display:block;max-width:600px;width:95%;padding:9px;margin:6px 0 12px"></textarea>
 <button id="duyuruKaydet" type="button">Taslak olarak kaydet</button> <span id="duyuruMesaj" role="status"></span>
-</section>
+<h3>Mevcut duyurular</h3><p id="duyuruListeMesaj" role="status"></p><div id="duyuruListe"></div><button id="duyuruYenile" type="button">Duyuruları yenile</button></section>
 <script>
 "use strict";
 function renderRows(id,items){const target=document.getElementById(id);items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});target.appendChild(tr)})}
@@ -20,8 +20,29 @@ document.getElementById("duyuruKaydet").addEventListener("click",function(){
  const btn=this,baslik=document.getElementById("duyuruBaslik").value,metin=document.getElementById("duyuruMetin").value,mesaj=document.getElementById("duyuruMesaj");
  if(!baslik.trim()||!metin.trim()){mesaj.textContent="Başlık ve metin zorunlu.";return}
  btn.disabled=true;mesaj.textContent="Taslak kaydediliyor...";
- google.script.run.withSuccessHandler(function(r){btn.disabled=false;mesaj.textContent=r&&r.basarili?"Taslak kaydedildi (henüz yayımlanmadı).":"Taslak kaydedilemedi.";}).withFailureHandler(function(e){btn.disabled=false;mesaj.textContent="Hata: "+(e&&e.message||"Kaydedilemedi");}).duyuruEkleOgretmen(baslik,metin,"");
+ google.script.run.withSuccessHandler(function(r){btn.disabled=false;mesaj.textContent=r&&r.basarili?"Taslak kaydedildi (henüz yayımlanmadı).":"Taslak kaydedilemedi.";if(r&&r.basarili)duyuruListele();}).withFailureHandler(function(e){btn.disabled=false;mesaj.textContent="Hata: "+(e&&e.message||"Kaydedilemedi");}).duyuruEkleOgretmen(baslik,metin,"");
 });
+function duyuruListele(){
+ const el=document.getElementById('duyuruListe'),msg=document.getElementById('duyuruListeMesaj');
+ msg.textContent='Duyurular okunuyor...';
+ google.script.run.withSuccessHandler(function(rows){
+  el.replaceChildren();msg.textContent=rows.length?'':'Henüz duyuru yok.';
+  rows.forEach(function(d){
+   const block=document.createElement('div'),title=document.createElement('strong'),meta=document.createElement('p'),text=document.createElement('p'),btn=document.createElement('button');
+   title.textContent=d.baslik;meta.textContent='Durum: '+d.durum;text.textContent=d.metin;
+   const next=d.durum==='YAYINDA'?'ARSIV':'YAYINDA';
+   btn.type='button';btn.textContent=next==='YAYINDA'?'Yayımla':'Arşivle';
+   btn.addEventListener('click',function(){
+    if(!confirm('“'+d.baslik+'” duyurusunu '+(next==='YAYINDA'?'öğrencilere yayımlamak':'arşivlemek')+' istiyor musun?'))return;
+    btn.disabled=true;
+    google.script.run.withSuccessHandler(function(){duyuruListele();}).withFailureHandler(function(e){btn.disabled=false;msg.textContent='İşlem hatası: '+(e&&e.message||'Bilinmiyor');}).ogretmenDuyuruDurumDegistir(d.kimlik,next);
+   });
+   block.append(title,meta,text,btn);block.style.cssText='padding:12px;border:1px solid #dbe4ef;border-radius:10px;margin:10px 0';el.appendChild(block);
+  });
+ }).withFailureHandler(function(e){msg.textContent='Duyuru listesi alınamadı: '+(e&&e.message||'Bilinmiyor');}).ogretmenDuyuruListesi();
+}
+document.getElementById('duyuruYenile').addEventListener('click',duyuruListele);
+duyuruListele();
 google.script.run.withSuccessHandler(function(r){
  document.getElementById('status').textContent='Rapor güncel. MİSAFİR kayıtları hariç.';
  document.getElementById('count').textContent=r.studentCount;
