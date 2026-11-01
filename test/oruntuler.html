@@ -89,13 +89,14 @@ function finishGame(){const completed=state.tasks.filter(r=>r.status==='success'
   }}));
 }
 $('reviewBtn').onclick=()=>{$('review').innerHTML=reviewHTML();$('review').classList.toggle('hidden');document.querySelectorAll('[data-review]').forEach(btn=>btn.onclick=()=>{const idx=TASKS.findIndex(t=>t.id===btn.dataset.review);if(idx>=0){state.currentIndex=idx;renderTask()}})};
-function reset(){state=freshState();TASKS.forEach(t=>delete t._optionOrder);show('game');renderTask()}
+function reset(){window.dispatchEvent(new Event('portal:reset'));state=freshState();TASKS.forEach(t=>delete t._optionOrder);show('game');renderTask()}
 $('go').onclick=reset;$('again').onclick=reset;header();
 </script>
 <script>
 /* Takipli test kopyası: orijinal etkinlik ve ana sayfa değişmez. */
 (function(){
  let attemptReported=false;
+ window.addEventListener('portal:reset',function(){attemptReported=false});
  window.addEventListener('portal:finished',function(e){
    if(attemptReported || !e.detail || e.detail.activityId!=='mat-oruntuler')return;
    attemptReported=true;
