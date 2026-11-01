@@ -90,5 +90,36 @@ function ogretmenRaporVerisi() {
    return {id:activityId,completed:count,waiting:Object.keys(roster).length-count,
     students:perStudent.map(function(st){return {no:st.no,ad:st.ad,status:done[st.no]?'Tamamladım bildirildi':'Henüz bildirim yok'};})};
   });
-  return {studentCount:Object.keys(roster).length,recordCount:results.length,outcomes:outcomes,students:perStudent,activities:activities,completionActivities:completionActivities};
+  const notebookCatalog={
+    'Turkce':[['atasozleri.jpeg','Atasözleri'],['deyimler.jpeg','Deyimler'],['gercekmecaz.png','Gerçek, Mecaz ve Terim Anlam'],['ikilemeler.jpeg','İkilemeler'],['metninbolumleri.png','Metnin Bölümleri'],['pekistirme.JPG','Pekiştirme']],
+    'Matematik':[['cikarmadaverilmeyen.png','Çıkarma İşleminde Verilmeyenler'],['cikarmadefternotu.png','Çıkarma İşlemi'],['toplama.png','Toplama'],['zihindencikarma.png','Zihinden Çıkarma'],['zihindentoplama.png','Zihinden Toplama']],
+    'Fen':[['besinler1.png','Besinler 1'],['besinler2.png','Besinler 2'],['besinler3.png','Besinler 3'],['besinlerintazeligi.png','Besinlerin Tazeliği'],['besinlerisaklama.png','Besinleri Saklama']],
+    'Sosyal':[['ailemcocuk.jpg','Ailem ve Çocuk'],['ailetarihi.png','Aile Tarihi'],['cocukoyun.png','Çocuk Oyunları'],['farkliliklarimizvesaygi.png','Farklılıklara Saygı'],['mersinkultur.png','Mersin Kültürü'],['millikultur.png','Millî Kültür']]
+  };
+  const notebookNames={'Turkce':'Türkçe','Matematik':'Matematik','Fen':'Fen Bilimleri','Sosyal':'Sosyal Bilgiler'};
+  const notebookItems=[];
+  Object.keys(notebookCatalog).forEach(function(dir){
+    notebookCatalog[dir].forEach(function(row){notebookItems.push({id:dir+'/'+row[0],title:notebookNames[dir]+' • '+row[1]});});
+  });
+  const notebookSheet=ss.getSheetByName('DEFTER_TAMAMLAMA');
+  const notebookRows=notebookSheet&&notebookSheet.getLastRow()>1
+    ?notebookSheet.getRange(2,1,notebookSheet.getLastRow()-1,2).getDisplayValues():[];
+  const notebookDone={};
+  const allowedNotes={};
+  notebookItems.forEach(function(note){allowedNotes[note.id]=true;});
+  notebookRows.forEach(function(row){
+    const no=String(row[0]).trim(),id=String(row[1]).trim();
+    if(!roster[no]||!allowedNotes[id])return;
+    if(!notebookDone[id])notebookDone[id]={};
+    notebookDone[id][no]=true;
+  });
+  const notebooks=notebookItems.map(function(note){
+    const done=notebookDone[note.id]||{},finished=[],notYet=[];
+    perStudent.forEach(function(st){(done[st.no]?finished:notYet).push(st.ad);});
+    return {id:note.id,title:note.title,completed:finished.length,
+      waiting:notYet.length,completedStudents:finished,waitingStudents:notYet};
+  });
+  return {studentCount:Object.keys(roster).length,recordCount:results.length,
+    outcomes:outcomes,students:perStudent,activities:activities,
+    completionActivities:completionActivities,notebooks:notebooks};
 }
