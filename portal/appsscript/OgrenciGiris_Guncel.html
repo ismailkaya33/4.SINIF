@@ -165,6 +165,30 @@ button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
 .noticeTopCard #duyuruListe article{padding:10px 0;border-bottom:1px solid #e5dff5}
 .portalTopStrip>.welcomeBar{margin:0;min-width:0}
 @media(max-width:800px){.portalTopStrip{grid-template-columns:1fr}.portalTopStrip>.welcomeBar{order:-1}}
+
+/* Nunito ve 4. sinif icin rahat okunabilir tipografi */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+body:not(.oyunda),body.oyunda,button,input{font-family:'Nunito',system-ui,Arial,sans-serif}
+#kod{letter-spacing:.35em;font-variant-numeric:tabular-nums;font-weight:900;text-transform:uppercase;padding-inline:21px}
+#kod::placeholder{letter-spacing:.13em;font-weight:600}
+.mathActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:15px 0}
+.mathActions button{display:flex;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:72px;margin:0;padding:12px 16px;border:1px solid #ed9b18;border-radius:15px;background:linear-gradient(150deg,#ffbd4a,#fca311);color:#35261b;box-shadow:0 4px 0 #c47c0b;font-size:clamp(18px,1.65vw,23px);font-weight:900}
+.mathActions button:hover:not(:disabled){filter:brightness(1.05)}
+.actionGlyph{display:inline-grid;place-items:center;width:35px;height:35px;flex:none;border-radius:10px;background:#ffffffb8;color:#885017;font-weight:900;font-size:25px}
+#oyunPanel button{background:#fca311;color:#25253c;font-weight:900}
+.course summary>.subjectIcon{display:grid;place-items:center;width:49px;height:49px;flex:none;border-radius:14px;background:#e3e9ff;color:#3a4d94;border:1px solid #c9d7ff;font-weight:900;font-size:15px;letter-spacing:.02em}
+.courseLinks{list-style:none;padding:10px;margin-top:13px;max-height:410px}
+.courseLinks li{margin:0 0 9px}
+.courseLinks a{display:flex;align-items:center;min-height:57px;padding:11px 14px;border:1px solid #d9e6f5;border-radius:12px;background:#f6faff;color:#244a83;text-decoration:none;font-size:18px;font-weight:800;line-height:1.35;transition:background .15s,transform .15s}
+.courseLinks a::before{content:"›";display:inline-grid;place-items:center;flex:none;width:27px;height:27px;margin-right:10px;border-radius:9px;background:#e5e7ff;color:#7157bc;font-size:27px;line-height:1}
+.courseLinks a:hover{background:#ecf3ff;transform:translateX(2px)}
+.courseLinks a:focus-visible{outline:3px solid #fca311;outline-offset:2px}
+.progressTrack{height:19px;border:1px solid #b9d8e6;background:#dce9ee;position:relative}
+#ilerlemeBar{position:relative;background:repeating-linear-gradient(115deg,#3aa2c4 0 13px,#51c4c1 13px 25px);box-shadow:inset 0 -3px 0 #147f9b88;transition:width .35s ease}
+#ilerlemeBar::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#ffffff55,transparent 60%)}
+@media(prefers-reduced-motion:no-preference){#ilerlemeBar{background-size:110px 100%;animation:xp-shift 3s linear infinite}@keyframes xp-shift{to{background-position:110px 0}}}
+@media(max-width:850px){.mathActions{grid-template-columns:1fr}}
+@media(max-width:620px){#kod{letter-spacing:.25em}.courseLinks a{font-size:18px;min-height:60px;padding:13px}.mathActions button{width:100%;min-height:72px}}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
@@ -175,10 +199,9 @@ button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
 </div>
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
 <p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
-<section class="featuredLessons" aria-labelledby="featured-heading"><div class="featuredHeader"><div><span class="featuredEyebrow">🧮 MATEMATİK</span><h3 id="featured-heading">Öne Çıkan Etkinlikler</h3></div><span class="trackingPill">● Sonuç takibi açık</span></div><div class="featuredGrid"><article class="featuredGame"><span class="gameSymbol" aria-hidden="true">🔢</span><div class="featuredText"><h4>Kayıp Sayılar</h4><p>Eksik bırakılan sayıları bul, işlemleri tamamla.</p></div><button id="oyunuAc" type="button">Etkinliği Aç →</button></article><article class="featuredGame"><span class="gameSymbol" aria-hidden="true">🧩</span><div class="featuredText"><h4>Sayı Örüntüleri</h4><p>Artış ve azalış kurallarını keşfet.</p></div><button id="oruntulerAc" type="button">Etkinliği Aç →</button></article></div></section>
 <section id="ilerlemePanel" class="progressPanel" aria-labelledby="ilerlemeBaslik"><div class="progressTitle"><h3 id="ilerlemeBaslik">📈 Benim İlerlemem</h3><span>Kaydedilmiş etkinliklerim</span></div><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor...</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru cevap</small></div><div><strong id="ilerlemeOran">–</strong><small>Başarı oranı</small></div></div><div class="progressTrack"><span id="ilerlemeBar" style="width:0%"></span></div></section>
-<h3 class="otherLessonsHeading">📚 Diğer Dersler ve Etkinlikler</h3>
-<div class="cards seven"><details class="course"><summary><span aria-hidden="true">📚</span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
+<h3 class="otherLessonsHeading">Dersler ve Etkinlikler</h3>
+<div class="cards seven"><details class="course"><summary><span class="subjectIcon" aria-hidden="true">TR</span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dilkoruyucusu.html" target="_blank" rel="noopener noreferrer">Dil Muhafızları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dogrusunuyaz.html" target="_blank" rel="noopener noreferrer">Sözcüklerin Doğru Yazımı</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/essesli.html" target="_blank" rel="noopener noreferrer">Eş Sesli Sözcükler</a></li>
@@ -195,7 +218,7 @@ button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/noktalamaisaretleri.html" target="_blank" rel="noopener noreferrer">Noktalama İşaretleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/pekistirme.html" target="_blank" rel="noopener noreferrer">Pekiştirme Dedektifi 1</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/sozavcıları.html" target="_blank" rel="noopener noreferrer">Atasözleri ve Deyimler</a></li></ul></details>
-<details class="course"><summary><span aria-hidden="true">🧮</span> <strong>Matematik</strong> <small>11 etkinlik</small></summary><p class="sectionBadge">✅ Takipli etkinlikler yukarıdaki kartlardan açılır.</p><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/oruntuler.html" target="_blank" rel="noopener noreferrer">Sayı Örüntüleri</a></li>
+<details class="course"><summary><span class="subjectIcon" aria-hidden="true">MAT</span> <strong>Matematik</strong> <small>11 etkinlik</small></summary><div class="mathActions" aria-label="Sonuçları kaydedilen Matematik etkinlikleri"><button id="oyunuAc" type="button"><span class="actionGlyph" aria-hidden="true">＋</span> Kayıp Sayılar <span aria-hidden="true">→</span></button><button id="oruntulerAc" type="button"><span class="actionGlyph" aria-hidden="true">▦</span> Sayı Örüntüleri <span aria-hidden="true">→</span></button></div><p class="sectionBadge">Bu iki etkinliğin sonuçları kaydedilir.</p><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/oruntuler.html" target="_blank" rel="noopener noreferrer">Sayı Örüntüleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilar.html" target="_blank" rel="noopener noreferrer">Sayılar</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilarikarsilastirsirala.html" target="_blank" rel="noopener noreferrer">Sayıları Karşılaştırma ve Sıralama</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayiproblemleri.html" target="_blank" rel="noopener noreferrer">Sayı Problemleri Atölyesi</a></li>
@@ -206,7 +229,7 @@ button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/zihindencikarma.html" target="_blank" rel="noopener noreferrer">Zihinden Çıkarma Ustaları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/cikarmaislemi.html" target="_blank" rel="noopener noreferrer">Çıkarma Dedektifleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/kayipsayilar.html" target="_blank" rel="noopener noreferrer">Çıkarma İşleminde Verilmeyen Sayılar</a></li></ul></details>
-<details class="course"><summary><span aria-hidden="true">🔬</span> <strong>Fen Bilimleri</strong> <small>10 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinkasifleri.html" target="_blank" rel="noopener noreferrer">Besin Kaşifleri: Görev Haritası</a></li>
+<details class="course"><summary><span class="subjectIcon" aria-hidden="true">FEN</span> <strong>Fen Bilimleri</strong> <small>10 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinkasifleri.html" target="_blank" rel="noopener noreferrer">Besin Kaşifleri: Görev Haritası</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinakademisi.html" target="_blank" rel="noopener noreferrer">Besin Akademisi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/dunyaninhareketleri2.html" target="_blank" rel="noopener noreferrer">Dünya'nın Hareketleri 1</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/dunyaninhareketleri3.html" target="_blank" rel="noopener noreferrer">Dünya'nın Hareketleri 2</a></li>
@@ -216,17 +239,17 @@ button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/madenler.html" target="_blank" rel="noopener noreferrer">Madenler 1</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/madenler2.html" target="_blank" rel="noopener noreferrer">Madenler 2</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/unitedegerlendirme1.html" target="_blank" rel="noopener noreferrer">F.4.1 Ünite Değerlendirme Testi</a></li></ul></details>
-<details class="course"><summary><span aria-hidden="true">🌍</span> <strong>Sosyal Bilgiler</strong> <small>6 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/ailetarihi.html" target="_blank" rel="noopener noreferrer">Aile Tarihi</a></li>
+<details class="course"><summary><span class="subjectIcon" aria-hidden="true">SOS</span> <strong>Sosyal Bilgiler</strong> <small>6 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/ailetarihi.html" target="_blank" rel="noopener noreferrer">Aile Tarihi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/kendinionunyerinekoy.html" target="_blank" rel="noopener noreferrer">Kendini Onun Yerine Koy</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/millikultur.html" target="_blank" rel="noopener noreferrer">Milli Kültür Öğeleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/millimucadele.html" target="_blank" rel="noopener noreferrer">Milli Mücadele Dönemi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/ilgiihtiyacyetenek.html" target="_blank" rel="noopener noreferrer">İlgi, İhtiyaç ve Yeteneklerimiz</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/oyunzamani.html" target="_blank" rel="noopener noreferrer">Geçmişten Günümüze Çocuk Oyunları</a></li></ul></details>
-<details class="course"><summary><span aria-hidden="true">🤝</span> <strong>İnsan Hakları</strong> <small>3 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/hakozgurluksorumluluk.html" target="_blank" rel="noopener noreferrer">Hak Özgürlük ve Sorumluluk</a></li>
+<details class="course"><summary><span class="subjectIcon" aria-hidden="true">HAK</span> <strong>İnsan Hakları</strong> <small>3 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/hakozgurluksorumluluk.html" target="_blank" rel="noopener noreferrer">Hak Özgürlük ve Sorumluluk</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/hakozgurluksorumluluk2.html" target="_blank" rel="noopener noreferrer">Bilinçli Vatandaş Kasabası</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/cocukveyetiskinfarklar.html" target="_blank" rel="noopener noreferrer">Yetişkinler ve Çocuklar</a></li></ul></details>
-<details class="course"><summary><span aria-hidden="true">🚦</span> <strong>Trafik Güvenliği</strong> <small>1 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Trafik/temelkavramlar.html" target="_blank" rel="noopener noreferrer">Temel Kavramlar</a></li></ul></details>
-<details class="course"><summary><span aria-hidden="true">🎮</span> <strong>Oyunlar</strong> <small>2 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/toplamaoyun.html" target="_blank" rel="noopener noreferrer">Uzaylı Toplama Macerası 2D 🚀</a></li>
+<details class="course"><summary><span class="subjectIcon" aria-hidden="true">TRF</span> <strong>Trafik Güvenliği</strong> <small>1 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Trafik/temelkavramlar.html" target="_blank" rel="noopener noreferrer">Temel Kavramlar</a></li></ul></details>
+<details class="course"><summary><span class="subjectIcon" aria-hidden="true">OYN</span> <strong>Oyunlar</strong> <small>2 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/toplamaoyun.html" target="_blank" rel="noopener noreferrer">Uzaylı Toplama Macerası 2D 🚀</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/madenkasifi.html" target="_blank" rel="noopener noreferrer">Maden Kâşifi 💎</a></li></ul></details></div>
 
 </div>
