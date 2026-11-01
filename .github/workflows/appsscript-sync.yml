@@ -1,0 +1,57 @@
+name: 4D Apps Script - kontrollu kaynak aktarimi
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Hedef proje"
+        type: choice
+        options:
+          - student
+          - teacher
+        required: true
+      confirmation:
+        description: "Onay metni: SYNC_STUDENT veya SYNC_TEACHER"
+        required: true
+jobs:
+  sync:
+    if: ${{ (inputs.target == 'student' && inputs.confirmation == 'SYNC_STUDENT') || (inputs.target == 'teacher' && inputs.confirmation == 'SYNC_TEACHER') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: appsscript-sync
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Kimlik bilgilerini ve hedefi hazirla
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+          STUDENT_SCRIPT_ID: ${{ secrets.STUDENT_SCRIPT_ID }}
+          TEACHER_SCRIPT_ID: ${{ secrets.TEACHER_SCRIPT_ID }}
+          TARGET: ${{ inputs.target }}
+        run: |
+          set -eu
+          test -n "$CLASPRC_JSON" || { echo "CLASPRC_JSON secret eksik"; exit 1; }
+          if [ "$TARGET" = student ]; then SCRIPT_ID="$STUDENT_SCRIPT_ID"; else SCRIPT_ID="$TEACHER_SCRIPT_ID"; fi
+          test -n "$SCRIPT_ID" || { echo "Hedef script ID secret eksik"; exit 1; }
+          mkdir -p "$HOME" "$RUNNER_TEMP/4d-script"
+          printf '%s' "$CLASPRC_JSON" > "$HOME/.clasprc.json"
+          chmod 600 "$HOME/.clasprc.json"
+          printf '{"scriptId":"%s","rootDir":"."}\n' "$SCRIPT_ID" > "$RUNNER_TEMP/4d-script/.clasp.json"
+      - name: Uzak projeyi cek
+        working-directory: ${{ runner.temp }}/4d-script
+        run: npx --yes @google/clasp@latest pull
+      - name: Secili kaynaklari guvenli birlestir
+        env:
+          TARGET: ${{ inputs.target }}
+        run: node .github/scripts/prepare-appsscript-sync.mjs "$TARGET" "$RUNNER_TEMP/4d-script"
+      - name: Aktarimdan once dosyalari listele
+        working-directory: ${{ runner.temp }}/4d-script
+        run: npx --yes @google/clasp@latest status
+      - name: Apps Script kaynaklarini guncelle - DAGITIM DEGIL
+        working-directory: ${{ runner.temp }}/4d-script
+        run: npx --yes @google/clasp@latest push --force
+      - name: Kimlik dosyasini sil
+        if: always()
+        run: rm -f "$HOME/.clasprc.json"
