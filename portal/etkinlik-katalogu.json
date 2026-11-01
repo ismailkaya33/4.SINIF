@@ -3,15 +3,25 @@
   "activities": [
     {
       "activityId": "mat-kayipsayilar",
-      "path": "Matematik/kayipsayilar.html",
+      "path": "test/kayipsayilar.html",
       "subject": "Matematik",
       "grade": 4,
-      "outcomeIds": ["M.4.1.3.4"],
+      "outcomeIds": [
+        "M.4.1.3.4"
+      ],
       "resultEvent": "portal:finished",
-      "resultFields": ["activityId", "correct", "wrong", "total", "wrongAttempts", "firstTry", "durationSeconds"],
+      "resultFields": [
+        "activityId",
+        "correct",
+        "wrong",
+        "total",
+        "wrongAttempts",
+        "firstTry",
+        "durationSeconds"
+      ],
       "studentIdentitySource": "none",
-      "integrationStatus": "demo-only",
-      "notes": "Kazanım kodu öğretmen tarafından doğrulanmalı. Oyun içindeki tüm soruların aynı kazanımı ölçtüğü varsayılmamalı. Kimlik doğrulama henüz bağlanmadı."
+      "integrationStatus": "pilot-tracked",
+      "notes": "Öğrenci portalı iframe bağlantısı üzerinden oturum doğrulamasıyla sonuç kaydı yapılıyor. Oyunun bağımsız açılışı sonuç kaydetmez. Kazanım kodu pedagojik yönden öğretmen tarafından gözden geçirilmeli."
     }
   ]
 }
