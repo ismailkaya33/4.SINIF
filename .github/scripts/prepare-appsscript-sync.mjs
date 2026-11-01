@@ -1,0 +1,47 @@
+import {existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync} from 'node:fs';
+import {join, resolve, extname} from 'node:path';
+
+const [target, remoteDir] = process.argv.slice(2);
+if (!['student','teacher'].includes(target) || !remoteDir) throw Error('Invalid sync target');
+const root=process.cwd(), dest=resolve(remoteDir);
+const student=[
+ ['portal/appsscript/Kod.gs','Kod'],
+ ['portal/appsscript/GirisGuvenligi.gs','GirisGuvenligi'],
+ ['portal/appsscript/OgrenciOturum.gs','OgrenciOturum'],
+ ['portal/appsscript/OgrenciDuyurulari.gs','OgrenciDuyurulari'],
+ ['portal/appsscript/EtkinlikKayitDefteri.gs','EtkinlikKayitDefteri'],
+ ['portal/appsscript/EtkinlikSonuclari.gs','EtkinlikSonuclari'],
+ ['portal/appsscript/OgrenciGiris_Guncel.html','OgrenciGiris']
+];
+const teacher=[
+ ['portal/ogretmen-rapor/OgretmenRapor.gs','Kod'],
+ ['portal/ogretmen-rapor/OgretmenDuyuruTaslak.gs','OgretmenDuyuruTaslak'],
+ ['portal/ogretmen-rapor/OgretmenRapor.html','OgretmenRapor']
+];
+const mapping=target==='student'?student:teacher;
+if (!existsSync(join(dest,'appsscript.json'))) throw Error('Remote manifest missing: refuse to push.');
+const remoteFiles=readdirSync(dest);
+const sourceFile=(name)=>{
+ const f=join(root,name);
+ if(!existsSync(f))throw Error('Missing source '+name);
+ return readFileSync(f,'utf8');
+};
+const findFile=(base, ext)=>{
+ const matches=remoteFiles.filter(f=>f===base+'.'+ext || (ext==='gs'&&f===base+'.js'));
+ if(matches.length>1)throw Error('Both .gs and .js for '+base+'; manual audit needed');
+ return matches[0];
+};
+for(const required of (target==='student'?['Kod','GirisGuvenligi','OgrenciOturum','OgrenciGiris']:['Kod','OgretmenRapor'])){
+ const ext=required==='OgrenciGiris'||required==='OgretmenRapor'?'html':'gs';
+ if(!findFile(required,ext))throw Error('Expected existing script file missing: '+required+'. Check target script ID.');
+}
+for(const [src, base] of mapping){
+ const extension=extname(src)==='.html'?'html':'gs';
+ const existing=findFile(base,extension);
+ const filename=existing??base+'.'+(extension==='gs'?'js':'html');
+ const source=sourceFile(src);
+ if(!source.trim())throw Error('Blank source '+src);
+ writeFileSync(join(dest,filename),source,'utf8');
+ process.stdout.write('Prepared '+filename+'\n');
+}
+process.stdout.write('Preserved remote manifest and unlisted files. No deployment created.\n');
