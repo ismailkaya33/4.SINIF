@@ -65,7 +65,7 @@ a{color:#2459a6}#oyunPanel{position:fixed;inset:0;z-index:50;background:#081427;
 <details class="course"><summary><span aria-hidden="true">🚦</span> <strong>Trafik Güvenliği</strong> <small>1 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Trafik/temelkavramlar.html" target="_blank" rel="noopener noreferrer">Temel Kavramlar</a></li></ul></details>
 <details class="course"><summary><span aria-hidden="true">🎮</span> <strong>Oyunlar</strong> <small>2 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/toplamaoyun.html" target="_blank" rel="noopener noreferrer">Uzaylı Toplama Macerası 2D 🚀</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/madenkasifi.html" target="_blank" rel="noopener noreferrer">Maden Kâşifi 💎</a></li></ul></details></div>
-<section aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint">Öğretmen duyuruları bu alanda gösterilecek. Bağlantı henüz etkin değil.</p></section>
+<section aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
 </div>
 <div id="oyunPanel" hidden><div id="oyunUst"><strong>🎮 Matematik • Kayıp Sayılar</strong><button id="oyundanDon" type="button">Portala Dön</button></div><iframe id="oyunCer" title="Matematik oyunu" referrerpolicy="no-referrer"></iframe><p id="oyunDurum" role="status"></p></div>
 <button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button>
@@ -75,6 +75,18 @@ a{color:#2459a6}#oyunPanel{position:fixed;inset:0;z-index:50;background:#081427;
 const buton=document.getElementById("giris"),cikisButonu=document.getElementById("cikis"),sonuc=document.getElementById("sonuc"),kodAlani=document.getElementById("kod"),girisAlani=document.getElementById("girisAlani"),oturumAlani=document.getElementById("oturumAlani"),anahtarAdi="4d_ogrenci_oturumu";
 const tokenFormat=/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
+function duyurulariYukle(){
+ const token=sessionStorage.getItem(anahtarAdi),durum=document.getElementById("duyuruDurum"),liste=document.getElementById("duyuruListe");
+ if(!token)return;
+ durum.textContent="Duyurular yükleniyor...";
+ google.script.run.withSuccessHandler(function(r){
+  liste.replaceChildren();
+  if(!r||r.basarili!==true){durum.textContent="Duyurular alınamadı.";return}
+  if(!r.duyurular||!r.duyurular.length){durum.textContent="Henüz yayımlanmış duyuru yok.";return}
+  durum.textContent="";
+  r.duyurular.forEach(function(d){const el=document.createElement("article"),h=document.createElement("h4"),p=document.createElement("p");h.textContent=d.baslik;p.textContent=d.metin;el.append(h,p);liste.appendChild(el)});
+ }).withFailureHandler(function(){durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
+}
 function tokenTemizle(){sessionStorage.removeItem(anahtarAdi);ekranGoster(false);kodAlani.value=""}
 function girisYap(){
  if(buton.disabled)return;
@@ -130,7 +142,7 @@ if(mevcutToken){
  buton.disabled=true;sonuc.textContent="Oturum kontrol ediliyor...";
  google.script.run.withSuccessHandler(function(cevap){
   buton.disabled=false;
-  if(cevap&&cevap.basarili===true){ekranGoster(true);sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
+  if(cevap&&cevap.basarili===true){ekranGoster(true);duyurulariYukle();sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
   else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
  }).withFailureHandler(function(){buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
 }
