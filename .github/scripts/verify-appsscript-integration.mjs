@@ -31,4 +31,11 @@ assert.match(game,/window\.addEventListener\('portal:reset'/,'Replay reset');
 const blocks=[...game.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)];
 assert.ok(blocks.length>=2);
 for(const block of blocks)new Function(block[1]);
+// Yeni etkinlikler kayitsiz yayimlanmasin; geri bildirim tipi tasarimda belirlensin.
+const tracking=JSON.parse(read('portal/etkinlik-takip-politikasi.json'));
+const known=new Map(tracking.mevcutEtkinlikler.map(x=>[x.konum,x]));
+const linked=[...portal.matchAll(/href="https:\/\/ismailkaya33\.github\.io\/4\.SINIF\/([^"]+\.html)"/g)].map(x=>x[1]);
+for(const href of linked)assert.ok(known.has(href),'Unregistered activity link: '+href);
+assert.equal(tracking.gelecekEtkinlikTakibi,'zorunlu');
+for(const entry of tracking.mevcutEtkinlikler)assert.ok(['secim_bekliyor','otomatik_sonuc','ogrenci_beyani'].includes(entry.takip),'Invalid tracking option: '+entry.konum);
 console.log('Integration smoke checks passed: result validation, trusted message bridge, replay, syntax.');
