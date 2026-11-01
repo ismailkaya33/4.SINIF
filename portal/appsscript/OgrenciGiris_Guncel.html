@@ -155,11 +155,24 @@ button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
  .courseLinks a{font-size:18px}
  .progressStats small{font-size:15px}
 }
+
+/* Duyurular sol ustte; ogrenci karşılama sagda */
+.portalTopStrip{display:grid;grid-template-columns:minmax(280px,1.05fr) minmax(330px,1fr);gap:17px;align-items:stretch;margin:5px 0 20px}
+#oturumAlani>.portalTopStrip>.noticeTopCard{min-width:0;margin:0;padding:18px 20px;background:linear-gradient(135deg,#f4efff,#ffffff);border:1px solid #dcd4f5;border-radius:20px;box-shadow:0 6px 18px #6358a113}
+.noticeTopCard h3{display:flex;align-items:center;gap:7px;margin:0 0 9px;font-size:clamp(21px,2vw,27px);color:#55448d}
+.noticeTopCard #duyuruDurum{margin:0;font-size:17px;line-height:1.5}
+.noticeTopCard #duyuruListe{max-height:220px;overflow-y:auto;font-size:17px}
+.noticeTopCard #duyuruListe article{padding:10px 0;border-bottom:1px solid #e5dff5}
+.portalTopStrip>.welcomeBar{margin:0;min-width:0}
+@media(max-width:800px){.portalTopStrip{grid-template-columns:1fr}.portalTopStrip>.welcomeBar{order:-1}}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
 <div id="oturumAlani" hidden>
+<div class="portalTopStrip">
+<section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
+</div>
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
 <p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
 <section class="featuredLessons" aria-labelledby="featured-heading"><div class="featuredHeader"><div><span class="featuredEyebrow">🧮 MATEMATİK</span><h3 id="featured-heading">Öne Çıkan Etkinlikler</h3></div><span class="trackingPill">● Sonuç takibi açık</span></div><div class="featuredGrid"><article class="featuredGame"><span class="gameSymbol" aria-hidden="true">🔢</span><div class="featuredText"><h4>Kayıp Sayılar</h4><p>Eksik bırakılan sayıları bul, işlemleri tamamla.</p></div><button id="oyunuAc" type="button">Etkinliği Aç →</button></article><article class="featuredGame"><span class="gameSymbol" aria-hidden="true">🧩</span><div class="featuredText"><h4>Sayı Örüntüleri</h4><p>Artış ve azalış kurallarını keşfet.</p></div><button id="oruntulerAc" type="button">Etkinliği Aç →</button></article></div></section>
@@ -215,7 +228,7 @@ button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
 <details class="course"><summary><span aria-hidden="true">🚦</span> <strong>Trafik Güvenliği</strong> <small>1 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Trafik/temelkavramlar.html" target="_blank" rel="noopener noreferrer">Temel Kavramlar</a></li></ul></details>
 <details class="course"><summary><span aria-hidden="true">🎮</span> <strong>Oyunlar</strong> <small>2 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/toplamaoyun.html" target="_blank" rel="noopener noreferrer">Uzaylı Toplama Macerası 2D 🚀</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/madenkasifi.html" target="_blank" rel="noopener noreferrer">Maden Kâşifi 💎</a></li></ul></details></div>
-<section aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
+
 </div>
 <div id="oyunPanel" hidden><div id="oyunUst"><strong>🎮 Matematik • Kayıp Sayılar</strong><button id="oyundanDon" type="button">Portala Dön</button></div><iframe id="oyunCer" title="Matematik oyunu" referrerpolicy="no-referrer"></iframe><p id="oyunDurum" role="status"></p></div>
 <p id="sonuc" role="status" aria-live="polite"></p>
