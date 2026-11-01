@@ -53,5 +53,22 @@ function ogretmenRaporVerisi() {
     const ids=[...new Set(mine.map(function(x){return x.id}))];
     return {no:no,ad:roster[no].ad,activityCount:ids.length,attemptCount:mine.length,correct:mine.reduce((n,x)=>n+x.correct,0),total:mine.reduce((n,x)=>n+x.total,0)};
   }).sort(function(a,b){return a.ad.localeCompare(b.ad,'tr')});
-  return {studentCount:Object.keys(roster).length,recordCount:results.length,outcomes:outcomes,students:perStudent};
+  const allIds=['mat-kayipsayilar']; // İzlenebilir kayıtlı pilot etkinlikler
+  results.forEach(function(x){if(allIds.indexOf(x.id)<0)allIds.push(x.id);});
+  const activities=allIds.map(function(activityId){
+    const attempted={};
+    results.forEach(function(x){
+      if(x.id===activityId){
+        const current=attempted[x.no];
+        if(!current || (x.at||'')>=(current.at||''))attempted[x.no]=x;
+      }
+    });
+    const studentStates=perStudent.map(function(st){
+      const record=attempted[st.no];
+      return {no:st.no,ad:st.ad,status:record?'Tamamlandı':'Henüz sonuç yok',
+        correct:record?record.correct:null,total:record?record.total:null};
+    });
+    return {id:activityId,completed:Object.keys(attempted).length,waiting:perStudent.length-Object.keys(attempted).length,students:studentStates};
+  });
+  return {studentCount:Object.keys(roster).length,recordCount:results.length,outcomes:outcomes,students:perStudent,activities:activities};
 }
