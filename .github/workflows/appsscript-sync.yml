@@ -66,6 +66,21 @@ jobs:
         if: ${{ inputs.dry_run == false }}
         working-directory: ${{ runner.temp }}/4d-script
         run: npx --yes @google/clasp@latest push --force
+      - name: Ogrenci mevcut web uygulamasini yayimla
+        if: ${{ inputs.target == 'student' && inputs.dry_run == false }}
+        working-directory: ${{ runner.temp }}/4d-script
+        env:
+          EXISTING_DEPLOYMENT_ID: AKfycbzXyUUynqADi0RQjqvEq4lvUUnwQ6bJa1aPueWfsgQTMNiuEbrFnZw5phWg_Eztwjer
+        run: |
+          set -eu
+          # Yanlislikla yeni deployment / yeni ogrenci URL'si olusturulmasin.
+          npx --yes @google/clasp@latest list-deployments > "$RUNNER_TEMP/4d-deployments.txt"
+          grep -F -- "$EXISTING_DEPLOYMENT_ID" "$RUNNER_TEMP/4d-deployments.txt" >/dev/null || {
+            echo "::error::Mevcut ogrenci deployment kimligi bulunamadi; yeni deployment olusturulmadi."
+            exit 1
+          }
+          npx --yes @google/clasp@latest create-deployment --deploymentId "$EXISTING_DEPLOYMENT_ID" --description "4D ogrenci portali GitHub Actions"
+          echo "Mevcut ogrenci web uygulamasi dagitimi guncellendi."
       - name: Kimlik dosyasini sil
         if: always()
         run: rm -f "$HOME/.clasprc.json"
