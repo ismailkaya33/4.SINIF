@@ -222,6 +222,38 @@ body:not(.oyunda),body.oyunda,button,input{font-family:'Nunito',system-ui,Arial,
 .progressCompactBody #ilerlemeDurum{font-size:16px;margin:11px 0}
 .progressCompactBody .progressStats{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:8px}
 @media(max-width:620px){.progressCompact>summary{flex-wrap:wrap;gap:10px;min-height:63px}.progressCompactName{width:calc(100% - 99px)}.progressCompactTrack{order:3;flex-basis:100%}.progressCompactScore{margin-left:auto}.progressCompactChevron{order:2}.progressCompactBody .progressStats{grid-template-columns:1fr 1fr 1fr}.progressCompactBody .progressStats small{font-size:13px}}
+
+/* Ders karti -> tam sayfa alt menu; Buyuk ve okunakli gezinme */
+#dersGeriSatiri{display:flex;align-items:center;gap:17px;margin:15px 0}
+#dersGeriSatiri[hidden]{display:none}
+#dersGeri{background:#fca311;color:#283148;font-weight:900;font-size:19px;min-height:58px}
+#dersSayfaBaslik{font-size:clamp(23px,2.5vw,35px);color:#253e77}
+#dersIzgarasi{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+#dersIzgarasi>.course{min-height:127px;padding:23px}
+#dersIzgarasi>.course>summary{font-size:clamp(24px,2.2vw,32px);min-height:75px}
+#dersIzgarasi>.course>summary>.subjectIcon{width:77px;height:77px}
+#dersIzgarasi>.course:nth-child(2){grid-column:span 1}
+body.lessonView #dersIzgarasi{display:block;margin-top:10px}
+body.lessonView #dersIzgarasi>.course{display:none}
+body.lessonView #dersIzgarasi>.course.activeLesson{display:block;width:100%;padding:20px;border:none;box-shadow:none;background:transparent}
+body.lessonView #dersIzgarasi>.course.activeLesson>summary{display:none}
+body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonView .progressCompact,body.lessonView .portalTopStrip{display:none!important}
+.courseTabs{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 20px}
+.courseTabs button{min-height:62px;font-size:19px;padding:13px 20px;background:#e9f0ff;color:#334e85;border:2px solid #d2dff3}
+.courseTabs button[aria-selected="true"]{background:#fca311;color:#2b3150;border-color:#ec9b12}
+.courseSection{padding:16px;border-radius:18px;border:1px solid #dce7f5;background:#f8fbff}
+.courseSection[hidden]{display:none}
+.courseSection .courseLinks{max-height:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+.courseSection .courseLinks li{margin:0}
+.courseSection .courseLinks a{min-height:76px;font-size:19px}
+.notebookGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.noteCard{background:white;padding:17px;border:1px solid #d5e5f5;border-radius:16px;display:grid;gap:12px}
+.noteCard strong{font-size:20px;color:#2e507b}
+.noteCard a{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:11px;background:#e8f1ff;color:#265a96;font-weight:850;text-decoration:none;font-size:18px}
+.noteCard button{margin:0;min-height:54px;background:#fca311;color:#303349;font-size:18px}
+.noteCard button.done{background:#c9f5df;color:#236c51}
+.sectionEmpty{padding:24px;text-align:center;font-size:19px;color:#576e89}
+@media(max-width:720px){#dersIzgarasi{grid-template-columns:1fr}#dersIzgarasi>.course{min-height:110px}.courseSection .courseLinks,.notebookGrid{grid-template-columns:1fr}.courseTabs button{flex:1;font-size:17px;padding:12px}.lessonBackRow{flex-wrap:wrap}}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
@@ -235,7 +267,8 @@ body:not(.oyunda),body.oyunda,button,input{font-family:'Nunito',system-ui,Arial,
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
 <p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
 
-<div class="cards seven"><details class="course"><summary><span class="subjectIcon subject-TR" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M10 14q12-5 22 3v35q-10-8-22-4z" fill="#7EA9FF" stroke="#345AA5" stroke-width="2.8"/><path d="M54 14q-12-5-22 3v35q10-8 22-4z" fill="#FFD58D" stroke="#B9772C" stroke-width="2.8"/><path d="M17 23h9m-9 7h9m12-7h9m-9 7h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M32 17v35" stroke="#4763AA" stroke-width="2.6"/></svg></span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
+<div id="dersGeriSatiri" class="lessonBackRow" hidden><button id="dersGeri" type="button">← Ana Menüye Dön</button><strong id="dersSayfaBaslik"></strong></div>
+<div id="dersIzgarasi" class="cards seven"><details class="course"><summary><span class="subjectIcon subject-TR" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M10 14q12-5 22 3v35q-10-8-22-4z" fill="#7EA9FF" stroke="#345AA5" stroke-width="2.8"/><path d="M54 14q-12-5-22 3v35q10-8 22-4z" fill="#FFD58D" stroke="#B9772C" stroke-width="2.8"/><path d="M17 23h9m-9 7h9m12-7h9m-9 7h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M32 17v35" stroke="#4763AA" stroke-width="2.6"/></svg></span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dilkoruyucusu.html" target="_blank" rel="noopener noreferrer">Dil Muhafızları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dogrusunuyaz.html" target="_blank" rel="noopener noreferrer">Sözcüklerin Doğru Yazımı</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/essesli.html" target="_blank" rel="noopener noreferrer">Eş Sesli Sözcükler</a></li>
@@ -327,7 +360,7 @@ function duyurulariYukle(){
   r.duyurular.forEach(function(d){const el=document.createElement("article"),h=document.createElement("h4"),p=document.createElement("p");h.textContent=d.baslik;p.textContent=d.metin;el.append(h,p);liste.appendChild(el)});
  }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
 }
-function tokenTemizle(){hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
+function tokenTemizle(){menuyeDon();yazilanNotlar.clear();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
 function girisYap(){
  if(buton.disabled)return;
  const kod=kodAlani.value.trim().toUpperCase();
@@ -338,7 +371,7 @@ function girisYap(){
   if(istekNesli!==oturumNesli)return;
   buton.disabled=false;
   if(cevap&&cevap.basarili===true&&typeof cevap.token==="string"&&tokenFormat.test(cevap.token)){
-   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();
+   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();
    sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+".";
   }else{sonuc.textContent=cevap&&cevap.mesaj?cevap.mesaj:"Giriş doğrulanamadı."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Giriş sırasında hata oluştu. Tekrar dene."}).ogrenciGirisiYap(kod);
@@ -391,6 +424,101 @@ window.addEventListener("message",function(e){
 });
 
 document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunCer.removeAttribute("src");});
+
+/* Ders alt sayfasi: etkinlikler / defter notlari / degerlendirmeler. */
+const defterKatalog={
+"Türkçe":{dir:"Turkce",files:[["atasozleri.jpeg","Atasözleri"],["deyimler.jpeg","Deyimler"],["gercekmecaz.png","Gerçek, Mecaz ve Terim Anlam"],["ikilemeler.jpeg","İkilemeler"],["metninbolumleri.png","Metnin Bölümleri"],["pekistirme.JPG","Pekiştirme"]]},
+"Matematik":{dir:"Matematik",files:[["cikarmadaverilmeyen.png","Çıkarma İşleminde Verilmeyenler"],["cikarmadefternotu.png","Çıkarma İşlemi"],["toplama.png","Toplama"],["zihindencikarma.png","Zihinden Çıkarma"],["zihindentoplama.png","Zihinden Toplama"]]},
+"Fen Bilimleri":{dir:"Fen",files:[["besinler1.png","Besinler 1"],["besinler2.png","Besinler 2"],["besinler3.png","Besinler 3"],["besinlerintazeligi.png","Besinlerin Tazeliği"],["besinlerisaklama.png","Besinleri Saklama"]]},
+"Sosyal Bilgiler":{dir:"Sosyal",files:[["ailemcocuk.jpg","Ailem ve Çocuk"],["ailetarihi.png","Aile Tarihi"],["cocukoyun.png","Çocuk Oyunları"],["farkliliklarimizvesaygi.png","Farklılıklara Saygı"],["mersinkultur.png","Mersin Kültürü"],["millikultur.png","Millî Kültür"]]}
+};
+const dersKartlari=[...document.querySelectorAll("#dersIzgarasi>.course")];
+const dersGeriSatiri=document.getElementById("dersGeriSatiri");
+const dersSayfaBaslik=document.getElementById("dersSayfaBaslik");
+let seciliDers=null;let yazilanNotlar=new Set();
+const baseNotes="https://ismailkaya33.github.io/4.SINIF/";
+function menuyeDon(){
+ if(seciliDers){seciliDers.removeAttribute("open");seciliDers.classList.remove("activeLesson");}
+ seciliDers=null;document.body.classList.remove("lessonView");dersGeriSatiri.hidden=true;
+ window.scrollTo({top:0,behavior:"instant"});
+}
+document.getElementById("dersGeri").addEventListener("click",menuyeDon);
+function tabSec(card,tab){
+ card.querySelectorAll(".courseTabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===tab)));
+ card.querySelectorAll(".courseSection").forEach(p=>p.hidden=p.dataset.panel!==tab);
+}
+function defterKartiOlustur(dir,filename,label){
+ const id=dir+"/"+filename;
+ const card=document.createElement("article");card.className="noteCard";
+ const title=document.createElement("strong");title.textContent="📒 "+label;
+ const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename);
+ link.target="_blank";link.rel="noopener noreferrer";link.textContent="Defter Notunu Aç ↗";
+ const btn=document.createElement("button");btn.type="button";btn.dataset.noteId=id;
+ function guncelle(){const done=yazilanNotlar.has(id);btn.classList.toggle("done",done);btn.textContent=done?"✓ Yazdım (Kaydedildi)":"✎ Defterime Yazdım";btn.disabled=done;}
+ guncelle();
+ btn.addEventListener("click",function(){
+  const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
+  btn.disabled=true;btn.textContent="Kaydediliyor...";
+  google.script.run.withSuccessHandler(function(r){
+   if(sessionStorage.getItem(anahtarAdi)!==token)return;
+   if(r&&r.basarili){yazilanNotlar.add(id);guncelle();}else{btn.disabled=false;btn.textContent="Tekrar Dene";}
+  }).withFailureHandler(function(){btn.disabled=false;btn.textContent="Tekrar Dene";}).defterNotuTamamla(token,id);
+ });
+ card.append(title,link,btn);return card;
+}
+function defterDurumYukle(){
+ const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
+ google.script.run.withSuccessHandler(function(r){
+  if(sessionStorage.getItem(anahtarAdi)!==token||!r||!r.basarili)return;
+  yazilanNotlar=new Set(r.tamamlananlar||[]);
+  document.querySelectorAll(".noteCard button[data-note-id]").forEach(btn=>{
+   const done=yazilanNotlar.has(btn.dataset.noteId);btn.disabled=done;btn.classList.toggle("done",done);
+   btn.textContent=done?"✓ Yazdım (Kaydedildi)":"✎ Defterime Yazdım";
+  });
+ }).defterNotuDurumum(token);
+}
+dersKartlari.forEach(function(card){
+ const summary=card.querySelector("summary");
+ const name=summary.querySelector("strong").textContent.trim();
+ const existingLinks=card.querySelector(".courseLinks");
+ const originalButtons=[...card.querySelectorAll(".mathActions")];
+ const tabs=document.createElement("nav");tabs.className="courseTabs";tabs.setAttribute("aria-label",name+" çalışma türleri");
+ const panels={};
+ [["etkinlik","🎮 Etkinlikler"],["defter","📒 Defter Notları"],["degerlendirme","📝 Değerlendirmeler"]].forEach(([key,text])=>{
+  const btn=document.createElement("button");btn.type="button";btn.dataset.tab=key;btn.textContent=text;
+  btn.addEventListener("click",()=>tabSec(card,key));tabs.appendChild(btn);
+  const panel=document.createElement("section");panel.className="courseSection";panel.dataset.panel=key;panel.hidden=true;
+  panels[key]=panel;
+ });
+ if(originalButtons.length)panels.etkinlik.appendChild(originalButtons[0]);
+ if(existingLinks)panels.etkinlik.appendChild(existingLinks);
+ const defter=document.createElement("div");defter.className="notebookGrid";
+ const catalog=defterKatalog[name];
+ if(catalog){catalog.files.forEach(([file,label])=>defter.appendChild(defterKartiOlustur(catalog.dir,file,label)));}
+ if(!defter.childElementCount){const msg=document.createElement("p");msg.className="sectionEmpty";msg.textContent="Bu dersin defter notları yakında eklenecek.";panels.defter.appendChild(msg);}
+ else panels.defter.appendChild(defter);
+ const evalLinks=[...panels.etkinlik.querySelectorAll("a")].filter(a=>/değerlendirme|deneme sınavı|testi/i.test(a.textContent));
+ if(evalLinks.length){
+  const ul=document.createElement("ul");ul.className="courseLinks";
+  evalLinks.forEach(a=>{const li=document.createElement("li");li.appendChild(a);ul.appendChild(li);});
+  panels.degerlendirme.appendChild(ul);
+ }else{
+  const msg=document.createElement("p");msg.className="sectionEmpty";
+  msg.textContent="Bu ders için değerlendirme çalışmaları eklendiğinde burada görünecek.";
+  panels.degerlendirme.appendChild(msg);
+ }
+ card.appendChild(tabs);
+ Object.values(panels).forEach(p=>card.appendChild(p));
+ tabSec(card,"etkinlik");
+ card.addEventListener("toggle",function(){
+  if(!card.open)return;
+  dersKartlari.forEach(other=>{if(other!==card){other.removeAttribute("open");other.classList.remove("activeLesson");}});
+  seciliDers=card;card.classList.add("activeLesson");document.body.classList.add("lessonView");
+  dersGeriSatiri.hidden=false;dersSayfaBaslik.textContent=name;
+  tabSec(card,"etkinlik");window.scrollTo({top:0,behavior:"instant"});
+ });
+});
+
 const mevcutToken=sessionStorage.getItem(anahtarAdi);
 if(mevcutToken){
  const istekNesli=++oturumNesli;
@@ -398,7 +526,7 @@ if(mevcutToken){
  google.script.run.withSuccessHandler(function(cevap){
   if(istekNesli!==oturumNesli||sessionStorage.getItem(anahtarAdi)!==mevcutToken)return;
   buton.disabled=false;
-  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
+  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
   else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
 }
