@@ -45,3 +45,17 @@ GitHub Pages ana sayfası, orijinal oyun ve mevcut Firebase bağımlı özellikl
 - Bu iki kontrol için 5 sahte veri senaryosu geçti; gerçek Google Apps Script testi değildir.
 - Öğretmen duyurularının bitiş tarihi, `toISOString()` ile UTC gününe kaydırılmadan E-Tablo yerel tarihi olarak okunur.
 - **Ayrı giriş limiti taslağı kurulmayacak**; çalışan `GirisGuvenligi.gs` kodu kullanılacak.
+
+## Son paket bütünlüğü kontrolü — 1 Kasım 2026
+- Öğrenci projesi 6 `.gs` kaynağı birlikte incelendi: 22 farklı fonksiyon, **fonksiyon adı çakışması yok**, birleşik JavaScript sözdizimi geçerli.
+- Öğretmen projesinin `OgretmenRapor.gs` + `OgretmenDuyuruTaslak.gs` kaynakları incelendi: 6 farklı fonksiyon, **çakışma yok**, birleşik sözdizimi geçerli.
+- Her iki projenin HTML JavaScript blokları ayrı ayrı sözdizimi kontrolünden geçti.
+- Öğretmen, iki çalışan Apps Script projesinin yedeğini aldığını teyit etti. Bu teyit kaynak bazlıdır; yedekleri bağlantıdan ayrıca açıp doğrulamadık.
+- Bu statik doğrulamalar canlı Apps Script fonksiyon çalıştırması ve web uygulaması regresyon testinin yerine geçmez.
+
+### Son yükleme için karışıklığı önleyen kesin dosya listesi
+**Öğrenci:** `Kod.gs`, `GirisGuvenligi.gs`, `OgrenciOturum.gs`, `EtkinlikSonuclari.gs`, `OgrenciDuyurulari.gs` ve `OgrenciGiris.html` (GitHub'daki `OgrenciGiris_Guncel.html`). İsteğe bağlı test: `SonucDogrulamaTestleri.gs`. Mevcut başka işlevler varsa silinmez; öncesinde fark kontrolü gerekir.
+
+**Öğretmen:** `Kod.gs` (GitHub'daki `OgretmenRapor.gs`), `OgretmenDuyuruTaslak.gs`, `OgretmenRapor.html`.
+
+**Yüklenmeyecek eski/alternatifler:** `GirisDenemeKoruma_Oneri.gs`, `Kod_doGet_yonlendirme.gs`, `EtkinlikOynat.html`, `OgretmenRapor_Taslak.html`.
