@@ -42,8 +42,10 @@ function kayitNoIle_(no) {
   const sonSatir = sheet.getLastRow();
   if (sonSatir < 2) return null;
   const rows = sheet.getRange(2, 1, sonSatir - 1, 4).getDisplayValues();
-  const row = rows.find(r => String(r[0]).trim() === String(no));
-  if (!row) return null;
+  const matches = rows.filter(r => String(r[0]).trim() === String(no).trim());
+  // Bir numara birden fazla öğrenciye aitse yanlış kimlik bağlama.
+  if (matches.length !== 1) return null;
+  const row = matches[0];
   return {
     no: String(row[0]).trim(),
     ad: String(row[1]).trim(),
