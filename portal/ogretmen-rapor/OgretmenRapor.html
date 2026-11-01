@@ -5,12 +5,23 @@
 <div class="stats"><p>Öğrenci: <strong id="count">—</strong></p><p>Geçerli sonuç: <strong id="results">—</strong></p></div>
 <section><h2>Kazanımlar</h2><p class="muted">Henüz gerçek öğrenci kaydı yoksa bu bölüm boş kalır. Başarı oranı, kaydedilmiş tüm tamamlanma denemelerindeki doğru cevapların oranıdır.</p><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
 <section><h2>Etkinliğe göre katılım</h2><p>“Henüz sonuç yok”, öğrencinin oyuna hiç girmediğini kanıtlamaz. Yalnızca tamamlanmış kayıt bulunmadığını gösterir.</p><div id="activitySections"></div></section><section><h2>Öğrenciler</h2><p>Katılım durumu, kaydı bulunan etkinliklere göre hesaplanır. Hiç kaydı olmayan öğrenci için “Henüz kayıt yok” gösterilir; oyuna girip girmediği bu veriden anlaşılamaz.</p><table><thead><tr><th>Öğrenci</th><th>Katılım durumu</th><th>Farklı etkinlik</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="students"></tbody></table></section>
+<section><h2>📢 Duyuru taslağı oluştur</h2><p class="muted">Yeni duyurular başlangıçta TASLAK durumundadır. Bu bölüm, duyuruyu henüz öğrencilere yayımlamaz.</p>
+<label for="duyuruBaslik">Başlık</label><input id="duyuruBaslik" maxlength="120" style="display:block;max-width:600px;width:95%;padding:9px;margin:6px 0 12px">
+<label for="duyuruMetin">Duyuru metni</label><textarea id="duyuruMetin" maxlength="1500" rows="4" style="display:block;max-width:600px;width:95%;padding:9px;margin:6px 0 12px"></textarea>
+<button id="duyuruKaydet" type="button">Taslak olarak kaydet</button> <span id="duyuruMesaj" role="status"></span>
+</section>
 <script>
 "use strict";
 function renderRows(id,items){const target=document.getElementById(id);items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});target.appendChild(tr)})}
 function ratio(a,b){return b?(100*a/b).toFixed(1)+'%':'—'}
 function activityName(id){return ({'mat-kayipsayilar':'Matematik • Kayıp Sayılar'})[id]||id}
 function outcomeName(k){return ({'M.4.1.3.4':'Çıkarma işleminde verilmeyen eksilen veya çıkanı bulma'})[k]||k}
+document.getElementById("duyuruKaydet").addEventListener("click",function(){
+ const btn=this,baslik=document.getElementById("duyuruBaslik").value,metin=document.getElementById("duyuruMetin").value,mesaj=document.getElementById("duyuruMesaj");
+ if(!baslik.trim()||!metin.trim()){mesaj.textContent="Başlık ve metin zorunlu.";return}
+ btn.disabled=true;mesaj.textContent="Taslak kaydediliyor...";
+ google.script.run.withSuccessHandler(function(r){btn.disabled=false;mesaj.textContent=r&&r.basarili?"Taslak kaydedildi (henüz yayımlanmadı).":"Taslak kaydedilemedi.";}).withFailureHandler(function(e){btn.disabled=false;mesaj.textContent="Hata: "+(e&&e.message||"Kaydedilemedi");}).duyuruEkleOgretmen(baslik,metin,"");
+});
 google.script.run.withSuccessHandler(function(r){
  document.getElementById('status').textContent='Rapor güncel. MİSAFİR kayıtları hariç.';
  document.getElementById('count').textContent=r.studentCount;
