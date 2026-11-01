@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><base target="_top">
+<style>body{font:15px Arial;margin:20px;color:#20344b}table{border-collapse:collapse;width:100%;margin:12px 0 26px}td,th{padding:10px;text-align:left;border-bottom:1px solid #ddd}th{background:#edf3fa}.stats{display:flex;gap:22px;flex-wrap:wrap}section{margin:22px 0}.muted{color:#617084}.progress{height:9px;background:#e8eef5;border-radius:9px;overflow:hidden;min-width:90px}.progress span{display:block;height:100%;background:#2d7aaf}.stats p{background:#f0f5fb;padding:14px;border-radius:10px}details{margin:12px 0;border:1px solid #d9e3f0;border-radius:10px;padding:14px}summary{cursor:pointer;font-weight:bold} .subtle{color:#566b7e}.notebookColumns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.notebookColumns>div{padding:12px 16px;background:#f5f9ff;border-radius:12px}.notebookColumns h3{font-size:16px}.notebookColumns li{margin:6px 0}@media(max-width:650px){.notebookColumns{grid-template-columns:1fr}}
+</style></head><body>
+<h1>4/D Öğretmen Raporu</h1><p id="status">Yükleniyor...</p>
+<div class="stats"><p>Öğrenci: <strong id="count">—</strong></p><p>Geçerli sonuç: <strong id="results">—</strong></p></div>
+<section><h2>Kazanımlar</h2><p class="muted">Henüz gerçek öğrenci kaydı yoksa bu bölüm boş kalır. Başarı oranı, kaydedilmiş tüm tamamlanma denemelerindeki doğru cevapların oranıdır.</p><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
+<section><h2>Etkinliğe göre katılım</h2><p>“Henüz sonuç yok”, öğrencinin oyuna hiç girmediğini kanıtlamaz. Yalnızca tamamlanmış kayıt bulunmadığını gösterir.</p><div id="activitySections"></div></section><section><h2>Seçilen etkinlikler — Tamamlama bildirimleri</h2><p class="muted">Bu bölüm öğrencinin “Etkinliği Tamamladım” beyanını gösterir. Otomatik doğru-yanlış puanı değildir. MİSAFİR hariçtir.</p><div id="declarationSections"></div></section><section><h2>📒 Defter Notları — Yazdım Takibi</h2>
+<p class="muted">Öğrencinin kendi işaretlediği beyanlardır; öğretmen doğrulaması değildir. MİSAFİR kayıtları hariçtir. Her notu açarak yazanları ve henüz işaretlemeyenleri görebilirsin.</p>
+<div id="notebookSections"></div></section>
+<section><h2>Öğrenciler</h2><p>Katılım durumu, kaydı bulunan etkinliklere göre hesaplanır. Hiç kaydı olmayan öğrenci için “Henüz kayıt yok” gösterilir; oyuna girip girmediği bu veriden anlaşılamaz.</p><table><thead><tr><th>Öğrenci</th><th>Katılım durumu</th><th>Farklı etkinlik</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="students"></tbody></table></section>
+<section><h2>📢 Duyuru taslağı oluştur</h2><p class="muted">Yeni duyurular başlangıçta TASLAK durumundadır. Bu bölüm, duyuruyu henüz öğrencilere yayımlamaz.</p>
+<label for="duyuruBaslik">Başlık</label><input id="duyuruBaslik" maxlength="120" style="display:block;max-width:600px;width:95%;padding:9px;margin:6px 0 12px">
+<label for="duyuruMetin">Duyuru metni</label><textarea id="duyuruMetin" maxlength="1500" rows="4" style="display:block;max-width:600px;width:95%;padding:9px;margin:6px 0 12px"></textarea>
+<button id="duyuruKaydet" type="button">Taslak olarak kaydet</button> <span id="duyuruMesaj" role="status"></span>
+<h3>Mevcut duyurular</h3><p id="duyuruListeMesaj" role="status"></p><div id="duyuruListe"></div><button id="duyuruYenile" type="button">Duyuruları yenile</button></section>
+<script>
+"use strict";
+function renderRows(id,items){const target=document.getElementById(id);items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});target.appendChild(tr)})}
+function ratio(a,b){return b?(100*a/b).toFixed(1)+'%':'—'}
+function activityName(id){return ({'mat-kayipsayilar':'Matematik • Kayıp Sayılar','mat-oruntuler':'Matematik • Sayı Örüntüleri'})[id]||id}
+function completionName(id){return ({
+ 'Turkce/ikilemeler.html':'Türkçe • İkileme Dedektifi',
+ 'Turkce/pekistirme.html':'Türkçe • Pekiştirme Dedektifi 1',
+ 'Turkce/sozavcıları.html':'Türkçe • Atasözleri ve Deyimler',
+ 'Matematik/cikarmaislemi.html':'Matematik • Çıkarma Dedektifleri',
+ 'Fen/besinkasifleri.html':'Fen • Besin Kaşifleri: Görev Haritası',
+ 'Sosyal/oyunzamani.html':'Sosyal • Geçmişten Günümüze Çocuk Oyunları'
+ })[id]||id}
+function outcomeName(k){return ({'M.4.1.3.4':'Çıkarma işleminde verilmeyen eksilen veya çıkanı bulma'})[k]||k}
+document.getElementById("duyuruKaydet").addEventListener("click",function(){
+ const btn=this,baslik=document.getElementById("duyuruBaslik").value,metin=document.getElementById("duyuruMetin").value,mesaj=document.getElementById("duyuruMesaj");
+ if(!baslik.trim()||!metin.trim()){mesaj.textContent="Başlık ve metin zorunlu.";return}
+ btn.disabled=true;mesaj.textContent="Taslak kaydediliyor...";
+ google.script.run.withSuccessHandler(function(r){btn.disabled=false;mesaj.textContent=r&&r.basarili?"Taslak kaydedildi (henüz yayımlanmadı).":"Taslak kaydedilemedi.";if(r&&r.basarili)duyuruListele();}).withFailureHandler(function(e){btn.disabled=false;mesaj.textContent="Hata: "+(e&&e.message||"Kaydedilemedi");}).duyuruEkleOgretmen(baslik,metin,"");
+});
+function duyuruListele(){
+ const el=document.getElementById('duyuruListe'),msg=document.getElementById('duyuruListeMesaj');
+ msg.textContent='Duyurular okunuyor...';
+ google.script.run.withSuccessHandler(function(rows){
+  el.replaceChildren();msg.textContent=rows.length?'':'Henüz duyuru yok.';
+  rows.forEach(function(d){
+   const block=document.createElement('div'),title=document.createElement('strong'),meta=document.createElement('p'),text=document.createElement('p'),btn=document.createElement('button');
+   title.textContent=d.baslik;meta.textContent='Durum: '+d.durum;text.textContent=d.metin;
+   const next=d.durum==='YAYINDA'?'ARSIV':'YAYINDA';
+   btn.type='button';btn.textContent=next==='YAYINDA'?'Yayımla':'Arşivle';
+   btn.addEventListener('click',function(){
+    if(!confirm('“'+d.baslik+'” duyurusunu '+(next==='YAYINDA'?'öğrencilere yayımlamak':'arşivlemek')+' istiyor musun?'))return;
+    btn.disabled=true;
+    google.script.run.withSuccessHandler(function(){duyuruListele();}).withFailureHandler(function(e){btn.disabled=false;msg.textContent='İşlem hatası: '+(e&&e.message||'Bilinmiyor');}).ogretmenDuyuruDurumDegistir(d.kimlik,next);
+   });
+   block.append(title,meta,text,btn);block.style.cssText='padding:12px;border:1px solid #dbe4ef;border-radius:10px;margin:10px 0';el.appendChild(block);
+  });
+ }).withFailureHandler(function(e){msg.textContent='Duyuru listesi alınamadı: '+(e&&e.message||'Bilinmiyor');}).ogretmenDuyuruListesi();
+}
+document.getElementById('duyuruYenile').addEventListener('click',duyuruListele);
+duyuruListele();
+google.script.run.withSuccessHandler(function(r){
+ document.getElementById('status').textContent='Rapor güncel. MİSAFİR kayıtları hariç.';
+ document.getElementById('count').textContent=r.studentCount;
+ document.getElementById('results').textContent=r.recordCount;
+ renderRows('outcomes',r.outcomes.map(x=>[activityName(x.activityId),outcomeName(x.outcome)+' ('+x.outcome+')',x.participantCount+' / '+r.studentCount+' ('+ratio(x.participantCount,r.studentCount)+')',x.attempts,ratio(x.correct,x.total)]));
+ (r.notebooks||[]).forEach(function(n){
+  const wrap=document.createElement('details'),summary=document.createElement('summary');
+  summary.textContent=n.title+' — '+n.completed+'/'+r.studentCount+' yazdım ('+ratio(n.completed,r.studentCount)+')';
+  wrap.appendChild(summary);
+  const cols=document.createElement('div');cols.className='notebookColumns';
+  [['✅ Yazdım',n.completedStudents],['◻ Henüz işaretlemedi',n.waitingStudents]].forEach(function(pair){
+    const panel=document.createElement('div'),heading=document.createElement('h3'),list=document.createElement('ul');
+    heading.textContent=pair[0]+' ('+pair[1].length+')';
+    if(!pair[1].length){const empty=document.createElement('p');empty.textContent='Henüz öğrenci yok.';panel.append(heading,empty);}
+    else{pair[1].forEach(function(name){const li=document.createElement('li');li.textContent=name;list.appendChild(li);});panel.append(heading,list);}
+    cols.appendChild(panel);
+  });
+  wrap.appendChild(cols);document.getElementById('notebookSections').appendChild(wrap);
+ });
+ (r.completionActivities||[]).forEach(function(a){
+  const wrap=document.createElement('details'),heading=document.createElement('summary');
+  heading.textContent=completionName(a.id)+' — '+a.completed+'/'+r.studentCount+' bildirim ('+ratio(a.completed,r.studentCount)+')';
+  wrap.appendChild(heading);
+  const table=document.createElement('table'),thead=document.createElement('thead');
+  thead.innerHTML='<tr><th>Öğrenci</th><th>Bildirim durumu</th></tr>';table.appendChild(thead);
+  const tbody=document.createElement('tbody');
+  a.students.forEach(function(st){const tr=document.createElement('tr');[st.ad,st.status].forEach(function(value){const td=document.createElement('td');td.textContent=value;tr.appendChild(td)});tbody.appendChild(tr)});
+  table.appendChild(tbody);wrap.appendChild(table);
+  document.getElementById('declarationSections').appendChild(wrap);
+ });
+ (r.activities||[]).forEach(function(a){
+ const wrap=document.createElement('details'),heading=document.createElement('summary');heading.textContent=activityName(a.id)+' — '+a.completed+'/'+r.studentCount+' tamamlandı ('+ratio(a.completed,r.studentCount)+')';wrap.appendChild(heading);
+ const table=document.createElement('table'),thead=document.createElement('thead');thead.innerHTML='<tr><th>Öğrenci</th><th>Sonuç durumu</th><th>Doğru oranı</th></tr>';table.appendChild(thead);
+ const body=document.createElement('tbody');a.students.forEach(function(st){const tr=document.createElement('tr');[st.ad,st.status,ratio(st.correct,st.total)].forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});body.appendChild(tr)});
+ table.appendChild(body);wrap.appendChild(table);document.getElementById('activitySections').appendChild(wrap);
+ });
+ renderRows('students',r.students.map(x=>[x.ad,x.activityCount>0?"En az bir etkinlik tamamlandı":"Henüz kayıt yok",x.activityCount,x.attemptCount,ratio(x.correct,x.total)]));
+}).withFailureHandler(function(e){document.getElementById('status').textContent='Rapor hatası: '+(e&&e.message||'Bilinmiyor')}).ogretmenRaporVerisi();
+</script></body></html>

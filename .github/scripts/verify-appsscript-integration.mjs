@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const read=p=>readFileSync(p,'utf8');
+const registry=read('portal/appsscript/EtkinlikKayitDefteri.gs');
+const results=read('portal/appsscript/EtkinlikSonuclari.gs');
+const portal=read('portal/appsscript/OgrenciGiris_Guncel.html');
+const game=read('test/oruntuler.html');
+const context=vm.createContext({});
+vm.runInContext(registry+'\n'+results,context);
+const verify=vm.runInContext('etkinlikSonucuDogrula_',context);
+const base={activityId:'mat-oruntuler',attemptId:'test_attempt_123456',correct:8,wrong:2,total:10,wrongAttempts:3,firstTry:6,durationSeconds:120};
+assert.ok(verify(base),'Valid number-pattern result');
+assert.equal(verify({...base,total:11}),null,'Inconsistent totals rejected');
+assert.equal(verify({...base,activityId:'unknown-activity'}),null,'Unknown activity rejected');
+assert.equal(verify({...base,firstTry:9}),null,'Invalid first attempts rejected');
+assert.equal(verify({...base,durationSeconds:86401}),null,'Oversized duration rejected');
+assert.match(results,/function ogrenciIlerlemeOzeti\(token\)/,'Private student progress API');
+assert.match(results,/oturumKaydi_\(token\)/,'Progress session check');
+assert.match(portal,/id="ilerlemePanel"/,'Student progress card');
+assert.match(portal,/\.ogrenciIlerlemeOzeti\(token\)/,'Progress server call');
+assert.match(portal,/function hosGeldinAdiGoster_\(ad\)/,'Student welcome header');
+assert.match(portal,/id="oruntulerAc"/,'Launch button');
+assert.match(portal,/mat-oruntuler/,'Registered activity');
+assert.match(portal,/e\.origin\s*!==\s*"https:\/\/ismailkaya33\.github\.io"/,'Origin check');
+assert.match(portal,/e\.source\s*!==\s*oyunCer\.contentWindow/,'Frame source check');
+assert.match(portal,/etkinlikSonucuKaydet\(token,veri\)/,'Server submit');
+assert.match(game,/type:'4d:activity-finished'/,'Completion message');
+assert.match(game,/activityId:'mat-oruntuler'/,'Activity identity');
+assert.match(game,/window\.addEventListener\('portal:reset'/,'Replay reset');
+const blocks=[...game.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)];
+assert.ok(blocks.length>=2);
+for(const block of blocks)new Function(block[1]);
+// Yeni etkinlikler kayitsiz yayimlanmasin; geri bildirim tipi tasarimda belirlensin.
+const tracking=JSON.parse(read('portal/etkinlik-takip-politikasi.json'));
+const known=new Map(tracking.mevcutEtkinlikler.map(x=>[x.konum,x]));
+for(const entry of tracking.yeniEtkinlikler){
+ assert.ok(['otomatik_sonuc','ogrenci_beyani'].includes(entry.takip),'Every new activity requires completion feedback: '+entry.konum);
+ assert.ok(!known.has(entry.konum),'Duplicate activity: '+entry.konum);
+ known.set(entry.konum,entry);
+}
+const linked=[...portal.matchAll(/href="https:\/\/ismailkaya33\.github\.io\/4\.SINIF\/([^"]+\.html)"/g)].map(x=>x[1]);
+for(const href of linked)assert.ok(known.has(href),'Unregistered activity link: '+href);
+assert.equal(tracking.gelecekEtkinlikTakibi,'zorunlu');
+for(const entry of tracking.mevcutEtkinlikler)assert.ok(['secim_bekliyor','otomatik_sonuc','ogrenci_beyani'].includes(entry.takip),'Invalid tracking option: '+entry.konum);
+console.log('Integration smoke checks passed: result validation, trusted message bridge, replay, syntax.');

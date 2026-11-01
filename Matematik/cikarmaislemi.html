@@ -159,7 +159,16 @@ function specificError(t,val){
 function showHint(){const t=current();if(t.hintUsed||t.status==="success")return;t.hintUsed=true;state.hintCount++;$("hintBox").textContent="💡 "+t.hint;$("hintBox").classList.remove("hidden");$("hintBtn").disabled=true;}
 function skip(){const t=current();if(t.status==="success"||t.status==="skipped")return;t.status="skipped";t.lastResult="skipped";state.skippedCount++;state.history.push({id:t.id,result:"skipped"});if(state.currentIndex===state.tasks.length-1){render();showFinal()}else{state.currentIndex++;render()}}
 function navigate(delta){const target=state.currentIndex+delta;if(target<0||target>=state.tasks.length)return;if(delta>0&&!["success","skipped"].includes(current().status))return;state.currentIndex=target;render()}
+function emitVerifiedFinish(){
+ const rows=state.tasks;
+ if(rows.length!==16||rows.some(t=>!["success","skipped"].includes(t.status)))return;
+ const correct=rows.filter(t=>t.status==="success").length,wrong=rows.length-correct;
+ const firstTry=rows.filter(t=>t.status==="success"&&t.attempts===1&&!t.hintUsed).length;
+ const attemptId="ci_"+crypto.randomUUID().replace(/-/g,"");
+ window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"mat-cikarmaislemi",attemptId,correct,wrong,total:rows.length,wrongAttempts:state.wrongCount,firstTry,durationSeconds:Math.floor((Date.now()-state.startedAt)/1000)},"*");
+}
 function showFinal(){
+ emitVerifiedFinish();
  $("game").classList.add("hidden");const f=$("final");f.classList.remove("hidden");const completed=state.tasks.filter(t=>t.status==="success").length;const first=state.tasks.filter(t=>t.status==="success"&&t.attempts===1&&!t.hintUsed).length;const wrong=state.wrongCount;const skipped=state.tasks.filter(t=>t.status==="skipped").length;const secs=Math.max(0,Math.floor((Date.now()-state.startedAt)/1000));const duration=Math.floor(secs/60)+" dk "+(secs%60)+" sn";
  f.innerHTML=`<div class="stage">🧾 Dedektif Raporu</div><h2>Görev tamamlandı!</h2><p>Çıkarma dosyasını bitirdin. Şimdi sonuçlarını incele.</p><div class="finalscore">${state.score} puan</div><div class="finalgrid"><div class="stat"><small>Toplam görev</small><strong>${state.tasks.length}</strong></div><div class="stat"><small>Tamamlanan</small><strong>${completed}</strong></div><div class="stat"><small>İlk denemede doğru</small><strong>${first}</strong></div><div class="stat"><small>Yanlış deneme</small><strong>${wrong}</strong></div><div class="stat"><small>Geçilen</small><strong>${skipped}</strong></div><div class="stat"><small>İpucu</small><strong>${state.hintCount}</strong></div><div class="stat"><small>Enerji</small><strong>${state.energy}</strong></div><div class="stat"><small>Süre</small><strong>${duration}</strong></div></div><button class="primary" id="reviewBtn">Yanlış/Geçilen Görevleri İncele</button> <button class="secondary" id="replayBtn">↻ Yeniden Başla</button><div id="review"></div>`;
  $("reviewBtn").onclick=renderReview;$("replayBtn").onclick=reset;

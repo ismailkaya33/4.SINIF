@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="tr"><head><base target="_top"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4/D Öğrenci Girişi</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+
+body{font-family:Arial,sans-serif;background:#eef4ff;min-height:100vh;margin:0;display:grid;place-items:center}body.oyunda{display:block;background:#0b172b}
+.kutu{background:#fff;width:min(780px,92%);padding:30px;border-radius:18px;text-align:center;box-shadow:0 8px 25px #0002}
+input{box-sizing:border-box;width:100%;padding:15px;font-size:22px;text-align:center;text-transform:uppercase;letter-spacing:3px;border:2px solid #b7c8e0;border-radius:10px}
+button{margin-top:16px;padding:14px 24px;background:#2459a6;color:#fff;border:0;border-radius:10px;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+#cikis{background:#5a6b7f}#sonuc{margin-top:18px;line-height:1.5}[hidden]{display:none!important}
+a{color:#2459a6}#oyunPanel{position:fixed;inset:0;z-index:50;background:#081427;color:white;display:flex;flex-direction:column}#oyunUst{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:8px 14px;background:#10243d}#oyunCer{display:block;border:0;flex:1;width:100%;min-height:0}#oyunDurum{margin:0;padding:8px 14px;background:#173a52;color:white}#oyunPanel button{margin:0;padding:10px 14px;background:#4a6078}
+.dashboardTitle{font-size:1.25rem;margin:22px 0 6px}.hint{color:#51677d;font-size:.94rem}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:18px 0}.course{padding:18px;text-align:left;border:1px solid #d9e4f2;border-radius:14px;background:#f8fbff;display:flex;flex-direction:column;gap:8px}.course h3{margin:0;font-size:1.05rem}.course p{margin:0;color:#526579;line-height:1.35;font-size:.9rem}.course button{margin-top:auto;width:100%}.course button[disabled]{background:#dfe7ee;color:#5c6c7c;opacity:1;cursor:not-allowed}.course .icon{font-size:1.8rem}.sectionBadge{font-weight:bold;color:#236096;font-size:.8rem}#oturumAlani{text-align:left}#cikis{margin-top:0}.kutu{max-height:none}#oyunPanel{overscroll-behavior:contain}@media(max-width:620px){.kutu{padding:20px}.cards{grid-template-columns:1fr}}\n.cards.seven{grid-template-columns:repeat(auto-fit,minmax(235px,1fr))}.course summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}.course summary::after{content:"⌄";margin-left:auto}.course[open] summary::after{content:"⌃"}.course summary small{font-weight:normal;color:#68788b}.courseLinks{padding-left:19px;max-height:270px;overflow-y:auto;margin:10px 0}.courseLinks li{margin:10px 0}.courseLinks a{line-height:1.3}.sectionBadge{display:block;margin-top:12px}.course button{padding:11px 8px}@media(max-width:620px){.cards.seven{grid-template-columns:1fr}}\n
+/* AKILLI SINIF — gerçek HTML/CSS, görsel dosyaya bağımlı değil */
+:root{--ink:#243450;--muted:#597087;--blue:#3874c4;--lav:#8971ce;--mint:#d9f6e9;--line:#dae5f5}
+*{box-sizing:border-box}
+body:not(.oyunda){display:block;margin:0;min-height:100vh;background:linear-gradient(180deg,#d8edff 0,#eff7ff 280px,#f4f8ff 100%);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.kutu{width:min(1240px,96%);max-width:none;min-height:85vh;margin:24px auto 40px;padding:20px clamp(15px,2.8vw,35px) 32px;border:1px solid #e1eaf6;border-radius:26px;background:#ffffffea;box-shadow:0 13px 42px #36659b19;text-align:left}
+.kutu>h1{margin:7px 0 0;font-size:clamp(25px,3vw,40px);color:#252d59;letter-spacing:-.7px;line-height:1.2}
+.kutu>h1::before{content:"📚";font-size:.8em;margin-right:13px}
+.kutu>h2{margin:4px 0 25px;color:#8a70c8;font-size:clamp(16px,1.7vw,23px);font-weight:750}
+#girisAlani{width:min(490px,100%);margin:28px auto;padding:30px;background:linear-gradient(135deg,#f4faff,#f8f3ff);border:1px solid var(--line);border-radius:22px;text-align:center;box-shadow:0 10px 25px #385a8b16}
+#girisAlani p{font-size:1.1rem;color:var(--muted)}
+input{background:white;color:var(--ink)}
+button{background:linear-gradient(135deg,#8069c8,#9675cf);border-radius:12px;font-weight:750;box-shadow:none;transition:transform .12s,filter .12s}
+button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.06)}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #dfac42;outline-offset:3px}
+#oturumAlani{padding-top:8px}
+.dashboardTitle{margin:10px 0 0;padding:14px 18px;background:linear-gradient(100deg,#dfeeff,#eef4ff);border-radius:18px;font-size:clamp(20px,2vw,29px);color:#203c76}
+.dashboardTitle::before{content:"📖 "}
+#oturumAlani>.hint{padding:12px 16px;margin:12px 0 15px;color:#54728a;background:#f5f9ff;border-radius:12px;line-height:1.5}
+.cards.seven{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:20px 0 25px;align-items:start}
+.course{display:block;min-width:0;padding:18px 16px;background:linear-gradient(160deg,#fff,#f5f9ff);border:1px solid #dae6f6;border-radius:18px;box-shadow:0 5px 16px #365b9510;transition:transform .12s,box-shadow .12s}
+.course:hover{transform:translateY(-2px);box-shadow:0 9px 19px #365b9519}
+.course summary{display:flex;flex-wrap:wrap;align-items:center;gap:9px;min-height:42px;list-style:none;cursor:pointer;color:#234b7a;font-size:1.07rem}
+.course summary>span{font-size:27px}
+.course summary small{font-size:.78rem;font-weight:500;color:#75879c}
+.course summary::after{content:"⌄";margin-left:auto;color:#7186ad;font-size:1.3rem}
+.course[open] summary::after{content:"⌃"}
+.course:nth-child(2){grid-column:span 2;background:linear-gradient(125deg,#f3faff,#fbf7ff);border-color:#c6dff8}
+.course:nth-child(2) summary{font-size:1.2rem;color:#244f84}
+.course:nth-child(2) button{margin:10px 10px 4px 0;min-height:58px;padding:13px 17px;font-size:1rem}
+.course .sectionBadge{display:block;width:fit-content;margin-top:15px;color:#27705c;background:var(--mint);border-radius:999px;padding:7px 12px;font-size:.85rem}
+.course p.hint{margin:13px 0;color:#60768d;font-size:.87rem;line-height:1.5}
+.courseLinks{margin:14px 0 0;padding:10px 8px 10px 26px;max-height:280px;overflow:auto;background:#fff;border:1px solid #e9eef9;border-radius:12px}
+.courseLinks li{margin:10px 0}
+.courseLinks a{color:#315ea1;font-weight:550;line-height:1.45}
+#oturumAlani>section{margin:20px 0 0;padding:20px;border:1px solid #ddd9f8;border-radius:19px;background:linear-gradient(135deg,#f1eefd,#fafaff)}
+#oturumAlani>section h3{margin:0 0 12px;font-size:1.3rem;color:#5a489b}
+#duyuruDurum{color:#5a6685}
+#duyuruListe{line-height:1.5}
+#cikis{display:block;margin:19px 0 4px auto;background:#fef0f2;color:#aa354f;border:1px solid #f0ccd5;box-shadow:none}
+#sonuc{text-align:left;color:#375a82;font-weight:650}
+#oyunPanel{z-index:60}
+@media(min-width:1000px){.course:nth-child(2)[open]{grid-column:span 2}}
+@media(max-width:850px){.cards.seven{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.kutu{width:100%;margin:0;min-height:100vh;padding:19px 13px;border-radius:0}.cards.seven{grid-template-columns:1fr}.course:nth-child(2),.course:nth-child(2)[open]{grid-column:span 1}.course:nth-child(2) button{width:100%}.kutu>h1{font-size:27px}#cikis{width:100%}}
+@media(prefers-reduced-motion:reduce){button,.course{transition:none}button:hover:not(:disabled),.course:hover{transform:none}}
+
+
+/* Akilli Sinif: ust karşılama ve öne çıkan etkinlikler */
+.welcomeBar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 17px;margin:5px 0 20px;border:1px solid #dceafb;border-radius:18px;background:linear-gradient(105deg,#e6f3ff,#f5efff);box-shadow:0 5px 16px #43659d13}
+.welcomeIdentity{display:flex;align-items:center;gap:13px;min-width:0}
+.welcomeAvatar{width:62px;height:62px;display:grid;place-items:center;flex:none;border-radius:50%;background:#c5ddfc;font-size:30px}
+.welcomeIdentity>div{display:grid;gap:2px;min-width:0}
+.welcomeLabel{color:#65758f;font-size:.88rem}
+#welcomeName{color:#28355e;font-size:clamp(17px,2vw,23px);overflow-wrap:anywhere}
+.sessionActive{color:#16825b;font-weight:700;font-size:.77rem}
+.welcomeBar #cikis{margin:0;padding:12px 17px;flex:none}
+.course:nth-child(2) button{background:linear-gradient(110deg,#8669cc,#9975db);border:1px solid #aa92e5}
+.course:nth-child(2) button::after{content:"  →"}
+@media(max-width:600px){.welcomeBar{flex-direction:column;align-items:stretch}.welcomeBar #cikis{width:100%}}
+/* Dokunmatik ekranlar icin kart ve etkinlik butonlarinda yeterli tiklama alani */
+@media(pointer:coarse){.featuredGame button,.course summary,#cikis{min-height:48px}}
+/* Klavye ile ders kartlari ve etkinlikler rahat secilebilsin. */
+.course summary:focus-visible,.featuredGame button:focus-visible{outline:3px solid #f4a83e;outline-offset:4px}
+/* Akilli Sinif — on plana alinmis iki takipli etkinlik */
+.featuredLessons{margin:17px 0 25px;padding:19px;border:1px solid #cfe1f7;border-radius:21px;background:linear-gradient(125deg,#e4f0ff,#f2ecff);box-shadow:0 7px 20px #2a599316}
+.featuredHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.featuredEyebrow{display:inline-block;padding:6px 11px;border-radius:12px;background:#ddf7ed;color:#207460;font-size:.84rem;font-weight:800;letter-spacing:.3px}
+.featuredHeader h3{margin:7px 0 0;font-size:clamp(19px,2.1vw,26px);color:#253b78}
+.trackingPill{padding:8px 13px;background:#dff8eb;border-radius:30px;color:#267d61;font-size:.82rem;font-weight:750;white-space:nowrap}
+.featuredGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.featuredGame{display:flex;gap:13px;align-items:center;flex-wrap:wrap;padding:18px;border-radius:17px;border:1px solid #d6e7fa;background:#ffffffed;box-shadow:0 6px 15px #345f9c11}
+.gameSymbol{display:grid;place-items:center;width:69px;height:69px;flex:none;border-radius:17px;background:#dfefff;font-size:35px}
+.featuredText{flex:1;min-width:150px}
+.featuredText h4{margin:0 0 5px;color:#253763;font-size:1.21rem}
+.featuredText p{margin:0;color:#62738b;line-height:1.45;font-size:.92rem}
+.featuredGame button{margin:0;padding:12px 14px;white-space:nowrap;background:linear-gradient(130deg,#8e73cf,#9972cf)}
+.otherLessonsHeading{margin:24px 0 0;color:#2c477a;font-size:1.2rem}
+.cards.seven{margin-top:14px}
+.course:nth-child(2),.course:nth-child(2)[open]{grid-column:span 1}
+@media(max-width:850px){.featuredGrid{grid-template-columns:1fr}}
+@media(max-width:600px){.featuredHeader{flex-direction:column;align-items:flex-start}.featuredGame button{width:100%}.featuredGame{gap:10px}}
+/* Giriş yapan öğrenciye ait gerçek ilerleme değerleri */
+.progressPanel{margin:20px 0;padding:18px 21px;border:1px solid #bfdfec;border-radius:20px;background:linear-gradient(120deg,#eafaff,#f8fbff)}
+.progressTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.progressTitle h3{margin:0;color:#265774;font-size:1.23rem}
+.progressTitle>span{font-size:.85rem;color:#5a8091}
+#ilerlemeDurum{margin:9px 0;color:#5a738c;font-size:.88rem}
+.progressStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:12px}
+.progressStats>div{padding:13px 9px;background:white;border:1px solid #e0edf3;border-radius:12px;text-align:center}
+.progressStats strong{display:block;font-size:clamp(20px,2.6vw,30px);color:#287c85}
+.progressStats small{color:#597184;font-size:.78rem}
+.progressTrack{height:10px;margin-top:14px;border-radius:20px;background:#dce9ee;overflow:hidden}
+#ilerlemeBar{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#43bf9e,#64a6d8);transition:width .25s}
+@media(max-width:620px){.progressStats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* OKUNABILIRLIK GUNCELLEMESI — 4. sinif ogrencileri icin buyuk metin/dokunma alanlari */
+body:not(.oyunda){font-size:18px;line-height:1.55}
+.kutu{width:min(1420px,98%);padding:clamp(18px,2.7vw,40px)}
+.kutu>h1{font-size:clamp(32px,3.5vw,48px)}
+.kutu>h2{font-size:clamp(21px,2.1vw,28px)}
+.dashboardTitle{font-size:clamp(24px,2.4vw,33px);padding:18px 21px}
+#oturumAlani>.hint,.course p.hint{font-size:clamp(16px,1.3vw,19px);line-height:1.6}
+button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
+#girisAlani{max-width:570px}
+#girisAlani p{font-size:20px}
+#kod{font-size:26px;min-height:64px}
+.welcomeLabel{font-size:17px}
+#welcomeName{font-size:clamp(23px,2.4vw,31px)}
+.sessionActive{font-size:16px}
+.welcomeAvatar{width:75px;height:75px;font-size:39px}
+.welcomeBar #cikis{font-size:17px;min-height:57px}
+.featuredEyebrow,.trackingPill{font-size:16px}
+.featuredHeader h3{font-size:clamp(24px,2.6vw,34px)}
+.featuredGame{min-height:165px;padding:23px}
+.gameSymbol{width:85px;height:85px;font-size:45px}
+.featuredText h4{font-size:clamp(21px,1.9vw,27px)}
+.featuredText p{font-size:clamp(17px,1.35vw,19px)}
+.featuredGame button{min-width:160px;min-height:64px;font-size:19px;padding:16px 19px}
+.otherLessonsHeading{font-size:25px}
+.cards.seven{gap:20px}
+.course{padding:21px 19px}
+.course summary,.course:nth-child(2) summary{font-size:clamp(20px,1.7vw,24px);min-height:60px;line-height:1.4}
+.course summary>span{font-size:34px}
+.course summary small{font-size:15px}
+.course .sectionBadge{font-size:16px;line-height:1.45}
+.courseLinks{max-height:380px}
+.courseLinks li{margin:14px 0}
+.courseLinks a{font-size:18px;line-height:1.6}
+.progressTitle h3,#oturumAlani>section h3{font-size:25px}
+.progressTitle>span,#ilerlemeDurum,#duyuruDurum{font-size:17px}
+.progressStats strong{font-size:clamp(25px,2.6vw,36px)}
+.progressStats small{font-size:16px;line-height:1.4}
+#oyunUst{min-height:68px;font-size:19px}
+#oyunPanel button{min-height:50px;font-size:17px}
+#oyunDurum{font-size:18px;line-height:1.5}
+@media(max-width:620px){
+ body:not(.oyunda){font-size:17px}
+ .kutu{padding:18px 14px}
+ .featuredGame{padding:17px;min-height:unset}
+ .featuredGame button{width:100%;font-size:19px}
+ .welcomeAvatar{width:65px;height:65px}
+ .course summary{font-size:21px}
+ .courseLinks a{font-size:18px}
+ .progressStats small{font-size:15px}
+}
+
+/* Duyurular sol ustte; ogrenci karşılama sagda */
+.portalTopStrip{display:grid;grid-template-columns:minmax(280px,1.05fr) minmax(330px,1fr);gap:17px;align-items:stretch;margin:5px 0 20px}
+#oturumAlani>.portalTopStrip>.noticeTopCard{min-width:0;margin:0;padding:18px 20px;background:linear-gradient(135deg,#f4efff,#ffffff);border:1px solid #dcd4f5;border-radius:20px;box-shadow:0 6px 18px #6358a113}
+.noticeTopCard h3{display:flex;align-items:center;gap:7px;margin:0 0 9px;font-size:clamp(21px,2vw,27px);color:#55448d}
+.noticeTopCard #duyuruDurum{margin:0;font-size:17px;line-height:1.5}
+.noticeTopCard #duyuruListe{max-height:220px;overflow-y:auto;font-size:17px}
+.noticeTopCard #duyuruListe article{padding:10px 0;border-bottom:1px solid #e5dff5}
+.portalTopStrip>.welcomeBar{margin:0;min-width:0}
+@media(max-width:800px){.portalTopStrip{grid-template-columns:1fr}.portalTopStrip>.welcomeBar{order:-1}}
+
+/* Nunito ve 4. sinif icin rahat okunabilir tipografi */
+
+body:not(.oyunda),body.oyunda,button,input{font-family:'Nunito',system-ui,Arial,sans-serif}
+#kod{letter-spacing:.35em;font-variant-numeric:tabular-nums;font-weight:900;text-transform:uppercase;padding-inline:21px}
+#kod::placeholder{letter-spacing:.13em;font-weight:600}
+.mathActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:15px 0}
+.mathActions button{display:flex;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:72px;margin:0;padding:12px 16px;border:1px solid #ed9b18;border-radius:15px;background:linear-gradient(150deg,#ffbd4a,#fca311);color:#35261b;box-shadow:0 4px 0 #c47c0b;font-size:clamp(18px,1.65vw,23px);font-weight:900}
+.mathActions button:hover:not(:disabled){filter:brightness(1.05)}
+.actionGlyph{display:inline-grid;place-items:center;width:35px;height:35px;flex:none;border-radius:10px;background:#ffffffb8;color:#885017;font-weight:900;font-size:25px}
+#oyunPanel button{background:#fca311;color:#25253c;font-weight:900}
+.course summary>.subjectIcon{display:grid;place-items:center;width:49px;height:49px;flex:none;border-radius:14px;background:#e3e9ff;color:#3a4d94;border:1px solid #c9d7ff;font-weight:900;font-size:15px;letter-spacing:.02em}
+.courseLinks{list-style:none;padding:10px;margin-top:13px;max-height:410px}
+.courseLinks li{margin:0 0 9px}
+.courseLinks a{display:flex;align-items:center;min-height:57px;padding:11px 14px;border:1px solid #d9e6f5;border-radius:12px;background:#f6faff;color:#244a83;text-decoration:none;font-size:18px;font-weight:800;line-height:1.35;transition:background .15s,transform .15s}
+.courseLinks a::before{content:"›";display:inline-grid;place-items:center;flex:none;width:27px;height:27px;margin-right:10px;border-radius:9px;background:#e5e7ff;color:#7157bc;font-size:27px;line-height:1}
+.courseLinks a:hover{background:#ecf3ff;transform:translateX(2px)}
+.courseLinks a:focus-visible{outline:3px solid #fca311;outline-offset:2px}
+.progressTrack{height:19px;border:1px solid #b9d8e6;background:#dce9ee;position:relative}
+#ilerlemeBar{position:relative;background:repeating-linear-gradient(115deg,#3aa2c4 0 13px,#51c4c1 13px 25px);box-shadow:inset 0 -3px 0 #147f9b88;transition:width .35s ease}
+#ilerlemeBar::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#ffffff55,transparent 60%)}
+@media(prefers-reduced-motion:no-preference){#ilerlemeBar{background-size:110px 100%;animation:xp-shift 3s linear infinite}@keyframes xp-shift{to{background-position:110px 0}}}
+@media(max-width:850px){.mathActions{grid-template-columns:1fr}}
+@media(max-width:620px){#kod{letter-spacing:.25em}.courseLinks a{font-size:18px;min-height:60px;padding:13px}.mathActions button{width:100%;min-height:72px}}
+
+/* Kullanici istegi: alt durum iletisi basliga, derslerde ozgun SVG ikonlar */
+.kutu{position:relative}
+.kutu>#sonuc{position:absolute;top:21px;right:35px;max-width:39%;margin:0;padding:10px 14px;background:#e2f8eb;border:1px solid #b7ead0;border-radius:13px;color:#176e51;text-align:center;text-shadow:none;font-size:16px;line-height:1.4;box-shadow:0 3px 10px #36638412}
+.kutu>#sonuc:empty{display:none}
+.course summary>.subjectIcon{display:grid;place-items:center;flex:none;width:68px;height:68px;border-radius:19px;background:linear-gradient(140deg,#edf3ff,#e2eaff);padding:6px;border:1px solid #cbdcf2}
+.course summary>.subjectIcon svg{width:100%;height:100%;display:block}
+.course summary>.subject-TR{background:#e7efff}
+.course summary>.subject-MAT{background:#dcf8ed}
+.course summary>.subject-FEN{background:#e6f3ff}
+.course summary>.subject-SOS{background:#e3f7fd}
+.course summary>.subject-HAK{background:#fff2d9}
+.course summary>.subject-TRF{background:#edf1ff}
+.course summary>.subject-OYN{background:#eee6ff}
+@media(max-width:900px){.kutu>#sonuc{position:static;max-width:100%;margin:10px 0 15px;text-align:left}}
+@media(max-width:620px){.course summary>.subjectIcon{width:65px;height:65px}}
+
+/* Kompakt acilir ilerleme seridi: ayrintilar istenince acilir */
+.progressCompact{margin:9px 0 18px;border:1px solid #c9def0;border-radius:16px;background:linear-gradient(110deg,#eef8ff,#f5f0ff);box-shadow:0 3px 12px #4876a310;overflow:hidden}
+.progressCompact>summary{display:flex;align-items:center;gap:15px;min-height:68px;padding:12px 17px;cursor:pointer;list-style:none;color:#2b527e;font-weight:900}
+.progressCompact>summary::-webkit-details-marker{display:none}
+.progressCompactName{flex:none;font-size:clamp(18px,1.6vw,23px)}
+.progressCompactTrack{flex:1;min-width:80px;max-width:none;height:14px;border-radius:30px;border:1px solid #bdd4e0;overflow:hidden;background:#d9e9f2}
+.progressCompactTrack #ilerlemeBar{height:100%;display:block;border-radius:30px;background:repeating-linear-gradient(115deg,#35a9c5 0 12px,#5ed1bf 12px 24px);transition:width .35s}
+.progressCompactScore{font-size:clamp(20px,2vw,26px);min-width:54px;text-align:right;color:#167b84}
+.progressCompactChevron{font-size:27px;color:#687b9d;line-height:1}
+.progressCompact[open] .progressCompactChevron{transform:rotate(180deg)}
+.progressCompactBody{padding:0 18px 17px;border-top:1px solid #ddeaf4}
+.progressCompactBody #ilerlemeDurum{font-size:16px;margin:11px 0}
+.progressCompactBody .progressStats{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:8px}
+@media(max-width:620px){.progressCompact>summary{flex-wrap:wrap;gap:10px;min-height:63px}.progressCompactName{width:calc(100% - 99px)}.progressCompactTrack{order:3;flex-basis:100%}.progressCompactScore{margin-left:auto}.progressCompactChevron{order:2}.progressCompactBody .progressStats{grid-template-columns:1fr 1fr 1fr}.progressCompactBody .progressStats small{font-size:13px}}
+
+/* Ders karti -> tam sayfa alt menu; Buyuk ve okunakli gezinme */
+#dersGeriSatiri{display:flex;align-items:center;gap:17px;margin:15px 0}
+#dersGeriSatiri[hidden]{display:none}
+#dersGeri{background:#fca311;color:#283148;font-weight:900;font-size:19px;min-height:58px}
+#dersSayfaBaslik{font-size:clamp(23px,2.5vw,35px);color:#253e77}
+#dersIzgarasi{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+#dersIzgarasi>.course{min-height:127px;padding:23px}
+#dersIzgarasi>.course>summary{font-size:clamp(24px,2.2vw,32px);min-height:75px}
+#dersIzgarasi>.course>summary>.subjectIcon{width:77px;height:77px}
+#dersIzgarasi>.course:nth-child(2){grid-column:span 1}
+body.lessonView #dersIzgarasi{display:block;margin-top:10px}
+body.lessonView #dersIzgarasi>.course{display:none}
+body.lessonView #dersIzgarasi>.course.activeLesson{display:block;width:100%;padding:20px;border:none;box-shadow:none;background:transparent}
+body.lessonView #dersIzgarasi>.course.activeLesson>summary{display:none}
+body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonView .progressCompact,body.lessonView .portalTopStrip{display:none!important}
+.courseTabs{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 20px}
+.courseTabs button{min-height:62px;font-size:19px;padding:13px 20px;background:#e9f0ff;color:#334e85;border:2px solid #d2dff3}
+.courseTabs button[aria-selected="true"]{background:#fca311;color:#2b3150;border-color:#ec9b12}
+.courseSection{padding:16px;border-radius:18px;border:1px solid #dce7f5;background:#f8fbff}
+.courseSection[hidden]{display:none}
+.courseSection .courseLinks{max-height:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+.courseSection .courseLinks li{margin:0}
+.courseSection .courseLinks a{min-height:76px;font-size:19px}
+.notebookGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.noteCard{background:white;padding:17px;border:1px solid #d5e5f5;border-radius:16px;display:grid;gap:12px}
+.noteCard strong{font-size:20px;color:#2e507b}
+.noteCard a{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:11px;background:#e8f1ff;color:#265a96;font-weight:850;text-decoration:none;font-size:18px}
+.noteCard button{margin:0;min-height:54px;background:#fca311;color:#303349;font-size:18px}
+.noteCard button.done{background:#c9f5df;color:#236c51}
+.sectionEmpty{padding:24px;text-align:center;font-size:19px;color:#576e89}
+@media(max-width:720px){#dersIzgarasi{grid-template-columns:1fr}#dersIzgarasi>.course{min-height:110px}.courseSection .courseLinks,.notebookGrid{grid-template-columns:1fr}.courseTabs button{flex:1;font-size:17px;padding:12px}.lessonBackRow{flex-wrap:wrap}}
+
+/* Yalniz ogretmenin sectigi etkinliklerde ogrenci tamamlama bildirimi */
+.courseLinks li .completionButton{display:block;width:100%;min-height:52px;margin:5px 0 11px;padding:9px 13px;background:#fca311;color:#283347;border-radius:11px;font-size:17px;font-weight:900;text-align:center}
+.courseLinks li .completionButton.done{background:#c8f3dd;color:#236c51;cursor:default}
+.courseLinks li .completionButton:focus-visible{outline:3px solid #305fbd;outline-offset:2px}
+
+/* Defter notlari: buyuk ve erisilebilir yazdim kutucugu */
+.noteCheckbox{display:flex;align-items:center;gap:14px;min-height:62px;padding:12px 15px;border:2px solid #d1dff5;border-radius:13px;background:#f2f7ff;color:#2c4d7d;font-size:19px;font-weight:900;cursor:pointer}
+.noteCheckbox input{flex:none;appearance:auto;width:28px;height:28px;margin:0;accent-color:#267d67;cursor:pointer}
+.noteCheckbox.done{background:#d8f7e8;border-color:#96d7b5;color:#23684e;cursor:default}
+.noteCheckbox input:focus-visible{outline:3px solid #fca311;outline-offset:3px}
+.noteCheckbox input:disabled{cursor:default}
+</style></head><body><main class="kutu">
+<h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
+<p id="sonuc" role="status" aria-live="polite"></p>
+<div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
+<div id="oturumAlani" hidden>
+<div class="portalTopStrip">
+<section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
+<div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
+</div>
+<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor...</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru cevap</small></div></div></div></details>
+<h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
+<p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
+
+<div id="dersGeriSatiri" class="lessonBackRow" hidden><button id="dersGeri" type="button">← Ana Menüye Dön</button><strong id="dersSayfaBaslik"></strong></div>
+<div id="dersIzgarasi" class="cards seven"><details class="course"><summary><span class="subjectIcon subject-TR" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M10 14q12-5 22 3v35q-10-8-22-4z" fill="#7EA9FF" stroke="#345AA5" stroke-width="2.8"/><path d="M54 14q-12-5-22 3v35q10-8 22-4z" fill="#FFD58D" stroke="#B9772C" stroke-width="2.8"/><path d="M17 23h9m-9 7h9m12-7h9m-9 7h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M32 17v35" stroke="#4763AA" stroke-width="2.6"/></svg></span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dilkoruyucusu.html" target="_blank" rel="noopener noreferrer">Dil Muhafızları</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dogrusunuyaz.html" target="_blank" rel="noopener noreferrer">Sözcüklerin Doğru Yazımı</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/essesli.html" target="_blank" rel="noopener noreferrer">Eş Sesli Sözcükler</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/essesli2.html" target="_blank" rel="noopener noreferrer">Eş Sesli Sözcükler 2</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/eszitanlam.html" target="_blank" rel="noopener noreferrer">Eş ve Zıt Anlamlılar</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/gercekmecazterim.html" target="_blank" rel="noopener noreferrer">Gerçek Mecaz ve Terim Anlam</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/gercekmecazterim2.html" target="_blank" rel="noopener noreferrer">Gerçek Mecaz ve Terim Anlam 2</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/harfhece.html" target="_blank" rel="noopener noreferrer">Harf ve Hece Bilgisi</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/hikayededektifi.html" target="_blank" rel="noopener noreferrer">Hikaye Dedektifi</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/ikilemeler.html" target="_blank" rel="noopener noreferrer">İkileme Dedektifi</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/metninkonusu.html" target="_blank" rel="noopener noreferrer">Metnin Konusunu Bul</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/metinmimarlari.html" target="_blank" rel="noopener noreferrer">Metnin Mimarları</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/metninbolumleri.html" target="_blank" rel="noopener noreferrer">Metnin Bölümleri</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/noktalamaisaretleri.html" target="_blank" rel="noopener noreferrer">Noktalama İşaretleri</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/pekistirme.html" target="_blank" rel="noopener noreferrer">Pekiştirme Dedektifi 1</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/sozavcıları.html" target="_blank" rel="noopener noreferrer">Atasözleri ve Deyimler</a></li></ul></details>
+<details class="course"><summary><span class="subjectIcon subject-MAT" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="10" y="8" width="44" height="49" rx="9" fill="#66D6B1" stroke="#287C73" stroke-width="3"/><rect x="17" y="15" width="30" height="12" rx="3" fill="#F4FDFF"/><path d="M20 35h10m-5-5v10m13-10v10m-5-5h10M21 47h8m9-3 7 7m0-7-7 7" stroke="#195E66" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>Matematik</strong> <small>11 etkinlik</small></summary><div class="mathActions" aria-label="Sonuçları kaydedilen Matematik etkinlikleri"><button id="oyunuAc" type="button"><span class="actionGlyph" aria-hidden="true">＋</span> Kayıp Sayılar <span aria-hidden="true">→</span></button><button id="oruntulerAc" type="button"><span class="actionGlyph" aria-hidden="true">▦</span> Sayı Örüntüleri <span aria-hidden="true">→</span></button></div><p class="sectionBadge">Bu iki etkinliğin sonuçları kaydedilir.</p><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/oruntuler.html" target="_blank" rel="noopener noreferrer">Sayı Örüntüleri</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilar.html" target="_blank" rel="noopener noreferrer">Sayılar</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilarikarsilastirsirala.html" target="_blank" rel="noopener noreferrer">Sayıları Karşılaştırma ve Sıralama</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayiproblemleri.html" target="_blank" rel="noopener noreferrer">Sayı Problemleri Atölyesi</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/toplama.html" target="_blank" rel="noopener noreferrer">Toplama Yapalım</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/yuvarlama.html" target="_blank" rel="noopener noreferrer">Yuvarlama Macerası 1</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/yuvarlama2.html" target="_blank" rel="noopener noreferrer">Yuvarlama Macerası 2</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/zihindentoplama.html" target="_blank" rel="noopener noreferrer">Zihinden Toplama Ustaları</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/zihindencikarma.html" target="_blank" rel="noopener noreferrer">Zihinden Çıkarma Ustaları</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/cikarmaislemi.html" target="_blank" rel="noopener noreferrer">Çıkarma Dedektifleri</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/kayipsayilar.html" target="_blank" rel="noopener noreferrer">Çıkarma İşleminde Verilmeyen Sayılar</a></li></ul></details>
+<details class="course"><summary><span class="subjectIcon subject-FEN" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M25 9h14m-11 0v20L15 48q-4 8 6 8h22q10 0 6-8L36 29V9" fill="#B2E8FF" stroke="#4776BC" stroke-width="3" stroke-linejoin="round"/><path d="M22 40h20l7 10q2 6-6 6H21q-8 0-6-6z" fill="#A98EF5"/><circle cx="29" cy="44" r="3" fill="#F8F0FF"/><circle cx="37" cy="50" r="2.5" fill="#F8F0FF"/></svg></span> <strong>Fen Bilimleri</strong> <small>10 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinkasifleri.html" target="_blank" rel="noopener noreferrer">Besin Kaşifleri: Görev Haritası</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinakademisi.html" target="_blank" rel="noopener noreferrer">Besin Akademisi</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/dunyaninhareketleri2.html" target="_blank" rel="noopener noreferrer">Dünya'nın Hareketleri 1</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/dunyaninhareketleri3.html" target="_blank" rel="noopener noreferrer">Dünya'nın Hareketleri 2</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/fosiller.html" target="_blank" rel="noopener noreferrer">Fosil Keşfi 1</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/fosiller2.html" target="_blank" rel="noopener noreferrer">Fosil Keşfi 2</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/gecegunduz3d.html" target="_blank" rel="noopener noreferrer">🌍 Gece, Gündüz ve Saatler (3B Simülasyon)</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/madenler.html" target="_blank" rel="noopener noreferrer">Madenler 1</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/madenler2.html" target="_blank" rel="noopener noreferrer">Madenler 2</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/unitedegerlendirme1.html" target="_blank" rel="noopener noreferrer">F.4.1 Ünite Değerlendirme Testi</a></li></ul></details>
+<details class="course"><summary><span class="subjectIcon subject-SOS" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><circle cx="31" cy="27" r="20" fill="#72C9F1" stroke="#3672AE" stroke-width="3"/><path d="m21 13 8 3 4 9-7 4-5-4-5 2-3-5 4-6zm17 2 5 6-2 8-7 3-1 10-7-6 2-8 8-4z" fill="#6CC18C"/><path d="M31 48v9m-12 0h24" stroke="#4D6494" stroke-width="3.5" stroke-linecap="round"/></svg></span> <strong>Sosyal Bilgiler</strong> <small>6 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/ailetarihi.html" target="_blank" rel="noopener noreferrer">Aile Tarihi</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/kendinionunyerinekoy.html" target="_blank" rel="noopener noreferrer">Kendini Onun Yerine Koy</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/millikultur.html" target="_blank" rel="noopener noreferrer">Milli Kültür Öğeleri</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/millimucadele.html" target="_blank" rel="noopener noreferrer">Milli Mücadele Dönemi</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/ilgiihtiyacyetenek.html" target="_blank" rel="noopener noreferrer">İlgi, İhtiyaç ve Yeteneklerimiz</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/oyunzamani.html" target="_blank" rel="noopener noreferrer">Geçmişten Günümüze Çocuk Oyunları</a></li></ul></details>
+<details class="course"><summary><span class="subjectIcon subject-HAK" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 10-21 9 21 9 21-9z" fill="#FFD98B" stroke="#B97C37" stroke-width="2"/><path d="M32 13v38m-20 0h40" stroke="#715B98" stroke-width="3" stroke-linecap="round"/><path d="M16 24 9 38h14zm32 0-7 14h14z" fill="#A8D3FF" stroke="#6284BC" stroke-width="2"/><path d="M9 38q7 10 14 0m18 0q7 10 14 0" stroke="#6284BC" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>İnsan Hakları</strong> <small>3 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/hakozgurluksorumluluk.html" target="_blank" rel="noopener noreferrer">Hak Özgürlük ve Sorumluluk</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/hakozgurluksorumluluk2.html" target="_blank" rel="noopener noreferrer">Bilinçli Vatandaş Kasabası</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/cocukveyetiskinfarklar.html" target="_blank" rel="noopener noreferrer">Yetişkinler ve Çocuklar</a></li></ul></details>
+<details class="course"><summary><span class="subjectIcon subject-TRF" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="21" y="6" width="22" height="51" rx="9" fill="#29385E"/><circle cx="32" cy="18" r="7" fill="#FF6975"/><circle cx="32" cy="32" r="7" fill="#FFD266"/><circle cx="32" cy="46" r="7" fill="#60D698"/><path d="M15 11v43m34-43v43" stroke="#88A5D0" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>Trafik Güvenliği</strong> <small>1 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Trafik/temelkavramlar.html" target="_blank" rel="noopener noreferrer">Temel Kavramlar</a></li></ul></details>
+<details class="course"><summary><span class="subjectIcon subject-OYN" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M17 24h30q8 0 11 13l2 11q1 8-7 8-4 0-9-7H20q-5 7-9 7-8 0-7-8l2-11q3-13 11-13z" fill="#AD92EF" stroke="#6453AD" stroke-width="3"/><path d="M16 37h14m-7-7v14" stroke="#F5F6FF" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="35" r="3.5" fill="#FFE9A1"/><circle cx="51" cy="42" r="3.5" fill="#74DBCA"/></svg></span> <strong>Oyunlar</strong> <small>2 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/toplamaoyun.html" target="_blank" rel="noopener noreferrer">Uzaylı Toplama Macerası 2D 🚀</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/madenkasifi.html" target="_blank" rel="noopener noreferrer">Maden Kâşifi 💎</a></li></ul></details></div>
+
+</div>
+<div id="oyunPanel" hidden><div id="oyunUst"><strong>🎮 Matematik • Kayıp Sayılar</strong><button id="oyundanDon" type="button">Portala Dön</button></div><iframe id="oyunCer" title="Matematik oyunu" referrerpolicy="no-referrer"></iframe><p id="oyunDurum" role="status"></p></div>
+
+</main><script>
+"use strict";
+const buton=document.getElementById("giris"),cikisButonu=document.getElementById("cikis"),sonuc=document.getElementById("sonuc"),kodAlani=document.getElementById("kod"),girisAlani=document.getElementById("girisAlani"),oturumAlani=document.getElementById("oturumAlani"),anahtarAdi="4d_ogrenci_oturumu";
+let oturumNesli=0;
+const tokenFormat=/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
+function hosGeldinAdiGoster_(ad){document.getElementById("welcomeName").textContent=String(ad||"Öğrenci");}
+function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
+function ilerlemeYukle(){
+ const token=sessionStorage.getItem(anahtarAdi);
+ if(!token)return;
+ const status=document.getElementById("ilerlemeDurum");
+ status.textContent="İlerleme bilgileri yükleniyor...";
+ google.script.run.withSuccessHandler(function(r){
+  if(sessionStorage.getItem(anahtarAdi)!==token)return;
+  if(!r||!r.basarili){status.textContent="İlerleme bilgileri alınamadı.";return}
+  document.getElementById("ilerlemeEtkinlik").textContent=r.etkinlikSayisi;
+  document.getElementById("ilerlemeDeneme").textContent=r.denemeSayisi;
+  document.getElementById("ilerlemeDogru").textContent=r.dogru+" / "+r.toplam;
+  document.getElementById("ilerlemeOran").textContent=r.oran+"%";
+  document.getElementById("ilerlemeBar").style.width=Math.max(0,Math.min(100,r.oran))+"%";
+  status.textContent=r.denemeSayisi?"Kaydedilen çalışmalarının özeti.":"Henüz sonuç kaydedilmedi. İlk etkinliğini tamamla!";
+ }).withFailureHandler(function(){
+  if(sessionStorage.getItem(anahtarAdi)===token)status.textContent="İlerleme bilgileri şu anda alınamadı.";
+ }).ogrenciIlerlemeOzeti(token);
+}
+function duyurulariYukle(){
+ const token=sessionStorage.getItem(anahtarAdi),durum=document.getElementById("duyuruDurum"),liste=document.getElementById("duyuruListe");
+ if(!token)return;
+ durum.textContent="Duyurular yükleniyor...";
+ google.script.run.withSuccessHandler(function(r){
+  if(sessionStorage.getItem(anahtarAdi)!==token)return;
+  liste.replaceChildren();
+  if(!r||r.basarili!==true){durum.textContent="Duyurular alınamadı.";return}
+  if(!r.duyurular||!r.duyurular.length){durum.textContent="Henüz yayımlanmış duyuru yok.";return}
+  durum.textContent="";
+  r.duyurular.forEach(function(d){const el=document.createElement("article"),h=document.createElement("h4"),p=document.createElement("p");h.textContent=d.baslik;p.textContent=d.metin;el.append(h,p);liste.appendChild(el)});
+ }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
+}
+function tokenTemizle(){menuyeDon();yazilanNotlar.clear();bitirilenEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
+function girisYap(){
+ if(buton.disabled)return;
+ const kod=kodAlani.value.trim().toUpperCase();
+ if(!/^[A-Z0-9]{6}$/.test(kod)){sonuc.textContent="6 karakterli kodunu yaz.";return}
+ const istekNesli=++oturumNesli;
+ buton.disabled=true;sonuc.textContent="Giriş kontrol ediliyor...";
+ google.script.run.withSuccessHandler(function(cevap){
+  if(istekNesli!==oturumNesli)return;
+  buton.disabled=false;
+  if(cevap&&cevap.basarili===true&&typeof cevap.token==="string"&&tokenFormat.test(cevap.token)){
+   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();seciliEtkinlikDurumYukle();
+   sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+".";
+  }else{sonuc.textContent=cevap&&cevap.mesaj?cevap.mesaj:"Giriş doğrulanamadı."}
+ }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Giriş sırasında hata oluştu. Tekrar dene."}).ogrenciGirisiYap(kod);
+}
+function cikisYap(){
+ const token=sessionStorage.getItem(anahtarAdi);
+ if(!token){tokenTemizle();sonuc.textContent="Çıkış yapıldı.";return}
+ const istekNesli=++oturumNesli;
+ cikisButonu.disabled=true;sonuc.textContent="Oturum kapatılıyor...";
+ google.script.run.withSuccessHandler(function(tamam){
+  if(istekNesli!==oturumNesli)return;
+  cikisButonu.disabled=false;
+  if(tamam===true){tokenTemizle();sonuc.textContent="✅ Güvenli çıkış yapıldı."}
+  else{sonuc.textContent="Çıkış doğrulanamadı. Tekrar dene."}
+ }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;cikisButonu.disabled=false;sonuc.textContent="Sunucuda çıkış doğrulanamadı. Tekrar dene."}).cikisYap(token);
+}
+buton.addEventListener("click",girisYap);cikisButonu.addEventListener("click",cikisYap);
+kodAlani.addEventListener("keydown",function(e){if(e.key==="Enter")girisYap()});
+const oruntulerButonu=document.getElementById("oruntulerAc");
+let aktifEtkinlik=null;
+const takipliOyunlar=Object.freeze({"mat-kayipsayilar":"https://ismailkaya33.github.io/4.SINIF/test/kayipsayilar.html","mat-oruntuler":"https://ismailkaya33.github.io/4.SINIF/test/oruntuler.html"});
+const oyunButonu=document.getElementById("oyunuAc"),oyunCer=document.getElementById("oyunCer"),oyunDurum=document.getElementById("oyunDurum"),oyunPanel=document.getElementById("oyunPanel");
+let gonderiliyor=false;
+function takipliOyunAc(id){
+ if(!sessionStorage.getItem(anahtarAdi)){oyunDurum.textContent="Önce giriş yap.";return}
+ if(!Object.prototype.hasOwnProperty.call(takipliOyunlar,id))return;
+ aktifEtkinlik=id;gonderiliyor=false;
+ oyunPanel.hidden=false;document.body.classList.add("oyunda");
+ oyunButonu.disabled=true;oruntulerButonu.disabled=true;
+ document.querySelector("#oyunUst strong").textContent=id==="mat-oruntuler"?"🧩 Matematik • Sayı Örüntüleri":"🎮 Matematik • Kayıp Sayılar";
+ oyunDurum.textContent="Oyun açılıyor. Bitirdiğinde sonucun otomatik gönderilecek.";
+ oyunCer.src=takipliOyunlar[id];
+}
+oyunButonu.addEventListener("click",function(){takipliOyunAc("mat-kayipsayilar")});
+oruntulerButonu.addEventListener("click",function(){takipliOyunAc("mat-oruntuler")});
+window.addEventListener("message",function(e){
+ if(oturumAlani.hidden||gonderiliyor||e.origin!=="https://ismailkaya33.github.io"||e.source!==oyunCer.contentWindow)return;
+ const d=e.data;
+ if(!d||d.type!=="4d:activity-finished"||d.schemaVersion!==1||d.activityId!==aktifEtkinlik||typeof d.attemptId!=="string"||!/^[A-Za-z0-9_-]{12,80}$/.test(d.attemptId))return;
+ const token=sessionStorage.getItem(anahtarAdi);
+ if(!token)return;
+ const veri={activityId:d.activityId,attemptId:d.attemptId,correct:d.correct,wrong:d.wrong,total:d.total,wrongAttempts:d.wrongAttempts,firstTry:d.firstTry,durationSeconds:d.durationSeconds};
+ gonderiliyor=true;oyunDurum.textContent="Sonuç kaydediliyor...";
+ google.script.run.withSuccessHandler(function(r){
+  gonderiliyor=false;
+  if(sessionStorage.getItem(anahtarAdi)!==token)return;
+  if(r&&r.basarili){ilerlemeYukle();oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";}
+  else{oyunDurum.textContent="Sonuç kaydedilemedi. Oturumunu kontrol et.";}
+ }).withFailureHandler(function(){gonderiliyor=false;if(sessionStorage.getItem(anahtarAdi)===token)oyunDurum.textContent="Kayıt bağlantısında sorun oldu. Öğretmenine haber ver."}).etkinlikSonucuKaydet(token,veri);
+});
+
+document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunCer.removeAttribute("src");});
+
+/* Ders alt sayfasi: etkinlikler / defter notlari / degerlendirmeler. */
+const defterKatalog={
+"Türkçe":{dir:"Turkce",files:[["atasozleri.jpeg","Atasözleri"],["deyimler.jpeg","Deyimler"],["gercekmecaz.png","Gerçek, Mecaz ve Terim Anlam"],["ikilemeler.jpeg","İkilemeler"],["metninbolumleri.png","Metnin Bölümleri"],["pekistirme.JPG","Pekiştirme"]]},
+"Matematik":{dir:"Matematik",files:[["cikarmadaverilmeyen.png","Çıkarma İşleminde Verilmeyenler"],["cikarmadefternotu.png","Çıkarma İşlemi"],["toplama.png","Toplama"],["zihindencikarma.png","Zihinden Çıkarma"],["zihindentoplama.png","Zihinden Toplama"]]},
+"Fen Bilimleri":{dir:"Fen",files:[["besinler1.png","Besinler 1"],["besinler2.png","Besinler 2"],["besinler3.png","Besinler 3"],["besinlerintazeligi.png","Besinlerin Tazeliği"],["besinlerisaklama.png","Besinleri Saklama"]]},
+"Sosyal Bilgiler":{dir:"Sosyal",files:[["ailemcocuk.jpg","Ailem ve Çocuk"],["ailetarihi.png","Aile Tarihi"],["cocukoyun.png","Çocuk Oyunları"],["farkliliklarimizvesaygi.png","Farklılıklara Saygı"],["mersinkultur.png","Mersin Kültürü"],["millikultur.png","Millî Kültür"]]}
+};
+const seciliEtkinlikler=new Set([
+ "Turkce/ikilemeler.html","Turkce/pekistirme.html","Turkce/sozavcıları.html",
+ "Matematik/cikarmaislemi.html","Fen/besinkasifleri.html","Sosyal/oyunzamani.html"
+]);
+let bitirilenEtkinlikler=new Set();
+function seciliEtkinlikButonlariYenile(){
+ document.querySelectorAll(".completionButton").forEach(btn=>{
+  const done=bitirilenEtkinlikler.has(btn.dataset.activity);
+  btn.classList.toggle("done",done);btn.disabled=done;
+  btn.textContent=done?"✓ Tamamladım (Kaydedildi)":"✓ Etkinliği Tamamladım";
+ });
+}
+function seciliEtkinlikDurumYukle(){
+ const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
+ google.script.run.withSuccessHandler(function(r){
+  if(sessionStorage.getItem(anahtarAdi)!==token||!r||!r.basarili)return;
+  bitirilenEtkinlikler=new Set(r.tamamlananlar||[]);
+  seciliEtkinlikButonlariYenile();
+ }).seciliEtkinlikDurumum(token);
+}
+function seciliEtkinlikButonlariKur(){
+ document.querySelectorAll("#dersIzgarasi .courseLinks a").forEach(link=>{
+  let pathname;
+  try{const url=new URL(link.href);if(url.origin!=="https://ismailkaya33.github.io")return;pathname=decodeURI(url.pathname.replace(/^\/4\.SINIF\//,""));}catch(e){return;}
+  if(!seciliEtkinlikler.has(pathname))return;
+  const button=document.createElement("button");button.type="button";
+  button.className="completionButton";button.dataset.activity=pathname;
+  button.textContent="✓ Etkinliği Tamamladım";
+  button.setAttribute("aria-label",link.textContent+" etkinliğini tamamladım");
+  button.addEventListener("click",function(){
+   const token=sessionStorage.getItem(anahtarAdi);if(!token||bitirilenEtkinlikler.has(pathname))return;
+   button.disabled=true;button.textContent="Kaydediliyor...";
+   google.script.run.withSuccessHandler(function(r){
+    if(sessionStorage.getItem(anahtarAdi)!==token)return;
+    if(r&&r.basarili){bitirilenEtkinlikler.add(pathname);seciliEtkinlikButonlariYenile();}
+    else{button.disabled=false;button.textContent="Tekrar Dene";}
+   }).withFailureHandler(function(){button.disabled=false;button.textContent="Tekrar Dene";}).seciliEtkinlikTamamla(token,pathname);
+  });
+  link.parentElement.appendChild(button);
+ });
+}
+const dersKartlari=[...document.querySelectorAll("#dersIzgarasi>.course")];
+const dersGeriSatiri=document.getElementById("dersGeriSatiri");
+const dersSayfaBaslik=document.getElementById("dersSayfaBaslik");
+let seciliDers=null;let yazilanNotlar=new Set();
+const baseNotes="https://ismailkaya33.github.io/4.SINIF/";
+function menuyeDon(){
+ if(seciliDers){seciliDers.removeAttribute("open");seciliDers.classList.remove("activeLesson");}
+ seciliDers=null;document.body.classList.remove("lessonView");dersGeriSatiri.hidden=true;
+ window.scrollTo({top:0,behavior:"instant"});
+}
+document.getElementById("dersGeri").addEventListener("click",menuyeDon);
+function tabSec(card,tab){
+ card.querySelectorAll(".courseTabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===tab)));
+ card.querySelectorAll(".courseSection").forEach(p=>p.hidden=p.dataset.panel!==tab);
+}
+function defterKartiOlustur(dir,filename,label){
+ const id=dir+"/"+filename;
+ const card=document.createElement("article");card.className="noteCard";
+ const title=document.createElement("strong");title.textContent="📒 "+label;
+ const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename);
+ link.target="_blank";link.rel="noopener noreferrer";link.textContent="Defter Notunu Aç ↗";
+ const choice=document.createElement("label");choice.className="noteCheckbox";
+ const input=document.createElement("input");input.type="checkbox";input.dataset.noteId=id;
+ const caption=document.createElement("span");
+ function guncelle(){
+  const done=yazilanNotlar.has(id);
+  input.checked=done;input.disabled=done;
+  choice.classList.toggle("done",done);
+  caption.textContent=done?"Yazdım ✓ (Kaydedildi)":"Defterime yazdım";
+ }
+ guncelle();
+ input.addEventListener("change",function(){
+  if(!input.checked)return;
+  const token=sessionStorage.getItem(anahtarAdi);
+  if(!token){guncelle();return}
+  input.disabled=true;caption.textContent="Kaydediliyor...";
+  google.script.run.withSuccessHandler(function(r){
+   if(sessionStorage.getItem(anahtarAdi)!==token)return;
+   if(r&&r.basarili){yazilanNotlar.add(id);guncelle();}
+   else{input.disabled=false;input.checked=false;caption.textContent="Kaydedilemedi, tekrar işaretle";}
+  }).withFailureHandler(function(){
+   if(sessionStorage.getItem(anahtarAdi)!==token)return;
+   input.disabled=false;input.checked=false;caption.textContent="Kaydedilemedi, tekrar işaretle";
+  }).defterNotuTamamla(token,id);
+ });
+ choice.append(input,caption);card.append(title,link,choice);return card;
+}
+function defterDurumYukle(){
+ const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
+ google.script.run.withSuccessHandler(function(r){
+  if(sessionStorage.getItem(anahtarAdi)!==token||!r||!r.basarili)return;
+  yazilanNotlar=new Set(r.tamamlananlar||[]);
+  document.querySelectorAll(".noteCheckbox input[data-note-id]").forEach(input=>{
+   const done=yazilanNotlar.has(input.dataset.noteId);
+   input.checked=done;input.disabled=done;
+   input.closest(".noteCheckbox").classList.toggle("done",done);
+   input.nextElementSibling.textContent=done?"Yazdım ✓ (Kaydedildi)":"Defterime yazdım";
+  });
+ }).defterNotuDurumum(token);
+}
+dersKartlari.forEach(function(card){
+ const summary=card.querySelector("summary");
+ const name=summary.querySelector("strong").textContent.trim();
+ const existingLinks=card.querySelector(".courseLinks");
+ const originalButtons=[...card.querySelectorAll(".mathActions")];
+ const tabs=document.createElement("nav");tabs.className="courseTabs";tabs.setAttribute("aria-label",name+" çalışma türleri");
+ const panels={};
+ [["etkinlik","🎮 Etkinlikler"],["defter","📒 Defter Notları"],["degerlendirme","📝 Değerlendirmeler"]].forEach(([key,text])=>{
+  const btn=document.createElement("button");btn.type="button";btn.dataset.tab=key;btn.textContent=text;
+  btn.addEventListener("click",()=>tabSec(card,key));tabs.appendChild(btn);
+  const panel=document.createElement("section");panel.className="courseSection";panel.dataset.panel=key;panel.hidden=true;
+  panels[key]=panel;
+ });
+ if(originalButtons.length)panels.etkinlik.appendChild(originalButtons[0]);
+ if(existingLinks)panels.etkinlik.appendChild(existingLinks);
+ const defter=document.createElement("div");defter.className="notebookGrid";
+ const catalog=defterKatalog[name];
+ if(catalog){catalog.files.forEach(([file,label])=>defter.appendChild(defterKartiOlustur(catalog.dir,file,label)));}
+ if(!defter.childElementCount){const msg=document.createElement("p");msg.className="sectionEmpty";msg.textContent="Bu dersin defter notları yakında eklenecek.";panels.defter.appendChild(msg);}
+ else panels.defter.appendChild(defter);
+ const evalLinks=[...panels.etkinlik.querySelectorAll("a")].filter(a=>/değerlendirme|deneme sınavı|testi/i.test(a.textContent));
+ if(evalLinks.length){
+  const ul=document.createElement("ul");ul.className="courseLinks";
+  evalLinks.forEach(a=>{const li=document.createElement("li");li.appendChild(a);ul.appendChild(li);});
+  panels.degerlendirme.appendChild(ul);
+ }else{
+  const msg=document.createElement("p");msg.className="sectionEmpty";
+  msg.textContent="Bu ders için değerlendirme çalışmaları eklendiğinde burada görünecek.";
+  panels.degerlendirme.appendChild(msg);
+ }
+ card.appendChild(tabs);
+ Object.values(panels).forEach(p=>card.appendChild(p));
+ tabSec(card,"etkinlik");
+ card.addEventListener("toggle",function(){
+  if(!card.open)return;
+  dersKartlari.forEach(other=>{if(other!==card){other.removeAttribute("open");other.classList.remove("activeLesson");}});
+  seciliDers=card;card.classList.add("activeLesson");document.body.classList.add("lessonView");
+  dersGeriSatiri.hidden=false;dersSayfaBaslik.textContent=name;
+  tabSec(card,"etkinlik");window.scrollTo({top:0,behavior:"instant"});
+ });
+});
+
+seciliEtkinlikButonlariKur();
+const mevcutToken=sessionStorage.getItem(anahtarAdi);
+if(mevcutToken){
+ const istekNesli=++oturumNesli;
+ buton.disabled=true;sonuc.textContent="Oturum kontrol ediliyor...";
+ google.script.run.withSuccessHandler(function(cevap){
+  if(istekNesli!==oturumNesli||sessionStorage.getItem(anahtarAdi)!==mevcutToken)return;
+  buton.disabled=false;
+  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();seciliEtkinlikDurumYukle();sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
+  else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
+ }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
+}
+</script></body></html>

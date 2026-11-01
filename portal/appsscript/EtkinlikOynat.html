@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="tr">
+<head><base target="_top"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4/D | Matematik Etkinliği</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px system-ui,Arial;background:#eff4fa;color:#183048}header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 18px;background:white;border-bottom:1px solid #cdd9e8}
+main{max-width:1300px;margin:auto}h1{font-size:1.15rem;margin:0}button,a.btn{font:inherit;border:0;background:#2459a6;color:white;padding:10px 14px;border-radius:9px;cursor:pointer}button:disabled{opacity:.5}a{color:#2459a6}#message{padding:10px 18px;min-height:45px;background:#e5f1ff}iframe{border:0;width:100%;height:calc(100vh - 125px);min-height:560px}#game[hidden]{display:none}
+</style></head>
+<body>
+<header><h1>🎒 4/D • Matematik Etkinliği</h1><div><button id="logout" type="button">Güvenli Çıkış</button></div></header>
+<div id="message" role="status">Öğrenci oturumu kontrol ediliyor...</div>
+<main><iframe id="game" hidden title="Matematik etkinliği" referrerpolicy="no-referrer" allow="fullscreen" src="about:blank"></iframe></main>
+<script>
+"use strict";
+const TOKEN_KEY="4d_ogrenci_oturumu";
+const GAME_URL="https://ismailkaya33.github.io/4.SINIF/test/kayipsayilar.html";
+const GAME_ORIGIN="https://ismailkaya33.github.io";
+const token=sessionStorage.getItem(TOKEN_KEY);
+const msg=document.getElementById("message"),game=document.getElementById("game"),logout=document.getElementById("logout");
+let authenticated=false,sending=false;
+function status(t){msg.textContent=t}
+function clearAndRedirect(){sessionStorage.removeItem(TOKEN_KEY);authenticated=false;game.hidden=true;game.src="about:blank";status("Oturum sona erdi. Giriş sayfasına dönün.");}
+if(!token){status("Oturum bulunamadı. Önce giriş sayfasından kodunuzla giriş yapın.");logout.disabled=true;}
+else {
+ google.script.run.withSuccessHandler(function(r){
+  if(!r||r.basarili!==true){clearAndRedirect();return}
+  authenticated=true;status("Hoş geldin, "+(r.ogrenciAdi||"öğrenci")+". Oyunu tamamladığında sonucu burada kaydedeceğiz.");
+  game.src=GAME_URL;game.hidden=false;
+ }).withFailureHandler(function(){status("Oturum kontrolü yapılamadı. Yeniden deneyin.");}).oturumBilgisi(token);
+}
+window.addEventListener("message",function(e){
+ if(!authenticated||sending||e.origin!==GAME_ORIGIN||e.source!==game.contentWindow)return;
+ const d=e.data;if(!d||d.type!=="4d:activity-finished"||d.schemaVersion!==1)return;
+ if(d.activityId!=="mat-kayipsayilar"||typeof d.attemptId!=="string"||!/^[a-zA-Z0-9_-]{12,80}$/.test(d.attemptId))return;
+ const result={activityId:d.activityId,attemptId:d.attemptId,correct:d.correct,wrong:d.wrong,total:d.total,wrongAttempts:d.wrongAttempts,firstTry:d.firstTry,durationSeconds:d.durationSeconds};
+ sending=true;status("Etkinlik sonucu öğretmen kayıtlarına gönderiliyor...");
+ google.script.run.withSuccessHandler(function(r){
+  sending=false;
+  if(r&&r.basarili){status(r.tekrar?"Bu etkinlik sonucu zaten kaydedilmiş.":"✅ Etkinlik sonucu kaydedildi. Eline sağlık!");}
+  else if(r&&r.mesaj==="Oturum geçersiz."){clearAndRedirect();}
+  else {status("Sonuç kaydedilemedi. Öğretmenine haber ver.");}
+ }).withFailureHandler(function(){sending=false;status("Sonuç kaydedilemedi: bağlantı hatası.");}).etkinlikSonucuKaydet(token,result);
+});
+logout.addEventListener("click",function(){
+ if(!token){clearAndRedirect();return}logout.disabled=true;status("Oturum kapatılıyor...");
+ google.script.run.withSuccessHandler(function(ok){
+  if(ok===true)clearAndRedirect();
+  else{logout.disabled=false;status("Çıkış tamamlanamadı. Yeniden deneyin.");}
+ }).withFailureHandler(function(){logout.disabled=false;status("Çıkış tamamlanamadı. Yeniden deneyin.");}).cikisYap(token);
+});
+</script></body></html>
