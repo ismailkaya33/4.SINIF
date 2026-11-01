@@ -207,6 +207,21 @@ body:not(.oyunda),body.oyunda,button,input{font-family:'Nunito',system-ui,Arial,
 .course summary>.subject-OYN{background:#eee6ff}
 @media(max-width:900px){.kutu>#sonuc{position:static;max-width:100%;margin:10px 0 15px;text-align:left}}
 @media(max-width:620px){.course summary>.subjectIcon{width:65px;height:65px}}
+
+/* Kompakt acilir ilerleme seridi: ayrintilar istenince acilir */
+.progressCompact{margin:9px 0 18px;border:1px solid #c9def0;border-radius:16px;background:linear-gradient(110deg,#eef8ff,#f5f0ff);box-shadow:0 3px 12px #4876a310;overflow:hidden}
+.progressCompact>summary{display:flex;align-items:center;gap:15px;min-height:68px;padding:12px 17px;cursor:pointer;list-style:none;color:#2b527e;font-weight:900}
+.progressCompact>summary::-webkit-details-marker{display:none}
+.progressCompactName{flex:none;font-size:clamp(18px,1.6vw,23px)}
+.progressCompactTrack{flex:1;min-width:80px;max-width:none;height:14px;border-radius:30px;border:1px solid #bdd4e0;overflow:hidden;background:#d9e9f2}
+.progressCompactTrack #ilerlemeBar{height:100%;display:block;border-radius:30px;background:repeating-linear-gradient(115deg,#35a9c5 0 12px,#5ed1bf 12px 24px);transition:width .35s}
+.progressCompactScore{font-size:clamp(20px,2vw,26px);min-width:54px;text-align:right;color:#167b84}
+.progressCompactChevron{font-size:27px;color:#687b9d;line-height:1}
+.progressCompact[open] .progressCompactChevron{transform:rotate(180deg)}
+.progressCompactBody{padding:0 18px 17px;border-top:1px solid #ddeaf4}
+.progressCompactBody #ilerlemeDurum{font-size:16px;margin:11px 0}
+.progressCompactBody .progressStats{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:8px}
+@media(max-width:620px){.progressCompact>summary{flex-wrap:wrap;gap:10px;min-height:63px}.progressCompactName{width:calc(100% - 99px)}.progressCompactTrack{order:3;flex-basis:100%}.progressCompactScore{margin-left:auto}.progressCompactChevron{order:2}.progressCompactBody .progressStats{grid-template-columns:1fr 1fr 1fr}.progressCompactBody .progressStats small{font-size:13px}}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
@@ -216,10 +231,10 @@ body:not(.oyunda),body.oyunda,button,input{font-family:'Nunito',system-ui,Arial,
 <section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 </div>
+<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor...</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru cevap</small></div></div></div></details>
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
 <p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
-<section id="ilerlemePanel" class="progressPanel" aria-labelledby="ilerlemeBaslik"><div class="progressTitle"><h3 id="ilerlemeBaslik">📈 Benim İlerlemem</h3><span>Kaydedilmiş etkinliklerim</span></div><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor...</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru cevap</small></div><div><strong id="ilerlemeOran">–</strong><small>Başarı oranı</small></div></div><div class="progressTrack"><span id="ilerlemeBar" style="width:0%"></span></div></section>
-<h3 class="otherLessonsHeading">Dersler ve Etkinlikler</h3>
+
 <div class="cards seven"><details class="course"><summary><span class="subjectIcon subject-TR" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M10 14q12-5 22 3v35q-10-8-22-4z" fill="#7EA9FF" stroke="#345AA5" stroke-width="2.8"/><path d="M54 14q-12-5-22 3v35q10-8 22-4z" fill="#FFD58D" stroke="#B9772C" stroke-width="2.8"/><path d="M17 23h9m-9 7h9m12-7h9m-9 7h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M32 17v35" stroke="#4763AA" stroke-width="2.6"/></svg></span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dilkoruyucusu.html" target="_blank" rel="noopener noreferrer">Dil Muhafızları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dogrusunuyaz.html" target="_blank" rel="noopener noreferrer">Sözcüklerin Doğru Yazımı</a></li>
