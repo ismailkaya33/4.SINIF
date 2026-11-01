@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İnteraktif Öğrenme Portalı</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://ismailkaya33.github.io/4.SINIF/logo.png">
+<link rel="apple-touch-icon-precomposed" href="https://ismailkaya33.github.io/4.SINIF/logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Eğitim Portalı">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --turkce: #FF6B6B;
+        --matematik: #4ECDC4;
+        --fen: #45B7D1;
+        --sosyal: #FCA311;
+        --insan: #9B5DE5;
+        --trafik: #F9A03F;
+        --oyunlar: #E84393;
+        --bg-color: #F0F4F8;
+    }
+    
+    body {
+        font-family: 'Nunito', sans-serif;
+        background-color: var(--bg-color);
+        background-image: radial-gradient(#d7e1ec 2px, transparent 2px);
+        background-size: 30px 30px;
+        margin: 0;
+        padding: 20px;
+        color: #2D3748;
+        min-height: 100vh;
+    }
+
+    .header {
+        text-align: center;
+        background: white;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        max-width: 800px;
+        margin: 0 auto 40px auto;
+        border: 4px dashed #CBD5E0;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: #4A5568;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    .subject-btn {
+        background: white;
+        border: none;
+        border-radius: 25px;
+        padding: 40px 20px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+        border-bottom: 8px solid;
+        position: relative;
+    }
+
+    .subject-btn:hover {
+        transform: translateY(-15px) scale(1.02);
+        box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+    }
+
+    .badge-yeni {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #FF3B30;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 900;
+        padding: 5px 15px;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);
+        animation: pulse 1.5s infinite;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .badge-yeni-kucuk {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #FF3B30;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 900;
+        padding: 3px 10px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);
+        animation: pulse 1.5s infinite;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+        100% { transform: scale(1); }
+    }
+
+    .subject-icon {
+        font-size: 5rem;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+    }
+
+    .subject-name {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #2D3748;
+    }
+
+    .btn-turkce { border-color: var(--turkce); }
+    .btn-matematik { border-color: var(--matematik); }
+    .btn-fen { border-color: var(--fen); }
+    .btn-sosyal { border-color: var(--sosyal); }
+    .btn-insan { border-color: var(--insan); }
+    .btn-trafik { border-color: var(--trafik); }
+    .btn-oyunlar { border-color: var(--oyunlar); }
+
+    .subject-page {
+        display: none;
+        background: white;
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border-top: 10px solid;
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px dashed #E2E8F0;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .back-btn {
+        background: #EDF2F7;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #4A5568;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .back-btn:hover {
+        background: #E2E8F0;
+        transform: translateX(-5px);
+    }
+
+    .game-list {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+    }
+
+    .game-list li a {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        background: #F7FAFC;
+        border-radius: 15px;
+        text-decoration: none;
+        color: #2D3748;
+        font-size: 1.2rem;
+        font-weight: 700;
+        border-left: 6px solid #CBD5E0;
+        transition: all 0.2s;
+        position: relative;
+    }
+    
+    .game-list li a::before {
+        content: "▶";
+        margin-right: 15px;
+        color: #A0AEC0;
+        font-size: 0.9rem;
+    }
+
+    .page-turkce { border-color: var(--turkce); }
+    .page-turkce .game-list li a:hover { border-color: var(--turkce); background: #FFF5F5; transform: scale(1.03); }
+    
+    .page-matematik { border-color: var(--matematik); }
+    .page-matematik .game-list li a:hover { border-color: var(--matematik); background: #E6FFFA; transform: scale(1.03); }
+    
+    .page-fen { border-color: var(--fen); }
+    .page-fen .game-list li a:hover { border-color: var(--fen); background: #E6FFFA; transform: scale(1.03); }
+    
+    .page-sosyal { border-color: var(--sosyal); }
+    .page-sosyal .game-list li a:hover { border-color: var(--sosyal); background: #FFFAF0; transform: scale(1.03); }
+    
+    .page-insan { border-color: var(--insan); }
+    .page-insan .game-list li a:hover { border-color: var(--insan); background: #FAF5FF; transform: scale(1.03); }
+
+    .page-trafik { border-color: var(--trafik); }
+    .page-trafik .game-list li a:hover { border-color: var(--trafik); background: #FFFAF0; transform: scale(1.03); }
+
+    .page-oyunlar { border-color: var(--oyunlar); }
+    .page-oyunlar .game-list li a:hover { border-color: var(--oyunlar); background: #FDEDF3; transform: scale(1.03); }
+
+
+    /* Duyurular: ana sayfanın mevcut ders menüsünü değiştirmez */
+    .portal-duyurular {max-width:1000px;margin:0 auto 24px;padding:20px 24px;background:white;border:2px solid #d9e6f4;border-radius:20px;box-shadow:0 6px 18px #20365012}
+    .portal-duyurular h2{font-size:1.4rem;margin:0 0 12px;color:#24466b}
+    .duyuru-kart{border-top:1px solid #e2e8f0;padding:14px 0}
+    .duyuru-kart h3{font-size:1.05rem;margin:0 0 6px;color:#243b53}
+    .duyuru-kart p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 7px;line-height:1.55}
+    .duyuru-kart time{font-size:.8rem;color:#67788b}
+    .duyuru-durum{color:#64748b;margin:0}
+
+
+    /* C – Akıllı Sınıf ile uyumlu, mobil dostu ana sayfa görünümü */
+    :root {
+      --turkce:#cf3551; --matematik:#3e78bf; --fen:#2797a7; --sosyal:#c38b2d;
+      --insan:#7860a8; --trafik:#d77a38; --oyunlar:#5776ad; --bg-color:#eef4fb;
+    }
+    body {
+      background:
+        radial-gradient(circle at 8% 3%, #d9e8fa 0 2px, transparent 3px) 0 0 / 28px 28px,
+        linear-gradient(180deg,#f4f8fd 0%,#eaf1fa 100%);
+      color:#233e63;
+    }
+    .header {
+      position:relative; overflow:hidden; max-width:1000px; margin:0 auto 28px;
+      padding:27px 22px 24px; border:1px solid #d5e2f1; border-top:8px solid #c8102e;
+      border-radius:24px; background:linear-gradient(135deg,#fff 0%,#f4f8ff 100%);
+      box-shadow:0 12px 30px #203d6414;
+    }
+    .header::after {
+      content:"🇹🇷"; position:absolute; right:22px; top:16px; font-size:32px; opacity:.92;
+    }
+    .header h1 {font-size:clamp(1.7rem,4vw,2.65rem);letter-spacing:.2px;color:#24466f;text-transform:none}
+    .portal-subtitle {margin:8px 48px 0;color:#5a718e;font-size:1rem;font-weight:800}
+    nav[aria-label="4/D öğrenci girişi"] a {
+      background:linear-gradient(135deg,#c8102e,#a90e26)!important;
+      border:2px solid #fff; outline:1px solid #e6bdc4;
+      box-shadow:0 7px 18px #9b19312b!important; transition:transform .18s,box-shadow .18s;
+    }
+    nav[aria-label="4/D öğrenci girişi"] a:hover {transform:translateY(-2px);box-shadow:0 10px 22px #9b19313d!important}
+    .portal-duyurular {border-color:#d3e1f1;background:#fff;border-radius:22px;box-shadow:0 8px 22px #203d6410}
+    .portal-duyurular h2 {color:#24466f}
+    .menu-grid {grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+    .subject-btn {
+      min-height:168px;padding:24px 16px;gap:10px;border:1px solid #dbe5f1;
+      border-bottom:6px solid;border-radius:22px;background:linear-gradient(145deg,#fff,#f8fbff);
+      box-shadow:0 6px 16px #1f3c6010;transition:transform .2s,box-shadow .2s,border-color .2s;
+    }
+    .subject-btn:hover {transform:translateY(-4px) scale(1.01);box-shadow:0 12px 22px #1f3c6018}
+    .subject-icon {font-size:3.5rem;filter:none}
+    .subject-name {font-size:1.25rem;color:#294667}
+    .subject-page {padding:clamp(18px,4vw,34px);border-radius:24px;box-shadow:0 10px 28px #203d6410}
+    .page-header {border-bottom:2px solid #e4ebf4}
+    .page-title {font-size:clamp(1.45rem,3vw,2rem);color:#284d78}
+    .back-btn {background:#eaf1fa;color:#345a83}
+    .game-list {grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:12px}
+    .game-list li a {height:100%;padding:16px 18px;border:1px solid #e0e8f2;border-left:5px solid #b6c9e0;border-radius:16px;background:#f8faff;font-size:1.05rem}
+    .game-list li a::before {color:#6687b3}
+    @media(max-width:560px) {
+      body {padding:12px}
+      .header {margin-bottom:18px;padding:23px 14px 20px}
+      .header::after {right:14px;top:14px;font-size:25px}
+      .portal-subtitle {font-size:.9rem;margin-right:34px}
+      .menu-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+      .subject-btn {min-height:140px;padding:16px 8px}
+      .subject-icon {font-size:2.7rem}
+      .subject-name {font-size:1rem}
+      .subject-page {padding:16px}
+      .game-list {grid-template-columns:1fr}
+    }
+    @media(max-width:360px) {.menu-grid{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>4/D Öğrenci Portalı</h1><p class="portal-subtitle">Akıllı Sınıf · Atatürk’ün gösterdiği yolda, bilimle ve sevgiyle öğreniyoruz</p>
+    </div>
+
+
+    <!-- Öğrenci girişi: kimlik doğrulama Google Apps Script sunucusunda yapılır. -->
+    <nav aria-label="4/D öğrenci girişi" style="max-width:800px;margin:-16px auto 25px;text-align:center">
+      <a href="https://script.google.com/macros/s/AKfycbzXyUUynqADi0RQjqvEq4lvUUnwQ6bJa1aPueWfsgQTMNiuEbrFnZw5phWg_Eztwjer/exec" target="_blank" rel="noopener noreferrer"
+         style="display:inline-block;background:#2459a6;color:#fff;text-decoration:none;padding:14px 24px;border-radius:14px;font-weight:900;box-shadow:0 5px 14px #172d5030">
+        🔐 4/D ÖĞRENCİ GİRİŞİ
+      </a>
+      <p style="font-size:.92rem;margin:9px 0 0;color:#425466">Öğrenciler kendilerine verilen giriş koduyla devam eder.</p>
+    </nav>
+
+    <section class="portal-duyurular" id="portal-duyurular" aria-labelledby="duyuru-baslik">
+       <h2 id="duyuru-baslik">📢 Sınıf Duyuruları</h2>
+       <div id="duyuru-listesi" aria-live="polite"><p class="duyuru-durum">Duyurular yükleniyor...</p></div>
+    </section>
+
+    <div class="container">
+        
+        <div id="main-menu" class="menu-grid">
+            <button id="btn-turkce" class="subject-btn btn-turkce" onclick="openSubject('turkce')">
+                <span class="subject-icon">📚</span>
+                <span class="subject-name">TÜRKÇE</span>
+            </button>
+            <button id="btn-matematik" class="subject-btn btn-matematik" onclick="openSubject('matematik')">
+                <span class="subject-icon">🧮</span>
+                <span class="subject-name">MATEMATİK</span>
+            </button>
+            <button id="btn-fen" class="subject-btn btn-fen" onclick="openSubject('fen')">
+                <span class="subject-icon">🔬</span>
+                <span class="subject-name">FEN BİLİMLERİ</span>
+            </button>
+            <button id="btn-sosyal" class="subject-btn btn-sosyal" onclick="openSubject('sosyal')">
+                <span class="subject-icon">🌍</span>
+                <span class="subject-name">SOSYAL BİLGİLER</span>
+            </button>
+            <button id="btn-insan" class="subject-btn btn-insan" onclick="openSubject('insan')">
+                <span class="subject-icon">🤝</span>
+                <span class="subject-name">İNSAN HAKLARI</span>
+            </button>
+            <button id="btn-trafik" class="subject-btn btn-trafik" onclick="openSubject('trafik')">
+                <span class="subject-icon">🚦</span>
+                <span class="subject-name">TRAFİK GÜVENLİĞİ</span>
+            </button>
+            <button id="btn-oyunlar" class="subject-btn btn-oyunlar" onclick="openSubject('oyunlar')">
+                <span class="subject-icon">🎮</span>
+                <span class="subject-name">OYUNLAR</span>
+            </button>
+        </div>
+
+        <!-- TÜRKÇE SAYFASI -->
+        <div id="turkce" class="subject-page page-turkce">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">📚</span> Türkçe Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Turkce/anafikiranaduygu.html">Ana Fikir ve Ana Duygu Dedektifi</a></li>
+                <li><a id="etk-turkce-dilmuhafizlari" href="Turkce/dilkoruyucusu.html">Dil Muhafızları</a></li>
+                <li><a href="Turkce/dogrusunuyaz.html">Sözcüklerin Doğru Yazımı</a></li>
+                <li><a href="Turkce/essesli.html">Eş Sesli Sözcükler</a></li>
+                <li><a href="Turkce/essesli2.html">Eş Sesli Sözcükler 2</a></li>
+                <li><a href="Turkce/eszitanlam.html">Eş ve Zıt Anlamlılar</a></li>
+                <li><a id="etk-turkce-mecaz1" href="Turkce/gercekmecazterim.html">Gerçek Mecaz ve Terim Anlam</a></li>
+                <li><a id="etk-turkce-mecaz2" href="Turkce/gercekmecazterim2.html">Gerçek Mecaz ve Terim Anlam 2</a></li>
+                <li><a href="Turkce/harfhece.html">Harf ve Hece Bilgisi</a></li>
+                <li><a href="Turkce/hikayededektifi.html">Hikaye Dedektifi</a></li>
+                <li><a href="Turkce/ikilemeler.html">İkileme Dedektifi</a></li>
+                <li><a href="Turkce/metninkonusu.html">Metnin Konusunu Bul</a></li>
+                <li><a href="Turkce/metinmimarlari.html">Metnin Mimarları</a></li>
+                <li><a href="Turkce/metninbolumleri.html">Metnin Bölümleri</a></li>
+                <li><a href="Turkce/noktalamaisaretleri.html">Noktalama İşaretleri</a></li>
+                <li><a id="etk-turkce-pek" href="Turkce/pekistirme.html">Pekiştirme Dedektifi 1</a></li>
+                <li><a id="etk-turkce-soz" href="Turkce/sozavcıları.html">Atasözleri ve Deyimler</a></li>
+            </ul>
+        <div class="page-header" style="margin-top: 20px;">
+            <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
+        </div>
+        <ul class="game-list">
+            <li><a id="etk-turkce-not1" href="Turkce/DefterNotlari/metninbolumleri.png" target="_blank">Metnin Bölümleri Defter Notu 📸</a></li>
+            <li><a id="etk-turkce-not2" href="Turkce/DefterNotlari/gercekmecaz.png" target="_blank">Gerçek Mecaz Terim Anlam Defter Notu 📸</a></li>
+            <li><a id="etk-turkce-not3" href="Turkce/DefterNotlari/pekistirme.JPG" target="_blank">Pekiştirme Sözcükleri Defter Notu 📸</a></li>
+            <li><a id="etk-turkce-not4" href="Turkce/DefterNotlari/ikilemeler.jpeg" target="_blank">İkileme Sözcükleri Defter Notu 📸</a></li>
+            <li><a id="etk-turkce-not5" href="Turkce/DefterNotlari/atasozleri.png" target="_blank">Atasözleri Defter Notu 📸</a></li>
+            <li><a id="etk-turkce-not6" href="Turkce/DefterNotlari/deyimler.png" target="_blank">Deyimler Defter Notu 📸</a></li>
+        </ul>
+        </div>
+
+        <!-- MATEMATİK SAYFASI -->
+        <div id="matematik" class="subject-page page-matematik">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🧮</span> Matematik Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Matematik/oruntuler.html">Sayı Örüntüleri</a></li>
+                <li><a href="Matematik/sayilar.html">Sayılar</a></li>
+                <li><a href="Matematik/sayilarikarsilastirsirala.html">Sayıları Karşılaştırma ve Sıralama</a></li>
+                <li><a id="etk-mat-problemler" href="Matematik/sayiproblemleri.html">Sayı Problemleri Atölyesi</a></li>
+                <li><a href="Matematik/toplama.html">Toplama Yapalım</a></li>
+                <li><a href="Matematik/yuvarlama.html">Yuvarlama Macerası 1</a></li>
+                <li><a href="Matematik/yuvarlama2.html">Yuvarlama Macerası 2</a></li>
+                <li><a id="etk-mat-zihintop" href="Matematik/zihindentoplama.html">Zihinden Toplama Ustaları</a></li>
+                <li><a id="etk-mat-zihincik" href="Matematik/zihindencikarma.html">Zihinden Çıkarma Ustaları</a></li>
+                <li><a id="etk-mat-cikarma" href="Matematik/cikarmaislemi.html">Çıkarma Dedektifleri</a></li>
+                <li><a id="etk-mat-verilmeyen" href="Matematik/kayipsayilar.html">Çıkarma İşleminde Verilmeyen Sayılar</a></li>
+            </ul>
+        <div class="page-header" style="margin-top: 20px;">
+            <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
+        </div>
+        <ul class="game-list">
+            <li><a id="etk-mat-not1" href="Matematik/DefterNotlari/toplama.png" target="_blank">Doğal Sayılarla Toplama İşlemi Notu 📸</a></li>
+            <li><a id="etk-mat-not2" href="Matematik/DefterNotlari/cikarmadefternotu.png" target="_blank">Doğal Sayılarla Çıkarma İşlemi Notu 📸</a></li>
+            <li><a id="etk-mat-not3" href="Matematik/DefterNotlari/cikarmadaverilmeyen.png?v=2" target="_blank">Çıkarmada Verilmeyeni Bulma Notu 📸</a></li>
+            <li><a id="etk-mat-not4" href="Matematik/DefterNotlari/zihindentoplama.png" target="_blank">Zihinden Toplama İşlemi Notu 📸</a></li>
+            <li><a id="etk-mat-not5" href="Matematik/DefterNotlari/zihindencikarma.png" target="_blank">Zihinden Çıkarma İşlemi Notu 📸</a></li>
+        </ul>
+        </div>
+
+        <!-- FEN BİLİMLERİ SAYFASI -->
+        <div id="fen" class="subject-page page-fen">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🔬</span> Fen Bilimleri Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a id="etk-fen-besin1" href="Fen/besinkasifleri.html">Besin Kaşifleri: Görev Haritası</a></li>
+                <li><a id="etk-fen-besin2" href="Fen/besinakademisi.html">Besin Akademisi</a></li>
+                <li><a href="Fen/dunyaninhareketleri2.html">Dünya'nın Hareketleri 1</a></li>
+                <li><a href="Fen/dunyaninhareketleri3.html">Dünya'nın Hareketleri 2</a></li>
+                <li><a href="Fen/fosiller.html">Fosil Keşfi 1</a></li>
+                <li><a href="Fen/fosiller2.html">Fosil Keşfi 2</a></li>
+                <li><a href="Fen/gecegunduz3d.html">🌍 Gece, Gündüz ve Saatler (3B Simülasyon)</a></li>
+                <li><a href="Fen/madenler.html">Madenler 1</a></li>
+                <li><a href="Fen/madenler2.html">Madenler 2</a></li>
+                <li><a id="etk-fen-unite1" href="Fen/unitedegerlendirme1.html">F.4.1 Ünite Değerlendirme Testi</a></li>
+            </ul>
+        <div class="page-header" style="margin-top: 20px;">
+            <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
+        </div>
+        <ul class="game-list">
+            <li><a id="etk-fen-not1" href="Fen/DefterNotlari/besinler1.png" target="_blank">Besin İçerikleri Notu 1 📸</a></li>
+            <li><a id="etk-fen-not2" href="Fen/DefterNotlari/besinler2.png" target="_blank">Besin İçerikleri Notu 2 📸</a></li>
+            <li><a id="etk-fen-not3" href="Fen/DefterNotlari/besinler3.png" target="_blank">Besin İçerikleri Notu 3 📸</a></li>
+            <li><a id="etk-fen-not4" href="Fen/DefterNotlari/besinlerintazeligi.png" target="_blank">Besin Tazeliği Ve Doğallığı Not 4 📸</a></li>
+            <li><a id="etk-fen-not5" href="Fen/DefterNotlari/besinlerisaklama.png" target="_blank">Besinlerin Saklanması ve Temizliği Not 5 📸</a></li>
+        </ul>
+        </div>
+
+        <!-- SOSYAL BİLGİLER SAYFASI -->
+        <div id="sosyal" class="subject-page page-sosyal">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🌍</span> Sosyal Bilgiler Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a id="etk-sosyal-aile" href="Sosyal/ailetarihi.html">Aile Tarihi</a></li>
+                <li><a href="Sosyal/kendinionunyerinekoy.html">Kendini Onun Yerine Koy</a></li>
+                <li><a id="etk-sosyal-kultur" href="Sosyal/millikultur.html">Milli Kültür Öğeleri</a></li>
+                <li><a id="etk-sosyal-milli" href="Sosyal/millimucadele.html">Milli Mücadele Dönemi</a></li>
+                <li><a href="Sosyal/ilgiihtiyacyetenek.html">İlgi, İhtiyaç ve Yeteneklerimiz</a></li>
+                <li><a id="etk-sosyal-oyun" href="Sosyal/oyunzamani.html">Geçmişten Günümüze Çocuk Oyunları</a></li>
+            </ul>
+        <div class="page-header" style="margin-top: 20px;">
+            <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
+        </div>
+        <ul class="game-list">
+            <li><a id="etk-sosyal-not1" href="Sosyal/DefterNotlari/farkliliklarimizvesaygi.png" target="_blank">Farklılıklarımız ve Saygı Notu 📸</a></li>
+            <li><a id="etk-sosyal-not2" href="Sosyal/DefterNotlari/ailetarihi.png" target="_blank">Aile Tarihi Notu 📸</a></li>
+            <li><a id="etk-sosyal-not3" href="Sosyal/DefterNotlari/millikultur.png" target="_blank">Milli Kültürümüz 📸</a></li>
+            <li><a id="etk-sosyal-not4" href="Sosyal/DefterNotlari/mersinkultur.png" target="_blank">Yöresel Kültürümüz 📸</a></li>
+            <li><a id="etk-sosyal-not5" href="Sosyal/DefterNotlari/ailemcocuk.jpg" target="_blank">Ailem Çocukken 📸</a></li>
+            <li><a id="etk-sosyal-not6" href="Sosyal/DefterNotlari/cocukoyun.png" target="_blank">Geçmişten Günümüze Çocuk Oyunları 📸</a></li>
+            <li><a id="etk-sosyal-not7" href="Sosyal/DefterNotlari/millimucadele1.png" target="_blank">Millî Mücadele’nin Başlangıcı 📸</a></li>
+            <li><a id="etk-sosyal-not8" href="Sosyal/DefterNotlari/millimucadele2.png" target="_blank">Millî Mücadele’nin Hazırlık Dönemi 📸</a></li>
+            <li><a id="etk-sosyal-not9" href="Sosyal/DefterNotlari/millimucadele3.png" target="_blank">Millî Mücadele Cepheleri 📸</a></li>
+            <li><a id="etk-sosyal-not10" href="Sosyal/DefterNotlari/millimucadele4.png" target="_blank">Batı Cephesi: İnönü Savaşları 📸</a></li>
+            <li><a id="etk-sosyal-not11" href="Sosyal/DefterNotlari/millimucadele5.png" target="_blank">Batı Cephesi: Sakarya ve Büyük Taarruz 📸</a></li>
+            <li><a id="etk-sosyal-not12" href="Sosyal/DefterNotlari/millimucadele6.png" target="_blank">Millî Mücadele’nin Sonuçları: Mudanya ve Lozan 📸</a></li>
+            <li><a id="etk-sosyal-not13" href="Sosyal/DefterNotlari/millimucadele7.png" target="_blank">Cumhuriyet’in İlanı ve Yenilikler 📸</a></li>
+        </ul>
+        </div>
+
+        <!-- İNSAN HAKLARI SAYFASI -->
+        <div id="insan" class="subject-page page-insan">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🤝</span> İnsan Hakları Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Insanhaklari/hakozgurluksorumluluk.html">Hak Özgürlük ve Sorumluluk</a></li>
+                <li><a id="etk-insan-bilinci" href="Insanhaklari/hakozgurluksorumluluk2.html">Bilinçli Vatandaş Kasabası</a></li>
+                <li><a id="etk-insan-cocuk" href="Insanhaklari/cocukveyetiskinfarklar.html">Yetişkinler ve Çocuklar</a></li>
+            </ul>
+        </div>
+
+        <!-- TRAFİK GÜVENLİĞİ SAYFASI -->
+        <div id="trafik" class="subject-page page-trafik">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🚦</span> Trafik Güvenliği Etkinlikleri</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Trafik/temelkavramlar.html">Temel Kavramlar</a></li>
+            </ul>
+        </div>
+
+        <!-- OYUNLAR SAYFASI -->
+        <div id="oyunlar" class="subject-page page-oyunlar">
+            <div class="page-header">
+                <h2 class="page-title"><span style="font-size:2.5rem">🎮</span> Eğlenceli Oyunlar</h2>
+                <button class="back-btn" onclick="goBack()">🏠 Menüye Dön</button>
+            </div>
+            <ul class="game-list">
+                <li><a href="Oyunlar/toplamaoyun.html">Uzaylı Toplama Macerası 2D 🚀</a></li>
+                <li><a href="Oyunlar/madenkasifi.html">Maden Kâşifi 💎</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- SAYFA GEÇİŞ VE YENİ ETKİNLİK SCRİPTİ -->
+   <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // ANA MENÜ UYARILARI
+            showNewBadge('btn-matematik', '2026-10-25');
+            showNewBadge('btn-fen', '2026-10-27');
+            showNewBadge('btn-insan', '2026-10-18');
+            showNewBadge('btn-sosyal', '2026-11-01');
+            showNewBadge('btn-turkce', '2026-11-01');
+            
+            // ALT SAYFALARDAKİ YENİ OYUNLARIN UYARILARI
+            showNewBadge('etk-mat-zihintop', '2026-10-18', true);
+            showNewBadge('etk-mat-verilmeyen', '2026-10-25', true);
+            showNewBadge('etk-mat-cikarma', '2026-10-18', true);
+            showNewBadge('etk-fen-besin1', '2026-10-18', true);
+            showNewBadge('etk-fen-besin2', '2026-10-18', true);
+            showNewBadge('etk-insan-bilinci', '2026-10-18', true);
+            showNewBadge('etk-sosyal-kultur', '2026-10-21', true);
+            showNewBadge('etk-sosyal-oyun', '2026-10-26', true);
+            showNewBadge('etk-turkce-soz', '2026-10-31', true);
+            
+            // YENİ DEFTER NOTLARI UYARILARI
+            showNewBadge('etk-mat-not3', '2026-10-25', true);
+            showNewBadge('etk-mat-not4', '2026-10-18', true);
+            showNewBadge('etk-mat-not5', '2026-10-18', true);
+            // FEN BİLİMLERİ YENİ DEFTER NOTLARI UYARILARI
+            showNewBadge('etk-fen-not4', '2026-10-27', true);
+            showNewBadge('etk-fen-not5', '2026-10-27', true);
+            showNewBadge('etk-fen-not3', '2026-10-18', true);
+            // SOSYAL YENİ DEFTER NOTLARI UYARILARI
+            showNewBadge('etk-sosyal-not7', '2026-11-01', true);
+            showNewBadge('etk-sosyal-not8', '2026-11-01', true);
+            showNewBadge('etk-sosyal-not9', '2026-11-01', true);
+            showNewBadge('etk-sosyal-not10', '2026-11-01', true);
+            showNewBadge('etk-sosyal-not11', '2026-11-01', true);
+            showNewBadge('etk-sosyal-not12', '2026-11-01', true);
+            showNewBadge('etk-sosyal-not13', '2026-11-01', true);
+            // TÜRKÇE YENİ DEFTER NOTLARI UYARILARI
+            showNewBadge('etk-turkce-not3', '2026-10-31', true);
+            showNewBadge('etk-turkce-not4', '2026-10-31', true);
+            showNewBadge('etk-turkce-not5', '2026-11-01', true);
+            showNewBadge('etk-turkce-not6', '2026-11-01', true);
+        });
+
+        function showNewBadge(elementId, dateString, isSmallBadge = false) {
+            const addedDate = new Date(dateString);
+            const today = new Date();
+            
+            addedDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            const diffTime = today - addedDate;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays >= 0 && diffDays <= 3) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    if (!element.querySelector('.badge-yeni') && !element.querySelector('.badge-yeni-kucuk')) {
+                        const badge = document.createElement('span');
+                        badge.className = isSmallBadge ? 'badge-yeni-kucuk' : 'badge-yeni';
+                        badge.innerText = 'YENİ';
+                        element.appendChild(badge);
+                    }
+                }
+            }
+        }
+
+        function openSubject(subjectId) {
+            document.getElementById('main-menu').style.display = 'none';
+            var pages = document.getElementsByClassName('subject-page');
+            for(var i = 0; i < pages.length; i++) {
+                pages[i].style.display = 'none';
+            }
+            document.getElementById(subjectId).style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function goBack() {
+            var pages = document.getElementsByClassName('subject-page');
+            for(var i = 0; i < pages.length; i++) {
+                pages[i].style.display = 'none';
+            }
+            document.getElementById('main-menu').style.display = 'grid';
+        }
+    </script>
+
+
+<script type="module">
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyArEQt8alG-UcD4-BrNEgqr1aJnIRfdt58",
+    authDomain: "sinif-egitim-portali.firebaseapp.com",
+    projectId: "sinif-egitim-portali",
+    appId: "1:972010232888:web:6a9d59f16b9cd28cefdacd"
+  };
+  const app = getApps()[0] || initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const liste = document.getElementById("duyuru-listesi");
+  const txt = (tag, value) => {const node=document.createElement(tag);node.textContent=value;return node;};
+
+  try {
+    const kayitlar = await getDocs(query(collection(db,"announcements"), orderBy("createdAt","desc"), limit(5)));
+    liste.replaceChildren();
+    if (kayitlar.empty) liste.append(txt("p","Henüz duyuru yayınlanmadı."));
+    kayitlar.forEach(docu => {
+      const d=docu.data();
+      const kart=document.createElement("article");kart.className="duyuru-kart";
+      kart.append(txt("h3",String(d.title||"Duyuru").slice(0,120)));
+      kart.append(txt("p",String(d.body||"").slice(0,3000)));
+      const tarih=d.createdAt?.toDate?.();
+      if(tarih){const t=txt("time",tarih.toLocaleDateString("tr-TR"));t.dateTime=tarih.toISOString();kart.append(t);}
+      liste.append(kart);
+    });
+  } catch(err) {
+    liste.replaceChildren(txt("p",err.code==="permission-denied"
+      ?"Duyuruların görüntülenmesi için Firestore okuma izni henüz açılmadı."
+      :"Duyurular şu an yüklenemedi. Lütfen daha sonra yeniden deneyin."));
+  }
+</script>
+
+</body>
+</html>
