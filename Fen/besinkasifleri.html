@@ -157,7 +157,8 @@ function runLab(container,onFinish){
   container.append(createNode('p','tag','Önce tahmin et: Bu besinlerin hepsinde ortak olan bir şey olabilir mi? Hepsini incele.'),grid,detail);progressBar(container,0,CONTENT.labFoods.length)}
 function runFinalTest(container,onFinish){
   const pool=shuffle(CONTENT.allQuestions).slice(0,18);
-  runQuiz(container,pool,results=>{container.innerHTML='';const correct=results.filter(result=>result.firstTry).length,percent=Math.round(100*correct/results.length),card=createNode('div','card'),rows=[];
+  const finalStarted=Date.now();
+  runQuiz(container,pool,results=>{if(results.length===18){const correctFirst=results.filter(x=>x.firstTry).length;window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"fen-besinkasifleri",attemptId:"bk_"+crypto.randomUUID().replace(/-/g,""),correct:correctFirst,wrong:18-correctFirst,total:18,wrongAttempts:18-correctFirst,firstTry:correctFirst,durationSeconds:Math.floor((Date.now()-finalStarted)/1000)},"*");}container.innerHTML='';const correct=results.filter(result=>result.firstTry).length,percent=Math.round(100*correct/results.length),card=createNode('div','card'),rows=[];
     for(let outcome=1;outcome<=6;outcome++){const group=results.filter(result=>result.outcome===outcome);if(group.length){const good=group.filter(result=>result.firstTry).length;rows.push([CONTENT.outcomes[outcome],good+'/'+group.length+(good/group.length>=.7?' ✔':' → tekrar')])}}
     card.append(createNode('h2','','Ünite Sonucu: %'+percent+' ('+correct+'/'+results.length+' ilk denemede doğru)'));
     const table=createNode('table');rows.forEach(([name,value])=>{const row=createNode('tr');row.append(createNode('td','',name),createNode('td','',value));table.append(row)});card.append(table);
@@ -184,10 +185,8 @@ function showMap(){const view=queryOne('#view');view.innerHTML='';view.append(cr
 function showMission(mission){const view=queryOne('#view');view.innerHTML='';const back=createNode('button','btn','⬅ Haritaya dön');back.onclick=showMap;view.append(back,createNode('h2','',mission.title),createNode('p','tag',mission.goal));
   mission.stations.forEach(station=>{const stars=progress.stars[station.id]||0,button=createNode('button','btn'+(stars?' good':''),(stars?'✔ ':'▶ ')+station.title+'  '+starText(stars));button.style.cssText='display:block;width:100%;margin:12px 0';button.onclick=()=>showStation(mission,station);view.append(button)});updateHud()}
 function showStation(mission,station){const view=queryOne('#view');view.innerHTML='';const back=createNode('button','btn','⬅ '+mission.title),stage=createNode('div');back.onclick=()=>showMission(mission);view.append(back,createNode('h2','',station.title),stage);
-  station.run(stage,stars=>{const wasDone=missionDone(mission);progress.stars[station.id]=Math.max(progress.stars[station.id]||0,stars);saveProgress();updateHud();checkFullCompletion();
+  station.run(stage,stars=>{const wasDone=missionDone(mission);progress.stars[station.id]=Math.max(progress.stars[station.id]||0,stars);saveProgress();updateHud();
     const next=createNode('button','btn go','Görev tamamlandı! Devam ➜');next.onclick=()=>{if(!wasDone&&missionDone(mission))showBadge(mission);else showMission(mission)};stage.append(next);next.scrollIntoView({block:'center'})});scrollTo(0,0)}
-function checkFullCompletion(){if(MISSIONS.every(missionDone)){const total=MISSIONS.reduce((n,m)=>n+m.stations.length,0);recordVerifiedFinish('Fen/besinkasifleri.html',{completed:total,total,stars:MISSIONS.reduce((n,m)=>n+missionStars(m),0)});}}
-
 function showBadge(mission){const overlay=createNode('div','badge'),card=createNode('div','card');card.innerHTML=`<div style="font-size:72px">🏅</div><h2>Rozet kazandın!</h2><p><b>${mission.title}</b> görevini tamamladın.</p>`;const close=createNode('button','btn go','Harika!');close.onclick=()=>{overlay.remove();showMission(mission)};card.append(close);overlay.append(card);document.body.append(overlay);celebrate(close);close.focus()}
 
 /* ---------- Sunum modu, yazdırma, sıfırlama ---------- */
@@ -199,16 +198,4 @@ queryOne('#mapButton').onclick=()=>printSheet('<section class="sheet"><h2>Besinl
 queryOne('#resetButton').onclick=()=>{if(confirm('Tüm yıldızlar ve rozetler silinecek. Emin misin?')){progress={stars:{}};saveProgress();showMap()}};
 document.addEventListener('keydown',keyEvent=>{if(keyEvent.key==='Escape')document.body.classList.remove('presenting')});
 showMap();
-
-// Sonuç kaydı yalnız oyunun kendi bitiş koşulundan çağrılır; öğrenci düğmesi değildir.
-// Bu kayıt tarayıcıda kanıttır; sunucu tarafından doğrulanmış öğretmen kaydı değildir.
-function recordVerifiedFinish(activity,metrics){
-  if(!Number.isFinite(metrics.total)||metrics.completed!==metrics.total)return;
-  const report={schema:"4d-game-result-v1",activity,metrics,recordedAt:new Date().toISOString()};
-  try{localStorage.setItem("4d.result."+activity,JSON.stringify(report));}catch(e){}
-  window.dispatchEvent(new CustomEvent("4d:game-complete",{detail:report}));
-  // Kimlik içermeyen sonuç, onu doğrulayan bir portal dinleyicisine de iletilebilir.
-  if(window.opener&&!window.opener.closed)window.opener.postMessage(report,"*");
-}
-
 </script></body></html>

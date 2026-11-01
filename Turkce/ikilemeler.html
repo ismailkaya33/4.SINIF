@@ -1171,8 +1171,10 @@
             const minutes = Math.floor(timeDiff / 60);
             const seconds = timeDiff % 60;
 
-            recordVerifiedFinish('Turkce/ikilemeler.html', {completed:correctCount,total:state.tasks.length,score:state.score,skipped:state.tasks.filter(t=>t.status==='skipped').length});
             let correctCount = state.tasks.filter(t => t.status === 'success').length;
+            if(state.startedAt&&state.tasks.length===RAW_TASKS.length&&state.tasks.every(t=>t.status==='success'||t.status==='skipped')){
+                window.parent.postMessage({type:'4d:activity-finished',schemaVersion:1,activityId:'tur-ikilemeler',attemptId:'ik_'+crypto.randomUUID().replace(/-/g,''),correct:correctCount,wrong:state.tasks.length-correctCount,total:state.tasks.length,wrongAttempts:state.wrongCount,firstTry:state.tasks.filter(t=>t.status==='success'&&t.firstTry).length,durationSeconds:Math.floor((Date.now()-state.startedAt)/1000)},'*');
+            }
 
             div.innerHTML = `
                 <div style="text-align: center; margin-bottom: 30px;">
@@ -1244,18 +1246,6 @@
 
         window.onload = initApp;
 
-    
-// Sonuç kaydı yalnız oyunun kendi bitiş koşulundan çağrılır; öğrenci düğmesi değildir.
-// Bu kayıt tarayıcıda kanıttır; sunucu tarafından doğrulanmış öğretmen kaydı değildir.
-function recordVerifiedFinish(activity,metrics){
-  if(!Number.isFinite(metrics.total)||metrics.completed!==metrics.total)return;
-  const report={schema:"4d-game-result-v1",activity,metrics,recordedAt:new Date().toISOString()};
-  try{localStorage.setItem("4d.result."+activity,JSON.stringify(report));}catch(e){}
-  window.dispatchEvent(new CustomEvent("4d:game-complete",{detail:report}));
-  // Kimlik içermeyen sonuç, onu doğrulayan bir portal dinleyicisine de iletilebilir.
-  if(window.opener&&!window.opener.closed)window.opener.postMessage(report,"*");
-}
-
-</script>
+    </script>
 </body>
 </html>
