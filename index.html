@@ -256,12 +256,73 @@
     .duyuru-kart time{font-size:.8rem;color:#67788b}
     .duyuru-durum{color:#64748b;margin:0}
 
+
+    /* C – Akıllı Sınıf ile uyumlu, mobil dostu ana sayfa görünümü */
+    :root {
+      --turkce:#cf3551; --matematik:#3e78bf; --fen:#2797a7; --sosyal:#c38b2d;
+      --insan:#7860a8; --trafik:#d77a38; --oyunlar:#5776ad; --bg-color:#eef4fb;
+    }
+    body {
+      background:
+        radial-gradient(circle at 8% 3%, #d9e8fa 0 2px, transparent 3px) 0 0 / 28px 28px,
+        linear-gradient(180deg,#f4f8fd 0%,#eaf1fa 100%);
+      color:#233e63;
+    }
+    .header {
+      position:relative; overflow:hidden; max-width:1000px; margin:0 auto 28px;
+      padding:27px 22px 24px; border:1px solid #d5e2f1; border-top:8px solid #c8102e;
+      border-radius:24px; background:linear-gradient(135deg,#fff 0%,#f4f8ff 100%);
+      box-shadow:0 12px 30px #203d6414;
+    }
+    .header::after {
+      content:"🇹🇷"; position:absolute; right:22px; top:16px; font-size:32px; opacity:.92;
+    }
+    .header h1 {font-size:clamp(1.7rem,4vw,2.65rem);letter-spacing:.2px;color:#24466f;text-transform:none}
+    .portal-subtitle {margin:8px 48px 0;color:#5a718e;font-size:1rem;font-weight:800}
+    nav[aria-label="4/D öğrenci girişi"] a {
+      background:linear-gradient(135deg,#c8102e,#a90e26)!important;
+      border:2px solid #fff; outline:1px solid #e6bdc4;
+      box-shadow:0 7px 18px #9b19312b!important; transition:transform .18s,box-shadow .18s;
+    }
+    nav[aria-label="4/D öğrenci girişi"] a:hover {transform:translateY(-2px);box-shadow:0 10px 22px #9b19313d!important}
+    .portal-duyurular {border-color:#d3e1f1;background:#fff;border-radius:22px;box-shadow:0 8px 22px #203d6410}
+    .portal-duyurular h2 {color:#24466f}
+    .menu-grid {grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+    .subject-btn {
+      min-height:168px;padding:24px 16px;gap:10px;border:1px solid #dbe5f1;
+      border-bottom:6px solid;border-radius:22px;background:linear-gradient(145deg,#fff,#f8fbff);
+      box-shadow:0 6px 16px #1f3c6010;transition:transform .2s,box-shadow .2s,border-color .2s;
+    }
+    .subject-btn:hover {transform:translateY(-4px) scale(1.01);box-shadow:0 12px 22px #1f3c6018}
+    .subject-icon {font-size:3.5rem;filter:none}
+    .subject-name {font-size:1.25rem;color:#294667}
+    .subject-page {padding:clamp(18px,4vw,34px);border-radius:24px;box-shadow:0 10px 28px #203d6410}
+    .page-header {border-bottom:2px solid #e4ebf4}
+    .page-title {font-size:clamp(1.45rem,3vw,2rem);color:#284d78}
+    .back-btn {background:#eaf1fa;color:#345a83}
+    .game-list {grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:12px}
+    .game-list li a {height:100%;padding:16px 18px;border:1px solid #e0e8f2;border-left:5px solid #b6c9e0;border-radius:16px;background:#f8faff;font-size:1.05rem}
+    .game-list li a::before {color:#6687b3}
+    @media(max-width:560px) {
+      body {padding:12px}
+      .header {margin-bottom:18px;padding:23px 14px 20px}
+      .header::after {right:14px;top:14px;font-size:25px}
+      .portal-subtitle {font-size:.9rem;margin-right:34px}
+      .menu-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+      .subject-btn {min-height:140px;padding:16px 8px}
+      .subject-icon {font-size:2.7rem}
+      .subject-name {font-size:1rem}
+      .subject-page {padding:16px}
+      .game-list {grid-template-columns:1fr}
+    }
+    @media(max-width:360px) {.menu-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>İnteraktif Öğrenme Portalı</h1>
+        <h1>4/D Öğrenci Portalı</h1><p class="portal-subtitle">Akıllı Sınıf · Atatürk’ün gösterdiği yolda, bilimle ve sevgiyle öğreniyoruz</p>
     </div>
 
 
