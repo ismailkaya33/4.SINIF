@@ -62,7 +62,7 @@ jobs:
         run: npx --yes @google/clasp@latest pull
       - name: Secili kaynaklari guvenli birlestir
         env:
-          TARGET: ${{ inputs.target }}
+          TARGET: ${{ github.event_name == 'push' && 'student' || inputs.target }}
         run: node .github/scripts/prepare-appsscript-sync.mjs "$TARGET" "$RUNNER_TEMP/4d-script"
       - name: Aktarimdan once dosyalari listele
         working-directory: ${{ runner.temp }}/4d-script
