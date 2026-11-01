@@ -34,6 +34,11 @@ for(const block of blocks)new Function(block[1]);
 // Yeni etkinlikler kayitsiz yayimlanmasin; geri bildirim tipi tasarimda belirlensin.
 const tracking=JSON.parse(read('portal/etkinlik-takip-politikasi.json'));
 const known=new Map(tracking.mevcutEtkinlikler.map(x=>[x.konum,x]));
+for(const entry of tracking.yeniEtkinlikler){
+ assert.ok(['otomatik_sonuc','ogrenci_beyani'].includes(entry.takip),'Every new activity requires completion feedback: '+entry.konum);
+ assert.ok(!known.has(entry.konum),'Duplicate activity: '+entry.konum);
+ known.set(entry.konum,entry);
+}
 const linked=[...portal.matchAll(/href="https:\/\/ismailkaya33\.github\.io\/4\.SINIF\/([^"]+\.html)"/g)].map(x=>x[1]);
 for(const href of linked)assert.ok(known.has(href),'Unregistered activity link: '+href);
 assert.equal(tracking.gelecekEtkinlikTakibi,'zorunlu');
