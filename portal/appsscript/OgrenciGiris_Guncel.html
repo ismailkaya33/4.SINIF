@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="tr"><head><base target="_top"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4/D Öğrenci Girişi</title>
+<style>
+body{font-family:Arial,sans-serif;background:#eef4ff;min-height:100vh;margin:0;display:grid;place-items:center}
+.kutu{background:#fff;width:min(380px,85%);padding:30px;border-radius:18px;text-align:center;box-shadow:0 8px 25px #0002}
+input{box-sizing:border-box;width:100%;padding:15px;font-size:22px;text-align:center;text-transform:uppercase;letter-spacing:3px;border:2px solid #b7c8e0;border-radius:10px}
+button{margin-top:16px;padding:14px 24px;background:#2459a6;color:#fff;border:0;border-radius:10px;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+#cikis{background:#5a6b7f}#sonuc{margin-top:18px;line-height:1.5}[hidden]{display:none!important}
+a{color:#2459a6}#testNote{background:#fff7e8;padding:11px;border-radius:9px;font-size:.9rem}
+</style></head><body><main class="kutu">
+<h1>🎒 4/D Sınıfı</h1><h2>Öğrenci Girişi</h2>
+<div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
+<div id="oturumAlani" hidden>
+<p id="testNote">Etkinlik sonuçlarını otomatik kaydetme bağlantısı henüz yayında değil. Oyunu şimdi açarsan sonuç öğretmene otomatik gönderilmez.</p>
+<a href="https://ismailkaya33.github.io/4.SINIF/Matematik/kayipsayilar.html" target="_blank" rel="noopener noreferrer">Matematik oyununu aç (kayıtsız deneme)</a>
+</div>
+<button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button>
+<p id="sonuc" role="status" aria-live="polite"></p>
+</main><script>
+"use strict";
+const buton=document.getElementById("giris"),cikisButonu=document.getElementById("cikis"),sonuc=document.getElementById("sonuc"),kodAlani=document.getElementById("kod"),girisAlani=document.getElementById("girisAlani"),oturumAlani=document.getElementById("oturumAlani"),anahtarAdi="4d_ogrenci_oturumu";
+const tokenFormat=/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
+function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar}
+function tokenTemizle(){sessionStorage.removeItem(anahtarAdi);ekranGoster(false);kodAlani.value=""}
+function girisYap(){
+ if(buton.disabled)return;
+ const kod=kodAlani.value.trim().toUpperCase();
+ if(!/^[A-Z0-9]{6}$/.test(kod)){sonuc.textContent="6 karakterli kodunu yaz.";return}
+ buton.disabled=true;sonuc.textContent="Giriş kontrol ediliyor...";
+ google.script.run.withSuccessHandler(function(cevap){
+  buton.disabled=false;
+  if(cevap&&cevap.basarili===true&&typeof cevap.token==="string"&&tokenFormat.test(cevap.token)){
+   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);
+   sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+".";
+  }else{sonuc.textContent=cevap&&cevap.mesaj?cevap.mesaj:"Giriş doğrulanamadı."}
+ }).withFailureHandler(function(){buton.disabled=false;sonuc.textContent="Giriş sırasında hata oluştu. Tekrar dene."}).ogrenciGirisiYap(kod);
+}
+function cikisYap(){
+ const token=sessionStorage.getItem(anahtarAdi);
+ if(!token){tokenTemizle();sonuc.textContent="Çıkış yapıldı.";return}
+ cikisButonu.disabled=true;sonuc.textContent="Oturum kapatılıyor...";
+ google.script.run.withSuccessHandler(function(tamam){
+  cikisButonu.disabled=false;
+  if(tamam===true){tokenTemizle();sonuc.textContent="✅ Güvenli çıkış yapıldı."}
+  else{sonuc.textContent="Çıkış doğrulanamadı. Tekrar dene."}
+ }).withFailureHandler(function(){cikisButonu.disabled=false;sonuc.textContent="Sunucuda çıkış doğrulanamadı. Tekrar dene."}).cikisYap(token);
+}
+buton.addEventListener("click",girisYap);cikisButonu.addEventListener("click",cikisYap);
+kodAlani.addEventListener("keydown",function(e){if(e.key==="Enter")girisYap()});
+const mevcutToken=sessionStorage.getItem(anahtarAdi);
+if(mevcutToken){
+ buton.disabled=true;sonuc.textContent="Oturum kontrol ediliyor...";
+ google.script.run.withSuccessHandler(function(cevap){
+  buton.disabled=false;
+  if(cevap&&cevap.basarili===true){ekranGoster(true);sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
+  else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
+ }).withFailureHandler(function(){buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
+}
+</script></body></html>
