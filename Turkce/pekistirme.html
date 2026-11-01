@@ -1588,6 +1588,7 @@ function showResult(source){
 
   document.getElementById("resultText").innerHTML=text;
 
+  if(source==="quiz" && state.quiz===15) recordVerifiedFinish('Turkce/pekistirme.html',{completed:state.quiz,total:15,correct:state.quizCorrect,score:state.score});
   document.getElementById("result").classList.add("show");
 
   confetti();
@@ -1631,6 +1632,18 @@ document.getElementById("restart")
   document.getElementById("learn")
     .classList.add("active");
 });
+
+
+// Sonuç kaydı yalnız oyunun kendi bitiş koşulundan çağrılır; öğrenci düğmesi değildir.
+// Bu kayıt tarayıcıda kanıttır; sunucu tarafından doğrulanmış öğretmen kaydı değildir.
+function recordVerifiedFinish(activity,metrics){
+  if(!Number.isFinite(metrics.total)||metrics.completed!==metrics.total)return;
+  const report={schema:"4d-game-result-v1",activity,metrics,recordedAt:new Date().toISOString()};
+  try{localStorage.setItem("4d.result."+activity,JSON.stringify(report));}catch(e){}
+  window.dispatchEvent(new CustomEvent("4d:game-complete",{detail:report}));
+  // Kimlik içermeyen sonuç, onu doğrulayan bir portal dinleyicisine de iletilebilir.
+  if(window.opener&&!window.opener.closed)window.opener.postMessage(report,"*");
+}
 
 </script>
 
