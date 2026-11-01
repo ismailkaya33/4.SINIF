@@ -10,7 +10,7 @@ const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({
   }),
   'mat-oruntuler': Object.freeze({
     konu: 'Matematik',
-    kazanim: 'KAZANIM_DOGRULANACAK',
+    kazanim: 'SAYI_ORUNTULERI_KOD_BEKLIYOR',
     maxTotal: 1000
   })
 });
