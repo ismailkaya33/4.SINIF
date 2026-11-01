@@ -259,6 +259,13 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 .courseLinks li .completionButton{display:block;width:100%;min-height:52px;margin:5px 0 11px;padding:9px 13px;background:#fca311;color:#283347;border-radius:11px;font-size:17px;font-weight:900;text-align:center}
 .courseLinks li .completionButton.done{background:#c8f3dd;color:#236c51;cursor:default}
 .courseLinks li .completionButton:focus-visible{outline:3px solid #305fbd;outline-offset:2px}
+
+/* Defter notlari: buyuk ve erisilebilir yazdim kutucugu */
+.noteCheckbox{display:flex;align-items:center;gap:14px;min-height:62px;padding:12px 15px;border:2px solid #d1dff5;border-radius:13px;background:#f2f7ff;color:#2c4d7d;font-size:19px;font-weight:900;cursor:pointer}
+.noteCheckbox input{flex:none;appearance:auto;width:28px;height:28px;margin:0;accent-color:#267d67;cursor:pointer}
+.noteCheckbox.done{background:#d8f7e8;border-color:#96d7b5;color:#23684e;cursor:default}
+.noteCheckbox input:focus-visible{outline:3px solid #fca311;outline-offset:3px}
+.noteCheckbox input:disabled{cursor:default}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
@@ -499,27 +506,42 @@ function defterKartiOlustur(dir,filename,label){
  const title=document.createElement("strong");title.textContent="📒 "+label;
  const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename);
  link.target="_blank";link.rel="noopener noreferrer";link.textContent="Defter Notunu Aç ↗";
- const btn=document.createElement("button");btn.type="button";btn.dataset.noteId=id;
- function guncelle(){const done=yazilanNotlar.has(id);btn.classList.toggle("done",done);btn.textContent=done?"✓ Yazdım (Kaydedildi)":"✎ Defterime Yazdım";btn.disabled=done;}
+ const choice=document.createElement("label");choice.className="noteCheckbox";
+ const input=document.createElement("input");input.type="checkbox";input.dataset.noteId=id;
+ const caption=document.createElement("span");
+ function guncelle(){
+  const done=yazilanNotlar.has(id);
+  input.checked=done;input.disabled=done;
+  choice.classList.toggle("done",done);
+  caption.textContent=done?"Yazdım ✓ (Kaydedildi)":"Defterime yazdım";
+ }
  guncelle();
- btn.addEventListener("click",function(){
-  const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
-  btn.disabled=true;btn.textContent="Kaydediliyor...";
+ input.addEventListener("change",function(){
+  if(!input.checked)return;
+  const token=sessionStorage.getItem(anahtarAdi);
+  if(!token){guncelle();return}
+  input.disabled=true;caption.textContent="Kaydediliyor...";
   google.script.run.withSuccessHandler(function(r){
    if(sessionStorage.getItem(anahtarAdi)!==token)return;
-   if(r&&r.basarili){yazilanNotlar.add(id);guncelle();}else{btn.disabled=false;btn.textContent="Tekrar Dene";}
-  }).withFailureHandler(function(){btn.disabled=false;btn.textContent="Tekrar Dene";}).defterNotuTamamla(token,id);
+   if(r&&r.basarili){yazilanNotlar.add(id);guncelle();}
+   else{input.disabled=false;input.checked=false;caption.textContent="Kaydedilemedi, tekrar işaretle";}
+  }).withFailureHandler(function(){
+   if(sessionStorage.getItem(anahtarAdi)!==token)return;
+   input.disabled=false;input.checked=false;caption.textContent="Kaydedilemedi, tekrar işaretle";
+  }).defterNotuTamamla(token,id);
  });
- card.append(title,link,btn);return card;
+ choice.append(input,caption);card.append(title,link,choice);return card;
 }
 function defterDurumYukle(){
  const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
  google.script.run.withSuccessHandler(function(r){
   if(sessionStorage.getItem(anahtarAdi)!==token||!r||!r.basarili)return;
   yazilanNotlar=new Set(r.tamamlananlar||[]);
-  document.querySelectorAll(".noteCard button[data-note-id]").forEach(btn=>{
-   const done=yazilanNotlar.has(btn.dataset.noteId);btn.disabled=done;btn.classList.toggle("done",done);
-   btn.textContent=done?"✓ Yazdım (Kaydedildi)":"✎ Defterime Yazdım";
+  document.querySelectorAll(".noteCheckbox input[data-note-id]").forEach(input=>{
+   const done=yazilanNotlar.has(input.dataset.noteId);
+   input.checked=done;input.disabled=done;
+   input.closest(".noteCheckbox").classList.toggle("done",done);
+   input.nextElementSibling.textContent=done?"Yazdım ✓ (Kaydedildi)":"Defterime yazdım";
   });
  }).defterNotuDurumum(token);
 }
