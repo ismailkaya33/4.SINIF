@@ -18,7 +18,7 @@
 "use strict";
 function renderRows(id,items){const target=document.getElementById(id);items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});target.appendChild(tr)})}
 function ratio(a,b){return b?(100*a/b).toFixed(1)+'%':'—'}
-function activityName(id){return ({'mat-kayipsayilar':'Matematik • Kayıp Sayılar'})[id]||id}
+function activityName(id){return ({'mat-kayipsayilar':'Matematik • Kayıp Sayılar','mat-oruntuler':'Matematik • Sayı Örüntüleri'})[id]||id}
 function completionName(id){return ({
  'Turkce/ikilemeler.html':'Türkçe • İkileme Dedektifi',
  'Turkce/pekistirme.html':'Türkçe • Pekiştirme Dedektifi 1',
