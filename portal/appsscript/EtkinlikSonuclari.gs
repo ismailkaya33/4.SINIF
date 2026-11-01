@@ -32,7 +32,7 @@ function etkinlikSonucuDogrula_(veri) {
   }
   if (veri.total < 1 || veri.total > 1000 ||
       veri.correct > veri.total || veri.wrong > veri.total ||
-      veri.correct + veri.wrong > veri.total ||
+      veri.correct + veri.wrong !== veri.total ||
       veri.firstTry > veri.correct || veri.wrongAttempts > 10000 ||
       veri.durationSeconds > SONUC_MAX_SURE_SN_) return null;
   if (typeof veri.attemptId !== 'string' ||
