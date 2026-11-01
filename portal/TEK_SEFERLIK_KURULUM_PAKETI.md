@@ -9,6 +9,7 @@ Bu paket **iki ayrı** Apps Script projesine uygulanır. GitHub yalnız kaynak k
 | `GirisGuvenligi.gs` | `portal/appsscript/GirisGuvenligi.gs` | Mevcut giriş sınırı, ayrı taslak kullanılmaz |
 | `OgrenciOturum.gs` | `portal/appsscript/OgrenciOturum.gs` | Mevcut oturum sunucu API'si |
 | `OgrenciGiris.html` | `portal/appsscript/OgrenciGiris_Guncel.html` | Güncellenmiş sürüm; test edilmeden canlıya yükleme |
+| `EtkinlikKayitDefteri.gs` | `portal/appsscript/EtkinlikKayitDefteri.gs` | Etkinlik izin listesi; sonuç kaydından önce yüklenmeli |
 | `EtkinlikSonuclari.gs` | `portal/appsscript/EtkinlikSonuclari.gs` | Güncellenmiş doğrulama; öncesinde oyunla uçtan uca kontrol |
 | `OgrenciDuyurulari.gs` | `portal/appsscript/OgrenciDuyurulari.gs` | Tarih doğrulama güncellemesi |
 | `SonucDogrulamaTestleri.gs` | `portal/appsscript/SonucDogrulamaTestleri.gs` | İsteğe bağlı test; öğrenciler için işlev sunmaz |
@@ -54,8 +55,15 @@ GitHub Pages ana sayfası, orijinal oyun ve mevcut Firebase bağımlı özellikl
 - Bu statik doğrulamalar canlı Apps Script fonksiyon çalıştırması ve web uygulaması regresyon testinin yerine geçmez.
 
 ### Son yükleme için karışıklığı önleyen kesin dosya listesi
-**Öğrenci:** `Kod.gs`, `GirisGuvenligi.gs`, `OgrenciOturum.gs`, `EtkinlikSonuclari.gs`, `OgrenciDuyurulari.gs` ve `OgrenciGiris.html` (GitHub'daki `OgrenciGiris_Guncel.html`). İsteğe bağlı test: `SonucDogrulamaTestleri.gs`. Mevcut başka işlevler varsa silinmez; öncesinde fark kontrolü gerekir.
+**Öğrenci:** `Kod.gs`, `GirisGuvenligi.gs`, `OgrenciOturum.gs`, `EtkinlikKayitDefteri.gs`, `EtkinlikSonuclari.gs`, `OgrenciDuyurulari.gs` ve `OgrenciGiris.html` (GitHub'daki `OgrenciGiris_Guncel.html`). İsteğe bağlı test: `SonucDogrulamaTestleri.gs`. Mevcut başka işlevler varsa silinmez; öncesinde fark kontrolü gerekir.
 
 **Öğretmen:** `Kod.gs` (GitHub'daki `OgretmenRapor.gs`), `OgretmenDuyuruTaslak.gs`, `OgretmenRapor.html`.
 
 **Yüklenmeyecek eski/alternatifler:** `GirisDenemeKoruma_Oneri.gs`, `Kod_doGet_yonlendirme.gs`, `EtkinlikOynat.html`, `OgretmenRapor_Taslak.html`.
+
+## Çoklu etkinlik takibi — yeni hazırlık (2026-11-01)
+- `EtkinlikKayitDefteri.gs` ile takip edilebilir etkinliklerin sunucu izin listesi ayrıldı.
+- `EtkinlikSonuclari.gs`, yalnız izin listesinde bulunan etkinlikleri kabul eder ve etkinlik başına `maxTotal` uygular.
+- Mevcut pilot `mat-kayipsayilar` korunur. Kaydı olmayan diğer 50 etkinlik otomatik takip edilmiyor.
+- Bu iki dosya **birlikte aktarılmalıdır**; tekini yüklemek sonuç kaydını bozar. Güncel sürüm henüz çalışan Apps Script'e aktarılmadı.
+- 9 doğrulama testi bu iki modül birlikte yüklenmişken tekrar çalıştırıldı, 9/9 geçti.
