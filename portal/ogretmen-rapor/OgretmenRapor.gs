@@ -8,18 +8,9 @@
 const RAPOR_KAYIT_SAYFASI_='Sayfa1';
 const RAPOR_SONUC_SAYFASI_='ETKINLIK_SONUCLARI';
 
-function onOpen() {
-  SpreadsheetApp.getUi().createMenu('4/D Öğretmen')
-    .addItem('Etkinlik ve kazanım raporu','ogretmenRaporunuAc')
-    .addToUi();
-}
-function ogretmenRaporunuAc() {
-  const html=HtmlService.createHtmlOutputFromFile('OgretmenRapor')
-    .setTitle('4/D Öğretmen Raporu').setWidth(1100).setHeight(750);
-  SpreadsheetApp.getUi().showModalDialog(html,'4/D • Katılım ve Kazanım Raporu');
-}
+function doGet() { return HtmlService.createHtmlOutputFromFile("OgretmenRapor").setTitle("4/D Ogretmen Raporu"); }
 function ogretmenRaporVerisi() {
-  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  const ss=SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty("OZEL_TABLO_ID"));
   if(!ss)throw Error('Rapor, özel öğrenci kayıt E-Tablosuna bağlı olmalıdır.');
   const kayit=ss.getSheetByName(RAPOR_KAYIT_SAYFASI_);
   const sonuc=ss.getSheetByName(RAPOR_SONUC_SAYFASI_);
