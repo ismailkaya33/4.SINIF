@@ -53,3 +53,59 @@ function defterNotuDurumum(token) {
  }
  return {basarili:true,tamamlananlar:[...new Set(done)]};
 }
+
+/** Pilot: yalnız öğretmenin seçtiği mevcut altı etkinlik.
+ * İşaret öğrenci beyanıdır; otomatik puan / doğru-yanlış sonucu değildir.
+ */
+const SECILI_ETKINLIKLER_ = Object.freeze([
+ 'Turkce/ikilemeler.html',
+ 'Turkce/pekistirme.html',
+ 'Turkce/sozavcıları.html',
+ 'Matematik/cikarmaislemi.html',
+ 'Fen/besinkasifleri.html',
+ 'Sosyal/oyunzamani.html'
+]);
+const ETKINLIK_BEYAN_SAYFASI_='ETKINLIK_TAMAMLAMA';
+function seciliEtkinlikMi_(id) {
+ return typeof id==='string' && SECILI_ETKINLIKLER_.indexOf(id)!==-1;
+}
+function etkinlikBeyanSayfasi_() {
+ const ss=SpreadsheetApp.getActiveSpreadsheet();
+ let sheet=ss.getSheetByName(ETKINLIK_BEYAN_SAYFASI_);
+ if(!sheet){
+  sheet=ss.insertSheet(ETKINLIK_BEYAN_SAYFASI_);
+  sheet.appendRow(['OgrenciNo','EtkinlikKimligi','TamamlamaZamani','KayitTuru']);
+ }
+ return sheet;
+}
+function seciliEtkinlikTamamla(token,id) {
+ if(!oturumTokenGecerliBicimdeMi_(token)||!seciliEtkinlikMi_(id))return {basarili:false};
+ const lock=LockService.getScriptLock();
+ if(!lock.tryLock(10000))return {basarili:false};
+ try {
+  const record=oturumKaydi_(token);
+  if(!record)return {basarili:false};
+  const pupil=kayitNoIle_(record.no);
+  if(!pupil)return {basarili:false};
+  const sheet=etkinlikBeyanSayfasi_();
+  const rows=sheet.getLastRow()>1?sheet.getRange(2,1,sheet.getLastRow()-1,2).getDisplayValues():[];
+  if(rows.some(r=>String(r[0])===String(pupil.no)&&r[1]===id))return {basarili:true,tekrar:true};
+  sheet.appendRow([String(pupil.no),id,new Date(),'OGRENCI_BEYANI']);
+  return {basarili:true,tekrar:false};
+ }catch(e){return {basarili:false}}finally{lock.releaseLock()}
+}
+function seciliEtkinlikDurumum(token) {
+ if(!oturumTokenGecerliBicimdeMi_(token))return {basarili:false};
+ const record=oturumKaydi_(token);
+ if(!record)return {basarili:false};
+ const pupil=kayitNoIle_(record.no);
+ if(!pupil)return {basarili:false};
+ const sheet=SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ETKINLIK_BEYAN_SAYFASI_);
+ const done=[];
+ if(sheet&&sheet.getLastRow()>1){
+  sheet.getRange(2,1,sheet.getLastRow()-1,2).getDisplayValues().forEach(r=>{
+   if(String(r[0])===String(pupil.no)&&seciliEtkinlikMi_(r[1]))done.push(r[1]);
+  });
+ }
+ return {basarili:true,tamamlananlar:[...new Set(done)]};
+}
