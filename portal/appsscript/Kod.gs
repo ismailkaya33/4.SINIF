@@ -20,16 +20,16 @@ function kayitBul_(kod) {
   const sonSatir = sayfa.getLastRow();
   if (sonSatir < 2) return null;
   const rows = sayfa.getRange(2, 1, sonSatir - 1, 4).getDisplayValues();
-  for (const [no, ad, girisKodu, tur] of rows) {
-    if (String(girisKodu).trim().toUpperCase() === kod) {
-      return {
-        no: String(no).trim(),
-        ad: String(ad).trim(),
-        misafir: String(tur).trim().toUpperCase() === 'TEST'
-      };
-    }
-  }
-  return null;
+  const matches = rows.filter(r => String(r[2]).trim().toUpperCase() === kod);
+  // Aynı kod iki kişide bulunursa rastgele ilk hesabı açma.
+  if (matches.length !== 1) return null;
+  const [no, ad, , tur] = matches[0];
+  if (!String(no).trim() || !String(ad).trim()) return null;
+  return {
+    no: String(no).trim(),
+    ad: String(ad).trim(),
+    misafir: String(tur).trim().toUpperCase() === 'TEST'
+  };
 }
 
 function ozet_(metin) {
