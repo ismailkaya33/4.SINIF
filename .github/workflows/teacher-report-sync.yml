@@ -1,0 +1,47 @@
+name: 4D Teacher report - source sync
+on:
+  push:
+    branches:
+      - hazirlik/kazanim-takibi-20261101
+    paths:
+      - 'portal/ogretmen-rapor/**'
+  workflow_dispatch:
+jobs:
+  teacher-source:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: 4d-teacher-source
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    environment: appsscript-sync
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: hazirlik/kazanim-takibi-20261101
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare private teacher credentials
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+          TEACHER_SCRIPT_ID: ${{ secrets.TEACHER_SCRIPT_ID }}
+        run: |
+          set -eu
+          test -n "$CLASPRC_JSON" || exit 1
+          test -n "$TEACHER_SCRIPT_ID" || exit 1
+          mkdir -p "$RUNNER_TEMP/4d-teacher"
+          printf '%s' "$CLASPRC_JSON" > "$HOME/.clasprc.json"
+          chmod 600 "$HOME/.clasprc.json"
+          printf '{"scriptId":"%s","rootDir":"."}\n' "$TEACHER_SCRIPT_ID" > "$RUNNER_TEMP/4d-teacher/.clasp.json"
+      - name: Pull current private source
+        working-directory: ${{ runner.temp }}/4d-teacher
+        run: npx --yes @google/clasp@latest pull
+      - name: Merge reviewed teacher sources
+        run: node .github/scripts/prepare-appsscript-sync.mjs teacher "$RUNNER_TEMP/4d-teacher"
+      - name: Update private teacher project source only
+        working-directory: ${{ runner.temp }}/4d-teacher
+        run: npx --yes @google/clasp@latest push --force
+      - name: Delete credentials
+        if: always()
+        run: rm -f "$HOME/.clasprc.json"
