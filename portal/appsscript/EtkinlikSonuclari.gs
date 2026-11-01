@@ -1,6 +1,6 @@
 /**
  * 4/D — Etkinlik sonuç kaydı (Apps Script için hazırlık).
- * Gizli veri içermez. Canlı Apps Script'e henüz kurulmamıştır.
+ * Gizli veri içermez. GitHub'daki güncel sürüm canlıya henüz aktarılmamıştır.
  * Bağımlılıklar: Kod.gs (kayitNoIle_), OgrenciOturum.gs (oturumKaydi_).
  * Yalnız HtmlService üzerinden google.script.run ile çağrılması amaçlanır.
  */
