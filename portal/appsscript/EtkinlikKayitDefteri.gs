@@ -7,6 +7,11 @@ const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({
     konu: 'Matematik',
     kazanim: 'M.4.1.3.4',
     maxTotal: 1000
+  }),
+  'mat-oruntuler': Object.freeze({
+    konu: 'Matematik',
+    kazanim: 'M.4.1.1.5',
+    maxTotal: 1000
   })
 });
 function etkinlikTanimi_(id) {
