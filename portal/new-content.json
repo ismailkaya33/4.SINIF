@@ -290,6 +290,13 @@
       "type": "note",
       "course": "sosyal",
       "target": "Sosyal/DefterNotlari/millimucadele7.png"
+    },
+    {
+      "id": "recent-activity-insan-sorumluluk",
+      "addedOn": "2026-11-03",
+      "type": "activity",
+      "course": "insan",
+      "target": "Insanhaklari/insanolmasorumlulugu.html"
     }
   ]
 }
