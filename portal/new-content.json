@@ -304,6 +304,20 @@
       "type": "activity",
       "course": "trafik",
       "target": "Trafik/yayaolaraktrafikkurallarietkinligi.html"
+    },
+    {
+      "id": "recent-activity-mat-toplamacikarma-1",
+      "addedOn": "2026-11-03",
+      "type": "activity",
+      "course": "matematik",
+      "target": "Matematik/toplamacikarmaproblem1.html"
+    },
+    {
+      "id": "recent-activity-mat-toplamacikarma-2",
+      "addedOn": "2026-11-03",
+      "type": "activity",
+      "course": "matematik",
+      "target": "Matematik/toplamacikarmaproblem2.html"
     }
   ]
 }
