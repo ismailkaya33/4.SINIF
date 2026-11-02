@@ -42,5 +42,5 @@ for(const entry of tracking.yeniEtkinlikler){
 const linked=[...portal.matchAll(/href="https:\/\/ismailkaya33\.github\.io\/4\.SINIF\/([^"]+\.html)"/g)].map(x=>x[1]);
 for(const href of linked)assert.ok(known.has(href),'Unregistered activity link: '+href);
 assert.equal(tracking.gelecekEtkinlikTakibi,'zorunlu');
-for(const entry of tracking.mevcutEtkinlikler)assert.ok(['secim_bekliyor','otomatik_sonuc','ogrenci_beyani'].includes(entry.takip),'Invalid tracking option: '+entry.konum);
+for(const entry of tracking.mevcutEtkinlikler)assert.ok(['secim_bekliyor','otomatik_sonuc','ogrenci_beyani','oyun_ici_bitis_dogrulamasi_bekliyor'].includes(entry.takip),'Invalid tracking option: '+entry.konum);
 console.log('Integration smoke checks passed: result validation, trusted message bridge, replay, syntax.');
