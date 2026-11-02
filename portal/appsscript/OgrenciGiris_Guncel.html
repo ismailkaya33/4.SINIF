@@ -280,6 +280,15 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 .noteCard strong{font-size:clamp(22px,2.4vw,27px);line-height:1.25}
 .noteCard a{width:auto;min-height:40px;padding:8px 15px;font-size:15px;white-space:nowrap}
 .noteCard .noteCheckbox{grid-column:1/-1}
+/* Uyari panosu duyurulardan bagimsiz, tarihli icerik kutusu. */
+.newContentPanel{margin:15px 0;padding:18px 20px;border:2px solid #f3c66a;border-radius:18px;background:#fffaf0;box-shadow:0 5px 15px #4936140d}
+.newContentPanel h3{margin:0 0 12px;color:#80520a;font-size:21px}
+.newContentAlerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.newContentAlert{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid #f0d899;border-radius:12px;background:#fff;font-weight:800;color:#35445a}
+.newContentAlert button{flex:none;margin:0;padding:9px 12px;background:#315c91;color:#fff;border-radius:9px;font-size:15px}
+.course summary .newLight{margin-left:auto;padding:5px 10px;border-radius:999px;background:#e9473f;color:#fff;font-size:13px;font-weight:900;letter-spacing:.4px;box-shadow:0 3px 8px #e9473f40;animation:pulse 1.5s infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+@media(max-width:620px){.newContentPanel{padding:15px}.newContentAlert{font-size:16px}}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
@@ -289,6 +298,10 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 <section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 </div>
+<section id="newContentPanel" class="newContentPanel" aria-labelledby="newContentHeading" hidden>
+ <h3 id="newContentHeading">✨ Yeni İçerikler</h3>
+ <div id="newContentAlerts" class="newContentAlerts" aria-live="polite"></div>
+</section>
 <details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor...</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru cevap</small></div></div></div></details>
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
 <p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
@@ -348,11 +361,57 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 <div id="oyunPanel" hidden><div id="oyunUst"><strong>🎮 Matematik • Kayıp Sayılar</strong><button id="oyundanDon" type="button">Portala Dön</button></div><iframe id="oyunCer" title="Matematik oyunu" referrerpolicy="no-referrer"></iframe><p id="oyunDurum" role="status"></p></div>
 
 </main><script>
+const YENI_ICERIK_KATALOGU_=[{"id":"btn-matematik","addedOn":"2026-10-25","type":"section","course":"matematik"},{"id":"btn-fen","addedOn":"2026-10-27","type":"section","course":"fen"},{"id":"btn-insan","addedOn":"2026-10-18","type":"section","course":"insan"},{"id":"btn-sosyal","addedOn":"2026-10-29","type":"section","course":"sosyal"},{"id":"btn-turkce","addedOn":"2026-10-31","type":"section","course":"turkce"},{"id":"etk-mat-zihintop","addedOn":"2026-10-18","type":"activity","course":"matematik"},{"id":"etk-mat-verilmeyen","addedOn":"2026-10-25","type":"activity","course":"matematik"},{"id":"etk-mat-cikarma","addedOn":"2026-10-18","type":"activity","course":"matematik"},{"id":"etk-fen-besin1","addedOn":"2026-10-18","type":"activity","course":"fen"},{"id":"etk-fen-besin2","addedOn":"2026-10-18","type":"activity","course":"fen"},{"id":"etk-insan-bilinci","addedOn":"2026-10-18","type":"activity","course":"insan"},{"id":"etk-sosyal-kultur","addedOn":"2026-10-21","type":"activity","course":"sosyal"},{"id":"etk-sosyal-oyun","addedOn":"2026-10-26","type":"activity","course":"sosyal"},{"id":"etk-turkce-soz","addedOn":"2026-10-31","type":"activity","course":"turkce"},{"id":"etk-mat-not3","addedOn":"2026-10-25","type":"note","course":"matematik"},{"id":"etk-mat-not4","addedOn":"2026-10-18","type":"note","course":"matematik"},{"id":"etk-mat-not5","addedOn":"2026-10-18","type":"note","course":"matematik"},{"id":"etk-fen-not4","addedOn":"2026-10-27","type":"note","course":"fen"},{"id":"etk-fen-not5","addedOn":"2026-10-27","type":"note","course":"fen"},{"id":"etk-fen-not3","addedOn":"2026-10-18","type":"note","course":"fen"},{"id":"etk-sosyal-not3","addedOn":"2026-10-19","type":"note","course":"sosyal"},{"id":"etk-sosyal-not5","addedOn":"2026-10-26","type":"note","course":"sosyal"},{"id":"etk-sosyal-not6","addedOn":"2026-10-26","type":"note","course":"sosyal"},{"id":"etk-turkce-not3","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"etk-turkce-not4","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"etk-turkce-not5","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"etk-turkce-not6","addedOn":"2026-10-31","type":"note","course":"turkce"}];
+
 "use strict";
 const buton=document.getElementById("giris"),cikisButonu=document.getElementById("cikis"),sonuc=document.getElementById("sonuc"),kodAlani=document.getElementById("kod"),girisAlani=document.getElementById("girisAlani"),oturumAlani=document.getElementById("oturumAlani"),anahtarAdi="4d_ogrenci_oturumu";
 let oturumNesli=0;
 const tokenFormat=/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 function hosGeldinAdiGoster_(ad){document.getElementById("welcomeName").textContent=String(ad||"Öğrenci");}
+function yeniIcerikTarihiAktif_(dateText){
+ const match=/^(\\d{4})-(\\d{2})-(\\d{2})$/.exec(String(dateText||""));
+ if(!match)return false;
+ const added=new Date(Number(match[1]),Number(match[2])-1,Number(match[3]));
+ const today=new Date();added.setHours(0,0,0,0);today.setHours(0,0,0,0);
+ const days=Math.floor((today-added)/86400000);
+ return days>=0&&days<3;
+}
+function yeniIcerikleriGoster_(){
+ const panel=document.getElementById("newContentPanel"),root=document.getElementById("newContentAlerts");
+ const active=YENI_ICERIK_KATALOGU_.filter(item=>yeniIcerikTarihiAktif_(item.addedOn));
+ const courseNames={turkce:"Türkçe",matematik:"Matematik",fen:"Fen Bilimleri",sosyal:"Sosyal Bilgiler",insan:"İnsan Hakları",trafik:"Trafik Güvenliği",oyunlar:"Oyunlar"};
+ [...new Set(active.map(item=>item.course).filter(Boolean))].forEach(function(course){
+  const label=courseNames[course];if(!label)return;
+  const card=[...document.querySelectorAll("#dersIzgarasi>.course")].find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
+  const summary=card&&card.querySelector("summary");
+  if(summary&&!summary.querySelector(".newLight")){
+   const badge=document.createElement("span");badge.className="newLight";badge.textContent="YENİ";summary.appendChild(badge);
+  }
+ });
+ const groups=[
+  {type:"activity",text:"Yeni etkinlik var."},
+  {type:"evaluation",text:"Yeni değerlendirme görevi var."},
+  {type:"note",text:"Yazılması gereken bir defter notu var."}
+ ];
+ const cards=[];
+ groups.forEach(function(group){
+  const matches=active.filter(item=>item.type===group.type||(group.type==="activity"&&item.type==="section"));
+  if(!matches.length)return;
+  const item=matches[0],label=courseNames[item.course];
+  const lesson=[...document.querySelectorAll("#dersIzgarasi>.course")].find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
+  const card=document.createElement("div");card.className="newContentAlert";
+  const text=document.createElement("span");text.textContent=group.text;
+  const button=document.createElement("button");button.type="button";button.textContent="Görüntüle";
+  button.addEventListener("click",function(){
+   if(!lesson)return;
+   lesson.open=true;
+   const tab=group.type==="note"?"defter":group.type==="evaluation"?"degerlendirme":"etkinlik";
+   tabSec(lesson,tab);lesson.scrollIntoView({behavior:"smooth",block:"center"});
+  });
+  card.append(text,button);cards.push(card);
+ });
+ root.replaceChildren(...cards);panel.hidden=cards.length===0;
+}
 function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
 function ilerlemeYukle(){
  const token=sessionStorage.getItem(anahtarAdi);
@@ -601,6 +660,7 @@ dersKartlari.forEach(function(card){
 });
 
 seciliEtkinlikButonlariKur();
+yeniIcerikleriGoster_();
 const mevcutToken=sessionStorage.getItem(anahtarAdi);
 if(mevcutToken){
  const istekNesli=++oturumNesli;
