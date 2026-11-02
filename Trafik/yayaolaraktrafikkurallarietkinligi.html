@@ -1,0 +1,1212 @@
+Warning: truncated output (original token count: 24656)
+Total output lines: 1494
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG.4.1.4. Yaya Olarak Trafik Kurallarına Uyarım - Etkileşimli Etkinlik</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Çocuk Dostu Yazı Tipleri -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ecfeff 0%, #fef9c3 50%, #f0fdf4 100%);
+            min-height: 100vh;
+        }
+        h1, h2, h3, h4, .title-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .card-hover {
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.85); opacity: 0.6; }
+            50% { transform: scale(1.06); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop 0.35s ease-out forwards;
+        }
+        @keyframes roadMove {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -40; }
+        }
+        .road-dash {
+            animation: roadMove 1.2s linear infinite;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 pb-12">
+
+    <!-- ÜST BAŞLIK VE PUAN ÇUBUĞU -->
+    <header class="bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 text-white shadow-lg no-print">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-sm text-3xl shadow-inner border border-white/30">
+                    🚦
+                </div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="bg-amber-300 text-amber-950 text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                            4. Sınıf Trafik Güvenliği • TG.4.1.4.
+                        </span>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-bold mt-1">Yaya Olarak Trafik Kurallarına Uyarım!</h1>
+                </div>
+            </div>
+
+            <!-- Puan & Ses Kontrolü -->
+            <div class="flex items-center gap-3">
+                <div class="bg-white text-slate-800 px-4 py-2 rounded-2xl shadow-md flex items-center gap-2.5 border-2 border-amber-300">
+                    <span class="text-2xl">⭐</span>
+                    <div>
+                        <div class="text-[10px] font-extrabold text-slate-400 uppercase leading-none">Güvenli Yaya Puanı</div>
+                        <div id="scoreDisplay" class="text-xl font-extrabold text-emerald-700 leading-tight">0</div>
+                    </div>
+                </div>
+                <button id="soundBtn" onclick="toggleSound()" class="bg-white/20 hover:bg-white/30 p-3 rounded-2xl transition text-xl border border-white/30" title="Sesi Aç/Kapat">
+                    🔊
+                </button>
+            </div>
+        </div>
+
+        <!-- 4 Ana Sekme Menüsü -->
+        <div class="max-w-6xl mx-auto px-4 pt-2 flex flex-wrap gap-2">
+            <button onclick="switchMainTab('tab1')" id="btn-tab1" class="main-tab-btn bg-white text-emerald-800 font-bold px-4 py-3 rounded-t-2xl shadow-sm flex items-center gap-2 transition text-sm md:text-base">
+                <span>🦮</span> 1. Güvenli Yaya Rehberi & Simülatör
+            </button>
+            <button onclick="switchMainTab('tab2')" id="btn-tab2" class="main-tab-btn bg-teal-900/40 text-white/90 hover:bg-teal-900/60 font-bold px-4 py-3 rounded-t-2xl flex items-center gap-2 transition text-sm md:text-base">
+                <span>🔍</span> 2. Neden Tehlikeli? (Karar Oyunu)
+            </button>
+            <button onclick="switchMainTab('tab3')" id="btn-tab3" class="main-tab-btn bg-teal-900/40 text-white/90 hover:bg-teal-900/60 font-bold px-4 py-3 rounded-t-2xl flex items-center gap-2 transition text-sm md:text-base">
+                <span>🕵️‍♂️</span> 3. Güvenli Geçiş Dedektifi
+            </button>
+            <button onclick="switchMainTab('tab4')" id="btn-tab4" class="main-tab-btn bg-teal-900/40 text-white/90 hover:bg-teal-900/60 font-bold px-4 py-3 rounded-t-2xl flex items-center gap-2 transition text-sm md:text-base">
+                <span>🪪</span> 4. Bilinçli Yaya Ehliyetim
+            </button>
+        </div>
+    </header>
+
+    <!-- ANA İÇERİK -->
+    <main class="max-w-6xl mx-auto px-4 mt-6">
+
+        <!-- =========================================================
+             SEKME 1: GÜVENLİ YAYA REHBERİ & 3 İNTERAKTİF SİMÜLASYON
+             ========================================================= -->
+        <section id="tab1" class="tab-panel space-y-6">
+            <!-- Alt Simülasyon Seçici -->
+            <div class="bg-white rounded-3xl p-4 shadow-md border-2 border-emerald-100 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="switchSimTab('simA')" id="btn-simA" class="sim-sub-btn bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-2xl text-sm flex items-center gap-2 shadow-sm transition">
+                        <span>🛤️</span> A) Kaldırımlı ve Banketli Yol
+                    </button>
+                    <button onclick="switchSimTab('simB')" id="btn-simB" class="sim-sub-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-2xl text-sm flex items-center gap-2 transition">
+                        <span>👀</span> B) Sol - Sağ - Sol Karşıya Geçiş
+                    </button>
+                    <button onclick="switchSimTab('simC')" id="btn-simC" class="sim-sub-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-2xl text-sm flex items-center gap-2 transition">
+                        <span>🚗</span> C) Park Halindeki Araçlar & Kör Nokta
+                    </button>
+                </div>
+                <span class="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+                    💡 İpucu: Butonları deneyerek her simülasyondan puan kazan!
+                </span>
+            </div>
+
+            <!-- SİMÜLASYON A: KALDIRIMLI YOL vs. KALDIRIMSIZ (BANKETLİ) YOL -->
+            <div id="simA" class="sim-panel bg-white rounded-3xl p-6 shadow-lg border-2 border-emerald-100 space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Simülasyon 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mt-1">Kaldırımlı ve Kaldırımsız (Banketli) Yollarda Nasıl Yürünür?</h2>
+                        <p class="text-slate-600 text-sm mt-0.5">Yol türünü seç ve yayayı en güvenli yürüyüş konumuna yerleştir!</p>
+                    </div>
+                    <!-- Yol Türü Değiştirici -->
+                    <div class="flex bg-slate-100 p-1.5 rounded-2xl shrink-0">
+                        <button id="roadModeSidewalkBtn" onclick="setRoadMode('sidewalk')" class="px-4 py-2 rounded-xl font-bold text-sm bg-white text-emerald-700 shadow-sm transition">
+                            🏙️ Kaldırımlı Yol
+                        </button>
+                        <button id="roadModeBanketBtn" onclick="setRoadMode('banket')" class="px-4 py-2 rounded-xl font-bold text-sm text-slate-600 hover:text-slate-900 transition">
+                            🌾 Kaldırımsız (Banketli) Yol
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <!-- SVG Yol Görselleştirmesi -->
+                    <div class="lg:col-span-7 bg-slate-900 rounded-3xl p-4 shadow-inner relative overflow-hidden border-4 border-slate-200">
+                        <div class="flex justify-between items-center text-xs font-bold text-white/80 mb-2 px-2">
+                            <span id="leftSideLabel" class="bg-white/10 px-2.5 py-1 rounded-lg">⬅️ SOL TARAF (Karşıdan Gelen Trafik)</span>
+                            <span class="text-amber-300">⬆️ YAYANIN GİDİŞ YÖNÜ ⬆️</span>
+                            <span id="rightSideLabel" class="bg-white/10 px-2.5 py-1 rounded-lg">SAĞ TARAF (Arkadan Gelen Trafik) ➡️</span>
+                        </div>
+
+                        <svg id="roadSvg" viewBox="0 0 500 280" class="w-full h-auto rounded-2xl">
+                            <!-- Arka Plan Çimen / Toprak -->
+                            <rect x="0" y="0" width="500" height="280" fill="#86efac" />
+
+                            <!-- Kaldırım veya Banket Alanları (JS ile rengi/dokusu güncellenir) -->
+                            <rect id="svgLeftWalkway" x="30" y="0" width="90" height="280" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2" />
+                            <rect id="svgRightWalkway" x="380" y="0" width="90" height="280" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2" />
+
+                            <!-- Kaldırım Taş Çizgileri (Sadece kaldırımlı modda görünür) -->
+                            <g id="sidewalkLines" stroke="#94a3b8" stroke-width="2">
+                                <line x1="115" y1="0" x2="115" y2="280" stroke="#ef4444" stroke-width="4" stroke-dasharray="15,15"/>
+                                <line x1="385" y1="0" x2="385" y2="280" stroke="#ef4444" stroke-width="4" stroke-dasharray="15,15"/>
+                            </g>
+
+                            <!-- Asfalt Taşıt Yolu -->
+                            <rect x="120" y="0" width="260" height="280" fill="#334155" />
+                            <!-- Orta Şerit Çizgisi -->
+                            <line x1="250" y1="0" x2="250" y2="280" stroke="#facc15" stroke-width="6" stroke-dasharray="20,20" class="road-dash" />
+
+                            <!-- Sol Şeritten Karşıdan Gelen Araç (Yukarıdan Aşağıya İniyor) -->
+                            <g id="oncomingCar" transform="translate(165, 35)">
+                                <rect x="0" y="0" width="44" height="72" rx="10" fill="#ef4444" stroke="#fff" stroke-width="2"/>
+                                <rect x="6" y="42" width="32" height="16" rx="4" fill="#bae6fd"/>
+                                <!-- Ön Farlar (Aşağı Bakıyor) -->
+                                <polygon points="4,72 -8,115 20,115 12,72" fill="#fef08a" opacity="0.45"/>
+                                <polygon points="40,72 24,115 52,115 32,72" fill="#fef08a" opacity="0.45"/>
+                                <text x="22" y="30" text-anchor="middle" fill="white" font-size="11" font-weight="bold">⬇️ ARAÇ</text>
+                            </g>
+
+                            <!-- Sağ Şeritten Arkadan Gelen Araç (Aşağıdan Yukarıya Çıkıyor) -->
+                            <g id="behindCar" transform="translate(290, 175)">
+                                <rect x="0" y="0" width="44" height="72" rx="10" fill="#3b82f6" stroke="#fff" stroke-width="2"/>
+                                <rect x="6" y="14" width="32" height="16" rx="4" fill="#bae6fd"/>
+                                <!-- Ön Farlar (Yukarı Bakıyor) -->
+                                <polygon points="4,0 -8,-45 20,-45 12,0" fill="#fef08a" opacity="0.45"/>
+                                <polygon points="40,0 24,-45 52,-45 32,0" fill="#fef08a" opacity="0.45"/>
+                                <text x="22" y="50" text-anchor="middle" fill="white" font-size="11" font-weight="bold">⬆️ ARAÇ</text>
+                            </g>
+
+                            <!-- Yaya Karakteri (Konumu JS ile değişir) -->
+                            <g id="pedestrianAvatar" transform="translate(415, 190)" class="transition-all duration-500">
+                                <circle cx="0" cy="0" r="22" fill="#10b981" stroke="#ffffff" stroke-width="3"/>
+                                <text x="0" y="7" text-anchor="middle" font-size="22">🚶</text>
+                                <rect x="-38" y="-36" width="76" height="18" rx="6" fill="#065f46"/>
+                                <text x="0" y="-24" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="bold">YAYA (SEN)</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Sağ Kontrol ve Kurallar Alanı -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div id="roadModeInfoBox" class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4">
+                            <h3 id="roadModeTitle" class="font-bold text-lg text-emerald-900">🏙️ Kaldırımlı Yolda Yürüme Kuralları</h3>
+                            <p id="roadModeQuestion" class="text-sm text-slate-700 mt-1">
+                                Kaldırımlı bir yolda yürürken hangi kurala dikkat etmeliyiz? Aşağıdaki konumları test et:
+                            </p>
+                        </div>
+
+                        <!-- Konum Test Butonları -->
+                        <div id="roadChoiceButtons" class="space-y-2.5">
+                            <!-- JS ile moda göre doldurulur -->
+                        </div>
+
+                        <!-- Sebep-Sonuç Açıklama Kutusu -->
+                        <div id="roadSimFeedback" class="p-4 rounded-2xl bg-amber-50 border-2 border-amber-200 text-sm text-amber-950 font-semibold">
+                            👆 Yukarıdaki seçeneklerden birine tıklayarak yayanın konumunu ve <strong>nedenini</strong> incele!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SİMÜLASYON B: KARŞIYA GEÇİŞ ADIMLARI (DUR - SOL - SAĞ - SOL - GEÇ) -->
+            <div id="simB" class="sim-panel hidden bg-white rounded-3xl p-6 shadow-lg border-2 border-sky-100 space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="bg-sky-100 text-sky-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Simülasyon 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mt-1">Adım Adım Güvenli Karşıya Geçiş Simülatörü</h2>
+                        <p class="text-slate-600 text-sm mt-0.5">Yaya geçidinde karşıya geçmeden önce sırasıyla doğru butonlara bas!</p>
+                    </div>
+                    <button onclick="resetCrossingSim()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs transition self-start md:self-center">
+                        🔄 Simülasyonu Sıfırla
+                    </button>
+                </div>
+
+                <!-- 5 Adım İlerleme Göstergesi -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    <div id="stepBadge1" class="p-3 rounded-2xl border-2 border-amber-400 bg-amber-50 text-center">
+                        <div class="text-xs font-extrabold text-amber-700">1. ADIM</div>
+                        <div class="font-bold text-sm text-slate-800 mt-0.5">🛑 Kaldırımda Dur</div>
+                    </div>
+                    <div id="stepBadge2" class="p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center opacity-60">
+                        <div class="text-xs font-extrabold text-slate-500">2. ADIM</div>
+                        <div class="font-bold text-sm text-slate-800 mt-0.5">⬅️ Önce Sola Bak</div>
+                    </div>
+                    <div id="stepBadge3" class="p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center opacity-60">
+                        <div class="text-xs font-extrabold text-slate-500">3. ADIM</div>
+                        <div class="font-bold text-sm text-slate-800 mt-0.5">➡️ Sonra Sağa Bak</div>
+                    </div>
+                    <div id="stepBadge4" class="p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center opacity-60">
+                        <div class="text-xs font-extrabold text-slate-500">4. ADIM</div>
+                        <div class="font-bold text-sm text-slate-800 mt-0.5">⬅️ Tekrar Sola Bak</div>
+                    </div>
+                    <div id="stepBadge5" class="p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center opacity-60 col-span-2 sm:col-span-1">
+                        <div class="text-xs font-extrabold text-slate-500">5. ADIM</div>
+                        <div class="font-bold text-sm text-slate-800 mt-0.5">🚶‍♂️ Hızlı Adımla Geç</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <!-- SVG Yaya Geçidi Sahnesi -->
+                    <div class="lg:col-span-7 bg-slate-800 rounded-3xl p-4 border-4 border-slate-200">
+                        <svg viewBox="0 0 520 260" class="w-full h-auto rounded-2xl">
+                            <!-- Üst Kaldırım (Karşı Kaldırım) -->
+                            <rect x="0" y="0" width="520" height="45" fill="#cbd5e1"/>
+                            <text x="260" y="27" text-anchor="middle" fill="#334155" font-size="13" font-weight="bold">🏁 KARŞI KALDIRIM (GÜVENLİ BÖLGE)</text>
+
+                            <!-- Alt Kaldırım (Başlangıç) -->
+                            <rect x="0" y="215" width="520" height="45" fill="#cbd5e1"/>
+                            <line x1="0" y1="215" x2="520" y2="215" stroke="#ef4444" stroke-width="4" stroke-dasharray="14,14"/>
+
+                            <!-- Taşıt Yolu (Üst Şerit: Sağdan Sola, Alt Şerit: Soldan Sağa) -->
+                            <rect x="0" y="45" width="520" height="170" fill="#334155"/>
+                            <line x1="0" y1="130" x2="520" y2="130" stroke="#facc15" stroke-width="4" stroke-dasharray="16,16"/>
+
+                            <!-- Şerit Yön Bilgi Yazıları -->
+                            <text x="90" y="185" fill="#94a3b8" font-size="11" font-weight="bold">➡️ İLK ŞERİT: Soldan Araç Gelir</text>
+                            <text x="390" y="85" fill="#94a3b8" font-size="11" font-weight="bold">⬅️ İKİNCİ ŞERİT: Sağdan Araç Gelir</text>
+
+                            <!-- Yaya Geçidi (Zebra Çizgileri) -->
+                            <g fill="#f8fafc">
+                                <rect x="220" y="52" width="80" height="18" rx="3"/>
+                                <rect x="220" y="80" width="80" height="18" rx="3"/>
+                                <rect x="220" y="108" width="80" height="18" rx="3"/>
+                                <rect x="220" y="136" width="80" height="18" rx="3"/>
+                                <rect x="220" y="164" width="80" height="18" rx="3"/>
+                                <rect x="220" y="192" width="80" height="18" rx="3"/>
+                            </g>
+
+                            <!-- Yaya Trafik Işığı -->
+                            <g transform="translate(325, 10)">
+                                <rect x="0" y="0" width="36" height="58" rx="8" fill="#0f172a" stroke="#fff" stroke-width="2"/>
+                                <circle id="pedRedLight" cx="18" cy="16" r="9" fill="#ef4444"/>
+                                <circle id="pedGreenLight" cx="18" cy="40" r="9" fill="#1e293b"/>
+                            </g>
+
+                            <!-- Bakış Açısı Konisi (Sol / Sağ) -->
+                            <polygon id="lookConeLeft" points="260,225 70,135 70,215" fill="#fde047" opacity="0" class="transition-opacity duration-300"/>
+                            <polygon id="lookConeRight" points="260,225 450,55 450,135" fill="#fde047" opacity="0" class="transition-opacity duration-300"/>
+
+                            <!-- Yaya Karakteri -->
+                            <g id="crossingPedestrian" transform="translate(260, 235)" class="transition-all duration-700">
+                                <circle cx="0" cy="0" r="20" fill="#0ea5e9" stroke="#fff" stroke-width="3"/>
+                                <text id="crossingPedEmoji" x="0" y="7" text-anchor="middle" font-size="20">🧍</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Sağ Etkileşim Butonları -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4">
+                            <h3 class="font-bold text-sky-950 text-base">Neden "Önce Sola, Sonra Sağa, Tekrar Sola" Bakılır?</h3>
+                            <p class="text-xs md:text-sm text-slate-700 mt-1">
+                                Ülkemizde trafik sağ şeritten akar. Yola adım attığımızda <strong>bize en yakın ilk şeritteki araçlar SOL tarafımızdan</strong> gelir! Bu yüzden önce sola, sonra sağa ve yola adım atmadan hemen önce <strong>tekrar sola</strong> bakarız.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <button onclick="performCrossingAction('stop')" class="p-3.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow transition flex items-center justify-center gap-2 col-span-2">
+                                <span>🛑</span> 1. Kaldırım Kenarında DUR (Kenardan 1 Adım Geride)
+                            </button>
+                            <button onclick="performCrossingAction('left')" class="p-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow transition flex items-center justify-center gap-2">
+                                <span>⬅️</span> SOLA Bak
+                            </button>
+                            <button onclick="performCrossingAction('right')" class="p-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow transition flex items-center justify-center gap-2">
+                                <span>➡️</span> SAĞA Bak
+                            </button>
+                            <button onclick="performCrossingAction('cross')" class="p-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow transition flex items-center justify-center gap-2 col-span-2">
+                                <span>🚶‍♂️</span> Koşmadan Hızlı Adımlarla KARŞIYA GEÇ
+                            </button>
+                        </div>
+
+                        <div id="crossingSimFeedback" class="p-4 rounded-2xl bg-amber-50 border-2 border-amber-200 text-sm font-bold text-amber-950">
+                            👉 Başlamak için önce <strong>"Kaldırım Kenarında DUR"</strong> butonuna tıkla!
+                        </div>
+
+                        <!-- Nerelerden Karşıya Geçilir? Bilgi Özeti -->
+                        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-xs text-slate-700 space-y-1">
+                            <div class="font-extrabold text-slate-900">📌 Karşıya Güvenli Geçiş Yerleri:</div>
+                            <div>• Alt ve üst geçitler • Yaya ve okul geçitleri • Trafik ışıkları • Trafik polisinin bulunduğu noktalar</div>
+                            <div class="text-rose-700 font-bold">⚠️ Unutma: Trafik polisi varsa öncelikle trafik polisinin işaretlerine uyulur!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SİMÜLASYON C: PARK HALİNDEKİ ARAÇLAR VE KÖR NOKTA LABORATUVARI -->
+            <div id="simC" class="sim-panel hidden bg-white rounded-3xl p-6 shadow-lg border-2 border-rose-100 space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="bg-rose-100 text-rose-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Simülasyon 3 • Çok Önemli Kazanım Vurgusu</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mt-1">Park Hâlindeki Araçların Önü, Arkası ve Arası Neden Tehlikelidir?</h2>
+                        <p class="text-slate-600 text-sm mt-0.5">Aşağıdaki 4 durumu tıklayarak sürücünün <strong>Görüş Açısını (Kör Noktayı)</strong> ve tehlike nedenini keşfet!</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <!-- SVG Kör Nokta Görselleştirmesi -->
+                    <div class="lg:col-span-7 bg-slate-900 rounded-3xl p-4 border-4 border-slate-200">
+                        <svg viewBox="0 0 540 280" class="w-full h-auto rounded-2xl">
+                            <!-- Üst Kaldırım -->
+                            <rect x="0" y="0" width="540" height="40" fill="#cbd5e1"/>
+                            <!-- Alt Kaldırım -->
+                            <rect x="0" y="235" width="540" height="45" fill="#cbd5e1"/>
+                            <text x="270" y="262" text-anchor="middle" fill="#334155" font-size="12" font-weight="bold">KALDIRIM</text>
+
+                            <!-- Yol -->
+                            <rect x="0" y="40" width="540" height="195" fill="#334155"/>
+                            <line x1="0" y1="115" x2="540" y2="115" stroke="#facc15" stroke-width="4" stroke-dasharray="15,15"/>
+
+                            <!-- Yaya Geçidi (Sağ Tarafta Güvenli Bölge) -->
+                            <g fill="#f8fafc">
+                                <rect x="435" y="48" width="60" height="16" rx="2"/>
+                                <rect x="435" y="75" width="60" height="16" rx="2"/>
+                                <rect x="435" y="102" width="60" height="16" rx="2"/>
+                                <rect x="435" y="129" width="60" height="16" rx="2"/>
+                                <rect x="435" y="156" width="60" height="16" rx="2"/>
+                                <rect x="435" y="183" width="60" height="16" rx="2"/>
+                                <rect x="435" y="210" width="60" height="16" rx="2"/>
+                            </g>
+
+                            <!-- Yoldan Gelen Sürücünün Görüş Açısı / Kör Nokta Gölgesi -->
+                            <polygon id="driverSightCone" points="70,150 540,45 540,225" fill="#fef08a" opacity="0.22"/>
+                            <!-- Park Etmiş Araçların Oluşturduğu KÖR NOKTA (Kırmızı Gölge) -->
+                            <polygon id="blindSpotZone" points="160,185 370,185 410,235 140,235" fill="#ef4444" opacity="0.55"/>
+                            <text x="265" y="228" text-anchor="middle" fill="#fecaca" font-size="11" font-weight="bold">🚫 KÖR NOKTA (Sürücü Burayı Göremez!)</text>
+
+                            <!-- Yoldan Gelen Hareketli Araç (Sol Tarafta) -->
+                            <g transform="translate(30, 128)">
+                                <rect x="0" y="0" width="78" height="44" rx="10" fill="#38bdf8" stroke="#fff" stroke-width="2"/>
+                                <rect x="48" y="6" width="18" height="32" rx="4" fill="#e0f2fe"/>
+                                <text x="28" y="26" text-anchor="middle" fill="#0f172a" font-size="10" font-weight="bold">GELEN ARAÇ➡️</text>
+                            </g>
+
+                            <!-- Park Halindeki Araç 1 (Büyük Minibüs/Kamyonet) -->
+                            <g transform="translate(150, 175)">
+                                <rect x="0" y="0" width="95" height="50" rx="8" fill="#f97316" stroke="#fff" stroke-width="2"/>
+                                <text x="47" y="29" text-anchor="middle" fill="white" font-size="11" font-weight="bold">PARK ARAÇ 1</text>
+                            </g>
+
+                            <!-- Park Halindeki Araç 2 (Otomobil + Geri Vites Lambası) -->
+                            <g transform="translate(290, 180)">
+                                <rect x="0" y="0" width="85" height="45" rx="8" fill="#a855f7" stroke="#fff" stroke-width="2"/>
+                                <!-- Geri Vites Lambası (Sol arkada) -->
+                                <circle id="reverseLight1" cx="4" cy="8" r="5" fill="#ffffff" opacity="0.3"/>
+                                <circle id="reverseLight2" cx="4" cy="37" r="5" fill="#ffffff" opacity="0.3"/>
+                                <text x="44" y="27" text-anchor="middle" fill="white" font-size="11" font-weight="bold">PARK ARAÇ 2</text>
+                            </g>
+
+                            <!-- Test Edilen Yaya Konumu -->
+                            <g id="blindSpotPedestrian" transform="translate(267, 200)" class="transition-all duration-500">
+                                <circle cx="0" cy="0" r="18" fill="#ef4444" stroke="#fff" stroke-width="3"/>
+                                <text id="blindSpotPedIcon" x="0" y="6" text-anchor="middle" font-size="18">⚠️</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Sağ Kontrol & Nedenler Açıklaması -->
+                    <div class="lg:col-span-5 space-y-3">
+                        <h3 class="font-bold text-slate-800 text-base">Hangi Konumu İncelemek İstersin?</h3>
+
+                        <button onclick="inspectParkedCarSpot('between')" class="w-full text-left p-3.5 rounded-2xl border-2 border-rose-300 bg-rose-50 hover:bg-rose-100 transition flex items-start gap-3">
+                            <span class="text-2xl">🚗🧍🚙</span>
+                            <div>
+                                <div class="font-bold text-rose-950 text-sm">1. İki Aracın Arasından Çıkmak</div>
+                                <div class="text-xs text-rose-800">Neden iki park etmiş aracın arasından geçilmez?</div>
+                            </div>
+                        </button>
+
+                        <button onclick="inspectParkedCarSpot('front')" class="w-full text-left p-3.5 rounded-2xl border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 transition flex items-start gap-3">
+                            <span class="text-2xl">🚙🧍</span>
+                            <div>
+                                <div class="font-bold text-amber-950 text-sm">2. Park Hâlindeki Aracın Önünden Geçmek</div>
+                                <div class="text-xs text-amber-800">Görüş açısı ve ani hareket riski nedir?</div>
+                            </div>
+                        </button>
+
+                        <button onclick="inspectParkedCarSpot('behind')" class="w-full text-left p-3.5 rounded-2xl border-2 border-purple-300 bg-purple-50 hover:bg-purple-100 transition flex items-start gap-3">
+                            <span class="text-2xl">🧍🚙</span>
+                            <div>
+                                <div class="font-bold text-purple-950 text-sm">3. Park Hâlindeki Aracın Arkasından Geçmek</div>
+                                <div class="text-xs text-purple-800">Sürücünün arka kör noktası ve geri manevra tehlikesi!</div>
+                            </div>
+                        </button>
+
+                        <button onclick="inspectParkedCarSpot('crosswalk')" class="w-full text-left p-3.5 rounded-2xl border-2 border-emerald-300 bg-emerald-50 hover:bg-emerald-100 transition flex items-start gap-3">
+                            <span class="text-2xl">✅🚶</span>
+                            <div>
+                                <div class="font-bold text-emerald-950 text-sm">4. Yaya Geçidinden (Açık Görüşle) Geçmek</div>
+                                <div class="text-xs text-emerald-800">Hem biz aracı görürüz hem sürücü bizi görür!</div>
+                            </div>
+                        </button>
+
+                        <!-- Detaylı Neden Kutusu -->
+                        <div id="parkedCarReasonBox" class="p-4 rounded-2xl bg-slate-900 text-white text-xs md:text-sm space-y-1.5 shadow-md">
+                            <div id="parkedReasonTitle" class="font-extrabold text-amber-300 text-sm">🔍 İki Aracın Arası Neden Tehlikelidir?</div>
+                            <p id="parkedReasonText" class="leading-relaxed text-slate-200">
+                                Park etmiş araçlar boyumuzdan yüksek olduğu için <strong>görüş açısını kapatır (kör nokta oluşturur)</strong>. Yoldan geçen sürücü iki aracın arasından çıkan yayayı fark edemez ve duramaz. Ayrıca park halindeki araçlardan biri aniden hareket edebilir!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SEKME 2: NEDEN TEHLİKELİ? DOĞRU KARARI VER (6 SENARYO)
+             ========================================================= -->
+        <section id="tab2" class="tab-panel hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-teal-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-teal-950 flex items-center gap-2">
+                        <span>🔍</span> Neden Tehlikeli? Doğru Kararı Ver!
+                    </h2>
+                    <p class="text-slate-600 text-sm md:text-base mt-1">
+                        Aşağıdaki trafik durumlarında <strong>nedenleriyle birlikte</strong> en doğru ve güvenli yaya davranışını seç!
+                    </p>
+                </div>
+                <span id="scenarioCounterBadge" class="bg-teal-100 text-teal-800 font-extrabold px-4 py-2 rounded-2xl text-sm shrink-0">
+                    Senaryo 1 / 6
+                </span>
+            </div>
+
+            <!-- Senaryo Kartı -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-lg border-2 border-slate-100">
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span id="scTopicBadge" class="bg-amber-100 text-amber-900 text-xs font-extrabold px-3 py-1 rounded-full">
+                        Park Hâlindeki Araçlar
+                    </span>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-5 bg-slate-50 p-5 rounded-2xl border-2 border-slate-200 mb-6">
+                    <div id="scEmojiBox" class="text-5xl md:text-6xl bg-white p-4 rounded-2xl shadow-sm shrink-0 border border-slate-100">
+                        🚙🧍🚗
+                    </div>
+                    <div>
+                        <h3 id="scTitle" class="text-lg md:text-xl font-bold text-slate-900 mb-1">
+                            Senaryo Başlığı
+                        </h3>
+                        <p id="scQuestion" class="text-slate-700 text-base md:text-lg leading-relaxed">
+                            Senaryo açıklaması...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Şıklar -->
+                <div id="scOptionsList" class="space-y-3">
+                    <!-- JS ile oluşturulur -->
+                </div>
+
+                <!-- Nedenleriyle Açıklama Kutusu -->
+                <div id="scResultBox" class="hidden mt-6 p-5 rounded-2xl border-2">
+                    <div class="flex items-start gap-3">
+                        <span id="scResultIcon" class="text-3xl">💡</span>
+                        <div class="flex-1">
+                            <h4 id="scResultTitle" class="font-bold text-lg">Nedenleriyle Açıklama:</h4>
+                            <p id="scResultExplanation" class="text-sm md:text-base mt-1 leading-relaxed"></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button id="scNextBtn" onclick="nextTrafficScenario()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+                            <span>Sonraki Senaryo</span> <span>➡️</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SEKME 3: GÜVENLİ GEÇİŞ DEDEKTİFİ (SINIFLANDIRMA OYUNU)
+             ========================================================= -->
+        <section id="tab3" class="tab-panel hidden space-y-6">
+            <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-amber-100">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-amber-950 flex items-center gap-2">
+                            <span>🕵️‍♂️</span> Güvenli Geçiş Dedektifi: Doğru mu, Tehlikeli mi?
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1">
+                            Karttaki davranışı incele ve <strong>"Güvenli Yaya Davranışı"</strong> ya da <strong>"Tehlikeli / Hatalı Davranış"</strong> kutusuna gönder!
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <span id="detectiveCounter" class="text-sm font-extrabold bg-amber-50 text-amber-800 px-3 py-1.5 rounded-xl border border-amber-200">
+                            Kart: 1 / 12
+                        </span>
+                        <button onclick="resetDetectiveGame()" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl transition">
+                            🔄 Yeniden Başla
+                        </button>
+                    </div>
+                </div>
+                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                    <div id="detectiveProgressBar" class="bg-gradient-to-r from-emerald-500 to-teal-500 h-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Aktif Dedektif Kartı -->
+            <div class="bg-gradient-to-br from-white via-amber-50/40 to-emerald-50/40 rounded-3xl p-6 md:p-8 shadow-lg border-4 border-dashed border-amber-300 text-center flex flex-col items-center justify-center min-h-[220px]">
+                <span id="detectiveCardTag" class="bg-slate-800 text-w…4656 tokens truncated…r justify-between transition">
+                        <span>⚠️ Gidiş yönümüze göre SAĞ banketten yürümek</span>
+                        <span class="text-xs bg-rose-100 text-rose-800 px-2 py-1 rounded-lg">Dene</span>
+                    </button>
+                `;
+                feedbackEl.innerHTML = `👆 Kaldırımı olmayan yollarda neden <strong>SOL banketten</strong> yürümemiz gerektiğini görmek için butonları dene!`;
+            }
+        }
+
+        function testRoadPosition(choice) {
+            const avatar = document.getElementById('pedestrianAvatar');
+            const feedback = document.getElementById('roadSimFeedback');
+
+            if (choice === 'sidewalk_right') {
+                avatar.setAttribute('transform', 'translate(445, 180)');
+                playTone('correct');
+                if (!rewardedRoadModes[choice]) { rewardedRoadModes[choice] = true; addPoints(10); }
+                feedback.className = 'p-4 rounded-2xl bg-emerald-100 border-2 border-emerald-400 text-sm text-emerald-950 font-bold animate-pop';
+                feedback.innerHTML = `✅ <strong>Çok Doğru!</strong> Kaldırımlı yollarda her zaman kaldırımın <strong>sağ tarafından</strong> (yola uzak iç kısımdan) yürürüz. Böylece karşıdan gelen yayalarla çarpışmayız ve yoldaki araçlardan uzak kalırız. Ayrıca garaj çıkışlarına dikkat ederiz.`;
+            } else if (choice === 'sidewalk_edge') {
+                avatar.setAttribute('transform', 'translate(388, 180)');
+                playTone('wrong');
+                feedback.className = 'p-4 rounded-2xl bg-rose-100 border-2 border-rose-400 text-sm text-rose-950 font-bold animate-shake';
+                feedback.innerHTML = `⚠️ <strong>Tehlikeli!</strong> Kaldırımın yola yakın kenarında yürümek veya arkadaşlarımızla itişip şakalaşmak yola düşmemize ve gelen araçların bize çarpmasına neden olabilir!`;
+            } else if (choice === 'sidewalk_road') {
+                avatar.setAttribute('transform', 'translate(335, 120)');
+                playTone('wrong');
+                feedback.className = 'p-4 rounded-2xl bg-rose-100 border-2 border-rose-400 text-sm text-rose-950 font-bold animate-shake';
+                feedback.innerHTML = `🚫 <strong>Çok Tehlikeli!</strong> Taşıt yolu araçlar içindir, yayalar ise kaldırımı kullanmalıdır.`;
+            } else if (choice === 'banket_left') {
+                avatar.setAttribute('transform', 'translate(75, 180)');
+                playTone('correct');
+                if (!rewardedRoadModes[choice]) { rewardedRoadModes[choice] = true; addPoints(15); }
+                feedback.className = 'p-4 rounded-2xl bg-emerald-100 border-2 border-emerald-400 text-sm text-emerald-950 font-bold animate-pop';
+                feedback.innerHTML = `✅ <strong>Harika! NEDEN SOL BANKET?</strong> Kaldırımı olmayan yollarda gidiş yönümüze göre <strong>SOL banketten</strong> yürürüz. Çünkü karşıdan gelen kırmızı aracı doğrudan <strong>görürüz</strong> ve tehlike anında kenara çekilebiliriz! Grup hâlindeysek tek sıra yürürüz, gece ise açık renkli/reflektörlü kıyafet giyeriz.`;
+            } else if (choice === 'banket_right') {
+                avatar.setAttribute('transform', 'translate(425, 120)');
+                playTone('wrong');
+                feedback.className = 'p-4 rounded-2xl bg-rose-100 border-2 border-rose-400 text-sm text-rose-950 font-bold animate-shake';
+                feedback.innerHTML = `⚠️ <strong>Tehlikeli! NEDEN SAĞ BANKET OLMAZ?</strong> Sağ banketten yürürsek mavi araç <strong>tam arkamızdan</strong> gelir. Arkamızdan gelen aracı göremeyeceğimiz için tehlikeyi fark edemeyiz!`;
+            }
+        }
+
+        // =====================================================
+        // SİMÜLASYON 2: SOL - SAĞ - SOL KARŞIYA GEÇİŞ
+        // =====================================================
+        let crossingStep = 0; // 0: Başlangıç, 1: Durdu, 2: Sola baktı, 3: Sağa baktı, 4: Tekrar sola baktı, 5: Geçti
+        let crossingRewarded = false;
+
+        function updateStepBadges() {
+            for (let i = 1; i <= 5; i++) {
+                const badge = document.getElementById('stepBadge' + i);
+                if (i <= crossingStep) {
+                    badge.className = 'p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-center transition';
+                } else if (i === crossingStep + 1) {
+                    badge.className = 'p-3 rounded-2xl border-2 border-amber-400 bg-amber-50 text-center transition';
+                } else {
+                    badge.className = 'p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center opacity-60 transition';
+                }
+            }
+        }
+
+        function performCrossingAction(action) {
+            const feedback = document.getElementById('crossingSimFeedback');
+            const ped = document.getElementById('crossingPedestrian');
+            const coneL = document.getElementById('lookConeLeft');
+            const coneR = document.getElementById('lookConeRight');
+            const redLight = document.getElementById('pedRedLight');
+            const greenLight = document.getElementById('pedGreenLight');
+
+            coneL.setAttribute('opacity', '0');
+            coneR.setAttribute('opacity', '0');
+
+            if (action === 'stop' && crossingStep === 0) {
+                crossingStep = 1;
+                playTone('step');
+                ped.setAttribute('transform', 'translate(260, 222)');
+                feedback.className = 'p-4 rounded-2xl bg-sky-100 border-2 border-sky-300 text-sm font-bold text-sky-950';
+                feedback.innerHTML = `✅ <strong>1. Adım Tamam:</strong> Kaldırımın kenarından bir adım geride güvenli şekilde durdun. Şimdi <strong>2. Adım: Önce SOLA Bak!</strong>`;
+            } else if (action === 'left' && crossingStep === 1) {
+                crossingStep = 2;
+                playTone('step');
+                coneL.setAttribute('opacity', '0.55');
+                feedback.className = 'p-4 rounded-2xl bg-sky-100 border-2 border-sky-300 text-sm font-bold text-sky-950';
+                feedback.innerHTML = `👀 <strong>2. Adım Tamam:</strong> Önce soluna baktın çünkü ilk şeritteki araçlar soldan gelir. Şimdi <strong>3. Adım: SAĞA Bak!</strong>`;
+            } else if (action === 'right' && crossingStep === 2) {
+                crossingStep = 3;
+                playTone('step');
+                coneR.setAttribute('opacity', '0.55');
+                feedback.className = 'p-4 rounded-2xl bg-sky-100 border-2 border-sky-300 text-sm font-bold text-sky-950';
+                feedback.innerHTML = `👀 <strong>3. Adım Tamam:</strong> Sağına da bakarak karşı şeridi kontrol ettin. Şimdi yola adım atmadan önce <strong>4. Adım: TEKRAR SOLA Bak!</strong>`;
+            } else if (action === 'left' && crossingStep === 3) {
+                crossingStep = 4;
+                playTone('step');
+                coneL.setAttribute('opacity', '0.55');
+                redLight.setAttribute('fill', '#1e293b');
+                greenLight.setAttribute('fill', '#22c55e');
+                feedback.className = 'p-4 rounded-2xl bg-emerald-100 border-2 border-emerald-400 text-sm font-bold text-emerald-950';
+                feedback.innerHTML = `✅ <strong>4. Adım Tamam:</strong> Tekrar soluna baktın, yol güvenli ve yaya ışığı yeşil! Şimdi <strong>5. Adım: Hızlı Adımlarla Karşıya Geç!</strong>`;
+            } else if (action === 'cross' && crossingStep === 4) {
+                crossingStep = 5;
+                playTone('correct');
+                ped.setAttribute('transform', 'translate(260, 25)');
+                document.getElementById('crossingPedEmoji').textContent = '🎉';
+                if (!crossingRewarded) { crossingRewarded = true; addPoints(20); }
+                feedback.className = 'p-4 rounded-2xl bg-emerald-100 border-2 border-emerald-500 text-sm font-bold text-emerald-950 animate-pop';
+                feedback.innerHTML = `🏆 <strong>TEBRİKLER! (+20 Puan)</strong> "Dur - Sola Bak - Sağa Bak - Tekrar Sola Bak" kuralını eksiksiz uygulayarak yaya geçidinden güvenle karşıya geçtin!`;
+            } else {
+                playTone('wrong');
+                const expectedNames = [
+                    '1. Kaldırım Kenarında DUR',
+                    '2. Önce SOLA Bak',
+                    '3. Sonra SAĞA Bak',
+                    '4. Tekrar SOLA Bak',
+                    '5. Karşıya GEÇ'
+                ];
+                if (crossingStep < 5) {
+                    feedback.className = 'p-4 rounded-2xl bg-rose-100 border-2 border-rose-400 text-sm font-bold text-rose-900 animate-shake';
+                    feedback.innerHTML = `⚠️ Sırayı karıştırdın! Güvenli geçiş için sıradaki adımın: <strong>${expectedNames[crossingStep]}</strong>`;
+                }
+            }
+            updateStepBadges();
+        }
+
+        function resetCrossingSim() {
+            crossingStep = 0;
+            document.getElementById('crossingPedestrian').setAttribute('transform', 'translate(260, 235)');
+            document.getElementById('crossingPedEmoji').textContent = '🧍';
+            document.getElementById('lookConeLeft').setAttribute('opacity', '0');
+            document.getElementById('lookConeRight').setAttribute('opacity', '0');
+            document.getElementById('pedRedLight').setAttribute('fill', '#ef4444');
+            document.getElementById('pedGreenLight').setAttribute('fill', '#1e293b');
+            document.getElementById('crossingSimFeedback').className = 'p-4 rounded-2xl bg-amber-50 border-2 border-amber-200 text-sm font-bold text-amber-950';
+            document.getElementById('crossingSimFeedback').innerHTML = `👉 Başlamak için önce <strong>"Kaldırım Kenarında DUR"</strong> butonuna tıkla!`;
+            updateStepBadges();
+        }
+
+        // =====================================================
+        // SİMÜLASYON 3: PARK HALİNDEKİ ARAÇLAR VE KÖR NOKTA
+        // =====================================================
+        let inspectedSpots = {};
+
+        function inspectParkedCarSpot(spot) {
+            const ped = document.getElementById('blindSpotPedestrian');
+            const pedIcon = document.getElementById('blindSpotPedIcon');
+            const title = document.getElementById('parkedReasonTitle');
+            const text = document.getElementById('parkedReasonText');
+            const rev1 = document.getElementById('reverseLight1');
+            const rev2 = document.getElementById('reverseLight2');
+
+            rev1.setAttribute('opacity', '0.3');
+            rev2.setAttribute('opacity', '0.3');
+
+            if (!inspectedSpots[spot]) {
+                inspectedSpots[spot] = true;
+                addPoints(5);
+            }
+
+            if (spot === 'between') {
+                playTone('wrong');
+                ped.setAttribute('transform', 'translate(267, 200)');
+                pedIcon.textContent = '⚠️';
+                title.textContent = '🚫 1. İki Park Etmiş Aracın Arası NEDEN Tehlikelidir?';
+                text.innerHTML = `İki aracın arasında durduğunda <strong>kırmızı kör nokta bölgesindesin!</strong> Park etmiş araçlar boyundan yüksek olduğu için hem senin gelen aracı görmeni engeller hem de yoldaki sürücünün seni görmesini kapatır. Ayrıca araçlardan biri aniden ileri veya geri hareket ederek seni sıkıştırabilir!`;
+            } else if (spot === 'front') {
+                playTone('wrong');
+                ped.setAttribute('transform', 'translate(255, 195)');
+                pedIcon.textContent = '⚠️';
+                title.textContent = '🚫 2. Park Hâlindeki Aracın Önünden Geçmek NEDEN Tehlikelidir?';
+                text.innerHTML = `Park hâlindeki yüksek bir aracın (minibüs, kamyonet, otomobil) hemen önünden yola çıkarsan, sol şeritten gelen mavi aracın sürücüsü seni <strong>son ana kadar göremez</strong> ve fren mesafesi yetmez. Ayrıca park halindeki aracın sürücüsü o an aracı çalıştırıp hareket edebilir.`;
+            } else if (spot === 'behind') {
+                playTone('wrong');
+                ped.setAttribute('transform', 'translate(282, 202)');
+                pedIcon.textContent = '🚨';
+                rev1.setAttribute('opacity', '1');
+                rev2.setAttribute('opacity', '1');
+                title.textContent = '🚫 3. Park Hâlindeki Aracın Arkasından Geçmek NEDEN Tehlikelidir?';
+                text.innerHTML = `Araçların arka kısmı sürücüler için en büyük <strong>kör noktadır</strong>. Sürücü aynalara baksa bile boyu kısa olan bir çocuğu aracın arkasında göremez. Özellikle aracın arkasındaki <strong>beyaz geri vites lambası</strong> yanıyorsa veya egzozundan duman çıkıyorsa araç geri manevra yapmak üzeredir!`;
+            } else if (spot === 'crosswalk') {
+                playTone('correct');
+                ped.setAttribute('transform', 'translate(465, 205)');
+                pedIcon.textContent = '✅';
+                title.textContent = '✅ 4. Yaya Geçidi NEDEN Güvenlidir?';
+                text.innerHTML = `Yaya geçidinde görüşü kapatan park etmiş araçlar yoktur. <strong>Sarı görüş açısı alanındasın:</strong> Hem sen gelen aracı uzaktan görürsün hem de sürücü seni rahatlıkla fark edip yavaşlar!`;
+            }
+        }
+
+        // =====================================================
+        // SEKME 2: 6 ÖRNEK OLAY SENARYOSU (NEDENLERİYLE)
+        // =====================================================
+        const TRAFFIC_SCENARIOS = [
+            {
+                topic: '🚗 Park Hâlindeki Araçlar ve Kör Nokta',
+                emoji: '🚙🧍🚗',
+                title: 'Okul Çıkışı Park Etmiş Araçlar',
+                question: 'Okuldan çıktın ve karşı kaldırımdaki kırtasiyeye gitmek istiyorsun. Yol kenarında art arda park etmiş iki büyük servis minibüsü var, 30 metre ileride ise yaya geçidi bulunuyor. Ne yaparsın ve neden?',
+                options: [
+                    {
+                        text: 'Yol uzamasın diye park etmiş iki servis minibüsünün arasından hızlıca karşıya geçerim.',
+                        correct: false,
+                        reason: 'Yanlış! İki minibüsün arası tam bir kör noktadır. Yoldan geçen sürücüler seni göremez ve minibüslerden biri aniden hareket edebilir.'
+                    },
+                    {
+                        text: '30 metre ilerideki yaya geçidine kadar kaldırımdan yürür, Sol-Sağ-Sol kontrolü yaparak karşıya geçerim.',
+                        correct: true,
+                        reason: 'Çok doğru! Çünkü park hâlindeki araçların önü, arkası ve iki aracın arası görüş açısını kapatır. Yaya geçidinde ise hem biz gelen araçları görürüz hem de sürücüler bizi fark eder.'
+                    },
+                    {
+                        text: 'En öndeki minibüsün hemen ön tamponunun dibinden yola çıkarım.',
+                        correct: false,
+                        reason: 'Yanlış! Minibüs yüksek olduğu için arkasından gelen araç sürücüsü seni minibüsün önünden çıkana kadar fark edemez.'
+                    }
+                ]
+            },
+            {
+                topic: '🌾 Kaldırımsız (Banketli) Yolda Yürüme',
+                emoji: '🛣️🚶',
+                title: 'Köy Yolunda Yürüyüş',
+                question: 'Hafta sonu ailesiyle köyde yürüyüşe çıkan Zeynep, kaldırımı olmayan (banketli) bir yolda yürümektedir. Zeynep ve ailesi yolun hangi tarafını kullanmalıdır?',
+                options: [
+                    {
+                        text: 'Kendi gidiş yönlerine göre SOL banketten, tek sıra hâlinde yürümelidirler.',
+                        correct: true,
+                        reason: 'Harika! Kaldırımı olmayan yollarda gidiş yönüne göre SOL banketten yürünür. Çünkü karşıdan gelen araçları doğrudan görür ve tehlike anında kendimizi koruyabiliriz.'
+                    },
+                    {
+                        text: 'Kendi gidiş yönlerine göre SAĞ banketten yan yana sohbet ederek yürümelidirler.',
+                        correct: false,
+                        reason: 'Tehlikeli! Sağ banketten yüründüğünde araçlar arkamızdan gelir. Arkamızdan gelen aracı göremeyiz ve yan yana yürümek yolu daraltır.'
+                    },
+                    {
+                        text: 'Asfaltın tam ortasındaki sarı çizginin üzerinden yürümelidirler.',
+                        correct: false,
+                        reason: 'Çok tehlikeli! Taşıt yolu araçlar içindir, yayalar yol kenarındaki banketi kullanmalıdır.'
+                    }
+                ]
+            },
+            {
+                topic: '🚨 Geri Manevra Yapan Park Hâlindeki Araç',
+                emoji: '🚗💨',
+                title: 'Sokakta Park Etmiş Otomobil',
+                question: 'Sokakta yürürken park hâlindeki bir otomobilin motorunun çalıştığını ve arkasındaki beyaz lambaların yandığını fark ettin. Bu aracın arkasından geçmek neden çok tehlikelidir?',
+                options: [
+                    {
+                        text: 'Çünkü araç geri manevra yapmak üzeredir ve sürücü arka kör noktada kalan yayayı göremez.',
+                        correct: true,
+                        reason: 'Tebrikler! Arka beyaz lambalar (geri vites lambası) aracın geriye doğru hareket edeceğini gösterir. Sürücünün arka görüş açısı kısıtlı olduğu için aracın arkasından asla geçilmemelidir.'
+                    },
+                    {
+                        text: 'Hiçbir tehlikesi yoktur, sürücü bizi her durumda fark eder.',
+                        correct: false,
+                        reason: 'Yanlış! Araçların hemen arkası sürücülerin aynadan göremediği kör noktadır.'
+                    },
+                    {
+                        text: 'Eğilerek koşarsak aracın arkasından güvenle geçebiliriz.',
+                        correct: false,
+                        reason: 'Çok yanlış! Eğilmek sürücünün seni görmesini tamamen imkânsız hâle getirir.'
+                    }
+                ]
+            },
+            {
+                topic: '🏙️ Kaldırımı Olan Yollarda Kurallar',
+                emoji: '⚽🏃‍♂️',
+                title: 'Kaldırımda Arkadaşlarla Yürürken',
+                question: 'Okuldan dönerken arkadaşların kaldırımda birbirini iterek şakalaşmaya ve top sektirmeye başladı. Bu durumda nasıl davranmalısın?',
+                options: [
+                    {
+                        text: 'Kaldırımda koşmanın ve şakalaşmanın taşıt yoluna düşme tehlikesi yarattığını söyleyerek arkadaşlarımı uyarırım.',
+                        correct: true,
+                        reason: 'Çok doğru! Kaldırımın sağ tarafından sakin şekilde yürünmelidir. Kaldırımda itişmek, koşmak veya top oynamak birimizin taşıt yoluna, araçların önüne düşmesine sebep olabilir.'
+                    },
+                    {
+                        text: 'Ben de onlara katılıp kaldırımın yola yakın kenarında koşarım.',
+                        correct: false,
+                        reason: 'Yanlış! Yola yakın kenarda koşmak dengemizi kaybedip araçların önüne düşmemize yol açabilir.'
+                    },
+                    {
+                        text: 'Kaldırım kalabalık oldu diyerek asfalt yola inip oradan yürürüm.',
+                        correct: false,
+                        reason: 'Yanlış! Kaldırım varken asla taşıt yolundan yürünmez.'
+                    }
+                ]
+            },
+            {
+                topic: '👮‍♂️ Karşıya Geçiş ve Öncelik Kuralı',
+                emoji: '👮‍♂️🚦',
+                title: 'Kavşakta Trafik Polisi ve Işıklar',
+                question: 'Yaya geçidinde karşıya geçmek için bekliyorsun. Yaya trafik ışığı yeşil yanıyor ancak kavşaktaki trafik polisi yayalara "Bekleyin" işareti yaparak araçlara geçiş veriyor. Ne yapmalısın?',
+                options: [
+                    {
+                        text: 'Trafik polisinin işaretine uyar ve kaldırımda beklemeye devam ederim.',
+                        correct: true,
+                        reason: 'Harika bilgi! Trafikte öncelik sırasına göre ilk sırada TRAFİK POLİSİ gelir. Işık yeşil yansa bile trafik polisinin talimatına uymak zorundayız.'
+                    },
+                    {
+                        text: 'Bana yeşil ışık yandığı için polise bakmadan yola atlarım.',
+                        correct: false,
+                        reason: 'Yanlış! O anda ambulans/itfaiye geçiyor olabilir veya polis trafiği farklı yönlendiriyor olabilir. Polisin işareti ışıktan önceliklidir.'
+                    },
+                    {
+                        text: 'Yaya geçidini bırakıp 10 metre geriden koşarak geçerim.',
+                        correct: false,
+                        reason: 'Yanlış! Yaya geçidi dışında kontrolsüz geçiş yapmak kaza riskini artırır.'
+                    }
+                ]
+            },
+            {
+                topic: '🌙 Gece Yürüyüşü ve Görünürlük',
+                emoji: '🌙🦺',
+                title: 'Akşam Saatlerinde Yaya Güvenliği',
+                question: 'Akşam hava karardığında aydınlatması az olan bir yolda yürümek zorunda kalan bir yaya, sürücüler tarafından kolayca fark edilmek için ne yapmalıdır?',
+                options: [
+                    {
+                        text: 'Açık renkli giysiler giymeli, çantasında veya kıyafetinde ışığı yansıtan (reflektörlü) şeritler bulundurmalıdır.',
+                        correct: true,
+                        reason: 'Çok doğru! Karanlıkta koyu renkli kıyafetler sürücülerin yayayı görmesini zorlaştırır. Açık renkli ve reflektörlü eşyalar araç farlarını yansıtarak sürücüyü uzaktan uyarır.'
+                    },
+                    {
+                        text: 'Siyah veya lacivert gibi koyu renkli kıyafetler tercih etmelidir.',
+                        correct: false,
+                        reason: 'Yanlış! Koyu renkler gece karanlığında görünmez hâle gelir.'
+                    },
+                    {
+                        text: 'Sürücüler görsün diye yolun ortasından yürümelidir.',
+                        correct: false,
+                        reason: 'Çok tehlikeli! Yolun ortasından yürümek kazaya davetiye çıkarır.'
+                    }
+                ]
+            }
+        ];
+
+        let scIndex = 0;
+        let scLocked = false;
+
+        function renderTrafficScenario() {
+            scLocked = false;
+            const item = TRAFFIC_SCENARIOS[scIndex];
+            document.getElementById('scenarioCounterBadge').textContent = `Senaryo ${scIndex + 1} / ${TRAFFIC_SCENARIOS.length}`;
+            document.getElementById('scTopicBadge').textContent = item.topic;
+            document.getElementById('scEmojiBox').textContent = item.emoji;
+            document.getElementById('scTitle').textContent = item.title;
+            document.getElementById('scQuestion').textContent = item.question;
+            document.getElementById('scResultBox').classList.add('hidden');
+
+            const list = document.getElementById('scOptionsList');
+            list.innerHTML = '';
+            const letters = ['A', 'B', 'C'];
+
+            item.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-teal-400 bg-white hover:bg-teal-50/40 transition flex items-start gap-3 font-semibold text-slate-800 shadow-sm';
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl bg-teal-100 text-teal-800 font-extrabold flex items-center justify-center shrink-0">${letters[i]}</span>
+                    <span class="mt-0.5 text-sm md:text-base">${opt.text}</span>
+                `;
+                btn.onclick = () => checkScenarioAnswer(i, btn);
+                list.appendChild(btn);
+            });
+        }
+
+        function checkScenarioAnswer(optIndex, btnEl) {
+            if (scLocked) return;
+            const item = TRAFFIC_SCENARIOS[scIndex];
+            const chosen = item.options[optIndex];
+            const resBox = document.getElementById('scResultBox');
+            const resIcon = document.getElementById('scResultIcon');
+            const resTitle = document.getElementById('scResultTitle');
+            const resExp = document.getElementById('scResultExplanation');
+
+            if (chosen.correct) {
+                scLocked = true;
+                playTone('correct');
+                addPoints(15);
+                btnEl.className = 'w-full text-left p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 flex items-start gap-3 font-bold text-emerald-950 shadow-sm animate-pop';
+                resBox.className = 'mt-6 p-5 rounded-2xl border-2 border-emerald-300 bg-emerald-50 text-emerald-950';
+                resIcon.textContent = '🌟';
+                resTitle.textContent = 'Doğru Karar! (+15 Puan) — Nedenleriyle Açıklama:';
+                resExp.textContent = chosen.reason;
+                resBox.classList.remove('hidden');
+
+                const nextBtn = document.getElementById('scNextBtn');
+                nextBtn.innerHTML = scIndex === TRAFFIC_SCENARIOS.length - 1
+                    ? `<span>Güvenli Geçiş Dedektifine Geç</span> <span>🕵️‍♂️</span>`
+                    : `<span>Sonraki Senaryo</span> <span>➡️</span>`;
+            } else {
+                playTone('wrong');
+                btnEl.className = 'w-full text-left p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 flex items-start gap-3 font-semibold text-rose-900 animate-shake';
+                resBox.className = 'mt-6 p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-rose-950';
+                resIcon.textContent = '⚠️';
+                resTitle.textContent = 'Neden Tehlikeli? Tekrar Düşün:';
+                resExp.textContent = chosen.reason + ' Şimdi doğru seçeneği bul!';
+                resBox.classList.remove('hidden');
+            }
+        }
+
+        function nextTrafficScenario() {
+            if (scIndex < TRAFFIC_SCENARIOS.length - 1) {
+                scIndex++;
+                renderTrafficScenario();
+            } else {
+                switchMainTab('tab3');
+            }
+        }
+
+        // =====================================================
+        // SEKME 3: GÜVENLİ GEÇİŞ DEDEKTİFİ (12 KART)
+        // =====================================================
+        const DETECTIVE_CARDS = [
+            {
+                emoji: '🌉',
+                text: 'Trafiğin yoğun olduğu cadde ve otoyollarda karşıya geçmek için alt veya üst geçitleri kullanmak.',
+                isSafe: true,
+                reason: 'Alt ve üst geçitler yayaları taşıt trafiğinden tamamen ayırarak en güvenli geçişi sağlar.'
+            },
+            {
+                emoji: '🚙🏃‍♂️🚗',
+                text: 'Yol kenarında park etmiş iki aracın arasından koşarak karşıya geçmeye çalışmak.',
+                isSafe: false,
+                reason: 'Park etmiş araçlar görüş açısını kapatır (kör nokta oluşturur). Gelen sürücü yayayı göremez ve park halindeki araçlar aniden hareket edebilir.'
+            },
+            {
+                emoji: '⬅️➡️⬅️',
+                text: 'Karşıya geçmeden önce kaldırım kenarında durup önce sola, sonra sağa, tekrar sola bakmak.',
+                isSafe: true,
+                reason: 'İlk şeritteki araçlar solumuzdan geldiği için önce sola, sonra sağa ve adım atmadan tekrar sola bakmak güvenliğimizi sağlar.'
+            },
+            {
+                emoji: '🌾🚶',
+                text: 'Kaldırımı olmayan (banketli) bir yolda kendi gidiş yönümüze göre SOL banketten yürümek.',
+                isSafe: true,
+                reason: 'Sol banketten yürüyünce karşıdan gelen araçları doğrudan görür ve tehlikelere karşı önlem alabiliriz.'
+            },
+            {
+                emoji: '🎧📱',
+                text: 'Karşıdan karşıya geçerken kulaklıkla yüksek sesli müzik dinlemek ve cep telefonuna bakmak.',
+                isSafe: false,
+                reason: 'Telefon ekranı görsel dikkatimizi, kulaklık ise korna ve motor gibi uyarı seslerini duymamızı engeller.'
+            },
+            {
+                emoji: '🚛🧍',
+                text: 'Park hâlindeki yüksek bir kamyonetin hemen önünden veya arkasından yola çıkmak.',
+                isSafe: false,
+                reason: 'Kamyonet görüş açısını tamamen kapatır; ne biz gelen aracı görebiliriz ne de sürücü bizi fark edebilir.'
+            },
+            {
+                emoji: '🏠🚗',
+                text: 'Kaldırımda yürürken bina ve otoparkların araç giriş-çıkış kapılarını kontrol ederek geçmek.',
+                isSafe: true,
+                reason: 'Garaj ve otoparklardan çıkan araçlar kaldırımı keserek yola çıkar; dikkatli olmak kazaları önler.'
+            },
+            {
+                emoji: '🤸‍♂️🛹',
+                text: 'Kaldırımın taşıt yoluna yakın kenarında arkadaşlarımızla itişerek şakalaşmak.',
+                isSafe: false,
+                reason: 'Şakalaşırken dengemizi kaybedip taşıt yoluna, hızla gelen araçların önüne düşebiliriz.'
+            },
+            {
+                emoji: '🚶‍♂️🚶‍♀️',
+                text: 'Kaldırımlı yolda her zaman kaldırımın sağ tarafından ve yola inmeden yürümek.',
+                isSafe: true,
+                reason: 'Kaldırımın sağından yürümek yaya düzenini korur ve bizi taşıt trafiğinden uzak tutar.'
+            },
+            {
+                emoji: '🔴🏃',
+                text: 'Yol boş görünse bile yayalara kırmızı ışık yanarken karşıya geçmek.',
+                isSafe: false,
+                reason: 'Kırmızı ışıkta araçlara geçiş hakkı vardır; fark etmediğimiz bir araç hızla kavşağa girebilir.'
+            },
+            {
+                emoji: '🔦🦺',
+                text: 'Kaldırımsız yolda grup hâlinde yürürken tek sıra olmak ve gece reflektörlü/açık renk kıyafet giymek.',
+                isSafe: true,
+                reason: 'Tek sıra yürümek yolu işgal etmez, reflektör ise gece sürücülerin bizi uzaktan fark etmesini sağlar.'
+            },
+            {
+                emoji: '🚧🕳️',
+                text: 'Kaldırımda yürürken uyarı levhalarına, onarım çalışmalarına ve çukurlara dikkat etmeden koşmak.',
+                isSafe: false,
+                reason: 'Kaldırımdaki çukur veya engellere takılıp düşerek yaralanabiliriz.'
+            }
+        ];
+
+        let detectiveDeck = [];
+        let detIndex = 0;
+        let detBusy = false;
+        let detHistory = [];
+
+        function shuffleDetective(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function updateDetectiveUI() {
+            const pct = Math.round((detIndex / detectiveDeck.length) * 100);
+            document.getElementById('detectiveProgressBar').style.width = `${pct}%`;
+
+            if (detIndex >= detectiveDeck.length) {
+                document.getElementById('detectiveCounter').textContent = `Tamamlandı: ${detectiveDeck.length} / ${detectiveDeck.length}`;
+                document.getElementById('detectiveCardTag').textContent = '🎉 GÖREV TAMAMLANDI!';
+                document.getElementById('detectiveCardEmoji').textContent = '🏆';
+                document.getElementById('detectiveCardText').innerHTML = `Tüm yaya davranışlarını nedenleriyle birlikte doğru sınıflandırdın! Şimdi <strong>4. Bilinçli Yaya Ehliyetim</strong> sekmesine geçebilirsin.`;
+                return;
+            }
+
+            const card = detectiveDeck[detIndex];
+            document.getElementById('detectiveCounter').textContent = `Kart: ${detIndex + 1} / ${detectiveDeck.length}`;
+            document.getElementById('detectiveCardTag').textContent = 'Dedektif İnceleme Kartı';
+            document.getElementById('detectiveCardEmoji').textContent = card.emoji;
+            document.getElementById('detectiveCardText').textContent = `"${card.text}"`;
+        }
+
+        function classifyBehavior(userSaysSafe) {
+            if (detBusy || detIndex >= detectiveDeck.length) return;
+            const card = detectiveDeck[detIndex];
+            const fb = document.getElementById('detectiveFeedback');
+
+            if (card.isSafe === userSaysSafe) {
+                detBusy = true;
+                playTone('correct');
+                addPoints(10);
+                detHistory.unshift(card);
+                renderDetectiveHistory();
+
+                fb.className = 'mt-4 px-5 py-3 rounded-2xl font-bold text-sm md:text-base bg-emerald-100 text-emerald-900 border-2 border-emerald-300 animate-pop';
+                fb.innerHTML = `✅ <strong>Doğru Tespit! (+10 Puan)</strong><br><span class="font-normal"><strong>Nedeni:</strong> ${card.reason}</span>`;
+                fb.classList.remove('hidden');
+
+                setTimeout(() => {
+                    detIndex++;
+                    fb.classList.add('hidden');
+                    updateDetectiveUI();
+                    detBusy = false;
+                }, 1700);
+            } else {
+                playTone('wrong');
+                fb.className = 'mt-4 px-5 py-3 rounded-2xl font-bold text-sm md:text-base bg-rose-100 text-rose-900 border-2 border-rose-300 animate-shake';
+                fb.innerHTML = `🤔 <strong>Tekrar Düşün!</strong> ${card.reason}`;
+                fb.classList.remove('hidden');
+            }
+        }
+
+        function renderDetectiveHistory() {
+            document.getElementById('detectiveDoneCount').textContent = detHistory.length;
+            const container = document.getElementById('detectiveHistoryList');
+            container.innerHTML = detHistory.map(item => `
+                <div class="p-3 rounded-2xl border ${item.isSafe ? 'bg-emerald-50 border-emerald-200 text-emerald-950' : 'bg-rose-50 border-rose-200 text-rose-950'} flex items-start gap-2.5">
+                    <span class="text-xl">${item.isSafe ? '✅' : '⚠️'}</span>
+                    <div>
+                        <div class="font-bold">${item.text}</div>
+                        <div class="text-xs opacity-85 mt-0.5"><strong>Nedeni:</strong> ${item.reason}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function resetDetectiveGame() {
+            detectiveDeck = shuffleDetective(DETECTIVE_CARDS);
+            detIndex = 0;
+            detBusy = false;
+            detHistory = [];
+            document.getElementById('detectiveFeedback').classList.add('hidden');
+            document.getElementById('detectiveDoneCount').textContent = '0';
+            document.getElementById('detectiveHistoryList').innerHTML = `<p class="italic text-slate-400">Henüz bir davranış sınıflandırılmadı.</p>`;
+            updateDetectiveUI();
+        }
+
+        // =====================================================
+        // SEKME 4: BİLİNÇLİ YAYA EHLİYETİ / SERTİFİKA
+        // =====================================================
+        const PLEDGE_RULES = [
+            'Karşıya geçerken alt/üst geçitleri, yaya ve okul geçitlerini kullanacağım.',
+            'Yola adım atmadan önce kaldırımda durup "Önce Sola, Sonra Sağa, Tekrar Sola" bakacağım.',
+            'Kaldırımlı yollarda kaldırımın sağ tarafından yürüyecek, kaldırımda koşup şakalaşmayacağım.',
+            'Kaldırımı olmayan yollarda karşıdan gelen araçları görmek için SOL banketten yürüyeceğim.',
+            'Park hâlindeki araçların önünden, arkasından ve iki aracın arasından asla geçmeyeceğim.',
+            'Trafik polisinin ve trafik ışıklarının işaretlerine her zaman uyacağım.'
+        ];
+
+        function initLicenseRules() {
+            const container = document.getElementById('rulesChecklistContainer');
+            container.innerHTML = PLEDGE_RULES.map((rule, idx) => `
+                <label class="flex items-start gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-emerald-300 bg-slate-50/70 cursor-pointer transition">
+                    <input type="checkbox" value="${idx}" onchange="renderLicenseCard()" checked class="rule-chk mt-1 w-5 h-5 accent-emerald-600 rounded">
+                    <span class="text-xs md:text-sm font-semibold text-slate-700">${rule}</span>
+                </label>
+            `).join('');
+            renderLicenseCard();
+        }
+
+        function checkAllRules() {
+            document.querySelectorAll('.rule-chk').forEach(c => c.checked = true);
+            renderLicenseCard();
+        }
+
+        function renderLicenseCard() {
+            const nameVal = document.getElementById('certNameInput').value.trim();
+            const classVal = document.getElementById('certClassInput').value.trim();
+
+            document.getElementById('licenseNameOut').textContent = nameVal || 'Örnek Yaya Öğrenci';
+            document.getElementById('licenseClassOut').textContent = classVal || '4. Sınıf Trafik Dedektifi';
+
+            const checkedIndices = Array.from(document.querySelectorAll('.rule-chk:checked')).map(c => Number(c.value));
+            const listOut = document.getElementById('licenseRulesOut');
+
+            if (checkedIndices.length === 0) {
+                listOut.innerHTML = `<li class="col-span-2 text-center italic text-slate-400">Lütfen yukarıdan söz verdiğin trafik kurallarını işaretle.</li>`;
+            } else {
+                listOut.innerHTML = checkedIndices.map(i => `
+                    <li class="flex items-start gap-1.5 bg-emerald-50/80 p-2 rounded-xl border border-emerald-200/70">
+                        <span>🚦</span>
+                        <span>${PLEDGE_RULES[i]}</span>
+                    </li>
+                `).join('');
+            }
+
+            document.getElementById('licenseScoreOut').textContent = `${totalScore} ⭐`;
+            let rank = 'Bilinçli Yaya Adayı 🚶';
+            if (totalScore >= 180) rank = 'Usta Trafik Güvenliği Elçisi 👑';
+            else if (totalScore >= 100) rank = 'Güvenli Geçiş Dedektifi 🏆';
+            else if (totalScore >= 40) rank = 'Örnek Yaya 🌟';
+            document.getElementById('licenseRankOut').textContent = rank;
+        }
+
+        // =====================================================
+        // BAŞLANGIÇ YÜKLEMESİ
+        // =====================================================
+        window.onload = function () {
+            setRoadMode('sidewalk');
+            updateStepBadges();
+            renderTrafficScenario();
+            resetDetectiveGame();
+            initLicenseRules();
+        };
+    </script>
+</body>
+</html>
