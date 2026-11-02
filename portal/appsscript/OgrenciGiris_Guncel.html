@@ -285,14 +285,14 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 .newContentPanel h3{margin:0 0 12px;color:#80520a;font-size:21px}
 .newContentAlerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
 .newContentAlert{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid #f0d899;border-radius:12px;background:#fff;font-weight:800;color:#35445a}
-.newContentAlert button{flex:none;margin:0;padding:9px 12px;background:#315c91;color:#fff;border-radius:9px;font-size:15px}
+.teacherAccess{display:block;width:fit-content;margin:14px auto 0;padding:10px 16px;border:1px solid #c8d8ef;border-radius:10px;background:#eaf1fb;color:#2459a6;text-decoration:none;font-weight:800}.teacherAccess:hover{background:#dfeaff}.teacherAccess:focus-visible{outline:3px solid #fca311;outline-offset:3px}
 .course summary .newLight{margin-left:auto;padding:5px 10px;border-radius:999px;background:#e9473f;color:#fff;font-size:13px;font-weight:900;letter-spacing:.4px;box-shadow:0 3px 8px #e9473f40;animation:pulse 1.5s infinite}
 @keyframes pulse{50%{transform:scale(1.08)}}
 @media(max-width:620px){.newContentPanel{padding:15px}.newContentAlert{font-size:16px}}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
-<div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button></div>
+<div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button><a class="teacherAccess" href="https://script.google.com/macros/s/AKfycbzYet4urwswVKhlxobxrH6R0IC_a1e8hUzpj42d_XwqZkA7N0Gwl4epC1P5XvZBt3DcyQ/exec" target="_blank" rel="noopener">🔒 Öğretmen Paneli</a></div>
 <div id="oturumAlani" hidden>
 <div class="portalTopStrip">
 <section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
@@ -401,14 +401,7 @@ function yeniIcerikleriGoster_(){
   const lesson=[...document.querySelectorAll("#dersIzgarasi>.course")].find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
   const card=document.createElement("div");card.className="newContentAlert";
   const text=document.createElement("span");text.textContent=group.text;
-  const button=document.createElement("button");button.type="button";button.textContent="Görüntüle";
-  button.addEventListener("click",function(){
-   if(!lesson)return;
-   lesson.open=true;
-   const tab=group.type==="note"?"defter":group.type==="evaluation"?"degerlendirme":"etkinlik";
-   tabSec(lesson,tab);lesson.scrollIntoView({behavior:"smooth",block:"center"});
-  });
-  card.append(text,button);cards.push(card);
+  card.append(text);cards.push(card);
  });
  root.replaceChildren(...cards);panel.hidden=cards.length===0;
 }
