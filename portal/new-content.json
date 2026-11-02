@@ -297,6 +297,13 @@
       "type": "activity",
       "course": "insan",
       "target": "Insanhaklari/insanolmasorumlulugu.html"
+    },
+    {
+      "id": "recent-activity-trafik-yaya",
+      "addedOn": "2026-11-03",
+      "type": "activity",
+      "course": "trafik",
+      "target": "Trafik/yayaolaraktrafikkurallarietkinligi.html"
     }
   ]
 }
