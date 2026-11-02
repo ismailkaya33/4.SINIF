@@ -162,6 +162,134 @@
       "addedOn": "2026-10-31",
       "type": "note",
       "course": "turkce"
+    },
+    {
+      "id": "recent-activity-atasozleri",
+      "addedOn": "2026-11-02",
+      "addedAt": "2026-11-02T16:20:47Z",
+      "type": "activity",
+      "course": "turkce",
+      "target": "Turkce/sozavcıları.html"
+    },
+    {
+      "id": "recent-activity-ikilemeler",
+      "addedOn": "2026-11-02",
+      "addedAt": "2026-11-02T16:20:45Z",
+      "type": "activity",
+      "course": "turkce",
+      "target": "Turkce/ikilemeler.html"
+    },
+    {
+      "id": "recent-activity-pekistirme",
+      "addedOn": "2026-11-02",
+      "addedAt": "2026-11-01T21:03:19Z",
+      "type": "activity",
+      "course": "turkce",
+      "target": "Turkce/pekistirme.html"
+    },
+    {
+      "id": "recent-note-atasozleri",
+      "addedOn": "2026-11-01",
+      "addedAt": "2026-11-01T20:51:15Z",
+      "type": "note",
+      "course": "turkce",
+      "target": "Turkce/DefterNotlari/atasozleri.png"
+    },
+    {
+      "id": "recent-note-deyimler",
+      "addedOn": "2026-11-01",
+      "addedAt": "2026-11-01T20:47:30Z",
+      "type": "note",
+      "course": "turkce",
+      "target": "Turkce/DefterNotlari/deyimler.png"
+    },
+    {
+      "id": "recent-note-ikilemeler",
+      "addedOn": "2026-10-31",
+      "addedAt": "2026-10-31T19:33:05Z",
+      "type": "note",
+      "course": "turkce",
+      "target": "Turkce/DefterNotlari/ikilemeler.jpeg"
+    },
+    {
+      "id": "recent-note-pekistirme",
+      "addedOn": "2026-10-31",
+      "addedAt": "2026-10-31T19:33:05Z",
+      "type": "note",
+      "course": "turkce",
+      "target": "Turkce/DefterNotlari/pekistirme.JPG"
+    },
+    {
+      "id": "recent-note-toplama-cikarma-problemleri",
+      "addedOn": "2026-11-02",
+      "addedAt": "2026-11-02T06:12:06Z",
+      "type": "note",
+      "course": "matematik",
+      "target": "Matematik/DefterNotlari/toplamacikarmaproblemleri.png"
+    },
+    {
+      "id": "recent-evaluation-dogal-sayilar",
+      "addedOn": "2026-11-02",
+      "addedAt": "2026-11-02T06:37:38Z",
+      "type": "evaluation",
+      "course": "matematik",
+      "target": "Matematik/dogalsayilardegerlendirme.html"
+    },
+    {
+      "id": "recent-note-milli-mucadele-1",
+      "addedOn": "2026-11-01",
+      "addedAt": "2026-11-01T21:00:58Z",
+      "type": "note",
+      "course": "sosyal",
+      "target": "Sosyal/DefterNotlari/millimucadele1.png"
+    },
+    {
+      "id": "recent-note-milli-mucadele-2",
+      "addedOn": "2026-11-01",
+      "addedAt": "2026-11-01T21:00:58Z",
+      "type": "note",
+      "course": "sosyal",
+      "target": "Sosyal/DefterNotlari/millimucadele2.png"
+    },
+    {
+      "id": "recent-note-milli-mucadele-3",
+      "addedOn": "2026-11-01",
+      "addedAt": "2026-11-01T21:00:58Z",
+      "type": "note",
+      "course": "sosyal",
+      "target": "Sosyal/DefterNotlari/millimucadele3.png"
+    },
+    {
+      "id": "recent-note-milli-mucadele-4",
+      "addedOn": "2026-11-01",
+      "addedAt": "2026-11-01T21:00:58Z",
+      "type": "note",
+      "course": "sosyal",
+      "target": "Sosyal/DefterNotlari/millimucadele4.png"
+    },
+    {
+      "id": "recent-note-milli-mucadele-5",
+      "addedOn": "2026-11-01",
+      "addedAt": "2026-11-01T21:00:58Z",
+      "type": "note",
+      "course": "sosyal",
+      "target": "Sosyal/DefterNotlari/millimucadele5.png"
+    },
+    {
+      "id": "recent-note-milli-mucadele-6",
+      "addedOn": "2026-11-01",
+      "addedAt": "2026-11-01T21:00:58Z",
+      "type": "note",
+      "course": "sosyal",
+      "target": "Sosyal/DefterNotlari/millimucadele6.png"
+    },
+    {
+      "id": "recent-note-milli-mucadele-7",
+      "addedOn": "2026-11-01",
+      "addedAt": "2026-11-01T21:00:58Z",
+      "type": "note",
+      "course": "sosyal",
+      "target": "Sosyal/DefterNotlari/millimucadele7.png"
     }
   ]
 }
