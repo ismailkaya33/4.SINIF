@@ -320,6 +320,13 @@ body:not(.oyunda){min-width:0}
  .welcomeBar #cikis{font-size:12px;padding:7px 8px}
  .kutu{padding-left:10px;padding-right:10px}
 }
+
+.examHome{margin:12px 0 17px}
+.examHome button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:64px;margin:0;padding:15px 20px;border:1px solid #df8a91;border-radius:16px;background:linear-gradient(110deg,#ffe4e6,#fff1f2);color:#7b2f3a;font-size:22px;font-weight:900;text-align:left;box-shadow:0 5px 14px #a33e4b18}
+.examHome button:hover:not(:disabled){background:linear-gradient(110deg,#ffdadd,#ffe9eb)}
+.examHint{margin:8px 0 0;padding:12px 15px;border:1px solid #f0c4c8;border-radius:12px;background:#fff9f9;color:#70444a;font-weight:700}
+body.lessonView .examHome{display:none}
+@media(max-width:620px){.examHome button{min-height:58px;padding:13px 15px;font-size:20px}}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
@@ -336,6 +343,10 @@ body:not(.oyunda){min-width:0}
 <details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor...</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru cevap</small></div></div></div></details>
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
 <p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
+<section class="examHome" aria-label="Deneme Sınavları">
+ <button id="denemeSinavlariBtn" type="button" aria-expanded="false" aria-controls="denemeSinavlariBilgi"><span>📝 Deneme Sınavları</span><span aria-hidden="true">→</span></button>
+ <p id="denemeSinavlariBilgi" class="examHint" hidden>Deneme sınavları yüklendiğinde burada yer alacak.</p>
+</section>
 
 <div id="dersGeriSatiri" class="lessonBackRow" hidden><button id="dersGeri" type="button">← Ana Menüye Dön</button><strong id="dersSayfaBaslik"></strong></div>
 <div id="dersIzgarasi" class="cards seven"><details class="course"><summary><span class="subjectIcon subject-TR" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M10 14q12-5 22 3v35q-10-8-22-4z" fill="#7EA9FF" stroke="#345AA5" stroke-width="2.8"/><path d="M54 14q-12-5-22 3v35q10-8 22-4z" fill="#FFD58D" stroke="#B9772C" stroke-width="2.8"/><path d="M17 23h9m-9 7h9m12-7h9m-9 7h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M32 17v35" stroke="#4763AA" stroke-width="2.6"/></svg></span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
@@ -606,6 +617,7 @@ function menuyeDon(){
  window.scrollTo({top:0,behavior:"instant"});
 }
 document.getElementById("dersGeri").addEventListener("click",menuyeDon);
+document.getElementById("denemeSinavlariBtn").addEventListener("click",function(){const info=document.getElementById("denemeSinavlariBilgi"),open=info.hidden;info.hidden=!open;this.setAttribute("aria-expanded",String(open));});
 function tabSec(card,tab){
  card.querySelectorAll(".courseTabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===tab)));
  card.querySelectorAll(".courseSection").forEach(p=>p.hidden=p.dataset.panel!==tab);
