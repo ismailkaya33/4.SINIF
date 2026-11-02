@@ -369,7 +369,7 @@ let oturumNesli=0;
 const tokenFormat=/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 function hosGeldinAdiGoster_(ad){document.getElementById("welcomeName").textContent=String(ad||"Öğrenci");}
 function yeniIcerikTarihiAktif_(dateText){
- const match=/^(\\d{4})-(\\d{2})-(\\d{2})$/.exec(String(dateText||""));
+ const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateText||""));
  if(!match)return false;
  const added=new Date(Number(match[1]),Number(match[2])-1,Number(match[3]));
  const today=new Date();added.setHours(0,0,0,0);today.setHours(0,0,0,0);
