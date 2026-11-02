@@ -131,9 +131,17 @@
     }
 
     .subject-name {
-        font-size: 1.8rem;
-        font-weight: 800;
+        font-size: clamp(2rem, 3vw, 2.5rem);
+        line-height: 1.15;
+        font-weight: 900;
         color: #2D3748;
+        text-align: center;
+    }
+    .subject-btn { min-height: 220px; }
+    @media (max-width: 650px) {
+        body { padding: 14px; }
+        .subject-btn { min-height: 185px; padding: 28px 18px; }
+        .subject-name { font-size: clamp(1.8rem, 7vw, 2.15rem); }
     }
 
     .btn-turkce { border-color: var(--turkce); }
@@ -255,7 +263,10 @@
     .duyuru-kart p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 7px;line-height:1.55}
     .duyuru-kart time{font-size:.8rem;color:#67788b}
     .duyuru-durum{color:#64748b;margin:0}
-    .new-content-alerts{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:0 0 4px}
+    .new-content-panel{grid-column:1/-1;max-width:1000px;width:100%;margin:0 auto 6px;padding:18px 20px;background:#fff;border:2px solid #f4be56;border-radius:20px;box-shadow:0 6px 18px #20365012}
+    .new-content-panel h2{font-size:1.25rem;margin:0 0 12px;color:#80520a}
+    .new-content-panel[hidden]{display:none!important}
+    .new-content-alerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
     .new-content-alerts[hidden]{display:none!important}
     .new-alert{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:#fff;border:2px solid #f4be56;border-left:7px solid #ee9b00;border-radius:16px;box-shadow:0 5px 14px #20365010;color:#26384a;font-size:1rem;font-weight:800}
     .new-alert button{flex:none;border:0;border-radius:999px;padding:9px 13px;background:#274c77;color:#fff;font:inherit;font-size:.82rem;cursor:pointer}
@@ -277,7 +288,10 @@
     <div class="container">
         
         <div id="main-menu" class="menu-grid">
-    <section id="new-content-alerts" class="new-content-alerts" aria-label="Yeni içerik uyarıları" aria-live="polite" hidden></section>
+    <section id="new-content-panel" class="new-content-panel" aria-labelledby="new-content-title" hidden>
+        <h2 id="new-content-title">✨ Yeni İçerikler</h2>
+        <div id="new-content-alerts" class="new-content-alerts" aria-live="polite"></div>
+    </section>
 
             <button id="btn-turkce" class="subject-btn btn-turkce" onclick="openSubject('turkce')">
                 <span class="subject-icon">📚</span>
@@ -505,6 +519,8 @@
         } catch (error) {
           alertRoot.replaceChildren();
           alertRoot.hidden = true;
+          const panel = document.getElementById("new-content-panel");
+          if (panel) panel.hidden = true;
           console.warn("Yeni içerik uyarıları yüklenemedi.");
         }
       }
@@ -559,6 +575,8 @@
         });
         root.replaceChildren(...cards);
         root.hidden = cards.length === 0;
+        const panel = document.getElementById("new-content-panel");
+        if (panel) panel.hidden = root.hidden;
       }
 
       function openSubject(subjectId) {
