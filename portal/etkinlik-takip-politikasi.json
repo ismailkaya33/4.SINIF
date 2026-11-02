@@ -329,6 +329,18 @@
       "konum": "Trafik/yayaolaraktrafikkurallarietkinligi.html",
       "baslik": "Yaya Olarak Trafik Kurallarına Uyarım",
       "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/toplamacikarmaproblem1.html",
+      "baslik": "Toplama ve Çıkarma Problemleri 1",
+      "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Matematik",
+      "konum": "Matematik/toplamacikarmaproblem2.html",
+      "baslik": "Toplama ve Çıkarma Problemleri 2",
+      "takip": "secim_bekliyor"
     }
   ],
   "yeniEtkinlikler": []
