@@ -255,6 +255,10 @@
     .duyuru-kart p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 7px;line-height:1.55}
     .duyuru-kart time{font-size:.8rem;color:#67788b}
     .duyuru-durum{color:#64748b;margin:0}
+    .new-content-alerts{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:0 0 4px}
+    .new-content-alerts[hidden]{display:none!important}
+    .new-alert{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:#fff;border:2px solid #f4be56;border-left:7px solid #ee9b00;border-radius:16px;box-shadow:0 5px 14px #20365010;color:#26384a;font-size:1rem;font-weight:800}
+    .new-alert button{flex:none;border:0;border-radius:999px;padding:9px 13px;background:#274c77;color:#fff;font:inherit;font-size:.82rem;cursor:pointer}
 
 </style>
 </head>
@@ -273,6 +277,8 @@
     <div class="container">
         
         <div id="main-menu" class="menu-grid">
+    <section id="new-content-alerts" class="new-content-alerts" aria-label="Yeni içerik uyarıları" aria-live="polite" hidden></section>
+
             <button id="btn-turkce" class="subject-btn btn-turkce" onclick="openSubject('turkce')">
                 <span class="subject-icon">📚</span>
                 <span class="subject-name">TÜRKÇE</span>
@@ -467,88 +473,108 @@
 
     </div>
 
-    <!-- SAYFA GEÇİŞ VE YENİ ETKİNLİK SCRİPTİ -->
-   <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // ANA MENÜ UYARILARI
-            showNewBadge('btn-matematik', '2026-10-25');
-            showNewBadge('btn-fen', '2026-10-27');
-            showNewBadge('btn-insan', '2026-10-18');
-            showNewBadge('btn-sosyal', '2026-10-29');
-            showNewBadge('btn-turkce', '2026-10-31');
-            
-            // ALT SAYFALARDAKİ YENİ OYUNLARIN UYARILARI
-            showNewBadge('etk-mat-zihintop', '2026-10-18', true);
-            showNewBadge('etk-mat-verilmeyen', '2026-10-25', true);
-            showNewBadge('etk-mat-cikarma', '2026-10-18', true);
-            showNewBadge('etk-fen-besin1', '2026-10-18', true);
-            showNewBadge('etk-fen-besin2', '2026-10-18', true);
-            showNewBadge('etk-insan-bilinci', '2026-10-18', true);
-            showNewBadge('etk-sosyal-kultur', '2026-10-21', true);
-            showNewBadge('etk-sosyal-oyun', '2026-10-26', true);
-            showNewBadge('etk-turkce-soz', '2026-10-31', true);
-            
-            // YENİ DEFTER NOTLARI UYARILARI
-            showNewBadge('etk-mat-not3', '2026-10-25', true);
-            showNewBadge('etk-mat-not4', '2026-10-18', true);
-            showNewBadge('etk-mat-not5', '2026-10-18', true);
-            // FEN BİLİMLERİ YENİ DEFTER NOTLARI UYARILARI
-            showNewBadge('etk-fen-not4', '2026-10-27', true);
-            showNewBadge('etk-fen-not5', '2026-10-27', true);
-            showNewBadge('etk-fen-not3', '2026-10-18', true);
-            // SOSYAL YENİ DEFTER NOTLARI UYARILARI
-            showNewBadge('etk-sosyal-not3', '2026-10-19', true);
-            showNewBadge('etk-sosyal-not5', '2026-10-26', true);
-            showNewBadge('etk-sosyal-not6', '2026-10-26', true);
-            // TÜRKÇE YENİ DEFTER NOTLARI UYARILARI
-            showNewBadge('etk-turkce-not3', '2026-10-31', true);
-            showNewBadge('etk-turkce-not4', '2026-10-31', true);
-            showNewBadge('etk-turkce-not5', '2026-10-31', true);
-            showNewBadge('etk-turkce-not6', '2026-10-31', true);
+    <!-- Tarihli içerik kataloğu: etiketler ve ana sayfa uyarıları aynı kaynaktan beslenir. -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        loadDatedContent();
+      });
+
+      async function loadDatedContent() {
+        const alertRoot = document.getElementById("new-content-alerts");
+        try {
+          const response = await fetch("portal/new-content.json", {cache:"no-store"});
+          if (!response.ok) throw new Error("İçerik kataloğu alınamadı.");
+          const data = await response.json();
+          const active = (Array.isArray(data.items) ? data.items : [])
+            .filter(item => isNewWithinThreeDays(item.addedOn));
+
+          active.forEach(function(item) {
+            const node = document.getElementById(item.id);
+            if (node) addNewBadge(node, item.id.startsWith("btn-"));
+          });
+
+          const courses = [...new Set(active.map(item => item.course).filter(Boolean))];
+          courses.forEach(function(course) {
+            const button = document.getElementById("btn-" + course);
+            if (button && !button.querySelector(".badge-yeni,.badge-yeni-kucuk")) {
+              addNewBadge(button, false);
+            }
+          });
+
+          renderHomeAlerts(active, alertRoot);
+        } catch (error) {
+          alertRoot.replaceChildren();
+          alertRoot.hidden = true;
+          console.warn("Yeni içerik uyarıları yüklenemedi.");
+        }
+      }
+
+      function isNewWithinThreeDays(dateText) {
+        const match = /^(\\d{4})-(\\d{2})-(\\d{2})$/.exec(String(dateText || ""));
+        if (!match) return false;
+        const added = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+        const today = new Date();
+        added.setHours(0,0,0,0);
+        today.setHours(0,0,0,0);
+        const days = Math.floor((today - added) / 86400000);
+        return days >= 0 && days < 3;
+      }
+
+      function addNewBadge(element, large) {
+        if (element.querySelector(".badge-yeni,.badge-yeni-kucuk")) return;
+        const badge = document.createElement("span");
+        badge.className = large ? "badge-yeni" : "badge-yeni-kucuk";
+        badge.textContent = "YENİ";
+        element.appendChild(badge);
+      }
+
+      function renderHomeAlerts(items, root) {
+        const messages = {
+          activity: "Yeni etkinlik var.",
+          evaluation: "Yeni değerlendirme görevi var.",
+          note: "Yazılması gereken bir defter notu var."
+        };
+        const types = ["activity","evaluation","note"];
+        const cards = types.flatMap(function(type) {
+          const matches = items.filter(item => item.type === type || (type === "activity" && item.type === "section"));
+          if (!matches.length) return [];
+          const first = matches[0];
+          const card = document.createElement("div");
+          card.className = "new-alert";
+          const label = document.createElement("span");
+          label.textContent = messages[type] + (matches.length > 1 ? " (" + matches.length + ")" : "");
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = "Görüntüle";
+          button.addEventListener("click", function() {
+            if (first.course && document.getElementById(first.course)) openSubject(first.course);
+            else {
+              const target = document.getElementById(first.id);
+              target?.scrollIntoView({behavior:"smooth",block:"center"});
+              target?.focus?.();
+            }
+          });
+          card.append(label,button);
+          return [card];
         });
+        root.replaceChildren(...cards);
+        root.hidden = cards.length === 0;
+      }
 
-        function showNewBadge(elementId, dateString, isSmallBadge = false) {
-            const addedDate = new Date(dateString);
-            const today = new Date();
-            
-            addedDate.setHours(0, 0, 0, 0);
-            today.setHours(0, 0, 0, 0);
+      function openSubject(subjectId) {
+        document.getElementById("main-menu").style.display = "none";
+        document.querySelectorAll(".subject-page").forEach(page => page.style.display = "none");
+        const page = document.getElementById(subjectId);
+        if (page) page.style.display = "block";
+        window.scrollTo(0,0);
+      }
 
-            const diffTime = today - addedDate;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            if (diffDays >= 0 && diffDays <= 3) {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    if (!element.querySelector('.badge-yeni') && !element.querySelector('.badge-yeni-kucuk')) {
-                        const badge = document.createElement('span');
-                        badge.className = isSmallBadge ? 'badge-yeni-kucuk' : 'badge-yeni';
-                        badge.innerText = 'YENİ';
-                        element.appendChild(badge);
-                    }
-                }
-            }
-        }
-
-        function openSubject(subjectId) {
-            document.getElementById('main-menu').style.display = 'none';
-            var pages = document.getElementsByClassName('subject-page');
-            for(var i = 0; i < pages.length; i++) {
-                pages[i].style.display = 'none';
-            }
-            document.getElementById(subjectId).style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-
-        function goBack() {
-            var pages = document.getElementsByClassName('subject-page');
-            for(var i = 0; i < pages.length; i++) {
-                pages[i].style.display = 'none';
-            }
-            document.getElementById('main-menu').style.display = 'grid';
-        }
+      function goBack() {
+        document.querySelectorAll(".subject-page").forEach(page => page.style.display = "none");
+        document.getElementById("main-menu").style.display = "grid";
+        window.scrollTo(0,0);
+      }
     </script>
-
 
 <script type="module">
   import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
