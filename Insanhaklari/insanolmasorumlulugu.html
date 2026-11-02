@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y.4.2.2. İnsan Olma Sorumluluğum - Etkileşimli Etkinlik</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Nunito for Child-Friendly Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tone.js for Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #fef3c7 50%, #fce7f3 100%);
+            min-height: 100vh;
+        }
+        h1, h2, h3, .title-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .card-bounce {
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .card-bounce:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+        .card-bounce:active {
+            transform: scale(0.97);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop 0.35s ease-out forwards;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 9999px;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 pb-12">
+
+    <!-- Üst Bilgi / Başlık Alanı -->
+    <header class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-lg no-print">
+        <div class="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-sm text-3xl shadow-inner">
+                    🌍
+                </div>
+                <div>
+                    <span class="bg-amber-300 text-amber-950 text-xs font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                        4. Sınıf • Kazanım Y.4.2.2.
+                    </span>
+                    <h1 class="text-2xl md:text-3xl font-bold mt-1">İnsan Olma Sorumluluğunu Taşıyorum!</h1>
+                </div>
+            </div>
+
+            <!-- Puan & Ses Kontrolü -->
+            <div class="flex items-center gap-3">
+                <div class="bg-white/95 text-slate-800 px-4 py-2 rounded-2xl shadow-md flex items-center gap-2 border-2 border-amber-300">
+                    <span class="text-2xl">⭐</span>
+                    <div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase leading-none">Toplam Puan</div>
+                        <div id="totalScoreDisplay" class="text-xl font-extrabold text-indigo-700 leading-tight">0</div>
+                    </div>
+                </div>
+                <button id="soundToggleBtn" onclick="toggleSound()" class="bg-white/20 hover:bg-white/30 p-3 rounded-2xl transition text-xl" title="Sesi Aç/Kapat">
+                    🔊
+                </button>
+            </div>
+        </div>
+
+        <!-- Sekme (Tab) Menüsü -->
+        <div class="max-w-6xl mx-auto px-4 pt-2 flex flex-wrap gap-2">
+            <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn bg-white text-indigo-700 font-bold px-5 py-3 rounded-t-2xl shadow-sm flex items-center gap-2 transition text-sm md:text-base">
+                <span>🧩</span> 1. Sorumluluk Eşleştirme
+            </button>
+            <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn bg-indigo-800/50 text-white/90 hover:bg-indigo-800/70 font-bold px-5 py-3 rounded-t-2xl flex items-center gap-2 transition text-sm md:text-base">
+                <span>🧭</span> 2. Örnek Olay Karar Ağacı
+            </button>
+            <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn bg-indigo-800/50 text-white/90 hover:bg-indigo-800/70 font-bold px-5 py-3 rounded-t-2xl flex items-center gap-2 transition text-sm md:text-base">
+                <span>🏅</span> 3. Benim Sorumluluk Sözüm
+            </button>
+            <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn bg-indigo-800/50 text-white/90 hover:bg-indigo-800/70 font-bold px-4 py-3 rounded-t-2xl flex items-center gap-2 transition text-sm md:text-base ml-auto">
+                <span>💡</span> Konu Özeti
+            </button>
+        </div>
+    </header>
+
+    <!-- Ana İçerik Alanı -->
+    <main class="max-w-6xl mx-auto px-4 mt-6">
+
+        <!-- ==========================================
+             SEKME 1: SORUMLULUK EŞLEŞTİRME OYUNU
+             ========================================== -->
+        <section id="tab1" class="tab-content space-y-6">
+            <!-- Yönerge ve İlerleme Çubuğu -->
+            <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-indigo-100">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-indigo-900 flex items-center gap-2">
+                            <span>🎯</span> Bu Davranış Kime Karşı Sorumluluğumuzdur?
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1">
+                            Ortadaki davranış kartını oku ve aşağıda yer alan <strong>8 sorumluluk alanından</strong> doğru olanına tıkla!
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <span id="matchCounterText" class="text-sm font-extrabold bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-200">
+                            Kart: 1 / 16
+                        </span>
+                        <button onclick="resetMatchingGame()" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl transition">
+                            🔄 Yeniden Başla
+                        </button>
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-100 h-3.5 rounded-full overflow-hidden border border-slate-200">
+                    <div id="matchProgressBar" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Aktif Davranış Kartı Alanı -->
+            <div id="activeCardZone" class="relative bg-gradient-to-br from-indigo-50 via-white to-amber-50 rounded-3xl p-6 md:p-8 shadow-lg border-4 border-dashed border-indigo-300 text-center flex flex-col items-center justify-center min-h-[210px]">
+                <div id="currentCardBadge" class="bg-indigo-600 text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3 shadow">
+                    Sıradaki Davranış Kartı
+                </div>
+                <div id="currentCardEmoji" class="text-5xl md:text-6xl mb-3 select-none">🍎</div>
+                <h3 id="currentCardText" class="text-xl md:text-2xl font-bold text-slate-800 max-w-2xl leading-snug">
+                    Yükleniyor...
+                </h3>
+                <!-- Geri Bildirim Mesaj Kutusu -->
+                <div id="matchFeedbackBox" class="mt-4 hidden px-4 py-2 rounded-2xl font-bold text-sm md:text-base"></div>
+            </div>
+
+            <!-- 8 Sorumluluk Kategorisi Butonları / Kutuları -->
+            <div>
+                <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-500 mb-3 text-center">
+                    👇 Doğru Sorumluluk Alanını Seç 👇
+                </h3>
+                <div id="categoryGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+                    <!-- JS ile 8 kategori oluşturulacak -->
+                </div>
+            </div>
+
+            <!-- Eşleştirilenlerin Özeti Akordiyon/Liste -->
+            <div class="bg-white/80 rounded-3xl p-5 shadow-sm border border-slate-200">
+                <h4 class="font-bold text-slate-700 text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <span>✅</span> Şimdiye Kadar Doğru Eşleştirdiğin Davranışlar (<span id="completedListCount">0</span>)
+                </h4>
+                <div id="completedCardsContainer" class="flex flex-wrap gap-2 text-xs text-slate-500">
+                    <span class="italic text-slate-400">Henüz bir kart eşleştirilmedi. Yukarıdaki kartı doğru kutuya gönder!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SEKME 2: ÖRNEK OLAY KARAR AĞACI
+             ========================================== -->
+        <section id="tab2" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-purple-100">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-purple-900 flex items-center gap-2">
+                            <span>🧭</span> Sen Olsaydın Ne Yapardın? (Örnek Olaylar)
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1">
+                            Günlük hayatta karşılaştığımız durumlarda insan olma sorumluluğumuzu nasıl taşırız? Doğru kararı ver!
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="scenarioStepBadge" class="bg-purple-100 text-purple-800 font-extrabold px-4 py-2 rounded-2xl text-sm">
+                            Örnek Olay 1 / 6
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Senaryo Kartı -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-lg border-2 border-slate-100">
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span id="scenarioCategoryTag" class="bg-amber-100 text-amber-800 text-xs font-extrabold px-3 py-1 rounded-full">
+                        İnsanlığın Ortak Mirasına Sorumluluk
+                    </span>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-5 bg-slate-50 p-5 rounded-2xl border border-slate-200 mb-6">
+                    <div id="scenarioEmoji" class="text-5xl md:text-6xl bg-white p-4 rounded-2xl shadow-sm shrink-0">
+                        🏛️
+                    </div>
+                    <div>
+                        <h3 id="scenarioTitle" class="text-lg md:text-xl font-bold text-slate-900 mb-1">
+                            Senaryo Başlığı
+                        </h3>
+                        <p id="scenarioStory" class="text-slate-700 text-base md:text-lg leading-relaxed">
+                            Senaryo metni burada yer alacak...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Seçenekler -->
+                <div id="scenarioOptions" class="space-y-3">
+                    <!-- JS ile doldurulacak -->
+                </div>
+
+                <!-- Açıklama / Sonuç Kutusu -->
+                <div id="scenarioExplanationBox" class="hidden mt-6 p-5 rounded-2xl border-2">
+                    <div class="flex items-start gap-3">
+                        <span id="scenarioExpIcon" class="text-3xl">💡</span>
+                        <div class="flex-1">
+                            <h4 id="scenarioExpTitle" class="font-bold text-lg">Harika Karar!</h4>
+                            <p id="scenarioExpText" class="text-sm md:text-base mt-1"></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button id="nextScenarioBtn" onclick="nextScenario()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+                            <span>Sonraki Örnek Olay</span> <span>➡️</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SEKME 3: BENİM SORUMLULUK SÖZÜM (SERTİFİKA)
+             ========================================== -->
+        <section id="tab3" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-pink-100 no-print">
+                <h2 class="text-xl md:text-2xl font-bold text-pink-900 flex items-center gap-2">
+                    <span>🏅</span> Benim Sorumluluk Sözüm ve Sertifikam
+                </h2>
+                <p class="text-slate-600 text-sm md:text-base mt-1">
+                    Adını yaz, bu hafta yerine getireceğine söz verdiğin sorumlulukları işaretle ve kendi sorumluluk rozetini oluştur!
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-slate-500 mb-1">Adın ve Soyadın</label>
+                        <input type="text" id="studentNameInput" oninput="updateCertificate()" placeholder="Örn: Elif Yılmaz" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none font-bold text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-slate-500 mb-1">Sınıfın / Okulun</label>
+                        <input type="text" id="studentClassInput" oninput="updateCertificate()" placeholder="Örn: 4-A Sınıfı" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none font-bold text-slate-800">
+                    </div>
+                </div>
+
+                <!-- 8 Alanda Söz Seçimi -->
+                <div class="mt-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-extrabold uppercase text-slate-500">Bu Hafta Hangi Sorumlulukları Üstleniyorsun? (En az 4 tane seç)</span>
+                        <button onclick="selectAllPledges()" class="text-xs font-bold text-indigo-600 hover:underline">Tümünü Seç</button>
+                    </div>
+                    <div id="pledgeCheckboxes" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <!-- JS ile 8 alanın sözleri oluşturulacak -->
+                    </div>
+                </div>
+
+                <!-- Kendi Eklediği Özel Söz -->
+                <div class="mt-4">
+                    <label class="block text-xs font-extrabold uppercase text-slate-500 mb-1">Kendi Eklemek İstediğin Özel Bir Sorumluluk Sözü (İsteğe Bağlı)</label>
+                    <input type="text" id="customPledgeInput" oninput="updateCertificate()" placeholder="Örn: Her gün 20 sayfa kitap okuyacağım ve mahallemizdeki fidanları sulayacağım." class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none text-sm font-semibold text-slate-800">
+                </div>
+            </div>
+
+            <!-- Canlı Sertifika / Rozet Önizlemesi -->
+            <div id="certificateCard" class="bg-gradient-to-br from-amber-50 via-white to-indigo-50 rounded-3xl p-6 md:p-10 shadow-xl border-8 border-double border-amber-400 relative overflow-hidden">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 flex items-center justify-center text-4xl shadow-md border-4 border-white mb-3">
+                        🌟
+                    </div>
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-amber-700 bg-amber-100 px-3 py-1 rounded-full">
+                        Y.4.2.2. İnsan Olma Sorumluluğu Belgesi
+                    </span>
+                    <h3 class="text-2xl md:text-4xl font-bold text-indigo-950 mt-2">
+                        ÖRNEK İNSAN & SORUMLULUK ELÇİSİ
+                    </h3>
+                    <p class="text-slate-600 mt-2 text-sm md:text-base max-w-xl">
+                        Aşağıda adı bulunan öğrencimiz, insan olma sorumluluğunun bilincine vararak kendisine, ailesine, arkadaşlarına, diğer insanlara, doğaya, çevreye, hayvanlara ve insanlığın ortak mirasına karşı görevlerini yerine getirmeye söz vermiştir.
+                    </p>
+
+                    <div class="my-5 bg-white px-8 py-3 rounded-2xl shadow-sm border-2 border-indigo-100">
+                        <div id="certStudentName" class="text-2xl md:text-3xl font-extrabold text-indigo-700">
+                            İsimsiz Kahraman
+                        </div>
+                        <div id="certStudentClass" class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+                            4. Sınıf Öğrencisi
+                        </div>
+                    </div>
+
+                    <!-- Seçilen Sözler Listesi -->
+                    <div class="w-full max-w-2xl bg-white/90 rounded-2xl p-4 border border-amber-200 text-left">
+                        <h4 class="text-xs font-extrabold uppercase text-amber-800 mb-2 text-center">
+                            📜 Verdiğim Sorumluluk Sözleri
+                        </h4>
+                        <ul id="certPledgeList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm text-slate-700 font-semibold">
+                            <!-- JS ile güncellenecek -->
+                        </ul>
+                        <div id="certCustomPledge" class="mt-3 pt-2 border-t border-dashed border-amber-200 text-xs md:text-sm font-bold text-indigo-700 hidden"></div>
+                    </div>
+
+                    <div class="w-full max-w-2xl flex items-center justify-between mt-6 pt-4 border-t border-slate-200 text-xs text-slate-500 font-bold">
+                        <div>Etkinlik Puanı: <span id="certScore" class="text-indigo-700 font-extrabold">0 ⭐</span></div>
+                        <div>Rozet Seviyesi: <span id="certBadgeRank" class="text-emerald-700 font-extrabold">Duvarcı Çırağı 🌱</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-3 no-print">
+                <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-2xl shadow-md transition flex items-center gap-2">
+                    <span>🖨️</span> Sertifikayı Yazdır / Kaydet
+                </button>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SEKME 4: KONU ÖZETİ (8 SORUMLULUK ALANI)
+             ========================================== -->
+        <section id="tabInfo" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-emerald-100">
+                <h2 class="text-xl md:text-2xl font-bold text-emerald-900 flex items-center gap-2">
+                    <span>💡</span> İnsan Olma Sorumluluğumuz Neleri Kapsar?
+                </h2>
+                <p class="text-slate-600 text-sm md:text-base mt-1">
+                    İnsan, akıl ve vicdan sahibi bir varlıktır. Yalnızca kendi çıkarlarını değil, birlikte yaşadığı dünyayı da düşünmelidir. İşte <strong>8 temel sorumluluk alanımız</strong>:
+                </p>
+
+                <div id="summaryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                    <!-- JS ile 8 alanın bilgi kartları oluşturulacak -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // 1. VERİ SETİ: 8 SORUMLULUK KATEGORİSİ
+        // ==========================================
+        const CATEGORIES = [
+            {
+                id: 'kendimize',
+                title: 'Kendimize',
+                emoji: '🧘‍♂️',
+                color: 'from-sky-400 to-blue-500',
+                lightBg: 'bg-sky-50 border-sky-200 text-sky-900',
+                desc: 'Beden ve ruh sağlığımızı korumak, kişisel bakımımızı yapmak ve kendimizi geliştirmek.',
+                pledge: 'Sağlıklı beslenecek, kişisel temizliğime ve derslerime özen göstereceğim.'
+            },
+            {
+                id: 'ailemize',
+                title: 'Ailemize',
+                emoji: '👨‍👩‍👧‍👦',
+                color: 'from-rose-400 to-pink-500',
+                lightBg: 'bg-rose-50 border-rose-200 text-rose-900',
+                desc: 'Aile bireylerine sevgi ve saygı göstermek, evdeki iş bölümüne katkıda bulunmak.',
+                pledge: 'Ev işlerinde aileme yardım edecek ve aile kurallarına uyacağım.'
+            },
+            {
+                id: 'arkadaslarimiza',
+                title: 'Arkadaşlarımıza',
+                emoji: '🤝',
+                color: 'from-amber-400 to-orange-500',
+                lightBg: 'bg-amber-50 border-amber-200 text-amber-900',
+                desc: 'Dürüst, adil ve güvenilir olmak, zor zamanlarında arkadaşlarımızın yanında olmak.',
+                pledge: 'Arkadaşlarıma karşı kibar, dürüst ve oyunlarda adil olacağım.'
+            },
+            {
+                id: 'diger_insanlara',
+                title: 'Diğer İnsanlara',
+                emoji: '🌍',
+                color: 'from-purple-400 to-indigo-500',
+                lightBg: 'bg-purple-50 border-purple-200 text-purple-900',
+                desc: 'Toplum kurallarına uymak, yaşlılara, engellilere ve ihtiyaç sahiplerine duyarlı olmak.',
+                pledge: 'Toplumdaki her insana saygı duyacak ve yardıma ihtiyacı olanlara destek olacağım.'
+            },
+            {
+                id: 'dogaya',
+                title: 'Doğaya',
+                emoji: '🌳',
+                color: 'from-emerald-400 to-green-600',
+                lightBg: 'bg-emerald-50 border-emerald-200 text-emerald-900',
+                desc: 'Ormanları, su kaynaklarını, toprağı ve doğal dengeyi korumak, israftan kaçınmak.',
+                pledge: 'Su ve enerji kaynaklarını tasarruflu kullanacak, yeşil alanları koruyacağım.'
+            },
+            {
+                id: 'cevreye',
+                title: 'Çevreye',
+                emoji: '♻️',
+                color: 'from-teal-400 to-cyan-600',
+                lightBg: 'bg-teal-50 border-teal-200 text-teal-900',
+                desc: 'Yaşadığımız sokağı, okulu, parkları temiz tutmak ve geri dönüşüme özen göstermek.',
+                pledge: 'Yerlere asla çöp atmayacak ve atıkları geri dönüşüm kutularına ayıracağım.'
+            },
+            {
+                id: 'hayvanlara',
+                title: 'Hayvanlara',
+                emoji: '🐾',
+                color: 'from-yellow-400 to-amber-600',
+                lightBg: 'bg-yellow-50 border-yellow-300 text-yellow-900',
+                desc: 'Tüm canlıların yaşam hakkına saygı duymak, sokak ve doğa hayvanlarına şefkat göstermek.',
+                pledge: 'Hayvanlara sevgiyle yaklaşacak, sokak hayvanları için bir kap su/mama koyacağım.'
+            },
+            {
+                id: 'ortak_mirasa',
+                title: 'İnsanlığın Ortak Mirasına',
+                emoji: '🏛️',
+                color: 'from-fuchsia-500 to-rose-600',
+                lightBg: 'bg-fuchsia-50 border-fuchsia-200 text-fuchsia-900',
+                desc: 'Tarihî eserleri, müzeleri, sanat ve bilim varlıklarını koruyup gelecek nesillere aktarmak.',
+                pledge: 'Tarihî eserlere, müzelere ve kültürel değerlerimize zarar vermeden onları koruyacağım.'
+            }
+        ];
+
+        // ==========================================
+        // 2. VERİ SETİ: 16 EŞLEŞTİRME KARTI (Her kategoriden 2 adet)
+        // ==========================================
+        const MATCH_CARDS = [
+            { id: 1, category: 'kendimize', emoji: '🥗', text: 'Sağlıklı beslenmek, düzenli uyumak ve dişlerimizi fırçalamak' },
+            { id: 2, category: 'kendimize', emoji: '📚', text: 'Yeteneğimizi geliştirmek için kitap okumak ve düzenli çalışmak' },
+            { id: 3, category: 'ailemize', emoji: '🍽️', text: 'Sofranın kurulmasında ve toplanmasında aile büyüklerimize yardım etmek' },
+            { id: 4, category: 'ailemize', emoji: '🏠', text: 'Odamızı düzenli tutmak ve eve zamanında gelerek ailemizi meraklandırmamak' },
+            { id: 5, category: 'arkadaslarimiza', emoji: '⚽', text: 'Oyun oynarken kurallara uymak, arkadaşlarımızın hakkını yememek' },
+            { id: 6, category: 'arkadaslarimiza', emoji: '🤒', text: 'Hasta olan bir arkadaşımızı arayarak geçmiş olsun dileklerimizi iletmek' },
+            { id: 7, category: 'diger_insanlara', emoji: '🚌', text: 'Toplu taşıma araçlarında yaşlılara, hamilelere ve engellilere yer vermek' },
+            { id: 8, category: 'diger_insanlara', emoji: '🤫', text: 'Kütüphane, hastane ve komşuluk ortamlarında gürültü yapmamaya özen göstermek' },
+            { id: 9, category: 'dogaya', emoji: '🌱', text: 'Fidan dikmek ve ormanlık alanlarda ateş yakılmasını önlemek' },
+            { id: 10, category: 'dogaya', emoji: '💧', text: 'Muslukları gereksiz yere açık bırakmayarak su kaynaklarını korumak' },
+            { id: 11, category: 'cevreye', emoji: '🗑️', text: 'Kağıt, plastik ve cam atıkları geri dönüşüm kutularına ayrıştırarak atmak' },
+            { id: 12, category: 'cevreye', emoji: '🏫', text: 'Okul bahçesini, sınıfımızı ve oyun parklarını tertemiz kullanmak' },
+            { id: 13, category: 'hayvanlara', emoji: '🥣', text: 'Sıcak yaz günlerinde sokak hayvanları için kapı önüne bir kap temiz su bırakmak' },
+            { id: 14, category: 'hayvanlara', emoji: '🐦', text: 'Kuş yuvalarına zarar vermemek ve yaralı bir hayvan gördüğümüzde yetkililere haber vermek' },
+            { id: 15, category: 'ortak_mirasa', emoji: '🏺', text: 'Müzeleri ve antik kentleri gezerken tarihî eserlere dokunmamak ve yazı yazmamak' },
+            { id: 16, category: 'ortak_mirasa', emoji: '🎨', text: 'Geçmişten günümüze ulaşan cami, köprü, kütüphane ve sanat eserlerini özenle korumak' }
+        ];
+
+        // ==========================================
+        // 3. VERİ SETİ: ÖRNEK OLAY KARAR AĞACI (6 SENARYO)
+        // ==========================================
+        const SCENARIOS = [
+            {
+                categoryTag: '🏛️ İnsanlığın Ortak Mirasına Sorumluluk',
+                emoji: '🏛️',
+                title: 'Okul Gezisinde Antik Kent Ziyareti',
+                story: 'Sınıfça Efes Antik Kenti\'ne geziye gittiniz. Gezi sırasında bir arkadaşının eline sivri bir taş alıp binlerce yıllık mermer sütunun üzerine kendi adını kazımaya çalıştığını gördün. Ne yaparsın?',
+                options: [
+                    {
+                        text: 'Tarihî eserlerin tüm insanlığın ortak mirası olduğunu hatırlatıp arkadaşımı nazikçe uyarır ve durdururum.',
+                        correct: true,
+                        explanation: 'Harika! Tarihî eserler yalnızca bizim değil tüm insanlığın ve gelecek nesillerin ortak mirasıdır. Onları korumak insan olma sorumluluğumuzdur.'
+                    },
+                    {
+                        text: 'Ben de yanına kendi adımı yazarım ki geziden bir hatıra kalsın.',
+                        correct: false,
+                        explanation: 'Dikkat! Tarihî eserlere yazı yazmak onlara geri dönüşü olmayan zararlar verir. Hatıra için fotoğraf çekmek en doğrusudur.'
+                    },
+                    {
+                        text: 'Beni ilgilendirmez diyerek arkamı dönüp yürümeye devam ederim.',
+                        correct: false,
+                        explanation: 'Ortak mirasımız zarar görürken sessiz kalmak sorumluluk bilincine uymaz. Nazikçe uyarmak veya öğretmene bilgi vermek gerekir.'
+                    }
+                ]
+            },
+            {
+                categoryTag: '🐾 Hayvanlara ve 🌳 Doğaya Sorumluluk',
+                emoji: '🐕',
+                title: 'Kış Gününde Parktaki Yavru Köpek',
+                story: 'Soğuk bir kış günü okuldan dönerken parkta üşümüş ve aç görünen bir yavru köpek fark ettin. İnsan olma sorumluluğunu taşıyan biri olarak nasıl davranırsın?',
+                options: [
+                    {
+                        text: 'Ailemle birlikte ona yiyecek ve su verir, belediyenin hayvan bakım birimine veya güvenli bir kulübeye ulaşmasını sağlarım.',
+                        correct: true,
+                        explanation: 'Çok doğru! Hayvanlar da bu dünyanın sessiz sakinleridir. Onların yaşam hakkını korumak ve şefkat göstermek temel sorumluluğumuzdur.'
+                    },
+                    {
+                        text: 'Korkutarak parktan uzaklaştırmaya çalışırım.',
+                        correct: false,
+                        explanation: 'Canlılara zarar vermek veya onları korkutmak yanlış bir davranıştır. Yardıma muhtaç canlılara merhamet göstermeliyiz.'
+                    },
+                    {
+                        text: 'Nasılsa başkası ilgilenir diye düşünüp hiç umursamam.',
+                        correct: false,
+                        explanation: 'Sorumluluk sahibi insan "Başkası yapar" demez, elinden gelen katkıyı büyüklerinin de desteğiyle sunar.'
+                    }
+                ]
+            },
+            {
+                categoryTag: '♻️ Çevreye ve 🌍 Diğer İnsanlara Sorumluluk',
+                emoji: '🧺',
+                title: 'Hafta Sonu Piknik Keyfi',
+                story: 'Ailenle birlikte göl kenarında güzel bir piknik yaptınız. Eve dönme vakti geldiğinde etrafta boş plastik şişeler ve peçeteler olduğunu gördün. Ne yapmalısın?',
+                options: [
+                    {
+                        text: 'Tüm atıklarımızı toplar, geri dönüştürülebilir olanları ayırarak uygun çöp ve geri dönüşüm kutularına atarım.',
+                        correct: true,
+                        explanation: 'Tebrikler! Hem çevremizi hem de bizden sonra oraya gelecek diğer insanların temiz bir doğada vakit geçirme hakkını korumuş oldun.'
+                    },
+                    {
+                        text: 'Rüzgârda uçup gider diyerek çöpleri çalıların arasına saklarım.',
+                        correct: false,
+                        explanation: 'Plastik ve atıklar doğada yüzlerce yıl yok olmaz; toprağı, suyu ve oradaki canlıları zehirler.'
+                    },
+                    {
+                        text: 'Sadece büyük çöpleri alıp küçük kağıtları yerde bırakırım.',
+                        correct: false,
+                        explanation: 'Küçük atıklar da çevreyi kirletir. Piknik alanını bulduğumuzdan daha temiz bırakmalıyız.'
+                    }
+                ]
+            },
+            {
+                categoryTag: '🤝 Arkadaşlarımıza ve 🌍 Diğer İnsanlara Sorumluluk',
+                emoji: '🎒',
+                title: 'Sınıfa Yeni Gelen Öğrenci',
+                story: 'Sınıfınıza başka bir şehirden yeni bir öğrenci geldi. Teneffüste tek başına oturduğunu ve kimseyle konuşmaya çekindiğini fark ettin. Ne yaparsın?',
+                options: [
+                    {
+                        text: 'Yanına gidip kendimi tanıtırım, okulu gezdirmeyi teklif eder ve onu oynadığımız oyuna davet ederim.',
+                        correct: true,
+                        explanation: 'Muhteşem bir empati örneği! Arkadaşlarımıza ve çevremizdeki insanlara karşı kapsayıcı, nazik ve yardımsever olmak insan olma sorumluluğudur.'
+                    },
+                    {
+                        text: 'Kendi yakın arkadaşlarımla oynamaya devam ederim, o kendisi alışsın.',
+                        correct: false,
+                        explanation: 'Yeni bir ortama giren birine hoşça yaklaşmak toplumsal bağlarımızı güçlendirir.'
+                    },
+                    {
+                        text: 'Uzaktan bakıp arkadaşlarımla onun hakkında fısıldaşırım.',
+                        correct: false,
+                        explanation: 'Başkaları hakkında fısıldaşmak onları üzer ve dışlanmış hissettirir. Kendimize yapılmasını istemediğimiz şeyi başkasına yapmamalıyız.'
+                    }
+                ]
+            },
+            {
+                categoryTag: '🧘‍♂️ Kendimize ve 👨‍👩‍👧‍👦 Ailemize Sorumluluk',
+                emoji: '📱',
+                title: 'Ekran Süresi ve Dinlenme Zamanı',
+                story: 'Akşam yemeğinden sonra ödevlerini bitirdin ama saat geç olmasına rağmen tablette oyun oynamaya devam etmek istiyorsun. Ertesi gün sabah erken kalkıp okula gideceksin. Nasıl bir karar verirsin?',
+                options: [
+                    {
+                        text: 'Sağlığımı korumak ve sabah dinç uyanmak için tableti kapatır, dişlerimi fırçalayıp zamanında uyurum.',
+                        correct: true,
+                        explanation: 'Harika! Yeterli uyumak ve beden sağlığımızı korumak hem kendimize hem de bizi düşünen ailemize karşı en önemli sorumluluğumuzdur.'
+                    },
+                    {
+                        text: 'Ailem uyuduktan sonra gizlice sabaha kadar oyun oynamaya devam ederim.',
+                        correct: false,
+                        explanation: 'Uykusuz kalmak sağlığımıza zarar verir, ertesi gün derslerimizi anlamamızı zorlaştırır ve ailemizin güvenini sarsar.'
+                    },
+                    {
+                        text: 'Annemle babam uyarana kadar tartışıp uyumamakta direnirim.',
+                        correct: false,
+                        explanation: 'Aile içi huzuru korumak ve kendi öz denetimimizi sağlamak büyümenin en güzel göstergesidir.'
+                    }
+                ]
+            },
+            {
+                categoryTag: '🌍 Diğer İnsanlara Sorumluluk',
+                emoji: '🛒',
+                title: 'Mahalledeki Yaşlı Komşumuz',
+                story: 'Apartman girişinde yaşlı komşunuz Ayşe Teyze\'nin elinde ağır pazar poşetleriyle merdivenleri çıkmakta zorlandığını gördün. Ne yaparsın?',
+                options: [
+                    {
+                        text: 'Güleryüzle selam verir, "Ayşe Teyze, poşetlerini kapıya kadar taşımana yardım edebilir miyim?" diye sorarım.',
+                        correct: true,
+                        explanation: 'Çok güzel! Yaşlılara, komşularımıza ve desteğe ihtiyaç duyan insanlara yardım eli uzatmak toplumsal dayanışmanın temelidir.'
+                    },
+                    {
+                        text: 'Acaba benden yardım ister mi diye bekleyip hızlıca yanından geçerim.',
+                        correct: false,
+                        explanation: 'İhtiyacı olan birini gördüğümüzde sormadan önce nazikçe yardım teklif etmek duyarlı insan davranışıdır.'
+                    },
+                    {
+                        text: 'Asansörün düğmesine basıp onu beklemeden yukarı çıkarım.',
+                        correct: false,
+                        explanation: 'Ortak yaşam alanlarında büyüklere ve yükü olanlara öncelik tanımalıyız.'
+                    }
+                ]
+            }
+        ];
+
+        // ==========================================
+        // DURUM DEĞİŞKENLERİ VE SES SİSTEMİ
+        // ==========================================
+        let totalScore = 0;
+        let soundEnabled = true;
+        let shuffledCards = [];
+        let currentCardIndex = 0;
+        let completedCards = [];
+        let isWaitingNextCard = false;
+
+        let currentScenarioIndex = 0;
+        let scenarioAnswered = false;
+
+        function playSound(type) {
+            if (!soundEnabled || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth().toDestination();
+                const now = Tone.now();
+                if (type === 'correct') {
+                    synth.triggerAttackRelease("C5", "16n", now);
+                    synth.triggerAttackRelease("E5", "16n", now + 0.08);
+                    synth.triggerAttackRelease("G5", "8n", now + 0.16);
+                } else if (type === 'wrong') {
+                    synth.triggerAttackRelease("E3", "8n", now);
+                    synth.triggerAttackRelease("C3", "8n", now + 0.12);
+                } else if (type === 'win') {
+                    synth.triggerAttackRelease("C5", "16n", now);
+                    synth.triggerAttackRelease("E5", "16n", now + 0.1);
+                    synth.triggerAttackRelease("G5", "16n", now + 0.2);
+                    synth.triggerAttackRelease("C6", "4n", now + 0.3);
+                }
+            } catch (e) {
+                // AudioContext kısıtlaması olursa sessizce geç
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundToggleBtn').textContent = soundEnabled ? '🔊' : '🔇';
+        }
+
+        function addScore(points) {
+            totalScore += points;
+            const scoreEl = document.getElementById('totalScoreDisplay');
+            scoreEl.textContent = totalScore;
+            scoreEl.classList.remove('animate-pop');
+            void scoreEl.offsetWidth;
+            scoreEl.classList.add('animate-pop');
+            updateCertificate();
+        }
+
+        // ==========================================
+        // SEKME GEÇİŞLERİ
+        // ==========================================
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn bg-indigo-800/50 text-white/90 hover:bg-indigo-800/70 font-bold px-5 py-3 rounded-t-2xl flex items-center gap-2 transition text-sm md:text-base';
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.className = 'tab-btn bg-white text-indigo-700 font-bold px-5 py-3 rounded-t-2xl shadow-sm flex items-center gap-2 transition text-sm md:text-base';
+            }
+        }
+
+        // ==========================================
+        // BÖLÜM 1: EŞLEŞTİRME OYUNU FONKSİYONLARI
+        // ==========================================
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function renderCategories() {
+            const grid = document.getElementById('categoryGrid');
+            grid.innerHTML = '';
+            CATEGORIES.forEach(cat => {
+                const count = completedCards.filter(c => c.category === cat.id).length;
+                const btn = document.createElement('button');
+                btn.id = 'cat-btn-' + cat.id;
+                btn.onclick = () => handleCategoryChoice(cat.id);
+                btn.className = `card-bounce relative overflow-hidden rounded-2xl p-4 text-left shadow-md border-2 border-white bg-gradient-to-br ${cat.color} text-white flex flex-col justify-between min-h-[110px]`;
+                btn.innerHTML = `
+                    <div class="flex items-start justify-between w-full">
+                        <span class="text-3xl bg-white/25 p-2 rounded-xl backdrop-blur-sm">${cat.emoji}</span>
+                        <span class="bg-black/20 text-white text-xs font-extrabold px-2.5 py-1 rounded-full">${count} / 2</span>
+                    </div>
+                    <div class="mt-3">
+                        <div class="text-xs uppercase font-bold text-white/80 leading-none">Sorumluluk Alanı</div>
+                        <div class="text-base md:text-lg font-extrabold leading-tight mt-0.5">${cat.title}</div>
+                    </div>
+                `;
+                grid.appendChild(btn);
+            });
+        }
+
+        function updateCurrentCardUI() {
+            const progressPct = Math.round((currentCardIndex / shuffledCards.length) * 100);
+            document.getElementById('matchProgressBar').style.width = `${progressPct}%`;
+
+            if (currentCardIndex >= shuffledCards.length) {
+                document.getElementById('matchCounterText').textContent = `Tamamlandı: ${shuffledCards.length} / ${shuffledCards.length}`;
+                document.getElementById('currentCardBadge').textContent = '🎉 TEBRİKLER!';
+                document.getElementById('currentCardEmoji').textContent = '🏆';
+                document.getElementById('currentCardText').innerHTML = `Tüm sorumluluk davranışlarını doğru alanlarla eşleştirdin! Şimdi <strong>2. Örnek Olay Karar Ağacı</strong> bölümüne geçebilirsin.`;
+                playSound('win');
+                return;
+            }
+
+            const card = shuffledCards[currentCardIndex];
+            document.getElementById('matchCounterText').textContent = `Kart: ${currentCardIndex + 1} / ${shuffledCards.length}`;
+            document.getElementById('currentCardBadge').textContent = 'Bu Davranış Kime Karşı Sorumluluğumuzdur?';
+            document.getElementById('currentCardEmoji').textContent = card.emoji;
+            document.getElementById('currentCardText').textContent = `"${card.text}"`;
+        }
+
+        function handleCategoryChoice(selectedCategoryId) {
+            if (isWaitingNextCard || currentCardIndex >= shuffledCards.length) return;
+
+            const currentCard = shuffledCards[currentCardIndex];
+            const feedbackBox = document.getElementById('matchFeedbackBox');
+            const selectedCatObj = CATEGORIES.find(c => c.id === selectedCategoryId);
+
+            if (currentCard.category === selectedCategoryId) {
+                // Doğru Eşleştirme
+                isWaitingNextCard = true;
+                playSound('correct');
+                addScore(10);
+                completedCards.push(currentCard);
+
+                feedbackBox.className = 'mt-4 px-4 py-2 rounded-2xl font-bold text-sm md:text-base bg-emerald-100 text-emerald-800 border border-emerald-300 animate-pop';
+                feedbackBox.textContent = `✅ Harika! "${selectedCatObj.title}" karşı sorumluluğumuzdur! (+10 Puan)`;
+                feedbackBox.classList.remove('hidden');
+
+                renderCompletedList();
+                renderCategories();
+
+                setTimeout(() => {
+                    currentCardIndex++;
+                    feedbackBox.classList.add('hidden');
+                    updateCurrentCardUI();
+                    isWaitingNextCard = false;
+                }, 950);
+            } else {
+                // Yanlış Eşleştirme
+                playSound('wrong');
+                const btnEl = document.getElementById('cat-btn-' + selectedCategoryId);
+                if (btnEl) {
+                    btnEl.classList.remove('animate-shake');
+                    void btnEl.offsetWidth;
+                    btnEl.classList.add('animate-shake');
+                }
+                feedbackBox.className = 'mt-4 px-4 py-2 rounded-2xl font-bold text-sm md:text-base bg-rose-100 text-rose-800 border border-rose-300';
+                feedbackBox.textContent = `🤔 Tekrar düşün! Bu davranış "${selectedCatObj.title}" alanından başka bir sorumluluk grubuna daha uygun.`;
+                feedbackBox.classList.remove('hidden');
+            }
+        }
+
+        function renderCompletedList() {
+            const container = document.getElementById('completedCardsContainer');
+            document.getElementById('completedListCount').textContent = completedCards.length;
+            if (completedCards.length === 0) {
+                container.innerHTML = `<span class="italic text-slate-400">Henüz bir kart eşleştirilmedi. Yukarıdaki kartı doğru kutuya gönder!</span>`;
+                return;
+            }
+            container.innerHTML = completedCards.map(c => {
+                const cat = CATEGORIES.find(x => x.id === c.category);
+                return `<span class="px-3 py-1.5 rounded-xl border font-bold ${cat.lightBg} flex items-center gap-1.5">
+                    <span>${c.emoji}</span>
+                    <span>${cat.title}:</span>
+                    <span class="font-normal">${c.text}</span>
+                </span>`;
+            }).join('');
+        }
+
+        function resetMatchingGame() {
+            shuffledCards = shuffleArray(MATCH_CARDS);
+            currentCardIndex = 0;
+            completedCards = [];
+            isWaitingNextCard = false;
+            document.getElementById('matchFeedbackBox').classList.add('hidden');
+            renderCategories();
+            renderCompletedList();
+            updateCurrentCardUI();
+        }
+
+        // ==========================================
+        // BÖLÜM 2: ÖRNEK OLAY KARAR AĞACI FONKSİYONLARI
+        // ==========================================
+        function renderScenario() {
+            scenarioAnswered = false;
+            const sc = SCENARIOS[currentScenarioIndex];
+            document.getElementById('scenarioStepBadge').textContent = `Örnek Olay ${currentScenarioIndex + 1} / ${SCENARIOS.length}`;
+            document.getElementById('scenarioCategoryTag').textContent = sc.categoryTag;
+            document.getElementById('scenarioEmoji').textContent = sc.emoji;
+            document.getElementById('scenarioTitle').textContent = sc.title;
+            document.getElementById('scenarioStory').textContent = sc.story;
+            document.getElementById('scenarioExplanationBox').classList.add('hidden');
+
+            const optionsContainer = document.getElementById('scenarioOptions');
+            optionsContainer.innerHTML = '';
+
+            sc.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 bg-white hover:bg-indigo-50/40 transition flex items-start gap-3 font-semibold text-slate-800 shadow-sm';
+                const letters = ['A', 'B', 'C'];
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center shrink-0">${letters[idx]}</span>
+                    <span class="mt-0.5 text-sm md:text-base">${opt.text}</span>
+                `;
+                btn.onclick = () => selectScenarioOption(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectScenarioOption(idx, btnElement) {
+            if (scenarioAnswered) return;
+            const sc = SCENARIOS[currentScenarioIndex];
+            const chosen = sc.options[idx];
+            const expBox = document.getElementById('scenarioExplanationBox');
+            const expTitle = document.getElementById('scenarioExpTitle');
+            const expText = document.getElementById('scenarioExpText');
+            const expIcon = document.getElementById('scenarioExpIcon');
+
+            if (chosen.correct) {
+                scenarioAnswered = true;
+                playSound('correct');
+                addScore(15);
+                btnElement.className = 'w-full text-left p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 flex items-start gap-3 font-bold text-emerald-950 shadow-sm animate-pop';
+                expBox.className = 'mt-6 p-5 rounded-2xl border-2 border-emerald-300 bg-emerald-50 text-emerald-950';
+                expIcon.textContent = '🌟';
+                expTitle.textContent = 'Doğru ve Sorumlu Bir Karar! (+15 Puan)';
+                expText.textContent = chosen.explanation;
+                expBox.classList.remove('hidden');
+
+                const nextBtn = document.getElementById('nextScenarioBtn');
+                if (currentScenarioIndex === SCENARIOS.length - 1) {
+                    nextBtn.innerHTML = `<span>Sorumluluk Sözüme Geç</span> <span>🏅</span>`;
+                } else {
+                    nextBtn.innerHTML = `<span>Sonraki Örnek Olay</span> <span>➡️</span>`;
+                }
+            } else {
+                playSound('wrong');
+                btnElement.className = 'w-full text-left p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 flex items-start gap-3 font-semibold text-rose-900 animate-shake';
+                expBox.className = 'mt-6 p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-rose-950';
+                expIcon.textContent = '🤔';
+                expTitle.textContent = 'Bu Seçenek Sorumluluk Bilincine Uygun Değil';
+                expText.textContent = chosen.explanation + ' Şimdi doğru seçeneği bulup tekrar dene!';
+                expBox.classList.remove('hidden');
+            }
+        }
+
+        function nextScenario() {
+            if (currentScenarioIndex < SCENARIOS.length - 1) {
+                currentScenarioIndex++;
+                renderScenario();
+            } else {
+                switchTab('tab3');
+            }
+        }
+
+        // ==========================================
+        // BÖLÜM 3: SORUMLULUK SÖZÜ VE SERTİFİKA
+        // ==========================================
+        function initPledgeCheckboxes() {
+            const container = document.getElementById('pledgeCheckboxes');
+            container.innerHTML = CATEGORIES.map((cat, idx) => `
+                <label class="flex items-start gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-indigo-300 bg-slate-50/70 cursor-pointer transition">
+                    <input type="checkbox" value="${cat.id}" onchange="updateCertificate()" ${idx < 4 ? 'checked' : ''} class="pledge-chk mt-1 w-5 h-5 accent-indigo-600 rounded">
+                    <div class="text-xs md:text-sm">
+                        <span class="font-extrabold text-indigo-900">${cat.emoji} ${cat.title} Karşı:</span>
+                        <p class="text-slate-600 font-semibold mt-0.5">${cat.pledge}</p>
+                    </div>
+                </label>
+            `).join('');
+            updateCertificate();
+        }
+
+        function selectAllPledges() {
+            document.querySelectorAll('.pledge-chk').forEach(chk => chk.checked = true);
+            updateCertificate();
+        }
+
+        function updateCertificate() {
+            const nameVal = document.getElementById('studentNameInput').value.trim();
+            const classVal = document.getElementById('studentClassInput').value.trim();
+            const customVal = document.getElementById('customPledgeInput').value.trim();
+
+            document.getElementById('certStudentName').textContent = nameVal || 'Sorumlu Öğrenci';
+            document.getElementById('certStudentClass').textContent = classVal || '4. Sınıf Öğrencisi';
+
+            const checkedIds = Array.from(document.querySelectorAll('.pledge-chk:checked')).map(el => el.value);
+            const listEl = document.getElementById('certPledgeList');
+
+            if (checkedIds.length === 0) {
+                listEl.innerHTML = `<li class="text-slate-400 italic col-span-2 text-center">Lütfen yukarıdan söz verdiğin sorumluluk maddelerini işaretle.</li>`;
+            } else {
+                listEl.innerHTML = checkedIds.map(id => {
+                    const cat = CATEGORIES.find(c => c.id === id);
+                    return `<li class="flex items-start gap-1.5 bg-amber-50/80 p-2 rounded-xl border border-amber-200/70">
+                        <span>${cat.emoji}</span>
+                        <span><strong>${cat.title}:</strong> ${cat.pledge}</span>
+                    </li>`;
+                }).join('');
+            }
+
+            const customBox = document.getElementById('certCustomPledge');
+            if (customVal) {
+                customBox.textContent = `✨ Özel Sözüm: "${customVal}"`;
+                customBox.classList.remove('hidden');
+            } else {
+                customBox.classList.add('hidden');
+            }
+
+            document.getElementById('certScore').textContent = `${totalScore} ⭐`;
+            let rank = 'Sorumluluk Yolcusu 🌱';
+            if (totalScore >= 200) rank = 'Dünya ve İnsanlık Elçisi 👑';
+            else if (totalScore >= 120) rank = 'Örnek Sorumluluk Kahramanı 🏆';
+            else if (totalScore >= 50) rank = 'Duyarlı Vatandaş 🌟';
+            document.getElementById('certBadgeRank').textContent = rank;
+        }
+
+        // ==========================================
+        // BÖLÜM 4: KONU ÖZETİ KARTLARI
+        // ==========================================
+        function renderSummaryGrid() {
+            const grid = document.getElementById('summaryGrid');
+            grid.innerHTML = CATEGORIES.map(cat => `
+                <div class="rounded-2xl p-4 border-2 ${cat.lightBg} flex flex-col justify-between shadow-sm">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-3xl">${cat.emoji}</span>
+                            <h3 class="font-bold text-base leading-tight">${cat.title} Karşı Sorumluluk</h3>
+                        </div>
+                        <p class="text-xs md:text-sm opacity-90 leading-relaxed">${cat.desc}</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-current/10 text-[11px] font-bold">
+                        Örnek Söz: "${cat.pledge}"
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // BAŞLANGIÇ YÜKLEMESİ
+        // ==========================================
+        window.onload = function () {
+            resetMatchingGame();
+            renderScenario();
+            initPledgeCheckboxes();
+            renderSummaryGrid();
+        };
+    </script>
+</body>
+</html>
