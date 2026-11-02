@@ -323,6 +323,12 @@
       "konum": "Insanhaklari/insanolmasorumlulugu.html",
       "baslik": "İnsan Olma Sorumluluğum",
       "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Trafik Güvenliği",
+      "konum": "Trafik/yayaolaraktrafikkurallarietkinligi.html",
+      "baslik": "Yaya Olarak Trafik Kurallarına Uyarım",
+      "takip": "secim_bekliyor"
     }
   ],
   "yeniEtkinlikler": []
