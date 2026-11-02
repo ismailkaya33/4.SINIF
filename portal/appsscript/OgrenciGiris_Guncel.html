@@ -447,6 +447,13 @@ function yeniIcerikleriGoster_(){
   const noteCard=link.closest(".noteCard");
   yeniEtiketEkle_(noteCard?noteCard.querySelector("strong"):link);
  });
+ const directActivityLights=["recent-activity-mat-toplamacikarma-1","recent-activity-mat-toplamacikarma-2"];
+ directActivityLights.forEach(function(id){
+  if(!active.some(item=>item.id===id))return;
+  const link=document.getElementById(id),card=link&&link.closest(".course");
+  yeniEtiketEkle_(link);
+  yeniEtiketEkle_(card&&card.querySelector('.courseTabs button[data-tab="etkinlik"]'));
+ });
  const groups=[
   {type:"activity",text:"Yeni etkinlik var."},
   {type:"evaluation",text:"Yeni değerlendirme görevi var."},
