@@ -277,18 +277,49 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 .courseLinks li .trackedLessonLink:focus-visible{outline:3px solid #fca311;outline-offset:3px}
 /* Defter adı öne çıkar; yanında küçük bir Aç düğmesi. */
 .noteCard{grid-template-columns:minmax(0,1fr) auto;align-items:center}
-.noteCard strong{font-size:clamp(22px,2.4vw,27px);line-height:1.25}
-.noteCard a{width:auto;min-height:40px;padding:8px 15px;font-size:15px;white-space:nowrap}
+.noteCard strong{min-width:0;font-size:clamp(22px,2.4vw,27px);line-height:1.25}
+.noteCard a{width:auto;min-height:80px;padding:16px 30px;font-size:30px;white-space:nowrap}
 .noteCard .noteCheckbox{grid-column:1/-1}
 /* Uyari panosu duyurulardan bagimsiz, tarihli icerik kutusu. */
-.newContentPanel{margin:15px 0;padding:18px 20px;border:2px solid #f3c66a;border-radius:18px;background:#fffaf0;box-shadow:0 5px 15px #4936140d}
-.newContentPanel h3{margin:0 0 12px;color:#80520a;font-size:21px}
+.newContentPanel{margin:15px 0;padding:18px 20px;border:2px solid #efc5ca;border-radius:18px;background:#fff3f4;box-shadow:0 5px 15px #4936140d}
+.newContentPanel h3{margin:0 0 12px;color:#9a3b4a;font-size:21px}
 .newContentAlerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.newContentAlert{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid #f0d899;border-radius:12px;background:#fff;font-weight:800;color:#35445a}
+.newContentAlert{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #edc2c8;border-radius:12px;background:#fffafa;font-weight:800;color:#713d47}
 .teacherAccess{display:block;width:fit-content;margin:14px auto 0;padding:10px 16px;border:1px solid #c8d8ef;border-radius:10px;background:#eaf1fb;color:#2459a6;text-decoration:none;font-weight:800}.teacherAccess:hover{background:#dfeaff}.teacherAccess:focus-visible{outline:3px solid #fca311;outline-offset:3px}
-.course summary .newLight{margin-left:auto;padding:5px 10px;border-radius:999px;background:#e9473f;color:#fff;font-size:13px;font-weight:900;letter-spacing:.4px;box-shadow:0 3px 8px #e9473f40;animation:pulse 1.5s infinite}
+.course summary .newLight{margin-left:auto;padding:5px 10px;border-radius:999px;background:#e9473f;color:#fff;font-size:13px;font-weight:900;letter-spacing:.4px;box-shadow:0 3px 8px #e9473f40;animation:pulse 1.5s infinite}.contentNewBadge{display:inline-block;margin-left:8px;padding:3px 7px;border-radius:999px;background:#e9473f;color:#fff;font-size:11px;font-weight:900;line-height:1.2;white-space:nowrap}.courseTabs button .contentNewBadge{margin-left:7px}
 @keyframes pulse{50%{transform:scale(1.08)}}
 @media(max-width:620px){.newContentPanel{padding:15px}.newContentAlert{font-size:16px}}
+
+/* Ekrana uyum: telefonda ve tablette yatay taşma olmasın. */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body:not(.oyunda){min-width:0}
+.kutu{width:100%;max-width:1240px;min-width:0;margin:16px auto 24px;box-sizing:border-box}
+#oturumAlani,.portalTopStrip,.cards.seven,.course,.courseSection,.courseLinks,.notebookGrid,.noteCard,.newContentPanel,.newContentAlerts,.newContentAlert{min-width:0;max-width:100%}
+.courseLinks a,.noteCard strong{overflow-wrap:anywhere}
+@media(min-width:721px) and (max-width:850px){.cards.seven{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){
+ .kutu{width:100%;max-width:none;margin:0;padding:14px 12px 24px;border-radius:0}
+ #dersIzgarasi{grid-template-columns:1fr}
+ .notebookGrid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+ .welcomeBar{flex-direction:row;align-items:center;gap:8px;padding:8px 10px;margin:4px 0 12px}
+ .welcomeIdentity{gap:8px}
+ .welcomeAvatar{width:42px;height:42px;font-size:22px}
+ .welcomeLabel{font-size:.72rem}
+ #welcomeName{font-size:17px}
+ .sessionActive{font-size:.68rem}
+ .welcomeBar #cikis{width:auto;padding:8px 10px;font-size:13px}
+ .newContentPanel{padding:12px}
+ .newContentAlerts{grid-template-columns:1fr}
+ .newContentAlert{font-size:15px;padding:10px 12px}
+ .noteCard{grid-template-columns:minmax(0,1fr)}
+ .noteCard a{justify-self:start;min-height:72px;padding:14px 26px;font-size:27px}
+}
+@media(max-width:370px){
+ .welcomeBar #cikis{font-size:12px;padding:7px 8px}
+ .kutu{padding-left:10px;padding-right:10px}
+}
 </style></head><body><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
@@ -333,7 +364,8 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/zihindentoplama.html" target="_blank" rel="noopener noreferrer">Zihinden Toplama Ustaları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/zihindencikarma.html" target="_blank" rel="noopener noreferrer">Zihinden Çıkarma Ustaları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/cikarmaislemi.html" target="_blank" rel="noopener noreferrer">Çıkarma Dedektifleri</a></li>
-<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/kayipsayilar.html" target="_blank" rel="noopener noreferrer">Çıkarma İşleminde Verilmeyen Sayılar</a></li></ul></details>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/kayipsayilar.html" target="_blank" rel="noopener noreferrer">Çıkarma İşleminde Verilmeyen Sayılar</a></li>
+<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/dogalsayilardegerlendirme.html" target="_blank" rel="noopener noreferrer">Sayı Avcıları – Doğal Sayılar Değerlendirme</a></li></ul></details>
 <details class="course"><summary><span class="subjectIcon subject-FEN" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M25 9h14m-11 0v20L15 48q-4 8 6 8h22q10 0 6-8L36 29V9" fill="#B2E8FF" stroke="#4776BC" stroke-width="3" stroke-linejoin="round"/><path d="M22 40h20l7 10q2 6-6 6H21q-8 0-6-6z" fill="#A98EF5"/><circle cx="29" cy="44" r="3" fill="#F8F0FF"/><circle cx="37" cy="50" r="2.5" fill="#F8F0FF"/></svg></span> <strong>Fen Bilimleri</strong> <small>10 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinkasifleri.html" target="_blank" rel="noopener noreferrer">Besin Kaşifleri: Görev Haritası</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinakademisi.html" target="_blank" rel="noopener noreferrer">Besin Akademisi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/dunyaninhareketleri2.html" target="_blank" rel="noopener noreferrer">Dünya'nın Hareketleri 1</a></li>
@@ -361,32 +393,48 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 <div id="oyunPanel" hidden><div id="oyunUst"><strong>🎮 Matematik • Kayıp Sayılar</strong><button id="oyundanDon" type="button">Portala Dön</button></div><iframe id="oyunCer" title="Matematik oyunu" referrerpolicy="no-referrer"></iframe><p id="oyunDurum" role="status"></p></div>
 
 </main><script>
-const YENI_ICERIK_KATALOGU_=[{"id":"btn-matematik","addedOn":"2026-10-25","type":"section","course":"matematik"},{"id":"btn-fen","addedOn":"2026-10-27","type":"section","course":"fen"},{"id":"btn-insan","addedOn":"2026-10-18","type":"section","course":"insan"},{"id":"btn-sosyal","addedOn":"2026-10-29","type":"section","course":"sosyal"},{"id":"btn-turkce","addedOn":"2026-10-31","type":"section","course":"turkce"},{"id":"etk-mat-zihintop","addedOn":"2026-10-18","type":"activity","course":"matematik"},{"id":"etk-mat-verilmeyen","addedOn":"2026-10-25","type":"activity","course":"matematik"},{"id":"etk-mat-cikarma","addedOn":"2026-10-18","type":"activity","course":"matematik"},{"id":"etk-fen-besin1","addedOn":"2026-10-18","type":"activity","course":"fen"},{"id":"etk-fen-besin2","addedOn":"2026-10-18","type":"activity","course":"fen"},{"id":"etk-insan-bilinci","addedOn":"2026-10-18","type":"activity","course":"insan"},{"id":"etk-sosyal-kultur","addedOn":"2026-10-21","type":"activity","course":"sosyal"},{"id":"etk-sosyal-oyun","addedOn":"2026-10-26","type":"activity","course":"sosyal"},{"id":"etk-turkce-soz","addedOn":"2026-10-31","type":"activity","course":"turkce"},{"id":"etk-mat-not3","addedOn":"2026-10-25","type":"note","course":"matematik"},{"id":"etk-mat-not4","addedOn":"2026-10-18","type":"note","course":"matematik"},{"id":"etk-mat-not5","addedOn":"2026-10-18","type":"note","course":"matematik"},{"id":"etk-fen-not4","addedOn":"2026-10-27","type":"note","course":"fen"},{"id":"etk-fen-not5","addedOn":"2026-10-27","type":"note","course":"fen"},{"id":"etk-fen-not3","addedOn":"2026-10-18","type":"note","course":"fen"},{"id":"etk-sosyal-not3","addedOn":"2026-10-19","type":"note","course":"sosyal"},{"id":"etk-sosyal-not5","addedOn":"2026-10-26","type":"note","course":"sosyal"},{"id":"etk-sosyal-not6","addedOn":"2026-10-26","type":"note","course":"sosyal"},{"id":"etk-turkce-not3","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"etk-turkce-not4","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"etk-turkce-not5","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"etk-turkce-not6","addedOn":"2026-10-31","type":"note","course":"turkce"}];
+const YENI_ICERIK_KATALOGU_=[{"id":"btn-matematik","addedOn":"2026-10-25","type":"section","course":"matematik"},{"id":"btn-fen","addedOn":"2026-10-27","type":"section","course":"fen"},{"id":"btn-insan","addedOn":"2026-10-18","type":"section","course":"insan"},{"id":"btn-sosyal","addedOn":"2026-10-29","type":"section","course":"sosyal"},{"id":"btn-turkce","addedOn":"2026-10-31","type":"section","course":"turkce"},{"id":"etk-mat-zihintop","addedOn":"2026-10-18","type":"activity","course":"matematik"},{"id":"etk-mat-verilmeyen","addedOn":"2026-10-25","type":"activity","course":"matematik"},{"id":"etk-mat-cikarma","addedOn":"2026-10-18","type":"activity","course":"matematik"},{"id":"etk-fen-besin1","addedOn":"2026-10-18","type":"activity","course":"fen"},{"id":"etk-fen-besin2","addedOn":"2026-10-18","type":"activity","course":"fen"},{"id":"etk-insan-bilinci","addedOn":"2026-10-18","type":"activity","course":"insan"},{"id":"etk-sosyal-kultur","addedOn":"2026-10-21","type":"activity","course":"sosyal"},{"id":"etk-sosyal-oyun","addedOn":"2026-10-26","type":"activity","course":"sosyal"},{"id":"etk-turkce-soz","addedOn":"2026-10-31","type":"activity","course":"turkce"},{"id":"etk-mat-not3","addedOn":"2026-10-25","type":"note","course":"matematik"},{"id":"etk-mat-not4","addedOn":"2026-10-18","type":"note","course":"matematik"},{"id":"etk-mat-not5","addedOn":"2026-10-18","type":"note","course":"matematik"},{"id":"etk-fen-not4","addedOn":"2026-10-27","type":"note","course":"fen"},{"id":"etk-fen-not5","addedOn":"2026-10-27","type":"note","course":"fen"},{"id":"etk-fen-not3","addedOn":"2026-10-18","type":"note","course":"fen"},{"id":"etk-sosyal-not3","addedOn":"2026-10-19","type":"note","course":"sosyal"},{"id":"etk-sosyal-not5","addedOn":"2026-10-26","type":"note","course":"sosyal"},{"id":"etk-sosyal-not6","addedOn":"2026-10-26","type":"note","course":"sosyal"},{"id":"etk-turkce-not3","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"etk-turkce-not4","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"etk-turkce-not5","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"etk-turkce-not6","addedOn":"2026-10-31","type":"note","course":"turkce"},{"id":"recent-activity-atasozleri","addedOn":"2026-11-02","addedAt":"2026-11-02T16:20:47Z","type":"activity","course":"turkce","target":"Turkce/sozavcıları.html"},{"id":"recent-activity-ikilemeler","addedOn":"2026-11-02","addedAt":"2026-11-02T16:20:45Z","type":"activity","course":"turkce","target":"Turkce/ikilemeler.html"},{"id":"recent-activity-pekistirme","addedOn":"2026-11-02","addedAt":"2026-11-01T21:03:19Z","type":"activity","course":"turkce","target":"Turkce/pekistirme.html"},{"id":"recent-note-atasozleri","addedOn":"2026-11-01","addedAt":"2026-11-01T20:51:15Z","type":"note","course":"turkce","target":"Turkce/DefterNotlari/atasozleri.png"},{"id":"recent-note-deyimler","addedOn":"2026-11-01","addedAt":"2026-11-01T20:47:30Z","type":"note","course":"turkce","target":"Turkce/DefterNotlari/deyimler.png"},{"id":"recent-note-ikilemeler","addedOn":"2026-10-31","addedAt":"2026-10-31T19:33:05Z","type":"note","course":"turkce","target":"Turkce/DefterNotlari/ikilemeler.jpeg"},{"id":"recent-note-pekistirme","addedOn":"2026-10-31","addedAt":"2026-10-31T19:33:05Z","type":"note","course":"turkce","target":"Turkce/DefterNotlari/pekistirme.JPG"},{"id":"recent-note-toplama-cikarma-problemleri","addedOn":"2026-11-02","addedAt":"2026-11-02T06:12:06Z","type":"note","course":"matematik","target":"Matematik/DefterNotlari/toplamacikarmaproblemleri.png"},{"id":"recent-evaluation-dogal-sayilar","addedOn":"2026-11-02","addedAt":"2026-11-02T06:37:38Z","type":"evaluation","course":"matematik","target":"Matematik/dogalsayilardegerlendirme.html"},{"id":"recent-note-milli-mucadele-1","addedOn":"2026-11-01","addedAt":"2026-11-01T21:00:58Z","type":"note","course":"sosyal","target":"Sosyal/DefterNotlari/millimucadele1.png"},{"id":"recent-note-milli-mucadele-2","addedOn":"2026-11-01","addedAt":"2026-11-01T21:00:58Z","type":"note","course":"sosyal","target":"Sosyal/DefterNotlari/millimucadele2.png"},{"id":"recent-note-milli-mucadele-3","addedOn":"2026-11-01","addedAt":"2026-11-01T21:00:58Z","type":"note","course":"sosyal","target":"Sosyal/DefterNotlari/millimucadele3.png"},{"id":"recent-note-milli-mucadele-4","addedOn":"2026-11-01","addedAt":"2026-11-01T21:00:58Z","type":"note","course":"sosyal","target":"Sosyal/DefterNotlari/millimucadele4.png"},{"id":"recent-note-milli-mucadele-5","addedOn":"2026-11-01","addedAt":"2026-11-01T21:00:58Z","type":"note","course":"sosyal","target":"Sosyal/DefterNotlari/millimucadele5.png"},{"id":"recent-note-milli-mucadele-6","addedOn":"2026-11-01","addedAt":"2026-11-01T21:00:58Z","type":"note","course":"sosyal","target":"Sosyal/DefterNotlari/millimucadele6.png"},{"id":"recent-note-milli-mucadele-7","addedOn":"2026-11-01","addedAt":"2026-11-01T21:00:58Z","type":"note","course":"sosyal","target":"Sosyal/DefterNotlari/millimucadele7.png"}];
 
 "use strict";
 const buton=document.getElementById("giris"),cikisButonu=document.getElementById("cikis"),sonuc=document.getElementById("sonuc"),kodAlani=document.getElementById("kod"),girisAlani=document.getElementById("girisAlani"),oturumAlani=document.getElementById("oturumAlani"),anahtarAdi="4d_ogrenci_oturumu";
 let oturumNesli=0;
 const tokenFormat=/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 function hosGeldinAdiGoster_(ad){document.getElementById("welcomeName").textContent=String(ad||"Öğrenci");}
-function yeniIcerikTarihiAktif_(dateText){
- const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateText||""));
+function yeniIcerikTarihiAktif_(item){
+ const now=Date.now();
+ if(item&&item.addedAt){const added=Date.parse(item.addedAt);return Number.isFinite(added)&&added<=now&&now-added<3*86400000;}
+ const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(item&&item.addedOn||""));
  if(!match)return false;
- const added=new Date(Number(match[1]),Number(match[2])-1,Number(match[3]));
- const today=new Date();added.setHours(0,0,0,0);today.setHours(0,0,0,0);
- const days=Math.floor((today-added)/86400000);
- return days>=0&&days<3;
+ const added=new Date(Number(match[1]),Number(match[2])-1,Number(match[3])).getTime();
+ return added<=now&&now-added<3*86400000;
+}
+function yeniEtiketEkle_(hedef){
+ if(!hedef||hedef.querySelector(".newLight"))return;
+ const etiket=document.createElement("span");etiket.className="newLight contentNewBadge";etiket.textContent="YENİ";hedef.appendChild(etiket);
 }
 function yeniIcerikleriGoster_(){
  const panel=document.getElementById("newContentPanel"),root=document.getElementById("newContentAlerts");
- const active=YENI_ICERIK_KATALOGU_.filter(item=>yeniIcerikTarihiAktif_(item.addedOn));
+ const active=YENI_ICERIK_KATALOGU_.filter(item=>yeniIcerikTarihiAktif_(item));
  const courseNames={turkce:"Türkçe",matematik:"Matematik",fen:"Fen Bilimleri",sosyal:"Sosyal Bilgiler",insan:"İnsan Hakları",trafik:"Trafik Güvenliği",oyunlar:"Oyunlar"};
- [...new Set(active.map(item=>item.course).filter(Boolean))].forEach(function(course){
-  const label=courseNames[course];if(!label)return;
-  const card=[...document.querySelectorAll("#dersIzgarasi>.course")].find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
-  const summary=card&&card.querySelector("summary");
-  if(summary&&!summary.querySelector(".newLight")){
-   const badge=document.createElement("span");badge.className="newLight";badge.textContent="YENİ";summary.appendChild(badge);
-  }
+ const courseCards=[...document.querySelectorAll("#dersIzgarasi>.course")];
+ active.forEach(function(item){
+  const label=courseNames[item.course];if(!label)return;
+  const card=courseCards.find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
+  yeniEtiketEkle_(card&&card.querySelector("summary"));
+ });
+ const tabByType={activity:"etkinlik",evaluation:"degerlendirme",note:"defter"};
+ active.forEach(function(item){
+  const label=courseNames[item.course];if(!label)return;
+  const card=courseCards.find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
+  const tab=tabByType[item.type],tabButton=card&&tab&&card.querySelector('.courseTabs button[data-tab="'+tab+'"]');
+  yeniEtiketEkle_(tabButton);
+  if(!item.target)return;
+  const link=[...document.querySelectorAll("#dersIzgarasi a")].find(function(a){
+   try{return decodeURI(new URL(a.href).pathname).split("/4.SINIF/").pop()===item.target;}catch(e){return false;}
+  });
+  if(!link)return;
+  const noteCard=link.closest(".noteCard");
+  yeniEtiketEkle_(noteCard?noteCard.querySelector("strong"):link);
  });
  const groups=[
   {type:"activity",text:"Yeni etkinlik var."},
@@ -395,10 +443,7 @@ function yeniIcerikleriGoster_(){
  ];
  const cards=[];
  groups.forEach(function(group){
-  const matches=active.filter(item=>item.type===group.type||(group.type==="activity"&&item.type==="section"));
-  if(!matches.length)return;
-  const item=matches[0],label=courseNames[item.course];
-  const lesson=[...document.querySelectorAll("#dersIzgarasi>.course")].find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
+  if(!active.some(item=>item.type===group.type||(group.type==="activity"&&item.type==="section")))return;
   const card=document.createElement("div");card.className="newContentAlert";
   const text=document.createElement("span");text.textContent=group.text;
   card.append(text);cards.push(card);
@@ -504,10 +549,10 @@ document.getElementById("oyundanDon").addEventListener("click",function(){oyunPa
 
 /* Ders alt sayfasi: etkinlikler / defter notlari / degerlendirmeler. */
 const defterKatalog={
-"Türkçe":{dir:"Turkce",files:[["atasozleri.jpeg","Atasözleri"],["deyimler.jpeg","Deyimler"],["gercekmecaz.png","Gerçek, Mecaz ve Terim Anlam"],["ikilemeler.jpeg","İkilemeler"],["metninbolumleri.png","Metnin Bölümleri"],["pekistirme.JPG","Pekiştirme"]]},
-"Matematik":{dir:"Matematik",files:[["cikarmadaverilmeyen.png","Çıkarma İşleminde Verilmeyenler"],["cikarmadefternotu.png","Çıkarma İşlemi"],["toplama.png","Toplama"],["zihindencikarma.png","Zihinden Çıkarma"],["zihindentoplama.png","Zihinden Toplama"]]},
+"Türkçe":{dir:"Turkce",files:[["atasozleri.png","Atasözleri","Turkce/DefterNotlari/atasozleri.jpeg"],["deyimler.png","Deyimler","Turkce/DefterNotlari/deyimler.jpeg"],["gercekmecaz.png","Gerçek, Mecaz ve Terim Anlam"],["ikilemeler.jpeg","İkilemeler"],["metninbolumleri.png","Metnin Bölümleri"],["pekistirme.JPG","Pekiştirme"]]},
+"Matematik":{dir:"Matematik",files:[["cikarmadaverilmeyen.png","Çıkarma İşleminde Verilmeyenler"],["cikarmadefternotu.png","Çıkarma İşlemi"],["toplama.png","Toplama"],["toplamacikarmaproblemleri.png","Toplama ve Çıkarma Problemleri"],["zihindencikarma.png","Zihinden Çıkarma"],["zihindentoplama.png","Zihinden Toplama"]]},
 "Fen Bilimleri":{dir:"Fen",files:[["besinler1.png","Besinler 1"],["besinler2.png","Besinler 2"],["besinler3.png","Besinler 3"],["besinlerintazeligi.png","Besinlerin Tazeliği"],["besinlerisaklama.png","Besinleri Saklama"]]},
-"Sosyal Bilgiler":{dir:"Sosyal",files:[["ailemcocuk.jpg","Ailem ve Çocuk"],["ailetarihi.png","Aile Tarihi"],["cocukoyun.png","Çocuk Oyunları"],["farkliliklarimizvesaygi.png","Farklılıklara Saygı"],["mersinkultur.png","Mersin Kültürü"],["millikultur.png","Millî Kültür"]]}
+"Sosyal Bilgiler":{dir:"Sosyal",files:[["ailemcocuk.jpg","Ailem ve Çocuk"],["ailetarihi.png","Aile Tarihi"],["cocukoyun.png","Çocuk Oyunları"],["farkliliklarimizvesaygi.png","Farklılıklara Saygı"],["mersinkultur.png","Mersin Kültürü"],["millikultur.png","Millî Kültür"],["millimucadele1.png","Millî Mücadele 1"],["millimucadele2.png","Millî Mücadele 2"],["millimucadele3.png","Millî Mücadele 3"],["millimucadele4.png","Millî Mücadele 4"],["millimucadele5.png","Millî Mücadele 5"],["millimucadele6.png","Millî Mücadele 6"],["millimucadele7.png","Millî Mücadele 7"]]}
 };
 const seciliEtkinlikler=new Set([
  "Turkce/ikilemeler.html","Turkce/pekistirme.html","Turkce/sozavcıları.html",
@@ -565,8 +610,8 @@ function tabSec(card,tab){
  card.querySelectorAll(".courseTabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===tab)));
  card.querySelectorAll(".courseSection").forEach(p=>p.hidden=p.dataset.panel!==tab);
 }
-function defterKartiOlustur(dir,filename,label){
- const id=dir+"/"+filename;
+function defterKartiOlustur(dir,filename,label,recordId){
+ const id=recordId||dir+"/"+filename;
  const card=document.createElement("article");card.className="noteCard";
  const title=document.createElement("strong");title.textContent="📒 "+label;
  const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename);
@@ -627,7 +672,7 @@ dersKartlari.forEach(function(card){
  if(existingLinks)panels.etkinlik.appendChild(existingLinks);
  const defter=document.createElement("div");defter.className="notebookGrid";
  const catalog=defterKatalog[name];
- if(catalog){catalog.files.forEach(([file,label])=>defter.appendChild(defterKartiOlustur(catalog.dir,file,label)));}
+ if(catalog){catalog.files.forEach(([file,label,recordId])=>defter.appendChild(defterKartiOlustur(catalog.dir,file,label,recordId)));}
  if(!defter.childElementCount){const msg=document.createElement("p");msg.className="sectionEmpty";msg.textContent="Bu dersin defter notları yakında eklenecek.";panels.defter.appendChild(msg);}
  else panels.defter.appendChild(defter);
  const evalLinks=[...panels.etkinlik.querySelectorAll("a")].filter(a=>/değerlendirme|deneme sınavı|testi/i.test(a.textContent));
