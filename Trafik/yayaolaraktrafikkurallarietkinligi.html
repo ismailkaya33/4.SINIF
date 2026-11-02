@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 24656)
-Total output lines: 1494
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -570,7 +567,292 @@ Total output lines: 1494
 
             <!-- Aktif Dedektif Kartı -->
             <div class="bg-gradient-to-br from-white via-amber-50/40 to-emerald-50/40 rounded-3xl p-6 md:p-8 shadow-lg border-4 border-dashed border-amber-300 text-center flex flex-col items-center justify-center min-h-[220px]">
-                <span id="detectiveCardTag" class="bg-slate-800 text-w…4656 tokens truncated…r justify-between transition">
+                <span id="detectiveCardTag" class="bg-slate-800 text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+                    Dedektif İnceleme Kartı
+                </span>
+                <div id="detectiveCardEmoji" class="text-5xl md:text-6xl mb-3">🚸</div>
+                <h3 id="detectiveCardText" class="text-xl md:text-2xl font-bold text-slate-800 max-w-2xl leading-snug">
+                    Yükleniyor...
+                </h3>
+                <!-- Neden Açıklaması Geri Bildirimi -->
+                <div id="detectiveFeedback" class="mt-4 hidden px-5 py-3 rounded-2xl font-bold text-sm md:text-base max-w-2xl"></div>
+            </div>
+
+            <!-- İki Büyük Sınıflandırma Kutusu -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button onclick="classifyBehavior(true)" class="card-hover p-6 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg border-4 border-white flex items-center justify-between text-left">
+                    <div class="flex items-center gap-4">
+                        <span class="text-4xl md:text-5xl bg-white/20 p-3 rounded-2xl">✅</span>
+                        <div>
+                            <div class="text-xs font-extrabold uppercase text-emerald-100">Kutu 1</div>
+                            <div class="text-xl md:text-2xl font-extrabold">Güvenli Yaya Davranışı</div>
+                            <div class="text-xs text-emerald-100 mt-0.5">Kurallara uygun, can güvenliğini koruyan davranış</div>
+                        </div>
+                    </div>
+                </button>
+
+                <button onclick="classifyBehavior(false)" class="card-hover p-6 rounded-3xl bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-lg border-4 border-white flex items-center justify-between text-left">
+                    <div class="flex items-center gap-4">
+                        <span class="text-4xl md:text-5xl bg-white/20 p-3 rounded-2xl">⚠️</span>
+                        <div>
+                            <div class="text-xs font-extrabold uppercase text-rose-100">Kutu 2</div>
+                            <div class="text-xl md:text-2xl font-extrabold">Tehlikeli / Hatalı Davranış</div>
+                            <div class="text-xs text-rose-100 mt-0.5">Kaza riski taşıyan, kaçınılması gereken davranış</div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- İncelenen Kartların Sebep-Sonuç Listesi -->
+            <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200">
+                <h4 class="font-bold text-slate-700 text-sm uppercase tracking-wider mb-3">
+                    📋 Dedektif Raporu: İncelenen Davranışlar ve Nedenleri (<span id="detectiveDoneCount">0</span>)
+                </h4>
+                <div id="detectiveHistoryList" class="space-y-2 text-xs md:text-sm">
+                    <p class="italic text-slate-400">Henüz bir davranış sınıflandırılmadı.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SEKME 4: BİLİNÇLİ YAYA EHLİYETİ / SERTİFİKASI
+             ========================================================= -->
+        <section id="tab4" class="tab-panel hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-sky-100 no-print">
+                <h2 class="text-xl md:text-2xl font-bold text-sky-950 flex items-center gap-2">
+                    <span>🪪</span> Bilinçli Yaya Ehliyetimi Oluşturuyorum
+                </h2>
+                <p class="text-slate-600 text-sm md:text-base mt-1">
+                    Adını yaz, uyacağına söz verdiğin trafik güvenliği kurallarını işaretle ve kendi <strong>Örnek ve Güvenli Yaya Belgeni</strong> hazırla!
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-slate-500 mb-1">Adın ve Soyadın</label>
+                        <input type="text" id="certNameInput" oninput="renderLicenseCard()" placeholder="Örn: Mert Demir" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none font-bold text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-slate-500 mb-1">Sınıfın / Okulun</label>
+                        <input type="text" id="certClassInput" oninput="renderLicenseCard()" placeholder="Örn: 4-B Sınıfı" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none font-bold text-slate-800">
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-extrabold uppercase text-slate-500">Güvenli Yaya Sözlerim (Tamamını İşaretle!)</span>
+                        <button onclick="checkAllRules()" class="text-xs font-bold text-emerald-700 hover:underline">Tümünü İşaretle</button>
+                    </div>
+                    <div id="rulesChecklistContainer" class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                        <!-- JS ile doldurulur -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yazdırılabilir Yaya Ehliyeti / Sertifika Kartı -->
+            <div class="bg-gradient-to-br from-emerald-50 via-white to-sky-50 rounded-3xl p-6 md:p-10 shadow-xl border-8 border-double border-emerald-500 relative overflow-hidden">
+                <div class="flex flex-col items-center text-center">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-4xl">🚦</span>
+                        <span class="text-4xl">🚸</span>
+                        <span class="text-4xl">🏅</span>
+                    </div>
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+                        T.C. İlkokul 4. Sınıf Trafik Güvenliği • Kazanım TG.4.1.4.
+                    </span>
+                    <h3 class="text-2xl md:text-4xl font-bold text-slate-900 mt-2">
+                        ÖRNEK VE GÜVENLİ YAYA BELGESİ
+                    </h3>
+                    <p class="text-slate-600 mt-1 text-sm md:text-base max-w-xl">
+                        Bu belge sahibi öğrencimiz; kaldırımlı ve kaldırımsız yollarda yürüme kurallarını, güvenli karşıya geçiş adımlarını ve park hâlindeki araçların çevresindeki kör nokta tehlikelerini öğrenerek trafikte örnek bir yaya olmaya söz vermiştir.
+                    </p>
+
+                    <div class="my-5 bg-white px-8 py-3 rounded-2xl shadow-sm border-2 border-emerald-200">
+                        <div id="licenseNameOut" class="text-2xl md:text-3xl font-extrabold text-emerald-700">
+                            Örnek Yaya Öğrenci
+                        </div>
+                        <div id="licenseClassOut" class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+                            4. Sınıf Trafik Dedektifi
+                        </div>
+                    </div>
+
+                    <div class="w-full max-w-2xl bg-white/90 rounded-2xl p-4 border border-emerald-200 text-left">
+                        <h4 class="text-xs font-extrabold uppercase text-emerald-800 mb-2 text-center">
+                            ✅ Yaya Olarak Uyacağıma Söz Verdiğim Kurallar
+                        </h4>
+                        <ul id="licenseRulesOut" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm text-slate-700 font-semibold">
+                            <!-- JS ile güncellenir -->
+                        </ul>
+                    </div>
+
+                    <div class="w-full max-w-2xl flex flex-wrap items-center justify-between gap-2 mt-6 pt-4 border-t border-slate-200 text-xs text-slate-600 font-bold">
+                        <div>Toplam Etkinlik Puanı: <span id="licenseScoreOut" class="text-emerald-700 font-extrabold">0 ⭐</span></div>
+                        <div>Unvan: <span id="licenseRankOut" class="text-sky-700 font-extrabold">Bilinçli Yaya Adayı 🚶</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center no-print">
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-2xl shadow-md transition flex items-center gap-2">
+                    <span>🖨️</span> Yaya Belgesini Yazdır / PDF Kaydet
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // =====================================================
+        // WEB AUDIO API İLE ÇOCUK DOSTU SES EFEKTLERİ
+        // =====================================================
+        let soundOn = true;
+        let totalScore = 0;
+        let audioCtx = null;
+
+        function playTone(type) {
+            if (!soundOn) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.09); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.18); // G5
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+                    osc.start(now);
+                    osc.stop(now + 0.38);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(165, now + 0.12);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'step') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, now);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                }
+            } catch (e) {}
+        }
+
+        function toggleSound() {
+            soundOn = !soundOn;
+            document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
+        }
+
+        function addPoints(pts) {
+            totalScore += pts;
+            const el = document.getElementById('scoreDisplay');
+            el.textContent = totalScore;
+            el.classList.remove('animate-pop');
+            void el.offsetWidth;
+            el.classList.add('animate-pop');
+            renderLicenseCard();
+        }
+
+        // =====================================================
+        // ANA VE ALT SEKME GEÇİŞLERİ
+        // =====================================================
+        function switchMainTab(tabId) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.main-tab-btn').forEach(btn => {
+                btn.className = 'main-tab-btn bg-teal-900/40 text-white/90 hover:bg-teal-900/60 font-bold px-4 py-3 rounded-t-2xl flex items-center gap-2 transition text-sm md:text-base';
+            });
+            const active = document.getElementById('btn-' + tabId);
+            if (active) {
+                active.className = 'main-tab-btn bg-white text-emerald-800 font-bold px-4 py-3 rounded-t-2xl shadow-sm flex items-center gap-2 transition text-sm md:text-base';
+            }
+        }
+
+        function switchSimTab(simId) {
+            document.querySelectorAll('.sim-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(simId).classList.remove('hidden');
+
+            document.querySelectorAll('.sim-sub-btn').forEach(btn => {
+                btn.className = 'sim-sub-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-2xl text-sm flex items-center gap-2 transition';
+            });
+            const active = document.getElementById('btn-' + simId);
+            if (active) {
+                active.className = 'sim-sub-btn bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-2xl text-sm flex items-center gap-2 shadow-sm transition';
+            }
+        }
+
+        // =====================================================
+        // SİMÜLASYON 1: KALDIRIMLI YOL vs. BANKETLİ YOL
+        // =====================================================
+        let currentRoadMode = 'sidewalk';
+        let rewardedRoadModes = {};
+
+        function setRoadMode(mode) {
+            currentRoadMode = mode;
+            const btnSidewalk = document.getElementById('roadModeSidewalkBtn');
+            const btnBanket = document.getElementById('roadModeBanketBtn');
+            const leftWalk = document.getElementById('svgLeftWalkway');
+            const rightWalk = document.getElementById('svgRightWalkway');
+            const sidewalkLines = document.getElementById('sidewalkLines');
+            const titleEl = document.getElementById('roadModeTitle');
+            const questionEl = document.getElementById('roadModeQuestion');
+            const buttonsContainer = document.getElementById('roadChoiceButtons');
+            const feedbackEl = document.getElementById('roadSimFeedback');
+
+            if (mode === 'sidewalk') {
+                btnSidewalk.className = 'px-4 py-2 rounded-xl font-bold text-sm bg-white text-emerald-700 shadow-sm transition';
+                btnBanket.className = 'px-4 py-2 rounded-xl font-bold text-sm text-slate-600 hover:text-slate-900 transition';
+                leftWalk.setAttribute('fill', '#cbd5e1');
+                rightWalk.setAttribute('fill', '#cbd5e1');
+                sidewalkLines.style.display = 'block';
+                document.getElementById('leftSideLabel').textContent = '⬅️ SOL KALDIRIM';
+                document.getElementById('rightSideLabel').textContent = 'SAĞ KALDIRIM ➡️';
+
+                titleEl.textContent = '🏙️ Kaldırımlı Yolda Yürüme Kuralları';
+                questionEl.textContent = 'Kaldırımı olan bir yolda yürürken nereden ve nasıl yürümeliyiz?';
+                buttonsContainer.innerHTML = `
+                    <button onclick="testRoadPosition('sidewalk_right')" class="w-full text-left p-3.5 rounded-2xl border-2 border-emerald-300 bg-white hover:bg-emerald-50 font-bold text-sm text-slate-800 flex items-center justify-between transition">
+                        <span>✅ Kaldırımın SAĞ tarafından, yola inmeden yürümek</span>
+                        <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg">Dene</span>
+                    </button>
+                    <button onclick="testRoadPosition('sidewalk_edge')" class="w-full text-left p-3.5 rounded-2xl border-2 border-rose-200 bg-white hover:bg-rose-50 font-bold text-sm text-slate-800 flex items-center justify-between transition">
+                        <span>⚠️ Kaldırımın taşıt yoluna yakın kenarında şakalaşarak yürümek</span>
+                        <span class="text-xs bg-rose-100 text-rose-800 px-2 py-1 rounded-lg">Dene</span>
+                    </button>
+                    <button onclick="testRoadPosition('sidewalk_road')" class="w-full text-left p-3.5 rounded-2xl border-2 border-rose-200 bg-white hover:bg-rose-50 font-bold text-sm text-slate-800 flex items-center justify-between transition">
+                        <span>🚫 Kaldırım varken asfalt taşıt yolundan yürümek</span>
+                        <span class="text-xs bg-rose-100 text-rose-800 px-2 py-1 rounded-lg">Dene</span>
+                    </button>
+                `;
+                feedbackEl.innerHTML = `👆 Kaldırımlı yolda doğru yürüyüş yerini görmek için seçeneklere tıkla! (Ayrıca apartman/garaj giriş-çıkışlarına ve çukurlara her zaman dikkat etmeliyiz.)`;
+            } else {
+                btnBanket.className = 'px-4 py-2 rounded-xl font-bold text-sm bg-white text-emerald-700 shadow-sm transition';
+                btnSidewalk.className = 'px-4 py-2 rounded-xl font-bold text-sm text-slate-600 hover:text-slate-900 transition';
+                leftWalk.setAttribute('fill', '#d97706'); // Toprak banket rengi
+                rightWalk.setAttribute('fill', '#d97706');
+                sidewalkLines.style.display = 'none';
+                document.getElementById('leftSideLabel').textContent = '⬅️ SOL BANKET (Karşıdan Geleni Görür)';
+                document.getElementById('rightSideLabel').textContent = 'SAĞ BANKET (Arkadan Araç Gelir) ➡️';
+
+                titleEl.textContent = '🌾 Kaldırımsız (Banketli) Yolda Yürüme Kuralları';
+                questionEl.textContent = 'Kaldırımı olmayan bir yolda (bankette) yürürken hangi tarafı seçmeliyiz ve NEDEN?';
+                buttonsContainer.innerHTML = `
+                    <button onclick="testRoadPosition('banket_left')" class="w-full text-left p-3.5 rounded-2xl border-2 border-emerald-300 bg-white hover:bg-emerald-50 font-bold text-sm text-slate-800 flex items-center justify-between transition">
+                        <span>✅ Gidiş yönümüze göre SOL banketten yürümek</span>
+                        <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg">Dene</span>
+                    </button>
+                    <button onclick="testRoadPosition('banket_right')" class="w-full text-left p-3.5 rounded-2xl border-2 border-rose-200 bg-white hover:bg-rose-50 font-bold text-sm text-slate-800 flex items-center justify-between transition">
                         <span>⚠️ Gidiş yönümüze göre SAĞ banketten yürümek</span>
                         <span class="text-xs bg-rose-100 text-rose-800 px-2 py-1 rounded-lg">Dene</span>
                     </button>
@@ -715,8 +997,7 @@ Total output lines: 1494
         function inspectParkedCarSpot(spot) {
             const ped = document.getElementById('blindSpotPedestrian');
             const pedIcon = document.getElementById('blindSpotPedIcon');
-            const title = document.getElementById('parkedReasonTitle');
-            const text = document.getElementById('parkedReasonText');
+            const title = document.getElementById('parkedReasonTitle');            const text = document.getElementById('parkedReasonText');
             const rev1 = document.getElementById('reverseLight1');
             const rev2 = document.getElementById('reverseLight2');
 
