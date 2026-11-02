@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "btn-matematik",
+      "addedOn": "2026-10-25",
+      "type": "section",
+      "course": "matematik"
+    },
+    {
+      "id": "btn-fen",
+      "addedOn": "2026-10-27",
+      "type": "section",
+      "course": "fen"
+    },
+    {
+      "id": "btn-insan",
+      "addedOn": "2026-10-18",
+      "type": "section",
+      "course": "insan"
+    },
+    {
+      "id": "btn-sosyal",
+      "addedOn": "2026-10-29",
+      "type": "section",
+      "course": "sosyal"
+    },
+    {
+      "id": "btn-turkce",
+      "addedOn": "2026-10-31",
+      "type": "section",
+      "course": "turkce"
+    },
+    {
+      "id": "etk-mat-zihintop",
+      "addedOn": "2026-10-18",
+      "type": "activity",
+      "course": "matematik"
+    },
+    {
+      "id": "etk-mat-verilmeyen",
+      "addedOn": "2026-10-25",
+      "type": "activity",
+      "course": "matematik"
+    },
+    {
+      "id": "etk-mat-cikarma",
+      "addedOn": "2026-10-18",
+      "type": "activity",
+      "course": "matematik"
+    },
+    {
+      "id": "etk-fen-besin1",
+      "addedOn": "2026-10-18",
+      "type": "activity",
+      "course": "fen"
+    },
+    {
+      "id": "etk-fen-besin2",
+      "addedOn": "2026-10-18",
+      "type": "activity",
+      "course": "fen"
+    },
+    {
+      "id": "etk-insan-bilinci",
+      "addedOn": "2026-10-18",
+      "type": "activity",
+      "course": "insan"
+    },
+    {
+      "id": "etk-sosyal-kultur",
+      "addedOn": "2026-10-21",
+      "type": "activity",
+      "course": "sosyal"
+    },
+    {
+      "id": "etk-sosyal-oyun",
+      "addedOn": "2026-10-26",
+      "type": "activity",
+      "course": "sosyal"
+    },
+    {
+      "id": "etk-turkce-soz",
+      "addedOn": "2026-10-31",
+      "type": "activity",
+      "course": "turkce"
+    },
+    {
+      "id": "etk-mat-not3",
+      "addedOn": "2026-10-25",
+      "type": "note",
+      "course": "matematik"
+    },
+    {
+      "id": "etk-mat-not4",
+      "addedOn": "2026-10-18",
+      "type": "note",
+      "course": "matematik"
+    },
+    {
+      "id": "etk-mat-not5",
+      "addedOn": "2026-10-18",
+      "type": "note",
+      "course": "matematik"
+    },
+    {
+      "id": "etk-fen-not4",
+      "addedOn": "2026-10-27",
+      "type": "note",
+      "course": "fen"
+    },
+    {
+      "id": "etk-fen-not5",
+      "addedOn": "2026-10-27",
+      "type": "note",
+      "course": "fen"
+    },
+    {
+      "id": "etk-fen-not3",
+      "addedOn": "2026-10-18",
+      "type": "note",
+      "course": "fen"
+    },
+    {
+      "id": "etk-sosyal-not3",
+      "addedOn": "2026-10-19",
+      "type": "note",
+      "course": "sosyal"
+    },
+    {
+      "id": "etk-sosyal-not5",
+      "addedOn": "2026-10-26",
+      "type": "note",
+      "course": "sosyal"
+    },
+    {
+      "id": "etk-sosyal-not6",
+      "addedOn": "2026-10-26",
+      "type": "note",
+      "course": "sosyal"
+    },
+    {
+      "id": "etk-turkce-not3",
+      "addedOn": "2026-10-31",
+      "type": "note",
+      "course": "turkce"
+    },
+    {
+      "id": "etk-turkce-not4",
+      "addedOn": "2026-10-31",
+      "type": "note",
+      "course": "turkce"
+    },
+    {
+      "id": "etk-turkce-not5",
+      "addedOn": "2026-10-31",
+      "type": "note",
+      "course": "turkce"
+    },
+    {
+      "id": "etk-turkce-not6",
+      "addedOn": "2026-10-31",
+      "type": "note",
+      "course": "turkce"
+    }
+  ]
+}
