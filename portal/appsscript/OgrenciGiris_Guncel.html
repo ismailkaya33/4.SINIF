@@ -371,7 +371,7 @@ body.loginView #giris{min-height:52px}
  .course summary .newLight{animation:none}
  .progressCompactTrack #ilerlemeBar{transition:none}
 }
-</style></head><body class="loginView"><main class="kutu">
+\n.newContentGroup{min-width:0;padding:14px;background:#fff;border:1px solid #edc2c8;border-radius:14px}.newContentGroup h4{margin:0 0 10px;color:#713d47;font-size:17px}.newContentItems{display:grid;gap:8px;margin:0;padding:0;list-style:none}.newContentItems li{min-width:0}.newContentLink{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:54px;padding:11px 13px;border:1px solid #d8e3f0;border-radius:12px;background:#fff;color:#264d77;text-align:left;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}.newContentLink:focus-visible{outline:3px solid #285fb0;outline-offset:2px}.newContentLinkTitle{overflow-wrap:anywhere}.newContentLinkBadge{flex:none;font-size:13px;color:#55708a}@media(max-width:620px){.newContentAlerts{grid-template-columns:1fr}.newContentLink{min-height:58px}}\n</style></head><body class="loginView"><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
 <div id="girisAlani"><p id="kod-yardim">Öğretmeninin verdiği 6 karakterli sınıf kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" inputmode="text" enterkeyhint="go" spellcheck="false" aria-label="Öğrenci kodu" aria-describedby="kod-yardim"><button id="giris" type="button">Giriş Yap</button><a class="teacherAccess" href="https://script.google.com/macros/s/AKfycbzYet4urwswVKhlxobxrH6R0IC_a1e8hUzpj42d_XwqZkA7N0Gwl4epC1P5XvZBt3DcyQ/exec" target="_blank" rel="noopener">🔒 Öğretmen Paneli</a></div>
@@ -469,69 +469,66 @@ function yeniEtiketEkle_(hedef){
 }
 function yeniIcerikleriGoster_(){
  const panel=document.getElementById("newContentPanel"),root=document.getElementById("newContentAlerts");
- const active=YENI_ICERIK_KATALOGU_.filter(item=>yeniIcerikTarihiAktif_(item));
- const courseNames={turkce:"Türkçe",matematik:"Matematik",fen:"Fen Bilimleri",sosyal:"Sosyal Bilgiler",insan:"İnsan Hakları",trafik:"Trafik Güvenliği",oyunlar:"Oyunlar"};
+ const active=YENI_ICERIK_KATALOGU_.filter(yeniIcerikTarihiAktif_);
+ const names={turkce:"Türkçe",matematik:"Matematik",fen:"Fen Bilimleri",sosyal:"Sosyal Bilgiler",insan:"İnsan Hakları",trafik:"Trafik Güvenliği",oyunlar:"Oyunlar"};
  const courseCards=[...document.querySelectorAll("#dersIzgarasi>.course")];
- active.forEach(function(item){
-  const label=courseNames[item.course];if(!label)return;
+ const tabByType={activity:"etkinlik",evaluation:"degerlendirme",note:"defter"};
+ function pathOf(a){try{return decodeURIComponent(new URL(a.href).pathname).replace(/^\/4\.SINIF\//,"")}catch(e){return""}}
+ function findLink(item){const byId=document.getElementById(item.id);if(byId&&byId.matches("a[href]"))return byId;return [...document.querySelectorAll("#dersIzgarasi a[href]")].find(a=>pathOf(a)===item.target)||null}
+ active.forEach(item=>{
+  const label=names[item.course];if(!label)return;
   const card=courseCards.find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
   yeniEtiketEkle_(card&&card.querySelector("summary"));
- });
- const tabByType={activity:"etkinlik",evaluation:"degerlendirme",note:"defter"};
- active.forEach(function(item){
-  const label=courseNames[item.course];if(!label)return;
-  const card=courseCards.find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
   const tab=tabByType[item.type],tabButton=card&&tab&&card.querySelector('.courseTabs button[data-tab="'+tab+'"]');
   yeniEtiketEkle_(tabButton);
-  if(!item.target)return;
-  const link=[...document.querySelectorAll("#dersIzgarasi a")].find(function(a){
-   try{return decodeURI(new URL(a.href).pathname).split("/4.SINIF/").pop()===item.target;}catch(e){return false;}
-  });
-  if(!link)return;
-  const noteCard=link.closest(".noteCard");
-  yeniEtiketEkle_(noteCard?noteCard.querySelector("strong"):link);
- });
- const directActivityLights=["recent-activity-mat-toplamacikarma-1","recent-activity-mat-toplamacikarma-2"];
- directActivityLights.forEach(function(id){
-  if(!active.some(item=>item.id===id))return;
-  const link=document.getElementById(id),card=link&&link.closest(".course");
-  yeniEtiketEkle_(link);
-  yeniEtiketEkle_(card&&card.querySelector('.courseTabs button[data-tab="etkinlik"]'));
+  const link=item.target&&findLink(item);if(link)yeniEtiketEkle_(link.closest(".noteCard")?.querySelector("strong")||link);
  });
  const groups=[
-  {type:"activity",tab:"etkinlik",text:"Yeni etkinlik var."},
-  {type:"evaluation",tab:"degerlendirme",text:"Yeni değerlendirme görevi var."},
-  {type:"note",tab:"defter",text:"Yazılması gereken bir defter notu var."}
+  {type:"activity",tab:"etkinlik",title:"Yeni etkinlikler"},
+  {type:"evaluation",tab:"degerlendirme",title:"Yeni değerlendirme görevleri"},
+  {type:"note",tab:"defter",title:"Yazılması gereken defter notları"}
  ];
  function dersAc_(card,tab){
   if(!card)return;
-  dersKartlari.forEach(other=>{if(other!==card){other.removeAttribute("open");other.classList.remove("activeLesson");}});
-  const wasOpen=card.open;card.dataset.requestedTab=tab;card.open=true;card.classList.add("activeLesson");seciliDers=card;document.body.classList.add("lessonView");
-  dersGeriSatiri.hidden=false;dersSayfaBaslik.textContent=card.querySelector("summary strong").textContent.trim();
-  tabSec(card,tab);if(wasOpen)delete card.dataset.requestedTab;window.scrollTo({top:0,behavior:"instant"});
+  dersKartlari.forEach(other=>{if(other!==card){other.removeAttribute("open");other.classList.remove("activeLesson")}});
+  card.dataset.requestedTab=tab;card.open=true;card.classList.add("activeLesson");seciliDers=card;document.body.classList.add("lessonView");
+  dersGeriSatiri.hidden=false;dersSayfaBaslik.textContent=card.querySelector("summary strong").textContent.trim();tabSec(card,tab);window.scrollTo({top:0,behavior:"instant"});
  }
- const cards=[];
- groups.forEach(function(group){
-  const matches=active.filter(item=>item.type===group.type||(group.type==="activity"&&item.type==="section"));
-  if(!matches.length)return;
-  const courseNames={turkce:"Türkçe",matematik:"Matematik",fen:"Fen Bilimleri",sosyal:"Sosyal Bilgiler",insan:"İnsan Hakları",trafik:"Trafik Güvenliği",oyunlar:"Oyunlar"};
-  matches.sort(function(a,b){return Date.parse(b.addedAt||b.addedOn||0)-Date.parse(a.addedAt||a.addedOn||0);});
-  const item=matches.find(x=>x.target)||matches[0];
-  const label=courseNames[item.course];
-  const subject=courseCards.find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
-  const directLink=item.target?[...document.querySelectorAll("#dersIzgarasi a")].find(function(a){
-   try{return decodeURI(new URL(a.href).pathname).split("/4.SINIF/").pop()===item.target;}catch(e){return false;}
-  }):null;
-  const card=document.createElement("button");card.type="button";card.className="newContentAlert";
-  card.textContent=group.text;
-  card.addEventListener("click",function(){
-   const destination=directLink&&directLink.closest(".course")||subject;
-   dersAc_(destination,directLink?group.tab:"etkinlik");
-   if(directLink)directLink.click();
+ const sections=[];
+ groups.forEach(group=>{
+  const items=active.filter(x=>x.type===group.type||(group.type==="activity"&&x.type==="section"));
+  const seen=new Set(),unique=items.filter(item=>{const key=item.target||item.id;if(seen.has(key))return false;seen.add(key);return true;});
+  unique.sort((a,b)=>Date.parse(b.addedAt||b.addedOn||0)-Date.parse(a.addedAt||a.addedOn||0));
+  if(!unique.length)return;
+  const section=document.createElement("section");section.className="newContentGroup";
+  const heading=document.createElement("h4");heading.textContent=group.title;section.append(heading);
+  const list=document.createElement("ul");list.className="newContentItems";
+  unique.forEach(item=>{
+   const course=names[item.course];if(!course)return;
+   const card=courseCards.find(x=>x.querySelector("summary strong")?.textContent.trim()===course);
+   const link=item.target&&findLink(item);
+   const trackId=item.target&&resultTrackByPath[item.target];
+   const noteTitle=link?.closest(".noteCard")?.querySelector("strong")?.textContent.trim().replace(/^📒\s*/,"");
+   const title=noteTitle||(link?.textContent||"").replace(/\s+/g," ").trim()||item.title|| (item.type==="section"?"Ders bölümü":"Yeni içerik");
+   const li=document.createElement("li"),action=document.createElement(trackId?"button":link?"a":"button");
+   action.className="newContentLink";
+   if(trackId){
+    action.type="button";action.addEventListener("click",()=>takipliOyunAc(trackId));
+   }else if(link){
+    action.href=link.href;action.target="_blank";action.rel="noopener";
+    if(item.type==="activity"&&seciliEtkinlikler.has(item.target)){
+     action.addEventListener("click",()=>{baslatilanEtkinlikler.add(item.target);etkinlikDurumlariniYenile()});
+    }
+   }else{
+    action.type="button";action.addEventListener("click",()=>dersAc_(card,group.tab));
+   }
+   const label=document.createElement("span");label.className="newContentLinkTitle";label.textContent=course+" · "+title;
+   const badge=document.createElement("span");badge.className="newContentLinkBadge";badge.textContent=trackId?"Sonucu kaydedilir":link?"Aç ↗":"Derse git";
+   action.append(label,badge);li.append(action);list.append(li);
   });
-  cards.push(card);
+  section.append(list);sections.push(section);
  });
- root.replaceChildren(...cards);panel.hidden=cards.length===0;
+ root.replaceChildren(...sections);panel.hidden=sections.length===0;
 }
 function ekranGoster(oturumVar){document.body.classList.toggle("loginView",!oturumVar);document.body.classList.toggle("studentView",oturumVar);girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
 function ilerlemeYukle(){
