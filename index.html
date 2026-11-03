@@ -626,10 +626,13 @@
           button.type = "button";
           button.textContent = "Görüntüle";
           button.addEventListener("click", function() {
-            if (first.course && document.getElementById(first.course)) openSubject(first.course);
-            else {
+            closeNewContentDialog();
+            if (first.course && document.getElementById(first.course)) {
+              openSubject(first.course);
               const target = document.getElementById(first.id);
-              closeNewContentDialog();
+              if (target) setTimeout(() => target.scrollIntoView({behavior:"smooth",block:"center"}), 80);
+            } else {
+              const target = document.getElementById(first.id);
               target?.scrollIntoView({behavior:"smooth",block:"center"});
               target?.focus?.();
             }
