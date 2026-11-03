@@ -111,7 +111,7 @@ function sendTrackedResult(){if(trackingResultSent||ans.some(v=>v===null))return
  const correct=ans.reduce((n,v,i)=>n+(v===Q[i].a?1:0),0),firstTry=firstAnswers.reduce((n,v,i)=>n+(v===Q[i].a?1:0),0),total=Q.length;
  window.parent.postMessage({type:'4d:activity-finished',schemaVersion:1,activityId:'mat-toplamacikarma-1',attemptId:trackingAttemptId,
  correct:correct,wrong:total-correct,total:total,wrongAttempts:total-correct,firstTry:firstTry,
- durationSeconds:Math.max(0,Math.round((Date.now()-trackingStartedAt)/1000))},'*');
+ durationSeconds:Math.max(0,Math.round((Date.now()-trackingStartedAt)/1000)),tasks:[0,1,2,4,6,7,14,16,17,18,19,21,22,23,24,25,26,27,28,29].map(i=>({taskId:'q'+String(i+1).padStart(2,'0'),status:ans[i]===Q[i].a?'success':'wrong'}))},'*');
 }
 const $=s=>document.querySelector(s),L='ABCD';
 const sc=k=>ans.slice(k*5,k*5+5).filter((v,i)=>v===Q[k*5+i].a).length;
