@@ -590,7 +590,7 @@ window.addEventListener("message",function(e){
  }).withFailureHandler(function(){gonderiliyor=false;if(sessionStorage.getItem(anahtarAdi)===token)oyunDurum.textContent="Kayıt bağlantısında sorun oldu. Öğretmenine haber ver."}).etkinlikSonucuKaydet(token,veri);
 });
 
-document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunCer.removeAttribute("src");});
+document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oruntulerButonu.disabled=false;cikarmaButonu.disabled=false;aktifEtkinlik=null;oyunCer.removeAttribute("src");});
 
 /* Ders alt sayfasi: etkinlikler / defter notlari / degerlendirmeler. */
 const defterKatalog={
