@@ -114,15 +114,22 @@ const Q=[
 {t:'Aşağıdaki görselde Ali’nin evi, okulu ile sokaklarındaki kırtasiye ve parkın konumları verilmiştir. Ali’nin evi ile kırtasiye arasındaki mesafe 520 m, kırtasiye ile okul arasındaki mesafe ise 230 m’dir.',f:bo('q59'),q:'Okul ile park arasındaki mesafe 630 m olduğuna göre Ali’nin evi ile park arasındaki mesafe kaç metredir?',o:[860,920,1380,1420],a:1,s:'Okul, ev ile kırtasiye arasındadır: ev–okul = 520 − 230 = 290 m. Okul–park 630 m. Ev–park: 290 + 630 = 920 m.'},
 {t:'Aşağıdaki görselde A, B, C, Ç, D, E ve F şehirleri arasındaki mesafeler km cinsinden verilmiştir.',f:bo('q60'),q:'A şehrinden yola çıkan bir araç 490 km gittikten sonra hangi şehre ulaşır?',o:['Ç şehrine','D şehrine','E şehrine','F şehrine'],a:0,s:'A’dan C’ye: 220 + 90 = 310 km. Geriye 490 − 310 = 180 km kalır. C’den 180 km uzaktaki şehir Ç’dir.'}
 ];
-let cur=0,view='q',ans=Array(30).fill(null);
+let cur=0,view='q',ans=Array(30).fill(null),firstAnswers=Array(30).fill(null);
+let trackingAttemptId=Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10),trackingStartedAt=Date.now(),trackingResultSent=false;
+function sendTrackedResult(){if(trackingResultSent||ans.some(v=>v===null))return;trackingResultSent=true;
+ const correct=ans.reduce((n,v,i)=>n+(v===Q[i].a?1:0),0),firstTry=firstAnswers.reduce((n,v,i)=>n+(v===Q[i].a?1:0),0),total=Q.length;
+ window.parent.postMessage({type:'4d:activity-finished',schemaVersion:1,activityId:'mat-toplamacikarma-2',attemptId:trackingAttemptId,
+ correct:correct,wrong:total-correct,total:total,wrongAttempts:total-correct,firstTry:firstTry,
+ durationSeconds:Math.max(0,Math.round((Date.now()-trackingStartedAt)/1000))},'*');
+}
 const $=s=>document.querySelector(s),L='ABCD';
 const sc=k=>ans.slice(k*5,k*5+5).filter((v,i)=>v===Q[k*5+i].a).length;
 const done=k=>ans.slice(k*5,k*5+5).every(v=>v!==null);
 const go=i=>{cur=i;view='q';draw();scrollTo(0,0)};
 const sec=k=>{cur=k*5;view='s';draw();scrollTo(0,0)};
-const fin=()=>{view='e';draw();scrollTo(0,0)};
-const pick=j=>{if(ans[cur]===null){ans[cur]=j;draw()}};
-const reset=()=>{ans=Array(30).fill(null);go(0)};
+const fin=()=>{if(ans.some(v=>v===null)){alert('Sonucu kaydetmeden önce 30 sorunun tamamını yanıtla.');return}sendTrackedResult();view='e';draw();scrollTo(0,0)};
+const pick=j=>{if(ans[cur]===null){ans[cur]=j;if(firstAnswers[cur]===null)firstAnswers[cur]=j;draw()}};
+const reset=()=>{ans=Array(30).fill(null);firstAnswers=Array(30).fill(null);trackingAttemptId=Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10);trackingStartedAt=Date.now();trackingResultSent=false;go(0)};
 const retry=()=>{const w=ans.map((v,i)=>v!==Q[i].a?i:-1).filter(i=>i>=0);w.forEach(i=>ans[i]=null);go(w[0])};
 function draw(){
  const k=cur/5|0;
