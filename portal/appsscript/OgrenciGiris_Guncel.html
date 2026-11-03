@@ -371,7 +371,7 @@ body.loginView #giris{min-height:52px}
  .course summary .newLight{animation:none}
  .progressCompactTrack #ilerlemeBar{transition:none}
 }
-\n.newContentGroup{min-width:0;padding:14px;background:#fff;border:1px solid #edc2c8;border-radius:14px}.newContentGroup h4{margin:0 0 10px;color:#713d47;font-size:17px}.newContentItems{display:grid;gap:8px;margin:0;padding:0;list-style:none}.newContentItems li{min-width:0}.newContentLink{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:54px;padding:11px 13px;border:1px solid #d8e3f0;border-radius:12px;background:#fff;color:#264d77;text-align:left;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}.newContentLink:focus-visible{outline:3px solid #285fb0;outline-offset:2px}.newContentLinkTitle{overflow-wrap:anywhere}.newContentLinkBadge{flex:none;font-size:13px;color:#55708a}@media(max-width:620px){.newContentAlerts{grid-template-columns:1fr}.newContentLink{min-height:58px}}\n</style></head><body class="loginView"><main class="kutu">
+\n.newContentGroup{min-width:0;padding:14px;background:#fff;border:1px solid #edc2c8;border-radius:14px}.newContentGroup h4{margin:0 0 10px;color:#713d47;font-size:17px}.newContentItems{display:grid;gap:8px;margin:0;padding:0;list-style:none}.newContentItems li{min-width:0}.newContentLink{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:54px;padding:11px 13px;border:1px solid #d8e3f0;border-radius:12px;background:#fff;color:#264d77;text-align:left;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}.newContentLink:focus-visible{outline:3px solid #285fb0;outline-offset:2px}.newContentLinkTitle{overflow-wrap:anywhere}.newContentLinkBadge{flex:none;font-size:13px;color:#55708a}@media(max-width:620px){.newContentAlerts{grid-template-columns:1fr}.newContentLink{min-height:58px}}\n.noticeTopCard #duyuruListe article h4{margin:0 0 6px;font-size:18px}.noticeTopCard #duyuruDurum{font-weight:800}.newContentPanel{padding:12px 14px}.newContentSummary{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:56px;padding:12px 15px;border:0;border-radius:12px;background:transparent;color:#713d47;font-size:20px;font-weight:900;text-align:left;cursor:pointer}.newContentSummary:hover{background:#ffffff8a}.newContentDialog{width:min(760px,calc(100vw - 24px));max-height:min(82vh,760px);padding:18px;border:0;border-radius:20px;background:#fff8fa;color:#253d5c;box-shadow:0 22px 70px #10243d55}.newContentDialog::backdrop{background:#14243c99;backdrop-filter:blur(3px)}.newContentDialogHead{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:#fff8fa;padding:0 0 12px;border-bottom:1px solid #eed7dc}.newContentDialogHead h3{margin:0;font-size:23px}.newContentClose{margin:0;min-width:48px;min-height:48px;padding:8px 14px;font-size:22px}.newContentDialogBody{overflow-y:auto;max-height:calc(82vh - 90px);padding-top:12px}.newContentAlerts{grid-template-columns:1fr}.newContentGroup h4{font-size:19px}.newContentLink{min-height:60px;font-size:18px}.newContentLinkBadge{font-size:15px}@media(max-width:620px){.newContentPanel{padding:7px}.newContentSummary{min-height:60px;font-size:21px}.newContentDialog{width:calc(100vw - 16px);max-height:88vh;padding:14px;border-radius:18px}.newContentDialogBody{max-height:calc(88vh - 84px)}.newContentLink{min-height:64px;font-size:18px;padding:14px}.newContentLinkBadge{font-size:14px}.noticeTopCard #duyuruListe{max-height:250px}.noticeTopCard #duyuruListe article{padding:13px 0}.noticeTopCard #duyuruListe article h4{font-size:20px}.noticeTopCard #duyuruListe article p{font-size:18px;line-height:1.55}button{min-height:52px;font-size:17px}}\n</style></head><body class="loginView"><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
 <div id="girisAlani"><p id="kod-yardim">Öğretmeninin verdiği 6 karakterli sınıf kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" inputmode="text" enterkeyhint="go" spellcheck="false" aria-label="Öğrenci kodu" aria-describedby="kod-yardim"><button id="giris" type="button">Giriş Yap</button><a class="teacherAccess" href="https://script.google.com/macros/s/AKfycbzYet4urwswVKhlxobxrH6R0IC_a1e8hUzpj42d_XwqZkA7N0Gwl4epC1P5XvZBt3DcyQ/exec" target="_blank" rel="noopener">🔒 Öğretmen Paneli</a></div>
@@ -381,10 +381,13 @@ body.loginView #giris{min-height:52px}
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 </div>
 <details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactLabel">Doğru yanıt</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran" aria-label="Doğru yanıt oranı">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor. Bu bir not değildir; yalnızca kaydedilen çalışmaları gösterir.</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru yanıt</small></div></div></div></details>
-<section id="newContentPanel" class="newContentPanel" aria-labelledby="newContentHeading" hidden>
- <h3 id="newContentHeading">✨ Yeni İçerikler</h3>
- <div id="newContentAlerts" class="newContentAlerts" aria-live="polite"></div>
+<section id="newContentPanel" class="newContentPanel" hidden>
+ <button id="newContentOpen" class="newContentSummary" type="button" aria-haspopup="dialog">✨ Yeni İçerikler <span>İçerikleri gör →</span></button>
 </section>
+<dialog id="newContentDialog" class="newContentDialog" aria-labelledby="newContentHeading">
+ <div class="newContentDialogHead"><h3 id="newContentHeading">✨ Yeni İçerikler</h3><button id="newContentClose" class="newContentClose" type="button" aria-label="Kapat">×</button></div>
+ <div id="newContentDialogBody" class="newContentDialogBody"><div id="newContentAlerts" class="newContentAlerts" aria-live="polite"></div></div>
+</dialog>
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
 <p class="hint">Takipli çalışmalarda sonuç kaydedilir. Diğer bağlantılar yeni sekmede açılır; bitirince bu sekmeye dön.</p>
 <section class="examHome" aria-label="Deneme Sınavları">
@@ -530,6 +533,9 @@ function yeniIcerikleriGoster_(){
  });
  root.replaceChildren(...sections);panel.hidden=sections.length===0;
 }
+document.getElementById("newContentOpen").addEventListener("click",function(){document.getElementById("newContentDialog").showModal()});
+document.getElementById("newContentClose").addEventListener("click",function(){document.getElementById("newContentDialog").close()});
+document.getElementById("newContentDialog").addEventListener("click",function(e){if(e.target===this)this.close()});
 function ekranGoster(oturumVar){document.body.classList.toggle("loginView",!oturumVar);document.body.classList.toggle("studentView",oturumVar);girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
 function ilerlemeYukle(){
  const token=sessionStorage.getItem(anahtarAdi);
@@ -558,9 +564,10 @@ function duyurulariYukle(){
   if(sessionStorage.getItem(anahtarAdi)!==token)return;
   liste.replaceChildren();
   if(!r||r.basarili!==true){durum.textContent="Duyurular alınamadı.";return}
-  if(!r.duyurular||!r.duyurular.length){durum.textContent="Henüz yayımlanmış duyuru yok.";return}
-  durum.textContent="";
-  r.duyurular.forEach(function(d){const el=document.createElement("article"),h=document.createElement("h4"),p=document.createElement("p");h.textContent=d.baslik;p.textContent=d.metin;el.append(h,p);liste.appendChild(el)});
+  const duyurular=Array.isArray(r.duyurular)?r.duyurular:[];
+  if(!duyurular.length){durum.textContent="Henüz yayımlanmış duyuru yok.";return}
+  durum.textContent=duyurular.length+" duyuru";
+  duyurular.forEach(function(d){const el=document.createElement("article"),title=document.createElement("h4"),p=document.createElement("p");title.textContent=d.baslik;p.textContent=d.metin;el.append(title,p);liste.appendChild(el)});
  }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
 }
 function tokenTemizle(){menuyeDon();yazilanNotlar.clear();bitirilenEtkinlikler.clear();kaydedilenEtkinlikler.clear();baslatilanEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
