@@ -5,6 +5,7 @@
 <h1>4/D Öğretmen Raporu</h1><p id="status">Yükleniyor...</p>
 <div class="stats"><p>Öğrenci: <strong id="count">—</strong></p><p>Geçerli sonuç: <strong id="results">—</strong></p></div>
 <section><h2>Kazanımlar</h2><p class="muted">Henüz gerçek öğrenci kaydı yoksa bu bölüm boş kalır. Başarı oranı, kaydedilmiş tüm tamamlanma denemelerindeki doğru cevapların oranıdır.</p><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
+<section><h2>Kazanım kanıtları • Pilot</h2><p class="muted">Çıkarma Dedektifleri · M.4.1.3.1. Görev bazındaki son denemeyi gösterir. “Geçti” başarı sayılmaz; kayıt yoksa “Henüz ölçülmedi” yazılır. Bu veriler öğretim için tanılama kanıtıdır, tek başına kesin öğrenme kararı değildir.</p><div id="outcomeEvidence"></div></section>
 <section><h2>📚 Ders içerikleri</h2><p class="muted">Yedi dersin portal bağlantıları burada. Bu alan içerik kataloğudur; öğrenci sonuçları ve tamamlama kayıtları aşağıdaki takip bölümlerinde gösterilir.</p><div id="dersKatalogu" class="lessonCatalog"></div></section>
 <section><h2>Etkinliğe göre katılım</h2><p>“Henüz sonuç yok”, öğrencinin oyuna hiç girmediğini kanıtlamaz. Yalnızca tamamlanmış kayıt bulunmadığını gösterir.</p><div id="activitySections"></div></section><section><h2>Seçilen etkinlikler — Tamamlama bildirimleri</h2><p class="muted">Bu bölüm öğrencinin “Etkinliği Tamamladım” beyanını gösterir. Otomatik doğru-yanlış puanı değildir. MİSAFİR hariçtir.</p><div id="declarationSections"></div></section><section><h2>📒 Defter Notları — Yazdım Takibi</h2>
 <p class="muted">Öğrencinin kendi işaretlediği beyanlardır; öğretmen doğrulaması değildir. MİSAFİR kayıtları hariçtir. Her notu açarak yazanları ve henüz işaretlemeyenleri görebilirsin.</p>
@@ -33,7 +34,28 @@ function completionName(id){return ({
  'Insanhaklari/insanolmasorumlulugu.html':'İnsan Hakları • İnsan Olma Sorumluluğu',
  'Trafik/yayaolaraktrafikkurallarietkinligi.html':'Trafik Güvenliği • Yaya Olarak Trafik Kuralları'
  })[id]||id}
-function outcomeName(k){return ({'M.4.1.3.4':'Çıkarma işleminde verilmeyen eksilen veya çıkanı bulma'})[k]||k}
+function outcomeName(k){return ({'M.4.1.3.1':'Doğal sayılarla çıkarma işlemi','M.4.1.3.4':'Çıkarma işleminde verilmeyen eksilen veya çıkanı bulma'})[k]||k}
+function renderOutcomeEvidence(rows){
+ const root=document.getElementById('outcomeEvidence');root.replaceChildren();
+ (rows||[]).forEach(function(item){
+  const details=document.createElement('details'),summary=document.createElement('summary');
+  summary.textContent=item.ad+' — '+outcomeName(item.outcome)+' · '+(item.total?item.correct+'/'+item.total+' görev başarıldı; '+item.firstTry+' ilk denemede; '+item.retried+' tekrar gerekti; '+item.skipped+' geçildi':'Henüz ölçülmedi');
+  details.appendChild(summary);
+  if(item.total){
+   const table=document.createElement('table'),thead=document.createElement('thead'),body=document.createElement('tbody');
+   thead.innerHTML='<tr><th>Görev</th><th>Durum</th><th>Yanıt denemesi</th><th>İpucu</th></tr>';
+   item.tasks.forEach(function(task){
+    const tr=document.createElement('tr'),values=[task.taskId,
+      task.status==='success'?(task.answerAttempts>1?'Başardı (tekrar deneyerek)':'Başardı'):'Geçti',
+      task.answerAttempts,task.hintUsed?'Kullandı':'Kullanmadı'];
+    values.forEach(function(value){const td=document.createElement('td');td.textContent=String(value);tr.appendChild(td)});
+    body.appendChild(tr);
+   });
+   table.append(thead,body);details.appendChild(table);
+  }
+  root.appendChild(details);
+ });
+}
 function renderDersKatalogu(groups){
  const root=document.getElementById('dersKatalogu');root.replaceChildren();
  (groups||[]).forEach(function(group){
@@ -79,6 +101,7 @@ google.script.run.withSuccessHandler(function(r){
  document.getElementById('count').textContent=r.studentCount;
  document.getElementById('results').textContent=r.recordCount;
  renderDersKatalogu(r.dersIcerikleri||[]);
+ renderOutcomeEvidence(r.outcomeEvidence||[]);
  renderRows('outcomes',r.outcomes.map(x=>[activityName(x.activityId),outcomeName(x.outcome)+' ('+x.outcome+')',x.participantCount+' / '+r.studentCount+' ('+ratio(x.participantCount,r.studentCount)+')',x.attempts,ratio(x.correct,x.total)]));
  (r.notebooks||[]).forEach(function(n){
   const wrap=document.createElement('details'),summary=document.createElement('summary');

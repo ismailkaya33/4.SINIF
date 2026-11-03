@@ -80,6 +80,64 @@ function etkinlikSonucuKaydet(token, veri) {
  * Kendi ilerlemem: yalnız geçerli oturumun öğrenci numarası ile filtreler.
  * MİSAFİR denemeleri öğretmen sınıf ortalamasına katılmaz.
  */
+
+const SONUC_KANIT_SAYFASI_ = 'ETKINLIK_KANITLARI';
+const GOREV_KANITI_ETKINLIKLERI_ = Object.freeze({
+  'mat-cikarmaislemi': Object.freeze({
+    kazanim: 'M.4.1.3.1',
+    gorevler: Object.freeze(['t01','t02','t03','t04','t05','t06','t07','t08','t09','t10','t11','t12','t13','t14','t15','t16'])
+  })
+});
+function etkinlikKanitiSayfasi_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let s = ss.getSheetByName(SONUC_KANIT_SAYFASI_);
+  if (!s) {
+    s = ss.insertSheet(SONUC_KANIT_SAYFASI_);
+    s.appendRow(['KayitKimligi','OgrenciNo','Etkinlik','Kazanim','DenemeKimligi','GorevKimligi','Durum','YanıtDenemesi','IlkDeneme','Ipucu','SureSaniye','KayitZamani']);
+  }
+  return s;
+}
+/** Görev ayrıntısı oturum kimliğinden öğrenciye bağlanır; istemciden gelen kazanıma güvenilmez. */
+function etkinlikGorevKanitiKaydet(token, veri) {
+  if (typeof token !== 'string' || token.length !== 73 || !veri || typeof veri !== 'object' || Array.isArray(veri)) return {basarili:false};
+  const id=String(veri.activityId||''), tanim=GOREV_KANITI_ETKINLIKLERI_[id], izin=etkinlikTanimi_(id);
+  if (!tanim || !izin || typeof veri.attemptId!=='string' || !/^[a-zA-Z0-9_-]{12,80}$/.test(veri.attemptId) ||
+      !Number.isSafeInteger(veri.durationSeconds) || veri.durationSeconds<0 || veri.durationSeconds>SONUC_MAX_SURE_SN_ ||
+      !Array.isArray(veri.tasks) || veri.tasks.length!==tanim.gorevler.length) return {basarili:false,mesaj:'Geçersiz görev kanıtı.'};
+  const seenTasks={},tasks=[];
+  for (const item of veri.tasks) {
+    if (!item || typeof item!=='object' || Array.isArray(item) || typeof item.taskId!=='string' ||
+        tanim.gorevler.indexOf(item.taskId)<0 || seenTasks[item.taskId] ||
+        ['success','skipped'].indexOf(item.status)<0 || !Number.isSafeInteger(item.attempts) ||
+        item.attempts<0 || item.attempts>10000 || typeof item.firstTry!=='boolean' ||
+        typeof item.hintUsed!=='boolean' || (item.status==='success'&&item.attempts<1) ||
+        (item.firstTry&&(item.status!=='success'||item.attempts!==1||item.hintUsed))) {
+      return {basarili:false,mesaj:'Geçersiz görev kanıtı.'};
+    }
+    seenTasks[item.taskId]=true;
+    tasks.push({taskId:item.taskId,status:item.status,attempts:item.attempts,firstTry:item.firstTry,hintUsed:item.hintUsed});
+  }
+  if(tanim.gorevler.some(taskId=>!seenTasks[taskId]))return {basarili:false,mesaj:'Eksik görev kanıtı.'};
+  const lock=LockService.getScriptLock();
+  if(!lock.tryLock(10000))return {basarili:false,mesaj:'Sistem meşgul.'};
+  try {
+    const session=oturumKaydi_(token);
+    if(!session)return {basarili:false,mesaj:'Oturum geçersiz.'};
+    const pupil=kayitNoIle_(session.no);
+    if(!pupil||!pupil.no)return {basarili:false,mesaj:'Öğrenci bulunamadı.'};
+    const sheet=etkinlikKanitiSayfasi_(),last=sheet.getLastRow();
+    const existing=new Set(last>1?sheet.getRange(2,1,last-1,1).getDisplayValues().map(r=>r[0]):[]);
+    const rows=tasks.map(function(task){
+      const key=String(pupil.no)+':'+id+':'+veri.attemptId+':'+task.taskId;
+      return {key:key,values:[key,String(pupil.no),id,tanim.kazanim,veri.attemptId,task.taskId,task.status,task.attempts,
+        task.firstTry?'EVET':'HAYIR',task.hintUsed?'EVET':'HAYIR',veri.durationSeconds,new Date()]};
+    }).filter(function(row){return !existing.has(row.key);});
+    if(rows.length)sheet.getRange(sheet.getLastRow()+1,1,rows.length,12).setValues(rows.map(r=>r.values));
+    return {basarili:true,tekrar:rows.length===0};
+  } catch(e) { return {basarili:false,mesaj:'Görev kanıtı kaydedilemedi.'}; }
+  finally { lock.releaseLock(); }
+}
+
 function ogrenciIlerlemeOzeti(token) {
   const session = oturumKaydi_(token);
   if (!session) return {basarili:false};

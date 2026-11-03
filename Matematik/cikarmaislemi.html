@@ -165,7 +165,7 @@ function emitVerifiedFinish(){
  const correct=rows.filter(t=>t.status==="success").length,wrong=rows.length-correct;
  const firstTry=rows.filter(t=>t.status==="success"&&t.attempts===1&&!t.hintUsed).length;
  const attemptId="ci_"+crypto.randomUUID().replace(/-/g,"");
- window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"mat-cikarmaislemi",attemptId,correct,wrong,total:rows.length,wrongAttempts:state.wrongCount,firstTry,durationSeconds:Math.floor((Date.now()-state.startedAt)/1000)},"*");
+ window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"mat-cikarmaislemi",attemptId,correct,wrong,total:rows.length,wrongAttempts:state.wrongCount,firstTry,durationSeconds:Math.floor((Date.now()-state.startedAt)/1000),tasks:rows.map(t=>({taskId:t.id,status:t.status,attempts:t.attempts,firstTry:t.status==="success"&&t.attempts===1&&!t.hintUsed,hintUsed:!!t.hintUsed}))},"*");
 }
 function showFinal(){
  emitVerifiedFinish();

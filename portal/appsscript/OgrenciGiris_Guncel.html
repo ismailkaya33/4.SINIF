@@ -374,7 +374,7 @@ body.lessonView .examHome{display:none}
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/yuvarlama2.html" target="_blank" rel="noopener noreferrer">Yuvarlama Macerası 2</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/zihindentoplama.html" target="_blank" rel="noopener noreferrer">Zihinden Toplama Ustaları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/zihindencikarma.html" target="_blank" rel="noopener noreferrer">Zihinden Çıkarma Ustaları</a></li>
-<li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/cikarmaislemi.html" target="_blank" rel="noopener noreferrer">Çıkarma Dedektifleri</a></li>
+<li><button id="cikarmaTakipAc" class="trackedLessonLink" type="button" aria-label="Kazanım sonucu kaydedilen etkinlik: Çıkarma Dedektifleri">🕵️ Çıkarma Dedektifleri • kazanım takibi</button></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/kayipsayilar.html" target="_blank" rel="noopener noreferrer">Çıkarma İşleminde Verilmeyen Sayılar</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/dogalsayilardegerlendirme.html" target="_blank" rel="noopener noreferrer">Sayı Avcıları – Doğal Sayılar Değerlendirme</a></li><!-- Yeni problem etkinlikleri; tamamlama takibi henüz seçilmedi. --><li><a id="recent-activity-mat-toplamacikarma-1" href="https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem1.html" target="_blank" rel="noopener noreferrer">Toplama ve Çıkarma Problemleri 1</a></li><li><a id="recent-activity-mat-toplamacikarma-2" href="https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem2.html" target="_blank" rel="noopener noreferrer">Toplama ve Çıkarma Problemleri 2</a></li></ul></details>
 <details class="course"><summary><span class="subjectIcon subject-FEN" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M25 9h14m-11 0v20L15 48q-4 8 6 8h22q10 0 6-8L36 29V9" fill="#B2E8FF" stroke="#4776BC" stroke-width="3" stroke-linejoin="round"/><path d="M22 40h20l7 10q2 6-6 6H21q-8 0-6-6z" fill="#A98EF5"/><circle cx="29" cy="44" r="3" fill="#F8F0FF"/><circle cx="37" cy="50" r="2.5" fill="#F8F0FF"/></svg></span> <strong>Fen Bilimleri</strong> <small>10 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinkasifleri.html" target="_blank" rel="noopener noreferrer">Besin Kaşifleri: Görev Haritası</a></li>
@@ -468,7 +468,7 @@ function yeniIcerikleriGoster_(){
  });
  root.replaceChildren(...cards);panel.hidden=cards.length===0;
 }
-function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
+function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;cikarmaButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
 function ilerlemeYukle(){
  const token=sessionStorage.getItem(anahtarAdi);
  if(!token)return;
@@ -532,23 +532,24 @@ buton.addEventListener("click",girisYap);cikisButonu.addEventListener("click",ci
 kodAlani.addEventListener("keydown",function(e){if(e.key==="Enter")girisYap()});
 const oruntulerButonu=document.getElementById("oruntulerAc");
 let aktifEtkinlik=null;
-const takipliOyunlar=Object.freeze({"mat-kayipsayilar":"https://ismailkaya33.github.io/4.SINIF/test/kayipsayilar.html","mat-oruntuler":"https://ismailkaya33.github.io/4.SINIF/test/oruntuler.html","mat-dogalsayilar-degerlendirme":"https://ismailkaya33.github.io/4.SINIF/Matematik/dogalsayilardegerlendirme.html","mat-toplamacikarma-1":"https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem1.html","mat-toplamacikarma-2":"https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem2.html","insan-sorumluluk":"https://ismailkaya33.github.io/4.SINIF/Insanhaklari/insanolmasorumlulugu.html","trafik-yaya":"https://ismailkaya33.github.io/4.SINIF/Trafik/yayaolaraktrafikkurallarietkinligi.html"});
-const resultTrackByPath=Object.freeze({"Matematik/dogalsayilardegerlendirme.html":"mat-dogalsayilar-degerlendirme","Matematik/toplamacikarmaproblem1.html":"mat-toplamacikarma-1","Matematik/toplamacikarmaproblem2.html":"mat-toplamacikarma-2","Insanhaklari/insanolmasorumlulugu.html":"insan-sorumluluk","Trafik/yayaolaraktrafikkurallarietkinligi.html":"trafik-yaya"});
-const trackedNames={"mat-dogalsayilar-degerlendirme":"Matematik • Doğal Sayılar Değerlendirme","mat-toplamacikarma-1":"Matematik • Toplama ve Çıkarma Problemleri 1","mat-toplamacikarma-2":"Matematik • Toplama ve Çıkarma Problemleri 2","insan-sorumluluk":"İnsan Hakları • İnsan Olma Sorumluluğu","trafik-yaya":"Trafik Güvenliği • Yaya Olarak Trafik Kuralları"};
-const oyunButonu=document.getElementById("oyunuAc"),oyunCer=document.getElementById("oyunCer"),oyunDurum=document.getElementById("oyunDurum"),oyunPanel=document.getElementById("oyunPanel");
+const takipliOyunlar=Object.freeze({"mat-kayipsayilar":"https://ismailkaya33.github.io/4.SINIF/test/kayipsayilar.html","mat-oruntuler":"https://ismailkaya33.github.io/4.SINIF/test/oruntuler.html","mat-cikarmaislemi":"https://ismailkaya33.github.io/4.SINIF/Matematik/cikarmaislemi.html","mat-dogalsayilar-degerlendirme":"https://ismailkaya33.github.io/4.SINIF/Matematik/dogalsayilardegerlendirme.html","mat-toplamacikarma-1":"https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem1.html","mat-toplamacikarma-2":"https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem2.html","insan-sorumluluk":"https://ismailkaya33.github.io/4.SINIF/Insanhaklari/insanolmasorumlulugu.html","trafik-yaya":"https://ismailkaya33.github.io/4.SINIF/Trafik/yayaolaraktrafikkurallarietkinligi.html"});
+const resultTrackByPath=Object.freeze({"Matematik/cikarmaislemi.html":"mat-cikarmaislemi","Matematik/dogalsayilardegerlendirme.html":"mat-dogalsayilar-degerlendirme","Matematik/toplamacikarmaproblem1.html":"mat-toplamacikarma-1","Matematik/toplamacikarmaproblem2.html":"mat-toplamacikarma-2","Insanhaklari/insanolmasorumlulugu.html":"insan-sorumluluk","Trafik/yayaolaraktrafikkurallarietkinligi.html":"trafik-yaya"});
+const trackedNames={"mat-cikarmaislemi":"Matematik • Çıkarma Dedektifleri","mat-dogalsayilar-degerlendirme":"Matematik • Doğal Sayılar Değerlendirme","mat-toplamacikarma-1":"Matematik • Toplama ve Çıkarma Problemleri 1","mat-toplamacikarma-2":"Matematik • Toplama ve Çıkarma Problemleri 2","insan-sorumluluk":"İnsan Hakları • İnsan Olma Sorumluluğu","trafik-yaya":"Trafik Güvenliği • Yaya Olarak Trafik Kuralları"};
+const oyunButonu=document.getElementById("oyunuAc"),oyunCer=document.getElementById("oyunCer"),oyunDurum=document.getElementById("oyunDurum"),oyunPanel=document.getElementById("oyunPanel"),cikarmaButonu=document.getElementById("cikarmaTakipAc");
 let gonderiliyor=false;
 function takipliOyunAc(id){
  if(!sessionStorage.getItem(anahtarAdi)){oyunDurum.textContent="Önce giriş yap.";return}
  if(!Object.prototype.hasOwnProperty.call(takipliOyunlar,id))return;
  aktifEtkinlik=id;gonderiliyor=false;
  oyunPanel.hidden=false;document.body.classList.add("oyunda");
- oyunButonu.disabled=true;oruntulerButonu.disabled=true;
+ oyunButonu.disabled=true;oruntulerButonu.disabled=true;cikarmaButonu.disabled=true;
  document.querySelector("#oyunUst strong").textContent=trackedNames[id]||(id==="mat-oruntuler"?"🧩 Matematik • Sayı Örüntüleri":"🎮 Matematik • Kayıp Sayılar");
  oyunDurum.textContent="Oyun açılıyor. Bitirdiğinde sonucun otomatik gönderilecek.";
  oyunCer.src=takipliOyunlar[id];
 }
 oyunButonu.addEventListener("click",function(){takipliOyunAc("mat-kayipsayilar")});
 oruntulerButonu.addEventListener("click",function(){takipliOyunAc("mat-oruntuler")});
+cikarmaButonu.addEventListener("click",function(){takipliOyunAc("mat-cikarmaislemi")});
 window.addEventListener("message",function(e){
  if(oturumAlani.hidden||gonderiliyor||e.origin!=="https://ismailkaya33.github.io"||e.source!==oyunCer.contentWindow)return;
  const d=e.data;
@@ -561,7 +562,23 @@ window.addEventListener("message",function(e){
   gonderiliyor=false;
   if(sessionStorage.getItem(anahtarAdi)!==token)return;
   if(r&&r.basarili){
-   ilerlemeYukle();oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";
+   ilerlemeYukle();
+   if(d.activityId==="mat-cikarmaislemi"){
+    oyunDurum.textContent="Etkinlik özeti kaydedildi; görev kanıtları gönderiliyor...";
+    google.script.run.withSuccessHandler(function(kr){
+     if(sessionStorage.getItem(anahtarAdi)!==token)return;
+     if(!kr||!kr.basarili){oyunDurum.textContent="Etkinlik özeti kaydedildi, ancak görev kanıtları kaydedilemedi.";return;}
+     oyunDurum.textContent=kr.tekrar?"Kazanım görevleri zaten kaydedilmiş.":"✅ Etkinlik ve görev sonuçları öğretmene kaydedildi.";
+     const path="Matematik/cikarmaislemi.html";
+     google.script.run.withSuccessHandler(function(cr){
+      if(sessionStorage.getItem(anahtarAdi)!==token)return;
+      if(cr&&cr.basarili){bitirilenEtkinlikler.add(path);seciliEtkinlikButonlariYenile();}
+      else{oyunDurum.textContent+=" Tamamlama durumu ayrıca kaydedilemedi.";}
+     }).seciliEtkinlikTamamla(token,path);
+    }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)oyunDurum.textContent="Etkinlik özeti kaydedildi, ancak görev kanıtları gönderilemedi.";}).etkinlikGorevKanitiKaydet(token,{activityId:d.activityId,attemptId:d.attemptId,durationSeconds:d.durationSeconds,tasks:d.tasks});
+    return;
+   }
+   oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";
    const path=Object.keys(resultTrackByPath).find(p=>resultTrackByPath[p]===d.activityId);
    if(path)google.script.run.withSuccessHandler(function(cr){
     if(sessionStorage.getItem(anahtarAdi)!==token)return;

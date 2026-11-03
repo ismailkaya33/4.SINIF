@@ -13,6 +13,11 @@ const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({
     kazanim: 'SAYI_ORUNTULERI_KOD_BEKLIYOR',
     maxTotal: 1000
   }),
+  'mat-cikarmaislemi': Object.freeze({
+    konu: 'Matematik',
+    kazanim: 'M.4.1.3.1',
+    maxTotal: 1000
+  }),
   'mat-dogalsayilar-degerlendirme': Object.freeze({konu:'Matematik',kazanim:'Doğal sayıları değerlendirme',maxTotal:1000}),
   'mat-toplamacikarma-1': Object.freeze({konu:'Matematik',kazanim:'Toplama ve çıkarma problemleri 1',maxTotal:1000}),
   'mat-toplamacikarma-2': Object.freeze({konu:'Matematik',kazanim:'Toplama ve çıkarma problemleri 2',maxTotal:1000}),

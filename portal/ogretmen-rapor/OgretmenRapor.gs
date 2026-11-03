@@ -124,7 +124,38 @@ function ogretmenRaporVerisi() {
     return {id:note.id,title:note.title,completed:finished.length,
       waiting:notYet.length,completedStudents:finished,waitingStudents:notYet};
   });
+
+  const evidenceSheet=ss.getSheetByName('ETKINLIK_KANITLARI');
+  const evidenceRows=evidenceSheet&&evidenceSheet.getLastRow()>1
+    ?evidenceSheet.getRange(2,1,evidenceSheet.getLastRow()-1,12).getValues():[];
+  const evidenceByStudent={};
+  evidenceRows.forEach(function(r){
+    const no=String(r[1]).trim(),activityId=String(r[2]).trim(),outcome=String(r[3]).trim();
+    const attemptId=String(r[4]).trim(),taskId=String(r[5]).trim(),status=String(r[6]).trim();
+    if(!roster[no]||activityId!=='mat-cikarmaislemi'||outcome!=='M.4.1.3.1'||
+       !/^ci_[A-Za-z0-9_-]{8,80}$/.test(attemptId)||!/^t(0[1-9]|1[0-6])$/.test(taskId)||
+       ['success','skipped'].indexOf(status)<0)return;
+    if(!evidenceByStudent[no])evidenceByStudent[no]={};
+    const attempts=evidenceByStudent[no];
+    if(!attempts[attemptId])attempts[attemptId]={at:r[11] instanceof Date?r[11].getTime():0,tasks:{}};
+    const attempt=attempts[attemptId];
+    if(attempt.tasks[taskId])return;
+    attempt.at=Math.max(attempt.at,r[11] instanceof Date?r[11].getTime():0);
+    attempt.tasks[taskId]={taskId:taskId,status:status,answerAttempts:Number(r[7])||0,
+      firstTry:String(r[8]).toUpperCase()==='EVET',hintUsed:String(r[9]).toUpperCase()==='EVET'};
+  });
+  const outcomeEvidence=Object.keys(roster).map(function(no){
+    const attempts=evidenceByStudent[no]||{},attemptIds=Object.keys(attempts);
+    attemptIds.sort(function(a,b){return attempts[a].at-attempts[b].at;});
+    const latest=attemptIds.length?attempts[attemptIds[attemptIds.length-1]]:null;
+    const tasks=latest?Object.keys(latest.tasks).sort().map(function(id){return latest.tasks[id];}):[];
+    return {no:no,ad:roster[no].ad,activityId:'mat-cikarmaislemi',outcome:'M.4.1.3.1',
+      attemptCount:attemptIds.length,correct:tasks.filter(function(t){return t.status==='success';}).length,
+      total:tasks.length,firstTry:tasks.filter(function(t){return t.firstTry;}).length,
+      retried:tasks.filter(function(t){return t.status==='success'&&t.answerAttempts>1;}).length,
+      skipped:tasks.filter(function(t){return t.status==='skipped';}).length,tasks:tasks};
+  }).sort(function(a,b){return a.ad.localeCompare(b.ad,'tr')});
   return {studentCount:Object.keys(roster).length,recordCount:results.length,
     dersIcerikleri:RAPOR_DERS_ICERIKLERI_,outcomes:outcomes,students:perStudent,activities:activities,
-    completionActivities:completionActivities,notebooks:notebooks};
+    completionActivities:completionActivities,notebooks:notebooks,outcomeEvidence:outcomeEvidence};
 }
