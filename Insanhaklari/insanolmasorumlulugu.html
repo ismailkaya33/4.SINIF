@@ -726,7 +726,10 @@
             document.getElementById('currentCardText').textContent = `"${card.text}"`;
         }
 
-        function handleCategoryChoice(selectedCategoryId) {
+        let trackedHuman={correct:0,wrong:0,wrongAttempts:0,firstTry:0,seen:{},sent:false,started:Date.now(),attemptId:Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10)};
+function trackHumanAnswer(key,ok){trackedHuman.seen[key]=trackedHuman.seen[key]||0;if(ok){trackedHuman.correct++;if(trackedHuman.seen[key]===0)trackedHuman.firstTry++;}else{trackedHuman.wrong++;trackedHuman.wrongAttempts++;}trackedHuman.seen[key]++;}
+function sendHumanResult(){if(trackedHuman.sent)return;const total=trackedHuman.correct+trackedHuman.wrong;if(!total)return;trackedHuman.sent=true;window.parent.postMessage({type:'4d:activity-finished',schemaVersion:1,activityId:'insan-sorumluluk',attemptId:trackedHuman.attemptId,correct:trackedHuman.correct,wrong:trackedHuman.wrong,total:total,wrongAttempts:trackedHuman.wrongAttempts,firstTry:trackedHuman.firstTry,durationSeconds:Math.max(0,Math.round((Date.now()-trackedHuman.started)/1000))},'*');}
+function handleCategoryChoice(selectedCategoryId) {
             if (isWaitingNextCard || currentCardIndex >= shuffledCards.length) return;
 
             const currentCard = shuffledCards[currentCardIndex];
@@ -734,6 +737,7 @@
             const selectedCatObj = CATEGORIES.find(c => c.id === selectedCategoryId);
 
             if (currentCard.category === selectedCategoryId) {
+                trackHumanAnswer('match-'+currentCardIndex,true);
                 // Doğru Eşleştirme
                 isWaitingNextCard = true;
                 playSound('correct');
@@ -754,6 +758,7 @@
                     isWaitingNextCard = false;
                 }, 950);
             } else {
+                trackHumanAnswer('match-'+currentCardIndex,false);
                 // Yanlış Eşleştirme
                 playSound('wrong');
                 const btnEl = document.getElementById('cat-btn-' + selectedCategoryId);
@@ -835,6 +840,7 @@
             const expIcon = document.getElementById('scenarioExpIcon');
 
             if (chosen.correct) {
+                trackHumanAnswer('scenario-'+currentScenarioIndex,true);
                 scenarioAnswered = true;
                 playSound('correct');
                 addScore(15);
@@ -852,6 +858,7 @@
                     nextBtn.innerHTML = `<span>Sonraki Örnek Olay</span> <span>➡️</span>`;
                 }
             } else {
+                trackHumanAnswer('scenario-'+currentScenarioIndex,false);
                 playSound('wrong');
                 btnElement.className = 'w-full text-left p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 flex items-start gap-3 font-semibold text-rose-900 animate-shake';
                 expBox.className = 'mt-6 p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-rose-950';
@@ -867,6 +874,7 @@
                 currentScenarioIndex++;
                 renderScenario();
             } else {
+                if(completedCards.length===shuffledCards.length)sendHumanResult();
                 switchTab('tab3');
             }
         }
