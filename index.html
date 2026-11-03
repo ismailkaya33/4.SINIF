@@ -271,12 +271,71 @@
     .new-alert{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:#fff;border:2px solid #f4be56;border-left:7px solid #ee9b00;border-radius:16px;box-shadow:0 5px 14px #20365010;color:#26384a;font-size:1rem;font-weight:800}
     .new-alert button{flex:none;border:0;border-radius:999px;padding:9px 13px;background:#274c77;color:#fff;font:inherit;font-size:.82rem;cursor:pointer}
 
+    /* Öğrenci ana sayfası: geniş ve rahat dokunulan ders kartları */
+    body { padding: clamp(12px, 3vw, 28px); background-color:#f5f7fb; background-image:radial-gradient(#dce6f2 1.5px,transparent 1.5px); }
+    .header { max-width:1000px; text-align:left; position:relative; overflow:hidden; margin-bottom:22px; padding:clamp(22px,4vw,38px); border:0; border-radius:26px; background:linear-gradient(112deg,#fff 0%,#f4f0ff 56%,#e9f6ff 100%); box-shadow:0 8px 26px #28486612; }
+    .header::after { content:"🇹🇷"; position:absolute; right:clamp(20px,5vw,54px); top:50%; transform:translateY(-50%); font-size:clamp(2.5rem,7vw,5rem); opacity:.9; }
+    h1 { max-width:720px; font-size:clamp(1.65rem,4.6vw,2.65rem); letter-spacing:0; color:#203653; line-height:1.12; text-transform:none; }
+    .header p { max-width:720px; margin:10px 0 0; font-size:clamp(1rem,2.2vw,1.22rem); font-weight:700; color:#51647c; }
+    .container { max-width:1000px; }
+    .portal-duyurular { margin-bottom:16px; padding:16px 20px; border-radius:18px; }
+    .portal-duyurular h2 { font-size:1.2rem; }
+    .duyuru-kart { padding:10px 0; }
+    .duyuru-kart p { line-height:1.4; }
+    .menu-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .subject-btn { min-height:124px; padding:18px 20px; flex-direction:row; justify-content:flex-start; gap:16px; border:1px solid #e6ebf2; border-bottom:5px solid; border-radius:20px; box-shadow:0 5px 16px #20365010; }
+    .subject-btn:hover { transform:translateY(-3px); box-shadow:0 10px 20px #20365016; }
+    .subject-icon { display:grid; place-items:center; flex:none; width:58px; height:58px; border-radius:17px; font-size:2rem; filter:none; background:#f1f4f8; }
+    .subject-name { text-align:left; font-size:clamp(1.15rem,2.3vw,1.55rem); line-height:1.2; }
+    .btn-turkce .subject-icon { background:#fff0ef; }
+    .btn-matematik .subject-icon { background:#e9fbf8; }
+    .btn-fen .subject-icon { background:#e9f8fc; }
+    .btn-sosyal .subject-icon { background:#fff6e6; }
+    .btn-insan .subject-icon { background:#f5edff; }
+    .btn-trafik .subject-icon { background:#fff2e7; }
+    .btn-oyunlar .subject-icon { background:#fff0f7; }
+    .new-content-launcher { margin:0 auto 16px; grid-column:1/-1; }
+    .new-content-launcher[hidden] { display:none!important; }
+    .new-content-trigger { width:100%; min-height:56px; padding:12px 18px; border:1px solid #f1d48e; border-radius:16px; background:#fff9e9; color:#67490b; font:800 1.05rem 'Nunito',sans-serif; text-align:left; cursor:pointer; box-shadow:0 4px 12px #2036500c; }
+    .new-content-trigger:focus-visible,.new-alert button:focus-visible,.back-btn:focus-visible { outline:3px solid #536dfe; outline-offset:3px; }
+    .new-content-dialog { width:min(620px,calc(100% - 32px)); max-height:min(80vh,700px); padding:22px; border:0; border-radius:22px; box-shadow:0 22px 70px #10243e55; color:#26384a; }
+    .new-content-dialog::backdrop { background:#16263b88; backdrop-filter:blur(3px); }
+    .new-content-dialog h2 { margin:0 40px 16px 0; font-size:1.35rem; color:#80520a; }
+    .new-content-close { float:right; width:42px; height:42px; border:0; border-radius:50%; background:#f1f4f8; color:#26384a; font-size:1.4rem; cursor:pointer; }
+    .new-content-alerts { display:grid; grid-template-columns:1fr; gap:10px; }
+    .new-alert { padding:14px; font-size:1rem; }
+    .new-alert button { min-height:44px; padding:10px 14px; font-size:.95rem; }
+    .subject-page { padding:clamp(18px,4vw,38px); border-radius:24px; }
+    .page-title { font-size:clamp(1.35rem,3vw,2rem); }
+    .back-btn { min-height:48px; font-size:1rem; }
+    .game-list { grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr)); gap:12px; }
+    .game-list li a { min-height:56px; box-sizing:border-box; padding:15px 16px; font-size:1.05rem; line-height:1.35; }
+    @media(max-width:560px) {
+      body { padding:12px; }
+      .header { margin-bottom:14px; padding:22px 20px; padding-right:86px; border-radius:20px; }
+      .header::after { right:16px; font-size:2.5rem; }
+      .portal-duyurular { padding:14px 16px; }
+      .menu-grid { gap:11px; }
+      .subject-btn { min-height:108px; padding:13px 12px; gap:10px; border-radius:16px; }
+      .subject-icon { width:44px; height:44px; border-radius:13px; font-size:1.6rem; }
+      .subject-name { font-size:clamp(1rem,4.2vw,1.2rem); }
+      .badge-yeni-kucuk { top:-6px; right:-4px; font-size:.68rem; }
+      .page-header { align-items:flex-start; gap:10px; flex-wrap:wrap; }
+      .back-btn { padding:10px 14px; }
+      .game-list { grid-template-columns:1fr; }
+    }
+    @media(max-width:370px) {
+      .menu-grid { grid-template-columns:1fr; }
+      .subject-btn { min-height:82px; }
+    }
+
 </style>
 </head>
 <body>
 
     <div class="header">
         <h1>İnteraktif Öğrenme Portalı</h1>
+        <p>Merhaba 4/D! Bugün hangi keşfe çıkıyoruz?</p>
     </div>
 
 
@@ -288,10 +347,14 @@
     <div class="container">
         
         <div id="main-menu" class="menu-grid">
-    <section id="new-content-panel" class="new-content-panel" aria-labelledby="new-content-title" hidden>
+    <div class="new-content-launcher" id="new-content-launcher" hidden>
+        <button class="new-content-trigger" type="button" onclick="openNewContentDialog()">✨ Yeni içerik var — görmek için dokun</button>
+    </div>
+    <dialog class="new-content-dialog" id="new-content-dialog" aria-labelledby="new-content-title">
+        <button class="new-content-close" type="button" aria-label="Kapat" onclick="closeNewContentDialog()">×</button>
         <h2 id="new-content-title">✨ Yeni İçerikler</h2>
         <div id="new-content-alerts" class="new-content-alerts" aria-live="polite"></div>
-    </section>
+    </dialog>
 
             <button id="btn-turkce" class="subject-btn btn-turkce" onclick="openSubject('turkce')">
                 <span class="subject-icon">📚</span>
@@ -519,8 +582,8 @@
         } catch (error) {
           alertRoot.replaceChildren();
           alertRoot.hidden = true;
-          const panel = document.getElementById("new-content-panel");
-          if (panel) panel.hidden = true;
+          const launcher = document.getElementById("new-content-launcher");
+          if (launcher) launcher.hidden = true;
           console.warn("Yeni içerik uyarıları yüklenemedi.");
         }
       }
@@ -566,6 +629,7 @@
             if (first.course && document.getElementById(first.course)) openSubject(first.course);
             else {
               const target = document.getElementById(first.id);
+              closeNewContentDialog();
               target?.scrollIntoView({behavior:"smooth",block:"center"});
               target?.focus?.();
             }
@@ -575,9 +639,23 @@
         });
         root.replaceChildren(...cards);
         root.hidden = cards.length === 0;
-        const panel = document.getElementById("new-content-panel");
-        if (panel) panel.hidden = root.hidden;
+        const launcher = document.getElementById("new-content-launcher");
+        if (launcher) launcher.hidden = root.hidden;
       }
+
+      function openNewContentDialog() {
+        const dialog = document.getElementById("new-content-dialog");
+        if (dialog && !dialog.open) dialog.showModal();
+      }
+
+      function closeNewContentDialog() {
+        const dialog = document.getElementById("new-content-dialog");
+        if (dialog?.open) dialog.close();
+      }
+
+      document.getElementById("new-content-dialog")?.addEventListener("click", function(event) {
+        if (event.target === this) closeNewContentDialog();
+      });
 
       function openSubject(subjectId) {
         document.getElementById("main-menu").style.display = "none";
