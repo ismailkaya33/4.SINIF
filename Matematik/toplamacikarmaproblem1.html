@@ -105,15 +105,22 @@ const Q=[
 {t:'29 ve 30. soruları aşağıdakilere göre cevaplayın. İstanbul’a diğer şehir ya da ülkelerden bir gün içinde uçak, gemi, tren ve otobüs ile gelen yolcuların sayıları verilmiştir.',f:Y29,q:'Buna göre İstanbul’a bir gün içinde gelen toplam yolcu sayısı kaçtır?',o:[9845,9855,9865,9875],a:0,s:'4200 + 2903 + 1724 + 1018 = 9845.'},
 {t:'29 ve 30. sorulardaki yolcu sayıları:',f:Y29,q:'Bir gün içinde <u>en az</u> ve <u>en çok</u> tercih edilen ulaşım araçlarındaki yolcu sayıları toplamı kaçtır?',o:[5110,5128,5200,5218],a:3,s:'En çok: uçak, 4200. En az: otobüs, 1018. 4200 + 1018 = 5218.'}
 ];
-let cur=0,view='q',ans=Array(30).fill(null);
+let cur=0,view='q',ans=Array(30).fill(null),firstAnswers=Array(30).fill(null);
+let trackingAttemptId=Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10),trackingStartedAt=Date.now(),trackingResultSent=false;
+function sendTrackedResult(){if(trackingResultSent||ans.some(v=>v===null))return;trackingResultSent=true;
+ const correct=ans.reduce((n,v,i)=>n+(v===Q[i].a?1:0),0),firstTry=firstAnswers.reduce((n,v,i)=>n+(v===Q[i].a?1:0),0),total=Q.length;
+ window.parent.postMessage({type:'4d:activity-finished',schemaVersion:1,activityId:'mat-toplamacikarma-1',attemptId:trackingAttemptId,
+ correct:correct,wrong:total-correct,total:total,wrongAttempts:total-correct,firstTry:firstTry,
+ durationSeconds:Math.max(0,Math.round((Date.now()-trackingStartedAt)/1000))},'*');
+}
 const $=s=>document.querySelector(s),L='ABCD';
 const sc=k=>ans.slice(k*5,k*5+5).filter((v,i)=>v===Q[k*5+i].a).length;
 const done=k=>ans.slice(k*5,k*5+5).every(v=>v!==null);
 const go=i=>{cur=i;view='q';draw();scrollTo(0,0)};
 const sec=k=>{cur=k*5;view='s';draw();scrollTo(0,0)};
-const fin=()=>{view='e';draw();scrollTo(0,0)};
-const pick=j=>{if(ans[cur]===null){ans[cur]=j;draw()}};
-const reset=()=>{ans=Array(30).fill(null);go(0)};
+const fin=()=>{if(ans.some(v=>v===null)){alert('Sonucu kaydetmeden önce 30 sorunun tamamını yanıtla.');return}sendTrackedResult();view='e';draw();scrollTo(0,0)};
+const pick=j=>{if(ans[cur]===null){ans[cur]=j;if(firstAnswers[cur]===null)firstAnswers[cur]=j;draw()}};
+const reset=()=>{ans=Array(30).fill(null);firstAnswers=Array(30).fill(null);trackingAttemptId=Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10);trackingStartedAt=Date.now();trackingResultSent=false;go(0)};
 const retry=()=>{const w=ans.map((v,i)=>v!==Q[i].a?i:-1).filter(i=>i>=0);w.forEach(i=>ans[i]=null);go(w[0])};
 function draw(){
  const k=cur/5|0;
