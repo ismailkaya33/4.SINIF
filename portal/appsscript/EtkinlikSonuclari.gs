@@ -1,7 +1,6 @@
 /**
- * 4/D — Etkinlik sonuç kaydı (Apps Script için hazırlık).
- * Gizli veri içermez. GitHub'daki güncel sürüm canlıya henüz aktarılmamıştır.
- * Bağımlılıklar: Kod.gs (kayitNoIle_), OgrenciOturum.gs (oturumKaydi_).
+ * 4/D — Etkinlik sonuç kaydı.
+ * Gizli veri içermez. Bağımlılıklar: Kod.gs (kayitNoIle_), OgrenciOturum.gs (oturumKaydi_).
  * Yalnız HtmlService üzerinden google.script.run ile çağrılması amaçlanır.
  */
 const SONUC_SAYFASI_ADI_ = 'ETKINLIK_SONUCLARI';
@@ -87,7 +86,7 @@ function ogrenciIlerlemeOzeti(token) {
   if (!student) return {basarili:false};
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SONUC_SAYFASI_ADI_);
   if (!sheet || sheet.getLastRow() < 2)
-    return {basarili:true,etkinlikSayisi:0,denemeSayisi:0,dogru:0,toplam:0,oran:0};
+    return {basarili:true,etkinlikSayisi:0,denemeSayisi:0,dogru:0,toplam:0,oran:0,kaydedilenEtkinlikler:[]};
   const rows = sheet.getRange(2,2,sheet.getLastRow()-1,9).getValues();
   const unique = new Set();
   let attempts=0, correct=0, total=0;
@@ -100,5 +99,6 @@ function ogrenciIlerlemeOzeti(token) {
     unique.add(activity); attempts++; correct+=d; total+=t;
   });
   return {basarili:true,etkinlikSayisi:unique.size,denemeSayisi:attempts,
-    dogru:correct,toplam:total,oran:total?Math.round(correct*100/total):0};
+    dogru:correct,toplam:total,oran:total?Math.round(correct*100/total):0,
+    kaydedilenEtkinlikler:[...unique]};
 }

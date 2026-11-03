@@ -4,8 +4,8 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
 
-body{font-family:Arial,sans-serif;background:#eef4ff;min-height:100vh;margin:0;display:grid;place-items:center}body.oyunda{display:block;background:#0b172b}
-.kutu{background:#fff;width:min(780px,92%);padding:30px;border-radius:18px;text-align:center;box-shadow:0 8px 25px #0002}
+body.oyunda{display:block;background:#0b172b}
+
 input{box-sizing:border-box;width:100%;padding:15px;font-size:22px;text-align:center;text-transform:uppercase;letter-spacing:3px;border:2px solid #b7c8e0;border-radius:10px}
 button{margin-top:16px;padding:14px 24px;background:#2459a6;color:#fff;border:0;border-radius:10px;cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}
@@ -286,8 +286,8 @@ body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonVi
 .newContentAlerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
 .newContentAlert{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #edc2c8;border-radius:12px;background:#fffafa;font-weight:800;color:#713d47}
 .teacherAccess{display:block;width:fit-content;margin:14px auto 0;padding:10px 16px;border:1px solid #c8d8ef;border-radius:10px;background:#eaf1fb;color:#2459a6;text-decoration:none;font-weight:800}.teacherAccess:hover{background:#dfeaff}.teacherAccess:focus-visible{outline:3px solid #fca311;outline-offset:3px}
-.course summary .newLight{margin-left:auto;padding:5px 10px;border-radius:999px;background:#e9473f;color:#fff;font-size:13px;font-weight:900;letter-spacing:.4px;box-shadow:0 3px 8px #e9473f40;animation:pulse 1.5s infinite}.contentNewBadge{display:inline-block;margin-left:8px;padding:3px 7px;border-radius:999px;background:#e9473f;color:#fff;font-size:11px;font-weight:900;line-height:1.2;white-space:nowrap}.courseTabs button .contentNewBadge{margin-left:7px}
-@keyframes pulse{50%{transform:scale(1.08)}}
+.course summary .newLight{margin-left:auto;padding:5px 10px;border-radius:999px;background:#e9473f;color:#fff;font-size:13px;font-weight:900;letter-spacing:.4px;box-shadow:0 3px 8px #e9473f40}.contentNewBadge{display:inline-block;margin-left:8px;padding:3px 7px;border-radius:999px;background:#e9473f;color:#fff;font-size:11px;font-weight:900;line-height:1.2;white-space:nowrap}.courseTabs button .contentNewBadge{margin-left:7px}
+
 @media(max-width:620px){.newContentPanel{padding:15px}.newContentAlert{font-size:16px}}
 
 /* Ekrana uyum: telefonda ve tablette yatay taşma olmasın. */
@@ -327,29 +327,73 @@ body:not(.oyunda){min-width:0}
 .examHint{margin:8px 0 0;padding:12px 15px;border:1px solid #f0c4c8;border-radius:12px;background:#fff9f9;color:#70444a;font-weight:700}
 body.lessonView .examHome{display:none}
 @media(max-width:620px){.examHome button{min-height:58px;padding:13px 15px;font-size:20px}}
-</style></head><body><main class="kutu">
+
+/* Mobilde ilk ekranda giriş, ardından net bir çalışma akışı. */
+body.loginView .kutu{min-height:min(620px,calc(100vh - 48px));display:flex;flex-direction:column}
+body.loginView #girisAlani{margin:auto auto}
+body.loginView #kod-yardim{font-size:clamp(17px,4vw,20px);line-height:1.45}
+body.loginView .teacherAccess{margin:14px auto 0;padding:7px 10px;border:0;background:transparent;color:#536982;text-decoration:underline;font-size:15px;box-shadow:none}
+body.loginView #giris{min-height:52px}
+.progressCompactLabel{flex:none;color:#627c99;font-size:14px;font-weight:800}
+.activityStatus{display:inline-flex;align-items:center;min-height:30px;margin:4px 0 8px;padding:5px 9px;border-radius:999px;background:#edf2f7;color:#53677b;font-size:14px;font-weight:800}
+.activityStatus.hasResult{background:#d9f6e9;color:#17664f}
+.activityStatus.studentReport{background:#fff1d5;color:#795016}
+.completionHelp{display:block;margin:0 0 10px;color:#5c7187;font-size:14px;line-height:1.4}
+.newContentAlert{width:100%;min-height:56px;margin:0;color:#713d47;text-align:left;font:inherit;cursor:pointer}
+.newContentAlert::after{content:"Gör →";margin-left:auto;white-space:nowrap;color:#8a3645;font-weight:900}
+.newContentAlert:focus-visible{outline:3px solid #285fb0;outline-offset:3px}
+.course summary .newLight{animation:none}
+.courseLinks li .trackedLessonLink,.courseSection .courseLinks a,.noteCard a{overflow-wrap:anywhere}
+.noteHelp{margin:0 0 12px;padding:11px 13px;border-radius:12px;background:#f1f7ff;color:#47627d;font-size:16px;line-height:1.45}
+@media(max-width:620px){
+ body.loginView .kutu{min-height:100svh;margin:0;padding:24px 14px}
+ body.loginView #girisAlani{width:100%;margin:auto auto;padding:23px 18px}
+ .progressCompact>summary{gap:8px;min-height:60px;padding:10px 11px;flex-wrap:wrap}
+ .progressCompactName{font-size:17px}
+ .progressCompactLabel{font-size:12px}
+ .progressCompactTrack{flex-basis:100%;order:3;height:12px}
+ .progressCompactScore{margin-left:auto;font-size:20px}
+ .courseTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .courseTabs button{min-width:0;min-height:58px;padding:10px 7px;font-size:16px;line-height:1.2}
+ .courseTabs button:last-child:nth-child(odd){grid-column:1/-1}
+ .courseSection{padding:12px}
+ .courseSection .courseLinks a{min-height:64px;padding:12px;font-size:18px}
+ .noteCard{padding:15px}
+ .noteCard a{min-height:54px;padding:12px 18px;font-size:19px}
+ .activityStatus{font-size:13px}
+ .completionHelp{font-size:13px}
+}
+@media(max-width:360px){
+ .courseTabs{grid-template-columns:1fr}
+ .courseTabs button:last-child:nth-child(odd){grid-column:auto}
+}
+@media(prefers-reduced-motion:reduce){
+ .course summary .newLight{animation:none}
+ .progressCompactTrack #ilerlemeBar{transition:none}
+}
+</style></head><body class="loginView"><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
-<div id="girisAlani"><p>6 karakterli kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" aria-label="Öğrenci kodu"><button id="giris" type="button">Giriş Yap</button><a class="teacherAccess" href="https://script.google.com/macros/s/AKfycbzYet4urwswVKhlxobxrH6R0IC_a1e8hUzpj42d_XwqZkA7N0Gwl4epC1P5XvZBt3DcyQ/exec" target="_blank" rel="noopener">🔒 Öğretmen Paneli</a></div>
+<div id="girisAlani"><p id="kod-yardim">Öğretmeninin verdiği 6 karakterli sınıf kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" inputmode="text" enterkeyhint="go" spellcheck="false" aria-label="Öğrenci kodu" aria-describedby="kod-yardim"><button id="giris" type="button">Giriş Yap</button><a class="teacherAccess" href="https://script.google.com/macros/s/AKfycbzYet4urwswVKhlxobxrH6R0IC_a1e8hUzpj42d_XwqZkA7N0Gwl4epC1P5XvZBt3DcyQ/exec" target="_blank" rel="noopener">🔒 Öğretmen Paneli</a></div>
 <div id="oturumAlani" hidden>
 <div class="portalTopStrip">
 <section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 </div>
+<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactLabel">Doğru yanıt</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran" aria-label="Doğru yanıt oranı">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor. Bu bir not değildir; yalnızca kaydedilen çalışmaları gösterir.</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru yanıt</small></div></div></div></details>
 <section id="newContentPanel" class="newContentPanel" aria-labelledby="newContentHeading" hidden>
  <h3 id="newContentHeading">✨ Yeni İçerikler</h3>
  <div id="newContentAlerts" class="newContentAlerts" aria-live="polite"></div>
 </section>
-<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor...</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru cevap</small></div></div></div></details>
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
-<p class="hint">Etkinliğini seç. Kayıp Sayılar ve Sayı Örüntüleri sonuçları kaydedilir. Diğer etkinlikler ayrı sekmede açılır.</p>
+<p class="hint">Takipli çalışmalarda sonuç kaydedilir. Diğer bağlantılar yeni sekmede açılır; bitirince bu sekmeye dön.</p>
 <section class="examHome" aria-label="Deneme Sınavları">
  <button id="denemeSinavlariBtn" type="button" aria-expanded="false" aria-controls="denemeSinavlariBilgi"><span>📝 Deneme Sınavları</span><span aria-hidden="true">→</span></button>
  <p id="denemeSinavlariBilgi" class="examHint" hidden>Deneme sınavları yüklendiğinde burada yer alacak.</p>
 </section>
 
-<div id="dersGeriSatiri" class="lessonBackRow" hidden><button id="dersGeri" type="button">← Ana Menüye Dön</button><strong id="dersSayfaBaslik"></strong></div>
-<div id="dersIzgarasi" class="cards seven"><details class="course"><summary><span class="subjectIcon subject-TR" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M10 14q12-5 22 3v35q-10-8-22-4z" fill="#7EA9FF" stroke="#345AA5" stroke-width="2.8"/><path d="M54 14q-12-5-22 3v35q10-8 22-4z" fill="#FFD58D" stroke="#B9772C" stroke-width="2.8"/><path d="M17 23h9m-9 7h9m12-7h9m-9 7h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M32 17v35" stroke="#4763AA" stroke-width="2.6"/></svg></span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
+<div id="dersGeriSatiri" class="lessonBackRow" hidden><button id="dersGeri" type="button">← Ders listesine dön</button><strong id="dersSayfaBaslik"></strong></div>
+<div id="dersIzgarasi" class="cards seven"><details class="course"><summary><span class="subjectIcon subject-TR" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M10 14q12-5 22 3v35q-10-8-22-4z" fill="#7EA9FF" stroke="#345AA5" stroke-width="2.8"/><path d="M54 14q-12-5-22 3v35q10-8 22-4z" fill="#FFD58D" stroke="#B9772C" stroke-width="2.8"/><path d="M17 23h9m-9 7h9m12-7h9m-9 7h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M32 17v35" stroke="#4763AA" stroke-width="2.6"/></svg></span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint linkReturnHint">Bağlantı açılınca çalışmanı yap. Bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dilkoruyucusu.html" target="_blank" rel="noopener noreferrer">Dil Muhafızları</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/dogrusunuyaz.html" target="_blank" rel="noopener noreferrer">Sözcüklerin Doğru Yazımı</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/essesli.html" target="_blank" rel="noopener noreferrer">Eş Sesli Sözcükler</a></li>
@@ -366,7 +410,7 @@ body.lessonView .examHome{display:none}
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/noktalamaisaretleri.html" target="_blank" rel="noopener noreferrer">Noktalama İşaretleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/pekistirme.html" target="_blank" rel="noopener noreferrer">Pekiştirme Dedektifi 1</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/sozavcıları.html" target="_blank" rel="noopener noreferrer">Atasözleri ve Deyimler</a></li></ul></details>
-<details class="course"><summary><span class="subjectIcon subject-MAT" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="10" y="8" width="44" height="49" rx="9" fill="#66D6B1" stroke="#287C73" stroke-width="3"/><rect x="17" y="15" width="30" height="12" rx="3" fill="#F4FDFF"/><path d="M20 35h10m-5-5v10m13-10v10m-5-5h10M21 47h8m9-3 7 7m0-7-7 7" stroke="#195E66" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>Matematik</strong> <small>14 etkinlik</small></summary><p class="hint">Kayıp Sayılar ve Sayı Örüntüleri, diğer matematik etkinlikleriyle aynı listede. Bu iki oyunun sonuçları kaydedilir; bağlantılar ayrı sekmede açılır.</p><ul class="courseLinks"><li><button id="oyunuAc" class="trackedLessonLink" type="button" aria-label="Sonucu kaydedilen etkinlik: Kayıp Sayılar">🎮 Kayıp Sayılar</button></li><li><button id="oruntulerAc" class="trackedLessonLink" type="button" aria-label="Sonucu kaydedilen etkinlik: Sayı Örüntüleri">🧩 Sayı Örüntüleri</button></li><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilar.html" target="_blank" rel="noopener noreferrer">Sayılar</a></li>
+<details class="course"><summary><span class="subjectIcon subject-MAT" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="10" y="8" width="44" height="49" rx="9" fill="#66D6B1" stroke="#287C73" stroke-width="3"/><rect x="17" y="15" width="30" height="12" rx="3" fill="#F4FDFF"/><path d="M20 35h10m-5-5v10m13-10v10m-5-5h10M21 47h8m9-3 7 7m0-7-7 7" stroke="#195E66" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>Matematik</strong> <small>14 etkinlik</small></summary><p class="hint">Kayıp Sayılar ve Sayı Örüntüleri portaldan açılır ve sonuçları kaydedilir. Diğer bağlantıları yeni sekmede aç; bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><button id="oyunuAc" class="trackedLessonLink" type="button" aria-label="Sonucu kaydedilen etkinlik: Kayıp Sayılar">🎮 Kayıp Sayılar</button></li><li><button id="oruntulerAc" class="trackedLessonLink" type="button" aria-label="Sonucu kaydedilen etkinlik: Sayı Örüntüleri">🧩 Sayı Örüntüleri</button></li><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilar.html" target="_blank" rel="noopener noreferrer">Sayılar</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilarikarsilastirsirala.html" target="_blank" rel="noopener noreferrer">Sayıları Karşılaştırma ve Sıralama</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayiproblemleri.html" target="_blank" rel="noopener noreferrer">Sayı Problemleri Atölyesi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/toplama.html" target="_blank" rel="noopener noreferrer">Toplama Yapalım</a></li>
@@ -377,7 +421,7 @@ body.lessonView .examHome{display:none}
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/cikarmaislemi.html" target="_blank" rel="noopener noreferrer">Çıkarma Dedektifleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/kayipsayilar.html" target="_blank" rel="noopener noreferrer">Çıkarma İşleminde Verilmeyen Sayılar</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/dogalsayilardegerlendirme.html" target="_blank" rel="noopener noreferrer">Sayı Avcıları – Doğal Sayılar Değerlendirme</a></li><!-- Yeni problem etkinlikleri; tamamlama takibi henüz seçilmedi. --><li><a id="recent-activity-mat-toplamacikarma-1" href="https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem1.html" target="_blank" rel="noopener noreferrer">Toplama ve Çıkarma Problemleri 1</a></li><li><a id="recent-activity-mat-toplamacikarma-2" href="https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem2.html" target="_blank" rel="noopener noreferrer">Toplama ve Çıkarma Problemleri 2</a></li></ul></details>
-<details class="course"><summary><span class="subjectIcon subject-FEN" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M25 9h14m-11 0v20L15 48q-4 8 6 8h22q10 0 6-8L36 29V9" fill="#B2E8FF" stroke="#4776BC" stroke-width="3" stroke-linejoin="round"/><path d="M22 40h20l7 10q2 6-6 6H21q-8 0-6-6z" fill="#A98EF5"/><circle cx="29" cy="44" r="3" fill="#F8F0FF"/><circle cx="37" cy="50" r="2.5" fill="#F8F0FF"/></svg></span> <strong>Fen Bilimleri</strong> <small>10 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinkasifleri.html" target="_blank" rel="noopener noreferrer">Besin Kaşifleri: Görev Haritası</a></li>
+<details class="course"><summary><span class="subjectIcon subject-FEN" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M25 9h14m-11 0v20L15 48q-4 8 6 8h22q10 0 6-8L36 29V9" fill="#B2E8FF" stroke="#4776BC" stroke-width="3" stroke-linejoin="round"/><path d="M22 40h20l7 10q2 6-6 6H21q-8 0-6-6z" fill="#A98EF5"/><circle cx="29" cy="44" r="3" fill="#F8F0FF"/><circle cx="37" cy="50" r="2.5" fill="#F8F0FF"/></svg></span> <strong>Fen Bilimleri</strong> <small>10 etkinlik</small></summary><p class="hint linkReturnHint">Bağlantı açılınca çalışmanı yap. Bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinkasifleri.html" target="_blank" rel="noopener noreferrer">Besin Kaşifleri: Görev Haritası</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/besinakademisi.html" target="_blank" rel="noopener noreferrer">Besin Akademisi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/dunyaninhareketleri2.html" target="_blank" rel="noopener noreferrer">Dünya'nın Hareketleri 1</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/dunyaninhareketleri3.html" target="_blank" rel="noopener noreferrer">Dünya'nın Hareketleri 2</a></li>
@@ -387,17 +431,17 @@ body.lessonView .examHome{display:none}
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/madenler.html" target="_blank" rel="noopener noreferrer">Madenler 1</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/madenler2.html" target="_blank" rel="noopener noreferrer">Madenler 2</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Fen/unitedegerlendirme1.html" target="_blank" rel="noopener noreferrer">F.4.1 Ünite Değerlendirme Testi</a></li></ul></details>
-<details class="course"><summary><span class="subjectIcon subject-SOS" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><circle cx="31" cy="27" r="20" fill="#72C9F1" stroke="#3672AE" stroke-width="3"/><path d="m21 13 8 3 4 9-7 4-5-4-5 2-3-5 4-6zm17 2 5 6-2 8-7 3-1 10-7-6 2-8 8-4z" fill="#6CC18C"/><path d="M31 48v9m-12 0h24" stroke="#4D6494" stroke-width="3.5" stroke-linecap="round"/></svg></span> <strong>Sosyal Bilgiler</strong> <small>6 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/ailetarihi.html" target="_blank" rel="noopener noreferrer">Aile Tarihi</a></li>
+<details class="course"><summary><span class="subjectIcon subject-SOS" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><circle cx="31" cy="27" r="20" fill="#72C9F1" stroke="#3672AE" stroke-width="3"/><path d="m21 13 8 3 4 9-7 4-5-4-5 2-3-5 4-6zm17 2 5 6-2 8-7 3-1 10-7-6 2-8 8-4z" fill="#6CC18C"/><path d="M31 48v9m-12 0h24" stroke="#4D6494" stroke-width="3.5" stroke-linecap="round"/></svg></span> <strong>Sosyal Bilgiler</strong> <small>6 etkinlik</small></summary><p class="hint linkReturnHint">Bağlantı açılınca çalışmanı yap. Bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/ailetarihi.html" target="_blank" rel="noopener noreferrer">Aile Tarihi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/kendinionunyerinekoy.html" target="_blank" rel="noopener noreferrer">Kendini Onun Yerine Koy</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/millikultur.html" target="_blank" rel="noopener noreferrer">Milli Kültür Öğeleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/millimucadele.html" target="_blank" rel="noopener noreferrer">Milli Mücadele Dönemi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/ilgiihtiyacyetenek.html" target="_blank" rel="noopener noreferrer">İlgi, İhtiyaç ve Yeteneklerimiz</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Sosyal/oyunzamani.html" target="_blank" rel="noopener noreferrer">Geçmişten Günümüze Çocuk Oyunları</a></li></ul></details>
-<details class="course"><summary><span class="subjectIcon subject-HAK" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 10-21 9 21 9 21-9z" fill="#FFD98B" stroke="#B97C37" stroke-width="2"/><path d="M32 13v38m-20 0h40" stroke="#715B98" stroke-width="3" stroke-linecap="round"/><path d="M16 24 9 38h14zm32 0-7 14h14z" fill="#A8D3FF" stroke="#6284BC" stroke-width="2"/><path d="M9 38q7 10 14 0m18 0q7 10 14 0" stroke="#6284BC" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>İnsan Hakları</strong> <small>4 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/hakozgurluksorumluluk.html" target="_blank" rel="noopener noreferrer">Hak Özgürlük ve Sorumluluk</a></li>
+<details class="course"><summary><span class="subjectIcon subject-HAK" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 10-21 9 21 9 21-9z" fill="#FFD98B" stroke="#B97C37" stroke-width="2"/><path d="M32 13v38m-20 0h40" stroke="#715B98" stroke-width="3" stroke-linecap="round"/><path d="M16 24 9 38h14zm32 0-7 14h14z" fill="#A8D3FF" stroke="#6284BC" stroke-width="2"/><path d="M9 38q7 10 14 0m18 0q7 10 14 0" stroke="#6284BC" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>İnsan Hakları</strong> <small>4 etkinlik</small></summary><p class="hint linkReturnHint">Bağlantı açılınca çalışmanı yap. Bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/hakozgurluksorumluluk.html" target="_blank" rel="noopener noreferrer">Hak Özgürlük ve Sorumluluk</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/hakozgurluksorumluluk2.html" target="_blank" rel="noopener noreferrer">Bilinçli Vatandaş Kasabası</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/cocukveyetiskinfarklar.html" target="_blank" rel="noopener noreferrer">Yetişkinler ve Çocuklar</a></li><li><a href="https://ismailkaya33.github.io/4.SINIF/Insanhaklari/insanolmasorumlulugu.html" target="_blank" rel="noopener noreferrer">İnsan Olma Sorumluluğum</a></li></ul></details>
-<details class="course"><summary><span class="subjectIcon subject-TRF" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="21" y="6" width="22" height="51" rx="9" fill="#29385E"/><circle cx="32" cy="18" r="7" fill="#FF6975"/><circle cx="32" cy="32" r="7" fill="#FFD266"/><circle cx="32" cy="46" r="7" fill="#60D698"/><path d="M15 11v43m34-43v43" stroke="#88A5D0" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>Trafik Güvenliği</strong> <small>2 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Trafik/temelkavramlar.html" target="_blank" rel="noopener noreferrer">Temel Kavramlar</a></li><li><a id="recent-activity-trafik-yaya" href="https://ismailkaya33.github.io/4.SINIF/Trafik/yayaolaraktrafikkurallarietkinligi.html" target="_blank" rel="noopener noreferrer">Yaya Olarak Trafik Kurallarına Uyarım</a></li></ul></details>
-<details class="course"><summary><span class="subjectIcon subject-OYN" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M17 24h30q8 0 11 13l2 11q1 8-7 8-4 0-9-7H20q-5 7-9 7-8 0-7-8l2-11q3-13 11-13z" fill="#AD92EF" stroke="#6453AD" stroke-width="3"/><path d="M16 37h14m-7-7v14" stroke="#F5F6FF" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="35" r="3.5" fill="#FFE9A1"/><circle cx="51" cy="42" r="3.5" fill="#74DBCA"/></svg></span> <strong>Oyunlar</strong> <small>2 etkinlik</small></summary><p class="hint">Aşağıdaki mevcut site bağlantıları ayrı sekmede açılır; sonuçları henüz otomatik kaydedilmez.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/toplamaoyun.html" target="_blank" rel="noopener noreferrer">Uzaylı Toplama Macerası 2D 🚀</a></li>
+<details class="course"><summary><span class="subjectIcon subject-TRF" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="21" y="6" width="22" height="51" rx="9" fill="#29385E"/><circle cx="32" cy="18" r="7" fill="#FF6975"/><circle cx="32" cy="32" r="7" fill="#FFD266"/><circle cx="32" cy="46" r="7" fill="#60D698"/><path d="M15 11v43m34-43v43" stroke="#88A5D0" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>Trafik Güvenliği</strong> <small>2 etkinlik</small></summary><p class="hint linkReturnHint">Bağlantı açılınca çalışmanı yap. Bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Trafik/temelkavramlar.html" target="_blank" rel="noopener noreferrer">Temel Kavramlar</a></li><li><a id="recent-activity-trafik-yaya" href="https://ismailkaya33.github.io/4.SINIF/Trafik/yayaolaraktrafikkurallarietkinligi.html" target="_blank" rel="noopener noreferrer">Yaya Olarak Trafik Kurallarına Uyarım</a></li></ul></details>
+<details class="course"><summary><span class="subjectIcon subject-OYN" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M17 24h30q8 0 11 13l2 11q1 8-7 8-4 0-9-7H20q-5 7-9 7-8 0-7-8l2-11q3-13 11-13z" fill="#AD92EF" stroke="#6453AD" stroke-width="3"/><path d="M16 37h14m-7-7v14" stroke="#F5F6FF" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="35" r="3.5" fill="#FFE9A1"/><circle cx="51" cy="42" r="3.5" fill="#74DBCA"/></svg></span> <strong>Oyunlar</strong> <small>2 etkinlik</small></summary><p class="hint linkReturnHint">Bağlantı açılınca çalışmanı yap. Bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/toplamaoyun.html" target="_blank" rel="noopener noreferrer">Uzaylı Toplama Macerası 2D 🚀</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/madenkasifi.html" target="_blank" rel="noopener noreferrer">Maden Kâşifi 💎</a></li></ul></details></div>
 
 </div>
@@ -455,20 +499,41 @@ function yeniIcerikleriGoster_(){
   yeniEtiketEkle_(card&&card.querySelector('.courseTabs button[data-tab="etkinlik"]'));
  });
  const groups=[
-  {type:"activity",text:"Yeni etkinlik var."},
-  {type:"evaluation",text:"Yeni değerlendirme görevi var."},
-  {type:"note",text:"Yazılması gereken bir defter notu var."}
+  {type:"activity",tab:"etkinlik",text:"Yeni etkinlik var."},
+  {type:"evaluation",tab:"degerlendirme",text:"Yeni değerlendirme görevi var."},
+  {type:"note",tab:"defter",text:"Yazılması gereken bir defter notu var."}
  ];
+ function dersAc_(card,tab){
+  if(!card)return;
+  dersKartlari.forEach(other=>{if(other!==card){other.removeAttribute("open");other.classList.remove("activeLesson");}});
+  const wasOpen=card.open;card.dataset.requestedTab=tab;card.open=true;card.classList.add("activeLesson");seciliDers=card;document.body.classList.add("lessonView");
+  dersGeriSatiri.hidden=false;dersSayfaBaslik.textContent=card.querySelector("summary strong").textContent.trim();
+  tabSec(card,tab);if(wasOpen)delete card.dataset.requestedTab;window.scrollTo({top:0,behavior:"instant"});
+ }
  const cards=[];
  groups.forEach(function(group){
-  if(!active.some(item=>item.type===group.type||(group.type==="activity"&&item.type==="section")))return;
-  const card=document.createElement("div");card.className="newContentAlert";
-  const text=document.createElement("span");text.textContent=group.text;
-  card.append(text);cards.push(card);
+  const matches=active.filter(item=>item.type===group.type||(group.type==="activity"&&item.type==="section"));
+  if(!matches.length)return;
+  const courseNames={turkce:"Türkçe",matematik:"Matematik",fen:"Fen Bilimleri",sosyal:"Sosyal Bilgiler",insan:"İnsan Hakları",trafik:"Trafik Güvenliği",oyunlar:"Oyunlar"};
+  matches.sort(function(a,b){return Date.parse(b.addedAt||b.addedOn||0)-Date.parse(a.addedAt||a.addedOn||0);});
+  const item=matches.find(x=>x.target)||matches[0];
+  const label=courseNames[item.course];
+  const subject=courseCards.find(x=>x.querySelector("summary strong")?.textContent.trim()===label);
+  const directLink=item.target?[...document.querySelectorAll("#dersIzgarasi a")].find(function(a){
+   try{return decodeURI(new URL(a.href).pathname).split("/4.SINIF/").pop()===item.target;}catch(e){return false;}
+  }):null;
+  const card=document.createElement("button");card.type="button";card.className="newContentAlert";
+  card.textContent=group.text;
+  card.addEventListener("click",function(){
+   const destination=directLink&&directLink.closest(".course")||subject;
+   dersAc_(destination,directLink?group.tab:"etkinlik");
+   if(directLink)directLink.click();
+  });
+  cards.push(card);
  });
  root.replaceChildren(...cards);panel.hidden=cards.length===0;
 }
-function ekranGoster(oturumVar){girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
+function ekranGoster(oturumVar){document.body.classList.toggle("loginView",!oturumVar);document.body.classList.toggle("studentView",oturumVar);girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
 function ilerlemeYukle(){
  const token=sessionStorage.getItem(anahtarAdi);
  if(!token)return;
@@ -477,12 +542,13 @@ function ilerlemeYukle(){
  google.script.run.withSuccessHandler(function(r){
   if(sessionStorage.getItem(anahtarAdi)!==token)return;
   if(!r||!r.basarili){status.textContent="İlerleme bilgileri alınamadı.";return}
+  kaydedilenEtkinlikler=new Set(r.kaydedilenEtkinlikler||[]);etkinlikDurumlariniYenile();
   document.getElementById("ilerlemeEtkinlik").textContent=r.etkinlikSayisi;
   document.getElementById("ilerlemeDeneme").textContent=r.denemeSayisi;
   document.getElementById("ilerlemeDogru").textContent=r.dogru+" / "+r.toplam;
   document.getElementById("ilerlemeOran").textContent=r.oran+"%";
   document.getElementById("ilerlemeBar").style.width=Math.max(0,Math.min(100,r.oran))+"%";
-  status.textContent=r.denemeSayisi?"Kaydedilen çalışmalarının özeti.":"Henüz sonuç kaydedilmedi. İlk etkinliğini tamamla!";
+  status.textContent=r.denemeSayisi?"Kayıtlı çalışmalarındaki doğru yanıt oranı; bu bir not değildir.":"Henüz sonuç kaydedilmedi. İlk çalışmanı bitirince burada görebilirsin.";
  }).withFailureHandler(function(){
   if(sessionStorage.getItem(anahtarAdi)===token)status.textContent="İlerleme bilgileri şu anda alınamadı.";
  }).ogrenciIlerlemeOzeti(token);
@@ -500,7 +566,7 @@ function duyurulariYukle(){
   r.duyurular.forEach(function(d){const el=document.createElement("article"),h=document.createElement("h4"),p=document.createElement("p");h.textContent=d.baslik;p.textContent=d.metin;el.append(h,p);liste.appendChild(el)});
  }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
 }
-function tokenTemizle(){menuyeDon();yazilanNotlar.clear();bitirilenEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
+function tokenTemizle(){menuyeDon();yazilanNotlar.clear();bitirilenEtkinlikler.clear();kaydedilenEtkinlikler.clear();baslatilanEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
 function girisYap(){
  if(buton.disabled)return;
  const kod=kodAlani.value.trim().toUpperCase();
@@ -561,7 +627,7 @@ window.addEventListener("message",function(e){
   gonderiliyor=false;
   if(sessionStorage.getItem(anahtarAdi)!==token)return;
   if(r&&r.basarili){
-   ilerlemeYukle();oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";
+   kaydedilenEtkinlikler.add(d.activityId);etkinlikDurumlariniYenile();ilerlemeYukle();oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";
    const path=Object.keys(resultTrackByPath).find(p=>resultTrackByPath[p]===d.activityId);
    if(path)google.script.run.withSuccessHandler(function(cr){
     if(sessionStorage.getItem(anahtarAdi)!==token)return;
@@ -590,12 +656,42 @@ const seciliEtkinlikler=new Set([
  "Trafik/yayaolaraktrafikkurallarietkinligi.html"
 ]);
 let bitirilenEtkinlikler=new Set();
+let kaydedilenEtkinlikler=new Set();
+let baslatilanEtkinlikler=new Set();
+function etkinlikDurumlariniYenile(){
+ document.querySelectorAll("#dersIzgarasi .courseLinks a").forEach(link=>{
+  let path;
+  try{path=decodeURI(new URL(link.href).pathname.replace(/^\/4\.SINIF\//,""));}catch(e){return}
+  if(!seciliEtkinlikler.has(path))return;
+  const id=resultTrackByPath[path],saved=!!id&&kaydedilenEtkinlikler.has(id),reported=bitirilenEtkinlikler.has(path);
+  let badge=link.parentElement.querySelector(".activityStatus");
+  if(!badge){badge=document.createElement("span");badge.className="activityStatus";link.insertAdjacentElement("afterend",badge);}
+  badge.classList.toggle("hasResult",saved);
+  badge.classList.toggle("studentReport",!saved&&reported);
+  const opened=baslatilanEtkinlikler.has(path);
+  badge.textContent=saved?"Sonuç kaydedildi":reported?"İşaretlendi — öğrenci bildirimi":opened?"Açıldı — henüz bildirilmedi":"Henüz kayıt yok";
+  badge.setAttribute("aria-label",badge.textContent);
+ });
+ [["mat-kayipsayilar","oyunuAc"],["mat-oruntuler","oruntulerAc"]].forEach(([id,buttonId])=>{
+  const button=document.getElementById(buttonId);if(!button)return;
+  let badge=button.parentElement.querySelector(".activityStatus");
+  if(!badge){badge=document.createElement("span");badge.className="activityStatus";button.insertAdjacentElement("afterend",badge);}
+  const saved=kaydedilenEtkinlikler.has(id);
+  badge.classList.toggle("hasResult",saved);badge.classList.remove("studentReport");
+  badge.textContent=saved?"Sonuç kaydedildi":"Henüz kayıt yok";
+ });
+}
 function seciliEtkinlikButonlariYenile(){
  document.querySelectorAll(".completionButton").forEach(btn=>{
   const done=bitirilenEtkinlikler.has(btn.dataset.activity);
+  const path=btn.dataset.activity,tracked=!!resultTrackByPath[path];
+  btn.hidden=tracked?!done:(!done&&!baslatilanEtkinlikler.has(path));
+  const help=btn.nextElementSibling;
+  if(help&&help.classList.contains("completionHelp"))help.hidden=tracked||(!done&&!baslatilanEtkinlikler.has(path));
   btn.classList.toggle("done",done);btn.disabled=done;
-  btn.textContent=done?"✓ Tamamladım (Kaydedildi)":"✓ Etkinliği Tamamladım";
+  btn.textContent=done?"✓ Bildirim kaydedildi":"✓ Çalışmayı bitirdim — bildir";
  });
+ etkinlikDurumlariniYenile();
 }
 function seciliEtkinlikDurumYukle(){
  const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
@@ -614,9 +710,11 @@ function seciliEtkinlikButonlariKur(){
   if(trackedId)link.addEventListener("click",function(e){e.preventDefault();takipliOyunAc(trackedId);});
   const button=document.createElement("button");button.type="button";
   button.className="completionButton";button.dataset.activity=pathname;
-  button.hidden=!!trackedId;
-  button.textContent="✓ Etkinliği Tamamladım";
-  button.setAttribute("aria-label",link.textContent+" etkinliğini tamamladım");
+  button.hidden=trackedId?true:!bitirilenEtkinlikler.has(pathname);
+  button.textContent="✓ Çalışmayı bitirdim — bildir";
+  button.setAttribute("aria-label",link.textContent+" çalışmasını bitirdiğini öğretmenine bildir");
+  if(!trackedId)link.addEventListener("click",function(){baslatilanEtkinlikler.add(pathname);button.hidden=false;help.hidden=false;etkinlikDurumlariniYenile();});
+  const help=document.createElement("small");help.className="completionHelp";help.textContent="Bu, senin bildirimin; otomatik puan sonucu değildir.";help.hidden=!!trackedId||!bitirilenEtkinlikler.has(pathname);
   button.addEventListener("click",function(){
    const token=sessionStorage.getItem(anahtarAdi);if(!token||bitirilenEtkinlikler.has(pathname))return;
    button.disabled=true;button.textContent="Kaydediliyor...";
@@ -627,6 +725,7 @@ function seciliEtkinlikButonlariKur(){
    }).withFailureHandler(function(){button.disabled=false;button.textContent="Tekrar Dene";}).seciliEtkinlikTamamla(token,pathname);
   });
   link.parentElement.appendChild(button);
+  button.insertAdjacentElement("afterend",help);
  });
 }
 const dersKartlari=[...document.querySelectorAll("#dersIzgarasi>.course")];
@@ -650,7 +749,7 @@ function defterKartiOlustur(dir,filename,label,recordId){
  const card=document.createElement("article");card.className="noteCard";
  const title=document.createElement("strong");title.textContent="📒 "+label;
  const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename);
- link.target="_blank";link.rel="noopener noreferrer";link.textContent="Aç ↗";
+ link.target="_blank";link.rel="noopener noreferrer";link.textContent="Notu Aç ↗";link.setAttribute("aria-label",label+" defter notunu yeni sekmede aç");
  const choice=document.createElement("label");choice.className="noteCheckbox";
  const input=document.createElement("input");input.type="checkbox";input.dataset.noteId=id;
  const caption=document.createElement("span");
@@ -705,6 +804,7 @@ dersKartlari.forEach(function(card){
  });
  if(originalButtons.length)panels.etkinlik.appendChild(originalButtons[0]);
  if(existingLinks)panels.etkinlik.appendChild(existingLinks);
+ const noteHelp=document.createElement("p");noteHelp.className="hint noteHelp";noteHelp.textContent="Notu açıp defterine yaz. Bitirince “Defterime yazdım” kutusunu işaretle.";panels.defter.appendChild(noteHelp);
  const defter=document.createElement("div");defter.className="notebookGrid";
  const catalog=defterKatalog[name];
  if(catalog){catalog.files.forEach(([file,label,recordId])=>defter.appendChild(defterKartiOlustur(catalog.dir,file,label,recordId)));}
@@ -728,7 +828,7 @@ dersKartlari.forEach(function(card){
   dersKartlari.forEach(other=>{if(other!==card){other.removeAttribute("open");other.classList.remove("activeLesson");}});
   seciliDers=card;card.classList.add("activeLesson");document.body.classList.add("lessonView");
   dersGeriSatiri.hidden=false;dersSayfaBaslik.textContent=name;
-  tabSec(card,"etkinlik");window.scrollTo({top:0,behavior:"instant"});
+  tabSec(card,card.dataset.requestedTab||"etkinlik");delete card.dataset.requestedTab;window.scrollTo({top:0,behavior:"instant"});
  });
 });
 

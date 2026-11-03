@@ -1,7 +1,30 @@
 <!doctype html>
 <html lang="tr"><head><meta charset="utf-8"><base target="_top">
 <style>body{font:15px Arial;margin:20px;color:#20344b}table{border-collapse:collapse;width:100%;margin:12px 0 26px}td,th{padding:10px;text-align:left;border-bottom:1px solid #ddd}th{background:#edf3fa}.stats{display:flex;gap:22px;flex-wrap:wrap}section{margin:22px 0}.muted{color:#617084}.progress{height:9px;background:#e8eef5;border-radius:9px;overflow:hidden;min-width:90px}.progress span{display:block;height:100%;background:#2d7aaf}.stats p{background:#f0f5fb;padding:14px;border-radius:10px}details{margin:12px 0;border:1px solid #d9e3f0;border-radius:10px;padding:14px}summary{cursor:pointer;font-weight:bold} .subtle{color:#566b7e}.notebookColumns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.notebookColumns>div{padding:12px 16px;background:#f5f9ff;border-radius:12px}.notebookColumns h3{font-size:16px}.notebookColumns li{margin:6px 0}@media(max-width:650px){.notebookColumns{grid-template-columns:1fr}}
-.lessonCatalog{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lessonCatalog details{margin:0;background:#f8fbff}.lessonCatalog ul{padding-left:22px}.lessonCatalog li{margin:8px 0}.lessonCatalog a{color:#2459a6;font-weight:600;line-height:1.4}@media(max-width:650px){.lessonCatalog{grid-template-columns:1fr}}</style></head><body>
+.lessonCatalog{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lessonCatalog details{margin:0;background:#f8fbff}.lessonCatalog ul{padding-left:22px}.lessonCatalog li{margin:8px 0}.lessonCatalog a{color:#2459a6;font-weight:600;line-height:1.4}@media(max-width:650px){.lessonCatalog{grid-template-columns:1fr}}html{box-sizing:border-box}*,*::before,*::after{box-sizing:inherit}
+body{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.5;max-width:1440px;margin:clamp(12px,2.5vw,28px) auto;padding:0 14px;color:#20344b}
+h1{font-size:clamp(24px,4vw,34px);line-height:1.2}
+h2{font-size:clamp(20px,3vw,27px)}
+button,summary,a{touch-action:manipulation}
+button,summary{min-height:44px}
+input,textarea{font:inherit;max-width:100%;border:1px solid #9aaec4;border-radius:8px;padding:10px}
+button{font:inherit;padding:10px 14px;border-radius:8px}
+table{width:100%}
+td,th{vertical-align:top}
+a{overflow-wrap:anywhere}
+:focus-visible{outline:3px solid #d99a24;outline-offset:3px}
+@media(max-width:650px){
+ body{margin:10px auto;padding:0 10px;font-size:16px}
+ section{margin:20px 0}
+ .stats{gap:8px}
+ .stats p{flex:1 1 145px;margin:4px 0}
+ table{display:block;max-width:100%;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+ th,td{padding:10px 9px}
+ details{padding:12px}
+ .lessonCatalog details{padding:12px}
+ button{min-height:48px}
+}
+</style></head><body>
 <h1>4/D Öğretmen Raporu</h1><p id="status">Yükleniyor...</p>
 <div class="stats"><p>Öğrenci: <strong id="count">—</strong></p><p>Geçerli sonuç: <strong id="results">—</strong></p></div>
 <section><h2>Kazanımlar</h2><p class="muted">Henüz gerçek öğrenci kaydı yoksa bu bölüm boş kalır. Başarı oranı, kaydedilmiş tüm tamamlanma denemelerindeki doğru cevapların oranıdır.</p><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
