@@ -753,7 +753,11 @@
             document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
         }
 
-        function addPoints(pts) {
+        let trackedTraffic={correct:0,wrong:0,wrongAttempts:0,firstTry:0,sent:false,started:Date.now(),attemptId:Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10)};
+function trackTrafficAnswer(ok){if(ok){trackedTraffic.correct++;}else{trackedTraffic.wrong++;trackedTraffic.wrongAttempts++;}}
+function sendTrafficResult(){if(trackedTraffic.sent)return;const total=trackedTraffic.correct+trackedTraffic.wrong;if(!total)return;trackedTraffic.sent=true;window.parent.postMessage({type:'4d:activity-finished',schemaVersion:1,activityId:'trafik-yaya',attemptId:trackedTraffic.attemptId,correct:trackedTraffic.correct,wrong:trackedTraffic.wrong,total:total,wrongAttempts:trackedTraffic.wrongAttempts,firstTry:trackedTraffic.firstTry,durationSeconds:Math.max(0,Math.round((Date.now()-trackedTraffic.started)/1000))},'*');}
+function addPoints(pts) {
+            trackTrafficAnswer(true);
             totalScore += pts;
             const el = document.getElementById('scoreDisplay');
             el.textContent = totalScore;
@@ -1236,6 +1240,7 @@
                     ? `<span>Güvenli Geçiş Dedektifine Geç</span> <span>🕵️‍♂️</span>`
                     : `<span>Sonraki Senaryo</span> <span>➡️</span>`;
             } else {
+                trackTrafficAnswer(false);
                 playTone('wrong');
                 btnEl.className = 'w-full text-left p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 flex items-start gap-3 font-semibold text-rose-900 animate-shake';
                 resBox.className = 'mt-6 p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-rose-950';
@@ -1352,6 +1357,7 @@
             document.getElementById('detectiveProgressBar').style.width = `${pct}%`;
 
             if (detIndex >= detectiveDeck.length) {
+                sendTrafficResult();
                 document.getElementById('detectiveCounter').textContent = `Tamamlandı: ${detectiveDeck.length} / ${detectiveDeck.length}`;
                 document.getElementById('detectiveCardTag').textContent = '🎉 GÖREV TAMAMLANDI!';
                 document.getElementById('detectiveCardEmoji').textContent = '🏆';
@@ -1389,6 +1395,7 @@
                     detBusy = false;
                 }, 1700);
             } else {
+                trackTrafficAnswer(false);
                 playTone('wrong');
                 fb.className = 'mt-4 px-5 py-3 rounded-2xl font-bold text-sm md:text-base bg-rose-100 text-rose-900 border-2 border-rose-300 animate-shake';
                 fb.innerHTML = `🤔 <strong>Tekrar Düşün!</strong> ${card.reason}`;
