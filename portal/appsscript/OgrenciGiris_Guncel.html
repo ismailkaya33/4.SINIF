@@ -532,7 +532,9 @@ buton.addEventListener("click",girisYap);cikisButonu.addEventListener("click",ci
 kodAlani.addEventListener("keydown",function(e){if(e.key==="Enter")girisYap()});
 const oruntulerButonu=document.getElementById("oruntulerAc");
 let aktifEtkinlik=null;
-const takipliOyunlar=Object.freeze({"mat-kayipsayilar":"https://ismailkaya33.github.io/4.SINIF/test/kayipsayilar.html","mat-oruntuler":"https://ismailkaya33.github.io/4.SINIF/test/oruntuler.html"});
+const takipliOyunlar=Object.freeze({"mat-kayipsayilar":"https://ismailkaya33.github.io/4.SINIF/test/kayipsayilar.html","mat-oruntuler":"https://ismailkaya33.github.io/4.SINIF/test/oruntuler.html","mat-dogalsayilar-degerlendirme":"https://ismailkaya33.github.io/4.SINIF/Matematik/dogalsayilardegerlendirme.html","mat-toplamacikarma-1":"https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem1.html","mat-toplamacikarma-2":"https://ismailkaya33.github.io/4.SINIF/Matematik/toplamacikarmaproblem2.html","insan-sorumluluk":"https://ismailkaya33.github.io/4.SINIF/Insanhaklari/insanolmasorumlulugu.html","trafik-yaya":"https://ismailkaya33.github.io/4.SINIF/Trafik/yayaolaraktrafikkurallarietkinligi.html"});
+const resultTrackByPath=Object.freeze({"Matematik/dogalsayilardegerlendirme.html":"mat-dogalsayilar-degerlendirme","Matematik/toplamacikarmaproblem1.html":"mat-toplamacikarma-1","Matematik/toplamacikarmaproblem2.html":"mat-toplamacikarma-2","Insanhaklari/insanolmasorumlulugu.html":"insan-sorumluluk","Trafik/yayaolaraktrafikkurallarietkinligi.html":"trafik-yaya"});
+const trackedNames={"mat-dogalsayilar-degerlendirme":"Matematik • Doğal Sayılar Değerlendirme","mat-toplamacikarma-1":"Matematik • Toplama ve Çıkarma Problemleri 1","mat-toplamacikarma-2":"Matematik • Toplama ve Çıkarma Problemleri 2","insan-sorumluluk":"İnsan Hakları • İnsan Olma Sorumluluğu","trafik-yaya":"Trafik Güvenliği • Yaya Olarak Trafik Kuralları"};
 const oyunButonu=document.getElementById("oyunuAc"),oyunCer=document.getElementById("oyunCer"),oyunDurum=document.getElementById("oyunDurum"),oyunPanel=document.getElementById("oyunPanel");
 let gonderiliyor=false;
 function takipliOyunAc(id){
@@ -541,7 +543,7 @@ function takipliOyunAc(id){
  aktifEtkinlik=id;gonderiliyor=false;
  oyunPanel.hidden=false;document.body.classList.add("oyunda");
  oyunButonu.disabled=true;oruntulerButonu.disabled=true;
- document.querySelector("#oyunUst strong").textContent=id==="mat-oruntuler"?"🧩 Matematik • Sayı Örüntüleri":"🎮 Matematik • Kayıp Sayılar";
+ document.querySelector("#oyunUst strong").textContent=trackedNames[id]||(id==="mat-oruntuler"?"🧩 Matematik • Sayı Örüntüleri":"🎮 Matematik • Kayıp Sayılar");
  oyunDurum.textContent="Oyun açılıyor. Bitirdiğinde sonucun otomatik gönderilecek.";
  oyunCer.src=takipliOyunlar[id];
 }
@@ -558,7 +560,15 @@ window.addEventListener("message",function(e){
  google.script.run.withSuccessHandler(function(r){
   gonderiliyor=false;
   if(sessionStorage.getItem(anahtarAdi)!==token)return;
-  if(r&&r.basarili){ilerlemeYukle();oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";}
+  if(r&&r.basarili){
+   ilerlemeYukle();oyunDurum.textContent=r.tekrar?"Sonuç zaten kaydedilmiş.":"✅ Etkinlik sonucu öğretmene kaydedildi.";
+   const path=Object.keys(resultTrackByPath).find(p=>resultTrackByPath[p]===d.activityId);
+   if(path)google.script.run.withSuccessHandler(function(cr){
+    if(sessionStorage.getItem(anahtarAdi)!==token)return;
+    if(cr&&cr.basarili){bitirilenEtkinlikler.add(path);seciliEtkinlikButonlariYenile();}
+    else{const b=document.querySelector('.completionButton[data-activity="'+path+'"]');if(b)b.hidden=false;oyunDurum.textContent+=" Tamamlama durumu ayrıca kaydedilemedi.";}
+   }).seciliEtkinlikTamamla(token,path);
+  }
   else{oyunDurum.textContent="Sonuç kaydedilemedi. Oturumunu kontrol et.";}
  }).withFailureHandler(function(){gonderiliyor=false;if(sessionStorage.getItem(anahtarAdi)===token)oyunDurum.textContent="Kayıt bağlantısında sorun oldu. Öğretmenine haber ver."}).etkinlikSonucuKaydet(token,veri);
 });
@@ -567,14 +577,17 @@ document.getElementById("oyundanDon").addEventListener("click",function(){oyunPa
 
 /* Ders alt sayfasi: etkinlikler / defter notlari / degerlendirmeler. */
 const defterKatalog={
-"Türkçe":{dir:"Turkce",files:[["atasozleri.png","Atasözleri","Turkce/atasozleri.jpeg"],["deyimler.png","Deyimler","Turkce/deyimler.jpeg"],["gercekmecaz.png","Gerçek, Mecaz ve Terim Anlam"],["ikilemeler.jpeg","İkilemeler"],["metninbolumleri.png","Metnin Bölümleri"],["pekistirme.JPG","Pekiştirme"]]},
+"Türkçe":{dir:"Turkce",files:[["atasozleri.png","Atasözleri","Turkce/atasozleri.png"],["deyimler.png","Deyimler","Turkce/deyimler.png"],["gercekmecaz.png","Gerçek, Mecaz ve Terim Anlam"],["ikilemeler.jpeg","İkilemeler"],["metninbolumleri.png","Metnin Bölümleri"],["pekistirme.JPG","Pekiştirme"]]},
 "Matematik":{dir:"Matematik",files:[["cikarmadaverilmeyen.png","Çıkarma İşleminde Verilmeyenler"],["cikarmadefternotu.png","Çıkarma İşlemi"],["toplama.png","Toplama"],["toplamacikarmaproblemleri.png","Toplama ve Çıkarma Problemleri"],["zihindencikarma.png","Zihinden Çıkarma"],["zihindentoplama.png","Zihinden Toplama"]]},
 "Fen Bilimleri":{dir:"Fen",files:[["besinler1.png","Besinler 1"],["besinler2.png","Besinler 2"],["besinler3.png","Besinler 3"],["besinlerintazeligi.png","Besinlerin Tazeliği"],["besinlerisaklama.png","Besinleri Saklama"]]},
 "Sosyal Bilgiler":{dir:"Sosyal",files:[["ailemcocuk.jpg","Ailem ve Çocuk"],["ailetarihi.png","Aile Tarihi"],["cocukoyun.png","Çocuk Oyunları"],["farkliliklarimizvesaygi.png","Farklılıklara Saygı"],["mersinkultur.png","Mersin Kültürü"],["millikultur.png","Millî Kültür"],["millimucadele1.png","Millî Mücadele 1"],["millimucadele2.png","Millî Mücadele 2"],["millimucadele3.png","Millî Mücadele 3"],["millimucadele4.png","Millî Mücadele 4"],["millimucadele5.png","Millî Mücadele 5"],["millimucadele6.png","Millî Mücadele 6"],["millimucadele7.png","Millî Mücadele 7"]]}
 };
 const seciliEtkinlikler=new Set([
  "Turkce/ikilemeler.html","Turkce/pekistirme.html","Turkce/sozavcıları.html",
- "Matematik/cikarmaislemi.html","Fen/besinkasifleri.html","Sosyal/oyunzamani.html"
+ "Matematik/cikarmaislemi.html","Fen/besinkasifleri.html","Sosyal/oyunzamani.html",
+ "Matematik/dogalsayilardegerlendirme.html","Matematik/toplamacikarmaproblem1.html",
+ "Matematik/toplamacikarmaproblem2.html","Insanhaklari/insanolmasorumlulugu.html",
+ "Trafik/yayaolaraktrafikkurallarietkinligi.html"
 ]);
 let bitirilenEtkinlikler=new Set();
 function seciliEtkinlikButonlariYenile(){
@@ -597,8 +610,11 @@ function seciliEtkinlikButonlariKur(){
   let pathname;
   try{const url=new URL(link.href);if(url.origin!=="https://ismailkaya33.github.io")return;pathname=decodeURI(url.pathname.replace(/^\/4\.SINIF\//,""));}catch(e){return;}
   if(!seciliEtkinlikler.has(pathname))return;
+  const trackedId=resultTrackByPath[pathname];
+  if(trackedId)link.addEventListener("click",function(e){e.preventDefault();takipliOyunAc(trackedId);});
   const button=document.createElement("button");button.type="button";
   button.className="completionButton";button.dataset.activity=pathname;
+  button.hidden=!!trackedId;
   button.textContent="✓ Etkinliği Tamamladım";
   button.setAttribute("aria-label",link.textContent+" etkinliğini tamamladım");
   button.addEventListener("click",function(){

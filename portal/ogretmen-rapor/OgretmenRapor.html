@@ -19,14 +19,19 @@
 "use strict";
 function renderRows(id,items){const target=document.getElementById(id);items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});target.appendChild(tr)})}
 function ratio(a,b){return b?(100*a/b).toFixed(1)+'%':'—'}
-function activityName(id){return ({'mat-kayipsayilar':'Matematik • Kayıp Sayılar','mat-oruntuler':'Matematik • Sayı Örüntüleri'})[id]||id}
+function activityName(id){return ({'mat-kayipsayilar':'Matematik • Kayıp Sayılar','mat-oruntuler':'Matematik • Sayı Örüntüleri','mat-dogalsayilar-degerlendirme':'Matematik • Doğal Sayılar Değerlendirme','mat-toplamacikarma-1':'Matematik • Toplama ve Çıkarma Problemleri 1','mat-toplamacikarma-2':'Matematik • Toplama ve Çıkarma Problemleri 2','insan-sorumluluk':'İnsan Hakları • İnsan Olma Sorumluluğu','trafik-yaya':'Trafik Güvenliği • Yaya Olarak Trafik Kuralları'})[id]||id}
 function completionName(id){return ({
  'Turkce/ikilemeler.html':'Türkçe • İkileme Dedektifi',
  'Turkce/pekistirme.html':'Türkçe • Pekiştirme Dedektifi 1',
  'Turkce/sozavcıları.html':'Türkçe • Atasözleri ve Deyimler',
  'Matematik/cikarmaislemi.html':'Matematik • Çıkarma Dedektifleri',
  'Fen/besinkasifleri.html':'Fen • Besin Kaşifleri: Görev Haritası',
- 'Sosyal/oyunzamani.html':'Sosyal • Geçmişten Günümüze Çocuk Oyunları'
+ 'Sosyal/oyunzamani.html':'Sosyal • Geçmişten Günümüze Çocuk Oyunları',
+ 'Matematik/dogalsayilardegerlendirme.html':'Matematik • Doğal Sayılar Değerlendirme',
+ 'Matematik/toplamacikarmaproblem1.html':'Matematik • Toplama ve Çıkarma Problemleri 1',
+ 'Matematik/toplamacikarmaproblem2.html':'Matematik • Toplama ve Çıkarma Problemleri 2',
+ 'Insanhaklari/insanolmasorumlulugu.html':'İnsan Hakları • İnsan Olma Sorumluluğu',
+ 'Trafik/yayaolaraktrafikkurallarietkinligi.html':'Trafik Güvenliği • Yaya Olarak Trafik Kuralları'
  })[id]||id}
 function outcomeName(k){return ({'M.4.1.3.4':'Çıkarma işleminde verilmeyen eksilen veya çıkanı bulma'})[k]||k}
 function renderDersKatalogu(groups){

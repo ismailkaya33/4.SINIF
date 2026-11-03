@@ -54,7 +54,7 @@ function ogretmenRaporVerisi() {
     const ids=[...new Set(mine.map(function(x){return x.id}))];
     return {no:no,ad:roster[no].ad,activityCount:ids.length,attemptCount:mine.length,correct:mine.reduce((n,x)=>n+x.correct,0),total:mine.reduce((n,x)=>n+x.total,0)};
   }).sort(function(a,b){return a.ad.localeCompare(b.ad,'tr')});
-  const allIds=['mat-kayipsayilar']; // İzlenebilir kayıtlı pilot etkinlikler
+  const allIds=['mat-kayipsayilar','mat-oruntuler','mat-dogalsayilar-degerlendirme','mat-toplamacikarma-1','mat-toplamacikarma-2','insan-sorumluluk','trafik-yaya']; // İzlenebilir etkinlikler
   results.forEach(function(x){if(allIds.indexOf(x.id)<0)allIds.push(x.id);});
   const activities=allIds.map(function(activityId){
     const attempted={};
@@ -73,7 +73,10 @@ function ogretmenRaporVerisi() {
   });
   const selectedActivities=[
    'Turkce/ikilemeler.html','Turkce/pekistirme.html','Turkce/sozavcıları.html',
-   'Matematik/cikarmaislemi.html','Fen/besinkasifleri.html','Sosyal/oyunzamani.html'
+   'Matematik/cikarmaislemi.html','Fen/besinkasifleri.html','Sosyal/oyunzamani.html',
+   'Matematik/dogalsayilardegerlendirme.html','Matematik/toplamacikarmaproblem1.html',
+   'Matematik/toplamacikarmaproblem2.html','Insanhaklari/insanolmasorumlulugu.html',
+   'Trafik/yayaolaraktrafikkurallarietkinligi.html'
   ];
   const completionSheet=ss.getSheetByName('ETKINLIK_TAMAMLAMA');
   const completionRows=completionSheet&&completionSheet.getLastRow()>1
@@ -92,10 +95,10 @@ function ogretmenRaporVerisi() {
     students:perStudent.map(function(st){return {no:st.no,ad:st.ad,status:done[st.no]?'Tamamladım bildirildi':'Henüz bildirim yok'};})};
   });
   const notebookCatalog={
-    'Turkce':[['atasozleri.jpeg','Atasözleri'],['deyimler.jpeg','Deyimler'],['gercekmecaz.png','Gerçek, Mecaz ve Terim Anlam'],['ikilemeler.jpeg','İkilemeler'],['metninbolumleri.png','Metnin Bölümleri'],['pekistirme.JPG','Pekiştirme']],
-    'Matematik':[['cikarmadaverilmeyen.png','Çıkarma İşleminde Verilmeyenler'],['cikarmadefternotu.png','Çıkarma İşlemi'],['toplama.png','Toplama'],['zihindencikarma.png','Zihinden Çıkarma'],['zihindentoplama.png','Zihinden Toplama']],
+    'Turkce':[['atasozleri.png','Atasözleri'],['deyimler.png','Deyimler'],['gercekmecaz.png','Gerçek, Mecaz ve Terim Anlam'],['ikilemeler.jpeg','İkilemeler'],['metninbolumleri.png','Metnin Bölümleri'],['pekistirme.JPG','Pekiştirme']],
+    'Matematik':[['cikarmadaverilmeyen.png','Çıkarma İşleminde Verilmeyenler'],['cikarmadefternotu.png','Çıkarma İşlemi'],['toplama.png','Toplama'],['toplamacikarmaproblemleri.png','Toplama ve Çıkarma Problemleri'],['zihindencikarma.png','Zihinden Çıkarma'],['zihindentoplama.png','Zihinden Toplama']],
     'Fen':[['besinler1.png','Besinler 1'],['besinler2.png','Besinler 2'],['besinler3.png','Besinler 3'],['besinlerintazeligi.png','Besinlerin Tazeliği'],['besinlerisaklama.png','Besinleri Saklama']],
-    'Sosyal':[['ailemcocuk.jpg','Ailem ve Çocuk'],['ailetarihi.png','Aile Tarihi'],['cocukoyun.png','Çocuk Oyunları'],['farkliliklarimizvesaygi.png','Farklılıklara Saygı'],['mersinkultur.png','Mersin Kültürü'],['millikultur.png','Millî Kültür']]
+    'Sosyal':[['ailemcocuk.jpg','Ailem ve Çocuk'],['ailetarihi.png','Aile Tarihi'],['cocukoyun.png','Çocuk Oyunları'],['farkliliklarimizvesaygi.png','Farklılıklara Saygı'],['mersinkultur.png','Mersin Kültürü'],['millikultur.png','Millî Kültür'],['millimucadele1.png','Millî Mücadele 1'],['millimucadele2.png','Millî Mücadele 2'],['millimucadele3.png','Millî Mücadele 3'],['millimucadele4.png','Millî Mücadele 4'],['millimucadele5.png','Millî Mücadele 5'],['millimucadele6.png','Millî Mücadele 6'],['millimucadele7.png','Millî Mücadele 7']]
   };
   const notebookNames={'Turkce':'Türkçe','Matematik':'Matematik','Fen':'Fen Bilimleri','Sosyal':'Sosyal Bilgiler'};
   const notebookItems=[];
@@ -109,7 +112,8 @@ function ogretmenRaporVerisi() {
   const allowedNotes={};
   notebookItems.forEach(function(note){allowedNotes[note.id]=true;});
   notebookRows.forEach(function(row){
-    const no=String(row[0]).trim(),id=String(row[1]).trim();
+    const no=String(row[0]).trim(),rawId=String(row[1]).trim();
+    const id=rawId==='Turkce/atasozleri.jpeg'?'Turkce/atasozleri.png':rawId==='Turkce/deyimler.jpeg'?'Turkce/deyimler.png':rawId;
     if(!roster[no]||!allowedNotes[id])return;
     if(!notebookDone[id])notebookDone[id]={};
     notebookDone[id][no]=true;
