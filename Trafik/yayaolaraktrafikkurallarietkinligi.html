@@ -753,11 +753,11 @@
             document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
         }
 
-        let trackedTraffic={correct:0,wrong:0,wrongAttempts:0,firstTry:0,sent:false,started:Date.now(),attemptId:Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10)};
-function trackTrafficAnswer(ok){if(ok){trackedTraffic.correct++;}else{trackedTraffic.wrong++;trackedTraffic.wrongAttempts++;}}
+        let trackedTraffic={correct:0,wrong:0,wrongAttempts:0,firstTry:0,seen:{},serial:0,sent:false,started:Date.now(),attemptId:Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10)};
+function trackTrafficAnswer(ok,key){key=key||('score-'+(++trackedTraffic.serial));const seen=trackedTraffic.seen[key]||0;if(ok){trackedTraffic.correct++;if(seen===0)trackedTraffic.firstTry++;}else{trackedTraffic.wrong++;trackedTraffic.wrongAttempts++;}trackedTraffic.seen[key]=seen+1;}
 function sendTrafficResult(){if(trackedTraffic.sent)return;const total=trackedTraffic.correct+trackedTraffic.wrong;if(!total)return;trackedTraffic.sent=true;window.parent.postMessage({type:'4d:activity-finished',schemaVersion:1,activityId:'trafik-yaya',attemptId:trackedTraffic.attemptId,correct:trackedTraffic.correct,wrong:trackedTraffic.wrong,total:total,wrongAttempts:trackedTraffic.wrongAttempts,firstTry:trackedTraffic.firstTry,durationSeconds:Math.max(0,Math.round((Date.now()-trackedTraffic.started)/1000))},'*');}
-function addPoints(pts) {
-            trackTrafficAnswer(true);
+function addPoints(pts,key) {
+            trackTrafficAnswer(true,key);
             totalScore += pts;
             const el = document.getElementById('scoreDisplay');
             el.textContent = totalScore;
@@ -872,15 +872,17 @@ function addPoints(pts) {
             if (choice === 'sidewalk_right') {
                 avatar.setAttribute('transform', 'translate(445, 180)');
                 playTone('correct');
-                if (!rewardedRoadModes[choice]) { rewardedRoadModes[choice] = true; addPoints(10); }
+                if (!rewardedRoadModes[choice]) { rewardedRoadModes[choice] = true; addPoints(10,'road-sidewalk'); }
                 feedback.className = 'p-4 rounded-2xl bg-emerald-100 border-2 border-emerald-400 text-sm text-emerald-950 font-bold animate-pop';
                 feedback.innerHTML = `✅ <strong>Çok Doğru!</strong> Kaldırımlı yollarda her zaman kaldırımın <strong>sağ tarafından</strong> (yola uzak iç kısımdan) yürürüz. Böylece karşıdan gelen yayalarla çarpışmayız ve yoldaki araçlardan uzak kalırız. Ayrıca garaj çıkışlarına dikkat ederiz.`;
             } else if (choice === 'sidewalk_edge') {
+                trackTrafficAnswer(false,'road-sidewalk');
                 avatar.setAttribute('transform', 'translate(388, 180)');
                 playTone('wrong');
                 feedback.className = 'p-4 rounded-2xl bg-rose-100 border-2 border-rose-400 text-sm text-rose-950 font-bold animate-shake';
                 feedback.innerHTML = `⚠️ <strong>Tehlikeli!</strong> Kaldırımın yola yakın kenarında yürümek veya arkadaşlarımızla itişip şakalaşmak yola düşmemize ve gelen araçların bize çarpmasına neden olabilir!`;
             } else if (choice === 'sidewalk_road') {
+                trackTrafficAnswer(false,'road-sidewalk');
                 avatar.setAttribute('transform', 'translate(335, 120)');
                 playTone('wrong');
                 feedback.className = 'p-4 rounded-2xl bg-rose-100 border-2 border-rose-400 text-sm text-rose-950 font-bold animate-shake';
@@ -888,10 +890,11 @@ function addPoints(pts) {
             } else if (choice === 'banket_left') {
                 avatar.setAttribute('transform', 'translate(75, 180)');
                 playTone('correct');
-                if (!rewardedRoadModes[choice]) { rewardedRoadModes[choice] = true; addPoints(15); }
+                if (!rewardedRoadModes[choice]) { rewardedRoadModes[choice] = true; addPoints(15,'road-banket'); }
                 feedback.className = 'p-4 rounded-2xl bg-emerald-100 border-2 border-emerald-400 text-sm text-emerald-950 font-bold animate-pop';
                 feedback.innerHTML = `✅ <strong>Harika! NEDEN SOL BANKET?</strong> Kaldırımı olmayan yollarda gidiş yönümüze göre <strong>SOL banketten</strong> yürürüz. Çünkü karşıdan gelen kırmızı aracı doğrudan <strong>görürüz</strong> ve tehlike anında kenara çekilebiliriz! Grup hâlindeysek tek sıra yürürüz, gece ise açık renkli/reflektörlü kıyafet giyeriz.`;
             } else if (choice === 'banket_right') {
+                trackTrafficAnswer(false,'road-banket');
                 avatar.setAttribute('transform', 'translate(425, 120)');
                 playTone('wrong');
                 feedback.className = 'p-4 rounded-2xl bg-rose-100 border-2 border-rose-400 text-sm text-rose-950 font-bold animate-shake';
@@ -1227,7 +1230,7 @@ function addPoints(pts) {
             if (chosen.correct) {
                 scLocked = true;
                 playTone('correct');
-                addPoints(15);
+                addPoints(15,'scenario-'+scIndex);
                 btnEl.className = 'w-full text-left p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 flex items-start gap-3 font-bold text-emerald-950 shadow-sm animate-pop';
                 resBox.className = 'mt-6 p-5 rounded-2xl border-2 border-emerald-300 bg-emerald-50 text-emerald-950';
                 resIcon.textContent = '🌟';
@@ -1240,7 +1243,7 @@ function addPoints(pts) {
                     ? `<span>Güvenli Geçiş Dedektifine Geç</span> <span>🕵️‍♂️</span>`
                     : `<span>Sonraki Senaryo</span> <span>➡️</span>`;
             } else {
-                trackTrafficAnswer(false);
+                trackTrafficAnswer(false,'scenario-'+scIndex);
                 playTone('wrong');
                 btnEl.className = 'w-full text-left p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 flex items-start gap-3 font-semibold text-rose-900 animate-shake';
                 resBox.className = 'mt-6 p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-rose-950';
@@ -1380,7 +1383,7 @@ function addPoints(pts) {
             if (card.isSafe === userSaysSafe) {
                 detBusy = true;
                 playTone('correct');
-                addPoints(10);
+                addPoints(10,'detective-'+detIndex);
                 detHistory.unshift(card);
                 renderDetectiveHistory();
 
@@ -1395,7 +1398,7 @@ function addPoints(pts) {
                     detBusy = false;
                 }, 1700);
             } else {
-                trackTrafficAnswer(false);
+                trackTrafficAnswer(false,'detective-'+detIndex);
                 playTone('wrong');
                 fb.className = 'mt-4 px-5 py-3 rounded-2xl font-bold text-sm md:text-base bg-rose-100 text-rose-900 border-2 border-rose-300 animate-shake';
                 fb.innerHTML = `🤔 <strong>Tekrar Düşün!</strong> ${card.reason}`;
