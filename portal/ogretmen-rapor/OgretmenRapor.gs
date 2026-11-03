@@ -133,7 +133,7 @@ function ogretmenRaporVerisi() {
     const no=String(r[1]).trim(),activityId=String(r[2]).trim(),outcome=String(r[3]).trim();
     const attemptId=String(r[4]).trim(),taskId=String(r[5]).trim(),status=String(r[6]).trim();
     if(!roster[no]||activityId!=='mat-toplamacikarma-1'||outcome!=='MAT.4.2.7'||
-       !/^[A-Za-z0-9_-]{12,80}$/.test(attemptId)||!/^q(0[1-9]|1[0-9]|2[0-9])$/.test(taskId)||
+       !/^[A-Za-z0-9_-]{12,80}$/.test(attemptId)||!/^q(0[1-9]|1[0-9]|2[0-9]|30)$/.test(taskId)||
        ['success','wrong'].indexOf(status)<0)return;
     if(!evidenceByStudent[no])evidenceByStudent[no]={};
     const attempts=evidenceByStudent[no];
