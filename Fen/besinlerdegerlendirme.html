@@ -78,9 +78,47 @@ document.addEventListener('dragover',e=>e.preventDefault());
 document.addEventListener('drop',e=>{e.preventDefault();const t=e.target.closest('.slot,.bin,.bank');if(!drag||!t)return;t.classList.contains('bank')?home(drag):put(drag,t);drag=null});
 document.addEventListener('click',e=>{const c=e.target.closest('.chip'),t=e.target.closest('.slot,.bin');
 if(c){if(!c.parentElement.classList.contains('bank')){home(c);return}sel&&sel.classList.remove('sel');sel=sel===c?null:c;sel&&sel.classList.add('sel')}else if(t&&sel)put(sel,t)});
+
+/* 4/D soru bazlı ölçme verisi: öğrenci kimliği yalnızca portal oturumunda eşleştirilir.
+   GitHub sayfası öğrenci adı, kodu veya oturum anahtarı saklamaz. */
+const DORTD_TRACK_VERSION=1;
+const DORTD_ACTIVITY='Fen/besinlerdegerlendirme.html';
+const DORTD_SECTION_NAMES={s1:'Çoktan seçmeli',s2:'Doğru-yanlış',s3:'Eşleştirme: besin içerikleri',s4:'Boşluk doldurma',s5:'Kavram haritası',s6:'Besin tablosu',s8:'Kişi/kuruluş/kavram',s9:'Sağlıklı yaşam',s7:'Bulmaca'};
+const DORTD_CHECKED={};
+Object.keys(DORTD_SECTION_NAMES).forEach(id=>{
+  document.querySelectorAll('#'+id+' .chip, #'+id+' .cr input').forEach((el,i)=>el.dataset.trackItem=String(i+1));
+});
+function dortdRecord(id,answers){
+  const items=answers.map((a,i)=>({id:id+'-q'+(i+1),correct:a.correct===true,answered:a.answered===true}));
+  DORTD_CHECKED[id]={id,title:DORTD_SECTION_NAMES[id],items,correct:items.filter(x=>x.correct).length,total:items.length};
+  const sections=Object.values(DORTD_CHECKED);
+  const report={type:'DORTD_QUESTION_RESULTS',version:DORTD_TRACK_VERSION,activityId:DORTD_ACTIVITY,
+    section:DORTD_CHECKED[id],sections,finished:sections.length===Object.keys(DORTD_SECTION_NAMES).length,
+    checkedAt:new Date().toISOString()};
+  // Hem portalın iframe dinleyicisine hem sayfa içindeki olası adaptörlere ilet.
+  window.dispatchEvent(new CustomEvent('dortd-question-results',{detail:report}));
+  if(window.parent!==window)window.parent.postMessage(report,'*');
+}
+function dortdRadioAnswers(id){
+  const s=document.getElementById(id),key=id==='s1'?MC.map(q=>q[2]):TF.map(t=>t[1]?0:1);
+  return key.map((correct,i)=>{
+    const name=(id==='s1'?'m':'t')+i;
+    const chosen=s.querySelector('input[name="'+name+'"]:checked');
+    return {answered:!!chosen,correct:!!chosen&&Number(chosen.value)===correct};
+  });
+}
+function dortdDragAnswers(id){
+  const s=document.getElementById(id);
+  const cs=[...s.querySelectorAll('.chip')].sort((a,b)=>Number(a.dataset.trackItem)-Number(b.dataset.trackItem));
+  return cs.map(c=>({answered:!c.parentElement.classList.contains('bank'),correct:c.classList.contains('ok')}));
+}
+function dortdCrosswordAnswers(id){
+  return [...document.querySelectorAll('#'+id+' .cr input')].map(i=>({answered:!!i.value,correct:i.value===i.dataset.a}));
+}
+
 function done(id,ok,n){const s=$('#'+id);s.querySelector('.rs').textContent=`${ok} / ${n}`;R[id]=[ok,n];let a=0,b=0;for(const k in R){a+=R[k][0];b+=R[k][1]}$('#tot').textContent=`Toplam: ${a} / ${b}`}
-function chkR(id){const s=$('#'+id);let ok=0,n=0;const A=id=='s1'?MC.map(q=>q[2]):TF.map(t=>t[1]?0:1);A.forEach((a,i)=>{const nm=(id=='s1'?'m':'t')+i;n++;s.querySelectorAll(`input[name=${nm}]`).forEach((r,j)=>{r.parentElement.classList.remove('ok','bad');if(r.checked)r.parentElement.classList.add(j==a?'ok':'bad');if(r.checked&&j==a)ok++})});done(id,ok,n)}
-function chkD(id){const s=$('#'+id);let ok=0;const n=s.querySelectorAll('.chip').length;s.querySelectorAll('.slot,.bin').forEach(t=>{t.classList.remove('bad');const cs=[...t.querySelectorAll('.chip')];if(!t.classList.contains('bin')&&!cs.length)t.classList.add('bad');cs.forEach(c=>{const g=c.dataset.g==t.dataset.a;c.classList.remove('ok','bad');c.classList.add(g?'ok':'bad');if(g)ok++})});done(id,ok,n)}
+function chkR(id){const s=$('#'+id);let ok=0,n=0;const A=id=='s1'?MC.map(q=>q[2]):TF.map(t=>t[1]?0:1);A.forEach((a,i)=>{const nm=(id=='s1'?'m':'t')+i;n++;s.querySelectorAll(`input[name=${nm}]`).forEach((r,j)=>{r.parentElement.classList.remove('ok','bad');if(r.checked)r.parentElement.classList.add(j==a?'ok':'bad');if(r.checked&&j==a)ok++})});done(id,ok,n);dortdRecord(id,dortdRadioAnswers(id))}
+function chkD(id){const s=$('#'+id);let ok=0;const n=s.querySelectorAll('.chip').length;s.querySelectorAll('.slot,.bin').forEach(t=>{t.classList.remove('bad');const cs=[...t.querySelectorAll('.chip')];if(!t.classList.contains('bin')&&!cs.length)t.classList.add('bad');cs.forEach(c=>{const g=c.dataset.g==t.dataset.a;c.classList.remove('ok','bad');c.classList.add(g?'ok':'bad');if(g)ok++})});done(id,ok,n);dortdRecord(id,dortdDragAnswers(id))}
 document.querySelectorAll('.cr input').forEach(i=>i.addEventListener('input',()=>{i.value=i.value.toLocaleUpperCase('tr');if(i.value)i.nextElementSibling?.focus()}));
-function chkC(id){let ok=0,n=0;$('#'+id).querySelectorAll('.cr input').forEach(i=>{n++;const g=i.value==i.dataset.a;i.classList.remove('ok','bad');i.classList.add(g?'ok':'bad');if(g)ok++});done(id,ok,n)}
+function chkC(id){let ok=0,n=0;$('#'+id).querySelectorAll('.cr input').forEach(i=>{n++;const g=i.value==i.dataset.a;i.classList.remove('ok','bad');i.classList.add(g?'ok':'bad');if(g)ok++});done(id,ok,n);dortdRecord(id,dortdCrosswordAnswers(id))}
 </script></body></html>
