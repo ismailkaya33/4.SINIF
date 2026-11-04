@@ -1,0 +1,48 @@
+name: Question pilot - source only, no live deployment
+on:
+  push:
+    branches: ['pilot/soru-takibi-matematik1-20261104']
+    paths: ['portal/appsscript/**', 'portal/ogretmen-rapor/**', '.github/workflows/question-pilot-source-sync.yml']
+jobs:
+  source-only:
+    runs-on: ubuntu-latest
+    environment: appsscript-sync
+    permissions:
+      contents: read
+    concurrency:
+      group: question-pilot-source-sync
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node .github/scripts/test-question-pilot.mjs
+      - run: node .github/scripts/verify-appsscript-integration.mjs
+      - name: Save previous source versions and sync pilot sources only
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+          STUDENT_SCRIPT_ID: ${{ secrets.STUDENT_SCRIPT_ID }}
+          TEACHER_SCRIPT_ID: ${{ secrets.TEACHER_SCRIPT_ID }}
+        shell: bash
+        run: |
+          set -eu
+          test -n "$CLASPRC_JSON"
+          test -n "$STUDENT_SCRIPT_ID"
+          test -n "$TEACHER_SCRIPT_ID"
+          printf '%s' "$CLASPRC_JSON" > "$HOME/.clasprc.json"
+          chmod 600 "$HOME/.clasprc.json"
+          for target in student teacher; do
+            if [ "$target" = student ]; then script_id="$STUDENT_SCRIPT_ID"; else script_id="$TEACHER_SCRIPT_ID"; fi
+            target_dir="$RUNNER_TEMP/pilot-$target"
+            mkdir -p "$target_dir"
+            printf '{"scriptId":"%s","rootDir":"."}\n' "$script_id" > "$target_dir/.clasp.json"
+            (cd "$target_dir" && npx --yes @google/clasp@latest pull)
+            (cd "$target_dir" && npx --yes @google/clasp@latest create-version 'Before question pilot 2026-11-04')
+            node .github/scripts/prepare-appsscript-sync.mjs "$target" "$target_dir"
+            (cd "$target_dir" && npx --yes @google/clasp@latest push --force)
+          done
+          echo 'Pilot source sync completed. Live deployment versions unchanged.'
+      - name: Remove credentials
+        if: always()
+        run: rm -f "$HOME/.clasprc.json"

@@ -128,3 +128,27 @@ function ogretmenRaporVerisi() {
     dersIcerikleri:RAPOR_DERS_ICERIKLERI_,outcomes:outcomes,students:perStudent,activities:activities,
     completionActivities:completionActivities,notebooks:notebooks};
 }
+
+/** Only in the separately deployed, teacher-private project. */
+function soruPilotRaporu(){
+ const id=PropertiesService.getScriptProperties().getProperty('OZEL_TABLO_ID');
+ if(!id)throw Error('Özel tablo tanımlanmamış.');
+ const ss=SpreadsheetApp.openById(id),kayit=ss.getSheetByName(RAPOR_KAYIT_SAYFASI_),sh=ss.getSheetByName('SORU_DENEMELERI');
+ const roster={};
+ if(kayit&&kayit.getLastRow()>1)kayit.getRange(2,1,kayit.getLastRow()-1,4).getDisplayValues().forEach(r=>{
+  const no=String(r[0]).trim();if(no&&String(r[3]).trim().toUpperCase()!=='TEST'&&String(r[1]).trim().toLocaleUpperCase('tr-TR')!=='MİSAFİR')roster[no]=String(r[1]);
+ });
+ const groups={};
+ const rows=sh&&sh.getLastRow()>1?sh.getRange(2,1,sh.getLastRow()-1,10).getValues():[];
+ rows.forEach(r=>{
+  const no=String(r[1]),attempt=String(r[4]),q=Number(r[5]),n=Number(r[6]);
+  if(!roster[no]||r[2]!=='mat-toplamacikarma-1'||Number(r[3])!==1||q<1||q>30)return;
+  const key=no+':'+attempt;
+  if(!groups[key])groups[key]={no:no,name:roster[no],attempt:attempt,at:0,questions:{}};
+  const g=groups[key];g.at=Math.max(g.at,r[9] instanceof Date?r[9].getTime():0);
+  if(!g.questions[q])g.questions[q]={first:null,last:null,count:0,firstCorrect:false,lastCorrect:false};
+  const v=g.questions[q];if(n===1){v.first=Number(r[7]);v.firstCorrect=r[8]===true;}
+  if(n>v.count){v.count=n;v.last=Number(r[7]);v.lastCorrect=r[8]===true;}
+ });
+ return {basarili:true,attempts:Object.values(groups).sort((a,b)=>b.at-a.at)};
+}

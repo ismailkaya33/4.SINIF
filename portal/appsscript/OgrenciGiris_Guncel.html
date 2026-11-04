@@ -648,6 +648,38 @@ window.addEventListener("message",function(e){
  }).withFailureHandler(function(){gonderiliyor=false;if(sessionStorage.getItem(anahtarAdi)===token)oyunDurum.textContent="Kayıt bağlantısında sorun oldu. Öğretmenine haber ver."}).etkinlikSonucuKaydet(token,veri);
 });
 
+// Pilot queue is isolated by the existing session and survives closing the activity.
+const soruKuyruk=new Map();let soruGonderiliyor=false;
+function soruKuyrukAnahtari(){const t=sessionStorage.getItem(anahtarAdi);return t?'4d:soru-pilot:'+t:null;}
+function soruKuyrukSakla(){try{const k=soruKuyrukAnahtari();if(k)sessionStorage.setItem(k,JSON.stringify([...soruKuyruk]));}catch(e){}}
+let soruKuyrukOturumu=null;
+function soruKuyrukYukle(){const k=soruKuyrukAnahtari();if(k===soruKuyrukOturumu)return;soruKuyruk.clear();soruKuyrukOturumu=k;try{if(k)JSON.parse(sessionStorage.getItem(k)||'[]').forEach(([id,v])=>soruKuyruk.set(id,v));}catch(e){}}
+window.addEventListener('message',function(e){
+ if(oturumAlani.hidden||e.origin!=='https://ismailkaya33.github.io'||e.source!==oyunCer.contentWindow||aktifEtkinlik!=='mat-toplamacikarma-1')return;
+ const d=e.data;if(!d||d.type!=='4d:question-answer'||d.activityId!==aktifEtkinlik||d.schemaVersion!==1||d.contentVersion!==1||
+ typeof d.attemptId!=='string'||!/^[A-Za-z0-9_-]{12,80}$/.test(d.attemptId)||!Number.isInteger(d.question)||d.question<1||d.question>30||
+ !Array.isArray(d.choices)||d.choices.length<1||d.choices.length>100||d.choices.some(v=>!Number.isInteger(v)||v<0||v>3))return;
+ soruKuyrukYukle();if(!soruKuyrukOturumu)return;
+ const key=d.attemptId+':'+d.question,old=soruKuyruk.get(key);
+ if(!old||old.choices.length<=d.choices.length)soruKuyruk.set(key,d);
+ soruKuyrukSakla();soruKuyrukGonder();
+});
+function soruKuyrukGonder(){
+ soruKuyrukYukle();if(soruGonderiliyor||!soruKuyruk.size)return;
+ const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
+ const [key,d]=soruKuyruk.entries().next().value;soruGonderiliyor=true;
+ google.script.run.withSuccessHandler(function(r){
+  soruGonderiliyor=false;if(sessionStorage.getItem(anahtarAdi)!==token)return;
+  if(r&&r.basarili){
+   const pending=soruKuyruk.get(key);if(pending&&pending.choices.length===d.choices.length)soruKuyruk.delete(key);
+   soruKuyrukSakla();
+   if(aktifEtkinlik===d.activityId){oyunCer.contentWindow.postMessage({type:'4d:question-ack',attemptId:d.attemptId,question:d.question,count:r.count},'https://ismailkaya33.github.io');oyunDurum.textContent='✓ Soru yanıtı kaydedildi.';}
+   soruKuyrukGonder();
+  }else if(aktifEtkinlik===d.activityId)oyunDurum.textContent='Yanıt bekliyor; kayıt yeniden denenecek.';
+ }).withFailureHandler(function(){soruGonderiliyor=false;if(sessionStorage.getItem(anahtarAdi)===token&&aktifEtkinlik===d.activityId)oyunDurum.textContent='Bağlantı bekleniyor; yanıt yeniden gönderilecek.';}).soruCevabiKaydet(token,d);
+}
+setInterval(soruKuyrukGonder,5000);
+
 document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunCer.removeAttribute("src");});
 
 /* Ders alt sayfasi: etkinlikler / defter notlari / degerlendirmeler. */
