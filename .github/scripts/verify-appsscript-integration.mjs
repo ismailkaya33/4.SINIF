@@ -27,6 +27,7 @@ assert.match(portal,/4d:question-ack/,'Question event acknowledgement');
 assert.match(assessment,/activityId:\x27fen-besinlerdegerlendirme\x27/,'Assessment activity identifier');
 assert.match(teacher,/ETKINLIK_SORU_SONUCLARI/,'Teacher report reads question sheet');
 assert.match(teacherHtml,/id=\x22questionSections\x22/,'Teacher report renders question details');
+assert.match(portal,/fen-besinlerdegerlendirme/,'Assessment is launchable inside the logged-in portal');
 assert.match(results,/oturumKaydi_\(token\)/,'Progress session check');
 assert.match(portal,/id="ilerlemePanel"/,'Student progress card');
 assert.match(portal,/\.ogrenciIlerlemeOzeti\(token\)/,'Progress server call');

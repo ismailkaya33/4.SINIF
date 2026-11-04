@@ -341,7 +341,20 @@
       "konum": "Matematik/toplamacikarmaproblem2.html",
       "baslik": "Toplama ve Çıkarma Problemleri 2",
       "takip": "secim_bekliyor"
+    },
+    {
+      "ders": "Oyunlar",
+      "konum": "Oyunlar/carpmakahramanlari.html",
+      "baslik": "Çarpma Kahramanları",
+      "takip": "secim_bekliyor"
     }
   ],
-  "yeniEtkinlikler": []
+  "yeniEtkinlikler": [
+    {
+      "ders": "Fen Bilimleri",
+      "konum": "Fen/besinlerdegerlendirme.html",
+      "baslik": "Besinler ve Özellikleri — Ünite Değerlendirme",
+      "takip": "otomatik_sonuc"
+    }
+  ]
 }
