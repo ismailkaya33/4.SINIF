@@ -124,7 +124,18 @@ function ogretmenRaporVerisi() {
     return {id:note.id,title:note.title,completed:finished.length,
       waiting:notYet.length,completedStudents:finished,waitingStudents:notYet};
   });
+  const questionSheet=ss.getSheetByName('ETKINLIK_SORU_SONUCLARI');
+  const questionRows=questionSheet&&questionSheet.getLastRow()>1?questionSheet.getRange(2,1,questionSheet.getLastRow()-1,7).getValues():[];
+  const questionResults=[];
+  questionRows.forEach(function(row){
+    const no=String(row[1]).trim(),activity=String(row[2]).trim(),attempt=String(row[3]).trim(),question=Number(row[4]);
+    if(!roster[no]||activity!=='fen-besinlerdegerlendirme'||!/^[A-Za-z0-9_-]{12,80}$/.test(attempt)||!Number.isSafeInteger(question)||question<1||question>200)return;
+    let choices;try{choices=JSON.parse(String(row[5]));}catch(e){return;}
+    if(!Array.isArray(choices)||!choices.length||choices.length>20||choices.some(function(x){return !['correct','wrong','unanswered'].includes(x)}))return;
+    questionResults.push({ad:roster[no].ad,attemptId:attempt.slice(-8),question:question,choices:choices});
+  });
+  questionResults.sort(function(a,b){return a.ad.localeCompare(b.ad,'tr')||a.attemptId.localeCompare(b.attemptId)||a.question-b.question;});
   return {studentCount:Object.keys(roster).length,recordCount:results.length,
     dersIcerikleri:RAPOR_DERS_ICERIKLERI_,outcomes:outcomes,students:perStudent,activities:activities,
-    completionActivities:completionActivities,notebooks:notebooks};
+    completionActivities:completionActivities,notebooks:notebooks,questionResults:questionResults};
 }

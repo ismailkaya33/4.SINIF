@@ -102,3 +102,39 @@ function ogrenciIlerlemeOzeti(token) {
     dogru:correct,toplam:total,oran:total?Math.round(correct*100/total):0,
     kaydedilenEtkinlikler:[...unique]};
 }
+
+
+/** Soru bazlı değerlendirme yanıtları; öğrenci numarası yalnız oturumdan çözülür. */
+const ETKINLIK_SORU_SONUCLARI_SAYFASI_ = 'ETKINLIK_SORU_SONUCLARI';
+const FEN_BESINLER_DEGERLENDIRME_ID_ = 'fen-besinlerdegerlendirme';
+function etkinlikSoruSonucuKaydet(token, veri) {
+  if (typeof token !== 'string' || token.length !== 73 || !veri || typeof veri !== 'object' || Array.isArray(veri) ||
+      veri.activityId !== FEN_BESINLER_DEGERLENDIRME_ID_ || typeof veri.attemptId !== 'string' ||
+      !/^[A-Za-z0-9_-]{12,80}$/.test(veri.attemptId) ||
+      !Number.isSafeInteger(veri.question) || veri.question < 1 || veri.question > 200 ||
+      !Array.isArray(veri.choices) || veri.choices.length < 1 || veri.choices.length > 20 ||
+      veri.choices.some(function(x){return !['correct','wrong','unanswered'].includes(x)})) return {basarili:false};
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return {basarili:false};
+  try {
+    const session = oturumKaydi_(token);
+    if (!session) return {basarili:false};
+    const pupil = kayitNoIle_(session.no);
+    if (!pupil || !pupil.no) return {basarili:false};
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(ETKINLIK_SORU_SONUCLARI_SAYFASI_);
+    if (!sheet) {
+      sheet = ss.insertSheet(ETKINLIK_SORU_SONUCLARI_SAYFASI_);
+      sheet.appendRow(['KayitKimligi','OgrenciNo','Etkinlik','DenemeKimligi','SoruNo','SecimGecmisi','GuncellemeZamani']);
+    }
+    const key = String(pupil.no)+':'+veri.activityId+':'+veri.attemptId+':'+veri.question;
+    const last = sheet.getLastRow();
+    const keys = last > 1 ? sheet.getRange(2,1,last-1,1).getDisplayValues() : [];
+    const row = keys.findIndex(function(r){return r[0]===key;});
+    const record = [key,String(pupil.no),veri.activityId,veri.attemptId,veri.question,JSON.stringify(veri.choices),new Date()];
+    if (row >= 0) sheet.getRange(row+2,1,1,7).setValues([record]);
+    else sheet.appendRow(record);
+    return {basarili:true};
+  } catch (e) { return {basarili:false}; }
+  finally { lock.releaseLock(); }
+}
