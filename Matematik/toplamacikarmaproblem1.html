@@ -119,8 +119,8 @@ const done=k=>ans.slice(k*5,k*5+5).every(v=>v!==null);
 const go=i=>{cur=i;view='q';draw();scrollTo(0,0)};
 const sec=k=>{cur=k*5;view='s';draw();scrollTo(0,0)};
 const fin=()=>{if(ans.some(v=>v===null)){alert('Sonucu kaydetmeden önce 30 sorunun tamamını yanıtla.');return}sendTrackedResult();view='e';draw();scrollTo(0,0)};
-const pick=j=>{if(ans[cur]===null){ans[cur]=j;if(firstAnswers[cur]===null)firstAnswers[cur]=j;draw()}};
-const reset=()=>{ans=Array(30).fill(null);firstAnswers=Array(30).fill(null);trackingAttemptId=Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10);trackingStartedAt=Date.now();trackingResultSent=false;go(0)};
+const pick=j=>{if(ans[cur]===null){recordQuestionAnswer(cur,j);ans[cur]=j;if(firstAnswers[cur]===null)firstAnswers[cur]=j;draw()}};
+const reset=()=>{questionHistory=Array.from({length:30},()=>[]);ans=Array(30).fill(null);firstAnswers=Array(30).fill(null);trackingAttemptId=Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10);trackingStartedAt=Date.now();trackingResultSent=false;go(0)};
 const retry=()=>{const w=ans.map((v,i)=>v!==Q[i].a?i:-1).filter(i=>i>=0);w.forEach(i=>ans[i]=null);go(w[0])};
 function draw(){
  const k=cur/5|0;
@@ -144,7 +144,25 @@ function draw(){
   <div class="nav">${w.length?`<button class="btn" onclick="retry()">Yanlışları tekrar dene</button>`:'<span></span>'}<button class="btn p" onclick="reset()">Baştan başla</button></div>`;
  }
 }
+// Stable question IDs are independent of navigation and section retries.
+let questionHistory=Array.from({length:30},()=>[]);
+const questionPending=new Map();
+function recordQuestionAnswer(index,choice){
+ const history=questionHistory[index];history.push(choice);
+ const event={type:'4d:question-answer',schemaVersion:1,activityId:'mat-toplamacikarma-1',
+  contentVersion:1,attemptId:trackingAttemptId,question:index+1,choices:history.slice()};
+ const key=event.attemptId+':'+event.question;
+ questionPending.set(key,event);sendQuestionEvents();
+}
+function sendQuestionEvents(){if(window.parent===window)return;questionPending.forEach(e=>window.parent.postMessage(e,'*'));}
+window.addEventListener('message',function(e){
+ if(e.source!==window.parent||!e.data||e.data.type!=='4d:question-ack')return;
+ const d=e.data,key=d.attemptId+':'+d.question,p=questionPending.get(key);
+ if(p&&d.count===p.choices.length)questionPending.delete(key);
+});
+setInterval(sendQuestionEvents,5000);
 draw();
 </script>
 </body>
 </html>
+
