@@ -121,4 +121,68 @@ function chkR(id){const s=$('#'+id);let ok=0,n=0;const A=id=='s1'?MC.map(q=>q[2]
 function chkD(id){const s=$('#'+id);let ok=0;const n=s.querySelectorAll('.chip').length;s.querySelectorAll('.slot,.bin').forEach(t=>{t.classList.remove('bad');const cs=[...t.querySelectorAll('.chip')];if(!t.classList.contains('bin')&&!cs.length)t.classList.add('bad');cs.forEach(c=>{const g=c.dataset.g==t.dataset.a;c.classList.remove('ok','bad');c.classList.add(g?'ok':'bad');if(g)ok++})});done(id,ok,n);dortdRecord(id,dortdDragAnswers(id))}
 document.querySelectorAll('.cr input').forEach(i=>i.addEventListener('input',()=>{i.value=i.value.toLocaleUpperCase('tr');if(i.value)i.nextElementSibling?.focus()}));
 function chkC(id){let ok=0,n=0;$('#'+id).querySelectorAll('.cr input').forEach(i=>{n++;const g=i.value==i.dataset.a;i.classList.remove('ok','bad');i.classList.add(g?'ok':'bad');if(g)ok++});done(id,ok,n);dortdRecord(id,dortdCrosswordAnswers(id))}
+
+/* Eski Matematik etkinlikleriyle uyumlu portal kayıt protokolü. */
+let dortdAttemptId=Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10);
+let dortdStartedAt=Date.now(),dortdFinishedSent=false;
+const dortdPending=new Map(),dortdHistory=new Map();
+const dortdOrder=Object.keys(DORTD_SECTION_NAMES);
+function dortdQuestionOffset(id){
+  let sum=0;
+  for(const sectionId of dortdOrder){
+    if(sectionId===id)return sum;
+    const el=document.getElementById(sectionId);
+    sum+=el.querySelectorAll(sectionId==='s1'?'.q':sectionId==='s2'?'.q':sectionId==='s7'?'.cr input':'.chip').length;
+  }
+  return sum;
+}
+function dortdAllAnswered(){
+  return dortdOrder.every(id=>{
+    const record=DORTD_CHECKED[id];
+    return record&&record.items.every(item=>item.answered);
+  });
+}
+function dortdPublishPending(){
+  if(window.parent===window)return;
+  dortdPending.forEach(event=>window.parent.postMessage(event,'*'));
+}
+window.addEventListener('message',function(ev){
+  if(ev.source!==window.parent||!ev.data||ev.data.type!=='4d:question-ack')return;
+  const d=ev.data,key=d.attemptId+':'+d.question,stored=dortdPending.get(key);
+  if(stored&&Number(d.count)===stored.choices.length)dortdPending.delete(key);
+});
+setInterval(dortdPublishPending,5000);
+const dortdOriginalRecord=dortdRecord;
+dortdRecord=function(id,answers){
+  dortdOriginalRecord(id,answers);
+  const offset=dortdQuestionOffset(id);
+  answers.forEach((answer,index)=>{
+    const question=offset+index+1, key=dortdAttemptId+':'+question;
+    const choice=answer.answered?(answer.correct?'correct':'wrong'):'unanswered';
+    const history=dortdHistory.get(question)||[];
+    // Tekrar kontrol aynı durumu değişmediyse yeni deneme sayılmasın.
+    if(history[history.length-1]!==choice){
+      history.push(choice);dortdHistory.set(question,history);
+      dortdPending.set(key,{type:'4d:question-answer',schemaVersion:1,
+        activityId:'fen-besinlerdegerlendirme',contentVersion:1,
+        attemptId:dortdAttemptId,question,choices:history.slice()});
+    }
+  });
+  dortdPublishPending();
+  // Eksik yanıtlar varken yalnızca soru verileri gönderilir; tamamlanmış sayılmaz.
+  if(!dortdFinishedSent&&dortdAllAnswered()){
+    const all=dortdOrder.flatMap(key=>DORTD_CHECKED[key].items);
+    const correct=all.filter(a=>a.correct).length,total=all.length;
+    dortdFinishedSent=true;
+    if(window.parent!==window)window.parent.postMessage({
+      type:'4d:activity-finished',schemaVersion:1,activityId:'fen-besinlerdegerlendirme',
+      attemptId:dortdAttemptId,correct,wrong:total-correct,total,
+      wrongAttempts:all.length-correct,firstTry:[...dortdHistory.values()].filter(h=>h[0]==='correct').length,
+      durationSeconds:Math.max(0,Math.round((Date.now()-dortdStartedAt)/1000))
+    },'*');
+    const tot=document.getElementById('tot');
+    if(tot)tot.textContent+=' · Bütün sorular kontrol edildi';
+  }
+};
+
 </script></body></html>
