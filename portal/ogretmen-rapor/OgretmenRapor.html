@@ -11,7 +11,8 @@ button{min-height:44px;padding:10px 16px;border:0;border-radius:10px;background:
 <header class="reportHeader"><div><p class="eyebrow">4/D · öğretmen paneli</p><h1>Öğretmen Raporu</h1><p id="status" role="status">Yükleniyor...</p></div><span class="reportPrivacy">🔒 Öğretmene özel</span></header>
 <nav class="reportNav" aria-label="Rapor bölümleri"><a href="#outcomePanel">Kazanımlar</a><a href="#catalogPanel">Ders içerikleri</a><a href="#activityPanel">Etkinlikler</a><a href="#declarationPanel">Tamamlama</a><a href="#notebookPanel">Defter notları</a><a href="#studentPanel">Öğrenciler</a><a href="#announcementPanel">Duyurular</a></nav>
 <div class="stats"><p>Öğrenci: <strong id="count">—</strong></p><p>Geçerli sonuç: <strong id="results">—</strong></p></div>
-<section id='outcomePanel' class='reportSection'><h2>Kazanımlar</h2><p class="muted">Henüz gerçek öğrenci kaydı yoksa bu bölüm boş kalır. Başarı oranı, kaydedilmiş tüm tamamlanma denemelerindeki doğru cevapların oranıdır.</p><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
+<section id="questionPilot" class="reportSection"><h2>Toplama ve Çıkarma Problemleri 1 · Soru takibi</h2><p>İlk cevap ve son cevap ayrı gösterilir. Yeniden denemelerde öğrenci çözümü görmüş olabilir. Gri hücre: kayıtlı cevap yok; soruyu görmediği anlamına gelmez. MİSAFİR dahil edilmez.</p><button type="button" onclick="loadQuestionPilot()">Soru kayıtlarını yenile</button><p id="questionPilotStatus" role="status"></p><div id="questionPilotRows"></div></section>
+<section id='outcomePanel'  class='reportSection'><h2>Kazanımlar</h2><p class="muted">Henüz gerçek öğrenci kaydı yoksa bu bölüm boş kalır. Başarı oranı, kaydedilmiş tüm tamamlanma denemelerindeki doğru cevapların oranıdır.</p><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
 <section id='catalogPanel' class='reportSection'><h2>📚 Ders içerikleri</h2><p class="muted">Yedi dersin portal bağlantıları burada. Bu alan içerik kataloğudur; öğrenci sonuçları ve tamamlama kayıtları aşağıdaki takip bölümlerinde gösterilir.</p><div id="dersKatalogu" class="lessonCatalog"></div></section>
 <section id='activityPanel' class='reportSection'><h2>Etkinliğe göre katılım</h2><p>“Henüz sonuç yok”, öğrencinin oyuna hiç girmediğini kanıtlamaz. Yalnızca tamamlanmış kayıt bulunmadığını gösterir.</p><div id="activitySections"></div></section><section id='declarationPanel' class='reportSection'><h2>Seçilen etkinlikler — Tamamlama bildirimleri</h2><p class="muted">Bu bölüm öğrencinin “Etkinliği Tamamladım” beyanını gösterir. Otomatik doğru-yanlış puanı değildir. MİSAFİR hariçtir.</p><div id="declarationSections"></div></section><section id='notebookPanel' class='reportSection'><h2>📒 Defter Notları — Yazdım Takibi</h2>
 <p class="muted">Öğrencinin kendi işaretlediği beyanlardır; öğretmen doğrulaması değildir. MİSAFİR kayıtları hariçtir. Her notu açarak yazanları ve henüz işaretlemeyenleri görebilirsin.</p>
@@ -24,6 +25,27 @@ button{min-height:44px;padding:10px 16px;border:0;border-radius:10px;background:
 <h3>Mevcut duyurular</h3><p id="duyuruListeMesaj" role="status"></p><div id="duyuruListe"></div><button id="duyuruYenile" type="button">Duyuruları yenile</button></section>
 <script>
 "use strict";
+function loadQuestionPilot(){
+ const status=document.getElementById('questionPilotStatus');status.textContent='Yükleniyor…';
+ google.script.run.withSuccessHandler(function(r){
+  const root=document.getElementById('questionPilotRows');root.replaceChildren();
+  if(!r||!r.basarili){status.textContent='Kayıtlar alınamadı.';return;}
+  status.textContent=r.attempts.length?r.attempts.length+' çalışma oturumu. En yeni kayıt üstte.':'Henüz soru kaydı yok.';
+  r.attempts.forEach(a=>{
+   const box=document.createElement('details'),title=document.createElement('summary');
+   const qs=Object.values(a.questions),first=qs.filter(q=>q.firstCorrect).length;
+   title.textContent=a.name+' · '+qs.length+'/30 yanıt · İlk cevapta '+first+' doğru · '+new Date(a.at).toLocaleString('tr-TR');box.append(title);
+   const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:14px';
+   for(let i=1;i<=30;i++){
+    const q=a.questions[i],cell=document.createElement('div');
+    cell.style.cssText='padding:12px;border-radius:10px;color:#172b40;background:'+(q?(q.lastCorrect?(q.firstCorrect?'#dcfce7':'#fef3c7'):'#fee2e2'):'#edf1f5');
+    cell.textContent='Soru '+i+' · '+(!q?'Yanıt kaydı yok':'İlk: '+'ABCD'[q.first]+' ('+(q.firstCorrect?'doğru':'yanlış')+'), son: '+'ABCD'[q.last]+' ('+(q.lastCorrect?'doğru':'yanlış')+'), '+q.count+' deneme');grid.append(cell);
+   }
+   box.append(grid);root.append(box);
+  });
+ }).withFailureHandler(function(){status.textContent='Soru raporu alınamadı; yeniden deneyin.';}).soruPilotRaporu();
+}
+loadQuestionPilot();
 function renderRows(id,items){const target=document.getElementById(id);const labels=[...target.closest('table').querySelectorAll('thead th')].map(th=>th.textContent.trim());items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v,i){const td=document.createElement('td');td.textContent=String(v);td.dataset.label=labels[i]||'';tr.appendChild(td)});target.appendChild(tr)})}
 function ratio(a,b){return b?(100*a/b).toFixed(1)+'%':'—'}
 function activityName(id){return ({'mat-kayipsayilar':'Matematik • Kayıp Sayılar','mat-oruntuler':'Matematik • Sayı Örüntüleri','mat-dogalsayilar-degerlendirme':'Matematik • Doğal Sayılar Değerlendirme','mat-toplamacikarma-1':'Matematik • Toplama ve Çıkarma Problemleri 1','mat-toplamacikarma-2':'Matematik • Toplama ve Çıkarma Problemleri 2','insan-sorumluluk':'İnsan Hakları • İnsan Olma Sorumluluğu','trafik-yaya':'Trafik Güvenliği • Yaya Olarak Trafik Kuralları'})[id]||id}

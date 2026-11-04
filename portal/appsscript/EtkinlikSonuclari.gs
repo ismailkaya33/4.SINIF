@@ -102,3 +102,35 @@ function ogrenciIlerlemeOzeti(token) {
     dogru:correct,toplam:total,oran:total?Math.round(correct*100/total):0,
     kaydedilenEtkinlikler:[...unique]};
 }
+
+/** Pilot: answer histories, server-derived identity and correctness. */
+const SORU_PILOT_CEVAPLAR_=[1,3,1,1,2,0,1,0,3,3,1,0,3,0,0,1,1,2,3,2,3,0,2,2,0,1,0,2,0,3];
+function soruPilotuDogrula_(v){
+ if(!v||v.activityId!=='mat-toplamacikarma-1'||v.contentVersion!==1||
+ typeof v.attemptId!=='string'||!/^[A-Za-z0-9_-]{12,80}$/.test(v.attemptId)||
+ !Number.isInteger(v.question)||v.question<1||v.question>30||!Array.isArray(v.choices)||
+ v.choices.length<1||v.choices.length>100||v.choices.some(x=>!Number.isInteger(x)||x<0||x>3))return null;
+ return v;
+}
+function soruCevabiKaydet(token,veri){
+ if(typeof token!=='string'||token.length!==73||!soruPilotuDogrula_(veri))return {basarili:false};
+ const lock=LockService.getScriptLock();if(!lock.tryLock(10000))return {basarili:false};
+ try{
+  const oturum=oturumKaydi_(token);if(!oturum)return {basarili:false};
+  const ogrenci=kayitNoIle_(oturum.no);if(!ogrenci||!ogrenci.no)return {basarili:false};
+  const ss=SpreadsheetApp.getActiveSpreadsheet();let sh=ss.getSheetByName('SORU_DENEMELERI');
+  if(!sh){sh=ss.insertSheet('SORU_DENEMELERI');sh.appendRow(['OlayKimligi','OgrenciNo','Etkinlik','Surum','Oturum','Soru','Deneme','Secenek','Dogru','KayitZamani']);}
+  const rows=sh.getLastRow()>1?sh.getRange(2,1,sh.getLastRow()-1,10).getValues():[];
+  const prefix=ogrenci.no+':'+veri.activityId+':v1:'+veri.attemptId+':'+veri.question+':';
+  const existing={};rows.forEach(r=>{existing[String(r[0])]=Number(r[7]);});
+  const fresh=[];
+  for(let i=0;i<veri.choices.length;i++){
+   const key=prefix+(i+1),choice=veri.choices[i];
+   if(Object.prototype.hasOwnProperty.call(existing,key)){
+    if(existing[key]!==choice)return {basarili:false};
+   }else fresh.push([key,ogrenci.no,veri.activityId,1,veri.attemptId,veri.question,i+1,choice,choice===SORU_PILOT_CEVAPLAR_[veri.question-1],new Date()]);
+  }
+  if(fresh.length)sh.getRange(sh.getLastRow()+1,1,fresh.length,10).setValues(fresh);
+  return {basarili:true,count:veri.choices.length};
+ }catch(e){return {basarili:false};}finally{lock.releaseLock();}
+}
