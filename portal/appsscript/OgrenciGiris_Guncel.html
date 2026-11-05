@@ -220,8 +220,8 @@ body:not(.oyunda),body.oyunda,button,input{font-family:'Nunito',system-ui,Arial,
 .progressCompact[open] .progressCompactChevron{transform:rotate(180deg)}
 .progressCompactBody{padding:0 18px 17px;border-top:1px solid #ddeaf4}
 .progressCompactBody #ilerlemeDurum{font-size:16px;margin:11px 0}
-.progressCompactBody .progressStats{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:8px}
-@media(max-width:620px){.progressCompact>summary{flex-wrap:wrap;gap:10px;min-height:63px}.progressCompactName{width:calc(100% - 99px)}.progressCompactTrack{order:3;flex-basis:100%}.progressCompactScore{margin-left:auto}.progressCompactChevron{order:2}.progressCompactBody .progressStats{grid-template-columns:1fr 1fr 1fr}.progressCompactBody .progressStats small{font-size:13px}}
+.progressCompactBody .progressStats{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:8px}
+@media(max-width:620px){.progressCompact>summary{flex-wrap:wrap;gap:10px;min-height:63px}.progressCompactName{width:calc(100% - 99px)}.progressCompactTrack{order:3;flex-basis:100%}.progressCompactScore{margin-left:auto}.progressCompactChevron{order:2}.progressCompactBody .progressStats{grid-template-columns:1fr 1fr}.progressCompactBody .progressStats small{font-size:13px}}
 
 /* Ders karti -> tam sayfa alt menu; Buyuk ve okunakli gezinme */
 #dersGeriSatiri{display:flex;align-items:center;gap:17px;margin:15px 0}
@@ -385,7 +385,7 @@ body.loginView #giris{min-height:52px}
 <section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 </div>
-<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactLabel">Doğru yanıt</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran" aria-label="Doğru yanıt oranı">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor. Bu bir not değildir; yalnızca kaydedilen çalışmaları gösterir.</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Farklı etkinlik</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru yanıt</small></div></div></div></details>
+<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactLabel">Tamamlanan çalışma</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran" aria-label="Çalışma tamamlama oranı">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor. Bu bir not değildir; yalnızca kaydedilen çalışmaları gösterir.</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Tamamlanan etkinlik</small></div><div><strong id="ilerlemeDefter">–</strong><small>Yazılan defter notu</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru yanıt</small></div></div></div></details>
 <section id="newContentPanel" class="newContentPanel" hidden>
  <button id="newContentOpen" class="newContentSummary" type="button" aria-haspopup="dialog">✨ Yeni İçerikler <span>İçerikleri gör →</span></button>
 </section>
@@ -542,23 +542,26 @@ document.getElementById("newContentOpen").addEventListener("click",function(){do
 document.getElementById("newContentClose").addEventListener("click",function(){document.getElementById("newContentDialog").close()});
 document.getElementById("newContentDialog").addEventListener("click",function(e){if(e.target===this)this.close()});
 function ekranGoster(oturumVar){document.body.classList.toggle("loginView",!oturumVar);document.body.classList.toggle("studentView",oturumVar);girisAlani.hidden=oturumVar;oturumAlani.hidden=!oturumVar;cikisButonu.hidden=!oturumVar;if(!oturumVar){oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunDurum.textContent="";oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunCer.removeAttribute("src");}}
+let ilerlemeIstekSirasi=0;
 function ilerlemeYukle(){
+ const istek=++ilerlemeIstekSirasi;
  const token=sessionStorage.getItem(anahtarAdi);
  if(!token)return;
  const status=document.getElementById("ilerlemeDurum");
  status.textContent="İlerleme bilgileri yükleniyor...";
  google.script.run.withSuccessHandler(function(r){
-  if(sessionStorage.getItem(anahtarAdi)!==token)return;
+  if(sessionStorage.getItem(anahtarAdi)!==token||istek!==ilerlemeIstekSirasi)return;
   if(!r||!r.basarili){status.textContent="İlerleme bilgileri alınamadı.";return}
   kaydedilenEtkinlikler=new Set(r.kaydedilenEtkinlikler||[]);etkinlikDurumlariniYenile();
   document.getElementById("ilerlemeEtkinlik").textContent=r.etkinlikSayisi;
   document.getElementById("ilerlemeDeneme").textContent=r.denemeSayisi;
+  document.getElementById("ilerlemeDefter").textContent=r.defterSayisi;
   document.getElementById("ilerlemeDogru").textContent=r.dogru+" / "+r.toplam;
-  document.getElementById("ilerlemeOran").textContent=r.oran+"%";
-  document.getElementById("ilerlemeBar").style.width=Math.max(0,Math.min(100,r.oran))+"%";
-  status.textContent=r.denemeSayisi?"Kayıtlı çalışmalarındaki doğru yanıt oranı; bu bir not değildir.":"Henüz sonuç kaydedilmedi. İlk çalışmanı bitirince burada görebilirsin.";
+  document.getElementById("ilerlemeOran").textContent=r.tamamlamaOrani+"%";
+  document.getElementById("ilerlemeBar").style.width=Math.max(0,Math.min(100,r.tamamlamaOrani))+"%";
+  status.textContent=r.tamamlananCalisma+" / "+r.toplamCalisma+" çalışma tamamlandı. Etkinlikler ve defter notları birlikte sayılır; aynı çalışma bir kez sayılır. Doğru yanıt oranı: %"+r.oran+". Bu bir not değildir.";
  }).withFailureHandler(function(){
-  if(sessionStorage.getItem(anahtarAdi)===token)status.textContent="İlerleme bilgileri şu anda alınamadı.";
+  if(sessionStorage.getItem(anahtarAdi)===token&&istek===ilerlemeIstekSirasi)status.textContent="İlerleme bilgileri şu anda alınamadı.";
  }).ogrenciIlerlemeOzeti(token);
 }
 function duyurulariYukle(){
@@ -653,7 +656,7 @@ window.addEventListener("message",function(e){
    const path=Object.keys(resultTrackByPath).find(p=>resultTrackByPath[p]===d.activityId);
    if(path)google.script.run.withSuccessHandler(function(cr){
     if(sessionStorage.getItem(anahtarAdi)!==token)return;
-    if(cr&&cr.basarili){bitirilenEtkinlikler.add(path);seciliEtkinlikButonlariYenile();}
+    if(cr&&cr.basarili){bitirilenEtkinlikler.add(path);seciliEtkinlikButonlariYenile();ilerlemeYukle();}
     else{const b=document.querySelector('.completionButton[data-activity="'+path+'"]');if(b)b.hidden=false;oyunDurum.textContent+=" Tamamlama durumu ayrıca kaydedilemedi.";}
    }).seciliEtkinlikTamamla(token,path);
   } else oyunDurum.textContent="Sonuç kaydedilemedi. Oturumunu kontrol et.";
@@ -741,7 +744,7 @@ function seciliEtkinlikButonlariKur(){
    button.disabled=true;button.textContent="Kaydediliyor...";
    google.script.run.withSuccessHandler(function(r){
     if(sessionStorage.getItem(anahtarAdi)!==token)return;
-    if(r&&r.basarili){bitirilenEtkinlikler.add(pathname);seciliEtkinlikButonlariYenile();}
+    if(r&&r.basarili){bitirilenEtkinlikler.add(pathname);seciliEtkinlikButonlariYenile();ilerlemeYukle();}
     else{button.disabled=false;button.textContent="Tekrar Dene";}
    }).withFailureHandler(function(){button.disabled=false;button.textContent="Tekrar Dene";}).seciliEtkinlikTamamla(token,pathname);
   });
@@ -788,7 +791,7 @@ function defterKartiOlustur(dir,filename,label,recordId){
   input.disabled=true;caption.textContent="Kaydediliyor...";
   google.script.run.withSuccessHandler(function(r){
    if(sessionStorage.getItem(anahtarAdi)!==token)return;
-   if(r&&r.basarili){yazilanNotlar.add(id);guncelle();}
+   if(r&&r.basarili){yazilanNotlar.add(id);guncelle();ilerlemeYukle();}
    else{input.disabled=false;input.checked=false;caption.textContent="Kaydedilemedi, tekrar işaretle";}
   }).withFailureHandler(function(){
    if(sessionStorage.getItem(anahtarAdi)!==token)return;

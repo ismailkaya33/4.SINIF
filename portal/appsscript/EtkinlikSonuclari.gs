@@ -85,9 +85,7 @@ function ogrenciIlerlemeOzeti(token) {
   const student = kayitNoIle_(session.no);
   if (!student) return {basarili:false};
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SONUC_SAYFASI_ADI_);
-  if (!sheet || sheet.getLastRow() < 2)
-    return {basarili:true,etkinlikSayisi:0,denemeSayisi:0,dogru:0,toplam:0,oran:0,kaydedilenEtkinlikler:[]};
-  const rows = sheet.getRange(2,2,sheet.getLastRow()-1,9).getValues();
+  const rows = sheet && sheet.getLastRow() > 1 ? sheet.getRange(2,2,sheet.getLastRow()-1,9).getValues() : [];
   const unique = new Set();
   let attempts=0, correct=0, total=0;
   rows.forEach(function(r){
@@ -98,7 +96,31 @@ function ogrenciIlerlemeOzeti(token) {
         !Number.isSafeInteger(t) || t<1 || d<0 || d>t) return;
     unique.add(activity); attempts++; correct+=d; total+=t;
   });
-  return {basarili:true,etkinlikSayisi:unique.size,denemeSayisi:attempts,
+  // A result and a completion declaration for the same activity count once.
+  const paths = {
+    'mat-dogalsayilar-degerlendirme':'Matematik/dogalsayilardegerlendirme.html',
+    'mat-toplamacikarma-1':'Matematik/toplamacikarmaproblem1.html',
+    'mat-toplamacikarma-2':'Matematik/toplamacikarmaproblem2.html',
+    'insan-sorumluluk':'Insanhaklari/insanolmasorumlulugu.html',
+    'trafik-yaya':'Trafik/yayaolaraktrafikkurallarietkinligi.html',
+    'fen-besinlerdegerlendirme':'Fen/besinlerdegerlendirme.html'
+  };
+  const available = new Set(SECILI_ETKINLIKLER_);
+  Object.keys(SONUC_IZINLI_ETKINLIKLER_).forEach(id=>available.add(paths[id]||id));
+  const completed = new Set([...unique].map(id=>paths[id]||id));
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  function ownIds(name) {
+    const sh=ss.getSheetByName(name);
+    return sh && sh.getLastRow()>1 ? sh.getRange(2,1,sh.getLastRow()-1,2).getDisplayValues()
+      .filter(r=>String(r[0]).trim()===String(student.no).trim()).map(r=>r[1]) : [];
+  }
+  ownIds(ETKINLIK_BEYAN_SAYFASI_).forEach(id=>{if(available.has(id))completed.add(id)});
+  const notes=new Set(ownIds(DEFTER_DURUM_SAYFA_).filter(defterNotuGecerli_).map(defterNotuStandart_));
+  const noteTotal=Object.keys(DEFTER_NOTLARI_).reduce((n,dir)=>n+DEFTER_NOTLARI_[dir].length,0);
+  const taskTotal=available.size+noteTotal, taskDone=completed.size+notes.size;
+  return {basarili:true,etkinlikSayisi:completed.size,denemeSayisi:attempts,
+    defterSayisi:notes.size,tamamlananCalisma:taskDone,toplamCalisma:taskTotal,
+    tamamlamaOrani:taskTotal?Math.round(taskDone*100/taskTotal):0,
     dogru:correct,toplam:total,oran:total?Math.round(correct*100/total):0,
     kaydedilenEtkinlikler:[...unique]};
 }

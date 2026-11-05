@@ -2,7 +2,7 @@
 const DEFTER_NOTLARI_ = Object.freeze({
  'Turkce':['atasozleri.png','deyimler.png','gercekmecaz.png','ikilemeler.jpeg','metninbolumleri.png','pekistirme.JPG'],
  'Matematik':['cikarmadaverilmeyen.png','cikarmadefternotu.png','toplama.png','toplamacikarmaproblemleri.png','zihindencikarma.png','zihindentoplama.png'],
- 'Fen':['besinler1.png','besinler2.png','besinler3.png','besinlerintazeligi.png','besinlerisaklama.png'],
+ 'Fen':['besinler1.png','besinler2.png','besinler3.png','besinlerintazeligi.png','besinlerisaklama.png','hareketliyasam.png','dengelibeslenme.png'],
  'Sosyal':['ailemcocuk.jpg','ailetarihi.png','cocukoyun.png','farkliliklarimizvesaygi.png','mersinkultur.png','millikultur.png','millimucadele1.png','millimucadele2.png','millimucadele3.png','millimucadele4.png','millimucadele5.png','millimucadele6.png','millimucadele7.png']
 });
 const DEFTER_DURUM_SAYFA_='DEFTER_TAMAMLAMA';
@@ -69,6 +69,7 @@ const SECILI_ETKINLIKLER_ = Object.freeze([
  'Turkce/sozavcıları.html',
  'Matematik/cikarmaislemi.html',
  'Fen/besinkasifleri.html',
+ 'Fen/besinlerdegerlendirme.html',
  'Sosyal/oyunzamani.html',
  'Matematik/dogalsayilardegerlendirme.html',
  'Matematik/toplamacikarmaproblem1.html',
