@@ -769,7 +769,7 @@ function defterKartiOlustur(dir,filename,label,recordId){
  const id=recordId||dir+"/"+filename;
  const card=document.createElement("article");card.className="noteCard";
  const title=document.createElement("strong");title.textContent="📒 "+label;
- const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename);
+ const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename)+(["hareketliyasam.png","dengelibeslenme.png"].includes(filename)?"?v=20261105b":"");
  link.target="_blank";link.rel="noopener noreferrer";link.textContent="Notu Aç ↗";link.setAttribute("aria-label",label+" defter notunu yeni sekmede aç");
  const choice=document.createElement("label");choice.className="noteCheckbox";
  const input=document.createElement("input");input.type="checkbox";input.dataset.noteId=id;
