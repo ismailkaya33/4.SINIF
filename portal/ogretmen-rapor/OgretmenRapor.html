@@ -82,8 +82,8 @@ function duyuruListele(){
  const el=document.getElementById('duyuruListe'),msg=document.getElementById('duyuruListeMesaj');
  msg.textContent='Duyurular okunuyor...';
  google.script.run.withSuccessHandler(function(rows){
-  el.replaceChildren();msg.textContent=rows.length?'':'Henüz duyuru yok.';
-  rows.forEach(function(d){
+  el.replaceChildren();const aktif=rows.filter(function(d){return String(d.durum||'').trim().toUpperCase()!=='ARSIV';});msg.textContent=aktif.length?'':'Aktif duyuru veya taslak yok.';
+  rows.filter(function(d){return String(d.durum||'').trim().toUpperCase()!=='ARSIV';}).forEach(function(d){
    const block=document.createElement('div'),title=document.createElement('strong'),meta=document.createElement('p'),text=document.createElement('p'),btn=document.createElement('button');
    title.textContent=d.baslik;meta.textContent='Durum: '+d.durum;text.textContent=d.metin;
    const next=d.durum==='YAYINDA'?'ARSIV':'YAYINDA';
