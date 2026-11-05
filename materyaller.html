@@ -465,7 +465,7 @@
                 <li><a href="Fen/madenler.html">Madenler 1</a></li>
                 <li><a href="Fen/madenler2.html">Madenler 2</a></li>
                 <li><a id="etk-fen-unite1" href="Fen/unitedegerlendirme1.html">F.4.1 Ünite Değerlendirme Testi</a></li>
-                <li><a id="etk-fen-besdeg" href="Fen/besinlerdegerlendirme.html">Besinler Değerlendirme Testi</a></li>
+                <li><a id="etk-fen-unite-besinler" href="Fen/besinlerdegerlendirme.html">Besinler Değerlendirme Testi</a></li>
             </ul>
         <div class="page-header" style="margin-top: 20px;">
             <h2 class="page-title"><span style="font-size:2rem">📝</span> Defter Notları</h2>
@@ -476,6 +476,8 @@
             <li><a id="etk-fen-not3" href="Fen/DefterNotlari/besinler3.png" target="_blank">Besin İçerikleri Notu 3 📸</a></li>
             <li><a id="etk-fen-not4" href="Fen/DefterNotlari/besinlerintazeligi.png" target="_blank">Besin Tazeliği Ve Doğallığı Not 4 📸</a></li>
             <li><a id="etk-fen-not5" href="Fen/DefterNotlari/besinlerisaklama.png" target="_blank">Besinlerin Saklanması ve Temizliği Not 5 📸</a></li>
+            <li><a id="etk-fen-not6" href="Fen/DefterNotlari/hareketliyasam.png" target="_blank">Hareketli Yaşıyorum, Sağlığımı Koruyorum ve Besin İsrafı 📸</a></li>
+            <li><a id="etk-fen-not7" href="Fen/DefterNotlari/dengelibeslenme.png" target="_blank">Dengeli Beslenme 📸</a></li>
         </ul>
         </div>
 
@@ -557,146 +559,154 @@
         document.addEventListener("DOMContentLoaded", function() {
             // İçerik kayıtları: yeni eklemelerde yalnızca bu listeye kayıt eklenir.
             const contentRegistry = [
-          {
-                    "id": "btn-matematik",
-                    "date": "2026-10-25"
-          },
-          {
-                    "id": "btn-fen",
-                    "date": "2026-11-05"
-          },
-          {
-                    "id": "btn-insan",
-                    "date": "2026-10-18"
-          },
-          {
-                    "id": "btn-sosyal",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "btn-turkce",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "btn-oyunlar",
-                    "date": "2026-11-05"
-          },      
-          {
-                    "id": "etk-mat-zihintop",
-                    "date": "2026-10-18"
-          },
-          {
-                    "id": "etk-mat-verilmeyen",
-                    "date": "2026-10-25"
-          },
-          {
-                    "id": "etk-mat-cikarma",
-                    "date": "2026-10-18"
-          },
-          {
-                    "id": "etk-mat-unite-dogal",
-                    "date": "2026-11-02"
-          },
-          {
-                    "id": "etk-fen-besin1",
-                    "date": "2026-10-18"
-          },
-          {
-                    "id": "etk-fen-besin2",
-                    "date": "2026-10-18"
-          },
-          {
-                    "id": "etk-insan-bilinci",
-                    "date": "2026-10-18"
-          },
-          {
-                    "id": "etk-sosyal-kultur",
-                    "date": "2026-10-21"
-          },
-          {
-                    "id": "etk-sosyal-oyun",
-                    "date": "2026-10-26"
-          },
-          {
-                    "id": "etk-turkce-soz",
-                    "date": "2026-10-31"
-          },
-          {
-                    "id": "etk-mat-not3",
-                    "date": "2026-10-25"
-          },
-          {
-                    "id": "etk-mat-not4",
-                    "date": "2026-10-18"
-          },
-          {
-                    "id": "etk-mat-not5",
-                    "date": "2026-10-18"
-          },
-          {
-                    "id": "etk-fen-not4",
-                    "date": "2026-10-27"
-          },
-          {
-                    "id": "etk-fen-not5",
-                    "date": "2026-10-27"
-          },
-          {
-                    "id": "etk-fen-not3",
-                    "date": "2026-10-18"
-          },
-          {
-                    "id": "etk-sosyal-not7",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "etk-sosyal-not8",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "etk-sosyal-not9",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "etk-sosyal-not10",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "etk-sosyal-not11",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "etk-sosyal-not12",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "etk-sosyal-not13",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "etk-turkce-not3",
-                    "date": "2026-10-31"
-          },
-          {
-                    "id": "etk-turkce-not4",
-                    "date": "2026-10-31"
-          },
-          {
-                    "id": "etk-turkce-not5",
-                    "date": "2026-11-01"
-          },
-          {
-                    "id": "etk-turkce-not6",
-                    "date": "2026-11-01"
-          }
-          {
-                    "id": "etk-oyunlar-carpma",
-                    "date": "2026-11-05"
-          } 
-          {
-                    "id": "etk-fen-besdeg",
-                    "date": "2026-11-05"
-          }     
+  {
+    "id": "btn-matematik",
+    "date": "2026-10-25"
+  },
+  {
+    "id": "btn-fen",
+    "date": "2026-11-05"
+  },
+  {
+    "id": "btn-insan",
+    "date": "2026-10-18"
+  },
+  {
+    "id": "btn-sosyal",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "btn-turkce",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "btn-oyunlar",
+    "date": "2026-11-05"
+  },
+  {
+    "id": "etk-mat-zihintop",
+    "date": "2026-10-18"
+  },
+  {
+    "id": "etk-mat-verilmeyen",
+    "date": "2026-10-25"
+  },
+  {
+    "id": "etk-mat-cikarma",
+    "date": "2026-10-18"
+  },
+  {
+    "id": "etk-mat-unite-dogal",
+    "date": "2026-11-02"
+  },
+  {
+    "id": "etk-fen-besin1",
+    "date": "2026-10-18"
+  },
+  {
+    "id": "etk-fen-besin2",
+    "date": "2026-10-18"
+  },
+  {
+    "id": "etk-insan-bilinci",
+    "date": "2026-10-18"
+  },
+  {
+    "id": "etk-sosyal-kultur",
+    "date": "2026-10-21"
+  },
+  {
+    "id": "etk-sosyal-oyun",
+    "date": "2026-10-26"
+  },
+  {
+    "id": "etk-turkce-soz",
+    "date": "2026-10-31"
+  },
+  {
+    "id": "etk-mat-not3",
+    "date": "2026-10-25"
+  },
+  {
+    "id": "etk-mat-not4",
+    "date": "2026-10-18"
+  },
+  {
+    "id": "etk-mat-not5",
+    "date": "2026-10-18"
+  },
+  {
+    "id": "etk-fen-not4",
+    "date": "2026-10-27"
+  },
+  {
+    "id": "etk-fen-not5",
+    "date": "2026-10-27"
+  },
+  {
+    "id": "etk-fen-not3",
+    "date": "2026-10-18"
+  },
+  {
+    "id": "etk-sosyal-not7",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "etk-sosyal-not8",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "etk-sosyal-not9",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "etk-sosyal-not10",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "etk-sosyal-not11",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "etk-sosyal-not12",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "etk-sosyal-not13",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "etk-turkce-not3",
+    "date": "2026-10-31"
+  },
+  {
+    "id": "etk-turkce-not4",
+    "date": "2026-10-31"
+  },
+  {
+    "id": "etk-turkce-not5",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "etk-turkce-not6",
+    "date": "2026-11-01"
+  },
+  {
+    "id": "etk-oyunlar-carpma",
+    "date": "2026-11-04"
+  },
+  {
+    "id": "etk-fen-unite-besinler",
+    "date": "2026-11-04"
+  },
+  {
+    "id": "etk-fen-not6",
+    "date": "2026-11-05"
+  },
+  {
+    "id": "etk-fen-not7",
+    "date": "2026-11-05"
+  }
 ];
             const today = new Date(); today.setHours(0,0,0,0);
             const active = contentRegistry.filter(item => {
