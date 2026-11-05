@@ -779,24 +779,24 @@ function defterKartiOlustur(dir,filename,label,recordId){
  const caption=document.createElement("span");
  function guncelle(){
   const done=yazilanNotlar.has(id);
-  input.checked=done;input.disabled=done;
+  input.checked=done;input.disabled=false;
   choice.classList.toggle("done",done);
   caption.textContent=done?"Yazdım ✓ (Kaydedildi)":"Defterime yazdım";
  }
  guncelle();
  input.addEventListener("change",function(){
-  if(!input.checked)return;
+  const tamamlandi=input.checked;
   const token=sessionStorage.getItem(anahtarAdi);
   if(!token){guncelle();return}
   input.disabled=true;caption.textContent="Kaydediliyor...";
   google.script.run.withSuccessHandler(function(r){
    if(sessionStorage.getItem(anahtarAdi)!==token)return;
-   if(r&&r.basarili){yazilanNotlar.add(id);guncelle();ilerlemeYukle();}
-   else{input.disabled=false;input.checked=false;caption.textContent="Kaydedilemedi, tekrar işaretle";}
+   if(r&&r.basarili){if(tamamlandi)yazilanNotlar.add(id);else yazilanNotlar.delete(id);guncelle();if(!tamamlandi)caption.textContent="İşaret kaldırıldı (Kaydedildi)";ilerlemeYukle();}
+   else{guncelle();caption.textContent="Değişiklik kaydedilemedi, tekrar dene";}
   }).withFailureHandler(function(){
    if(sessionStorage.getItem(anahtarAdi)!==token)return;
-   input.disabled=false;input.checked=false;caption.textContent="Kaydedilemedi, tekrar işaretle";
-  }).defterNotuTamamla(token,id);
+   guncelle();caption.textContent="Değişiklik kaydedilemedi, tekrar dene";
+  }).defterNotuDurumKaydet(token,id,tamamlandi);
  });
  choice.append(input,caption);card.append(title,link,choice);return card;
 }
@@ -807,7 +807,7 @@ function defterDurumYukle(){
   yazilanNotlar=new Set(r.tamamlananlar||[]);
   document.querySelectorAll(".noteCheckbox input[data-note-id]").forEach(input=>{
    const done=yazilanNotlar.has(input.dataset.noteId);
-   input.checked=done;input.disabled=done;
+   input.checked=done;input.disabled=false;
    input.closest(".noteCheckbox").classList.toggle("done",done);
    input.nextElementSibling.textContent=done?"Yazdım ✓ (Kaydedildi)":"Defterime yazdım";
   });

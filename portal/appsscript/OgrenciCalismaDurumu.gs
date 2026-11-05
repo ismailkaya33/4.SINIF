@@ -44,6 +44,28 @@ function defterNotuTamamla(token,id) {
   return {basarili:true,tekrar:false};
  }catch(e){return {basarili:false}}finally{lock.releaseLock()}
 }
+/** Set the authenticated pupil's note state; retrying either state is safe. */
+function defterNotuDurumKaydet(token,id,tamamlandi) {
+ if(typeof tamamlandi!=='boolean')return {basarili:false};
+ if(tamamlandi)return defterNotuTamamla(token,id);
+ if(!oturumTokenGecerliBicimdeMi_(token)||!defterNotuGecerli_(id))return {basarili:false};
+ const lock=LockService.getScriptLock();
+ if(!lock.tryLock(10000))return {basarili:false};
+ try {
+  const session=oturumKaydi_(token);
+  if(!session)return {basarili:false};
+  const pupil=kayitNoIle_(session.no);
+  if(!pupil)return {basarili:false};
+  const sheet=SpreadsheetApp.getActiveSpreadsheet().getSheetByName(DEFTER_DURUM_SAYFA_);
+  if(!sheet||sheet.getLastRow()<2)return {basarili:true};
+  const canonical=defterNotuStandart_(id);
+  const rows=sheet.getRange(2,1,sheet.getLastRow()-1,2).getDisplayValues();
+  for(let i=rows.length-1;i>=0;i--){
+   if(String(rows[i][0])===String(pupil.no)&&defterNotuStandart_(rows[i][1])===canonical)sheet.deleteRow(i+2);
+  }
+  return {basarili:true};
+ }catch(e){return {basarili:false}}finally{lock.releaseLock()}
+}
 function defterNotuDurumum(token) {
  if(!oturumTokenGecerliBicimdeMi_(token))return {basarili:false};
  const session=oturumKaydi_(token);

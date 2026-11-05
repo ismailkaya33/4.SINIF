@@ -1,0 +1,17 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+let rows=[['40','Turkce/atasozleri.jpeg'],['39','Turkce/atasozleri.png'],['40','Turkce/atasozleri.png'],['40','Fen/besinler1.png']],locked=false;
+const sheet={getLastRow:()=>rows.length+1,getRange:()=>({getDisplayValues:()=>rows.map(r=>r.slice())}),deleteRow:n=>rows.splice(n-2,1),appendRow:r=>rows.push(r)};
+const ctx=vm.createContext({oturumTokenGecerliBicimdeMi_:t=>t==='valid',oturumKaydi_:t=>t==='valid'?{no:40}:null,kayitNoIle_:n=>({no:n}),LockService:{getScriptLock:()=>({tryLock:()=>{locked=true;return true},releaseLock:()=>{locked=false}})},SpreadsheetApp:{getActiveSpreadsheet:()=>({getSheetByName:()=>sheet})}});
+vm.runInContext(fs.readFileSync('portal/appsscript/OgrenciCalismaDurumu.gs','utf8'),ctx);
+const save=ctx.defterNotuDurumKaydet;
+assert.equal(save('bad','Turkce/atasozleri.png',false).basarili,false);assert.equal(rows.length,4);
+assert.equal(save('valid','unknown',false).basarili,false);
+assert.equal(save('valid','Turkce/atasozleri.png','false').basarili,false);
+assert.equal(save('valid','Turkce/atasozleri.png',false).basarili,true);assert.equal(rows.length,2);assert.equal(rows[0][0],'39');assert.equal(rows[1][1],'Fen/besinler1.png');assert.equal(locked,false);
+assert.equal(save('valid','Turkce/atasozleri.png',false).basarili,true);assert.equal(rows.length,2);
+assert.equal(save('valid','Turkce/atasozleri.png',true).basarili,true);assert.equal(rows.length,3);
+assert.equal(save('valid','Turkce/atasozleri.png',true).basarili,true);assert.equal(rows.length,3);
+assert.equal(ctx.defterNotuDurumum('valid').tamamlananlar.includes('Turkce/atasozleri.png'),true);
+assert.equal(save('valid','Turkce/atasozleri.png',false).basarili,true);
+assert.equal(ctx.defterNotuDurumum('valid').tamamlananlar.includes('Turkce/atasozleri.png'),false);
+console.log('PASS: check/uncheck/recheck, persisted reload state, alias duplicates, retries, own-student-only removal, invalid input and session rejection.');
