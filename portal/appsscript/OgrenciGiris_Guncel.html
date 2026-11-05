@@ -572,7 +572,7 @@ function duyurulariYukle(){
   const duyurular=Array.isArray(r.duyurular)?r.duyurular:[];
   if(!duyurular.length){durum.textContent="Henüz yayımlanmış duyuru yok.";return}
   durum.textContent=duyurular.length+" duyuru";
-  duyurular.forEach(function(d){const el=document.createElement("article"),title=document.createElement("h4"),p=document.createElement("p");title.textContent=d.baslik;p.textContent=d.metin;el.append(title,p);liste.appendChild(el)});
+  duyurular.forEach(function(d){const el=document.createElement("article"),title=document.createElement("h4"),p=document.createElement("p");title.textContent=d.baslik;const metin=String(d.metin||"").replace(/\r\n?/g,"\n");p.textContent=metin.replace(/([^\n])\s+(?=(?:[1-9]|[1-9][0-9])\.[ \t]+\S)/g,"$1\n");el.append(title,p);liste.appendChild(el)});
  }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
 }
 function tokenTemizle(){menuyeDon();yazilanNotlar.clear();bitirilenEtkinlikler.clear();kaydedilenEtkinlikler.clear();baslatilanEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
