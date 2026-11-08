@@ -650,6 +650,7 @@
         }
 
         function startGame() {
+            state.finishSent = false;
             state.currentIndex = 0;
             state.startedAt = new Date();
             render();
@@ -1172,7 +1173,8 @@
             const seconds = timeDiff % 60;
 
             let correctCount = state.tasks.filter(t => t.status === 'success').length;
-            if(state.startedAt&&state.tasks.length===RAW_TASKS.length&&state.tasks.every(t=>t.status==='success')){
+            if(!state.finishSent&&state.startedAt&&state.tasks.length===RAW_TASKS.length&&state.tasks.every(t=>t.status==='success')){
+                state.finishSent = true;
                 window.parent.postMessage({type:'4d:activity-finished',schemaVersion:1,activityId:'tur-ikilemeler',attemptId:'ik_'+(window.crypto&&typeof window.crypto.randomUUID==='function'?window.crypto.randomUUID().replace(/-/g,''):Date.now().toString(36)+Math.random().toString(36).slice(2)),correct:correctCount,wrong:state.tasks.length-correctCount,total:state.tasks.length,wrongAttempts:state.wrongCount,firstTry:state.tasks.filter(t=>t.status==='success'&&t.firstTry).length,durationSeconds:Math.floor((Date.now()-state.startedAt)/1000)},'*');
             }
 
