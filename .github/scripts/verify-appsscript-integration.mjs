@@ -18,6 +18,24 @@ assert.equal(verify({...base,total:11}),null,'Inconsistent totals rejected');
 assert.equal(verify({...base,activityId:'unknown-activity'}),null,'Unknown activity rejected');
 assert.equal(verify({...base,firstTry:9}),null,'Invalid first attempts rejected');
 assert.equal(verify({...base,durationSeconds:86401}),null,'Oversized duration rejected');
+// 2026-11-08: oyun içi bitişi doğrulanan dört etkinlik uçtan uca kayıtlı olmalı.
+const lateTracked=[
+ ['tur-ikilemeler','Turkce/ikilemeler.html',{correct:16,wrong:0,total:16,wrongAttempts:4,firstTry:12}],
+ ['mat-cikarmaislemi','Matematik/cikarmaislemi.html',{correct:16,wrong:0,total:16,wrongAttempts:2,firstTry:14}],
+ ['fen-besinkasifleri','Fen/besinkasifleri.html',{correct:15,wrong:3,total:18,wrongAttempts:5,firstTry:15}],
+ ['sos-oyunzamani','Sosyal/oyunzamani.html',{correct:18,wrong:0,total:18,wrongAttempts:3,firstTry:15}]
+];
+for(const [id,path,counts] of lateTracked){
+ assert.ok(verify({...base,...counts,activityId:id,attemptId:'xx_'+'a'.repeat(32)}),'Server accepts '+id);
+ assert.ok(portal.includes('"'+id+'":"https://ismailkaya33.github.io/4.SINIF/'+path+'"'),'Portal launches '+id+' in tracked frame');
+ assert.ok(portal.includes('"'+path+'":"'+id+'"'),'Portal maps '+path+' to '+id);
+ assert.ok(results.includes("'"+id+"':'"+path+"'"),'Progress maps '+id);
+ assert.ok(teacher.includes('"'+id+'"'),'Teacher report lists '+id);
+ assert.ok(teacherHtml.includes('"'+id+'":'),'Teacher report names '+id);
+}
+// Tek liste kuralı: bütün kod dosyaları portal/etkinlik-kayitlari.json ile aynı olmalı.
+const {katalogFarklari}=await import('../../tools/katalog-esitle.mjs');
+assert.deepEqual(katalogFarklari().farkli,[],'Activity catalog out of sync; run: node tools/katalog-esitle.mjs');
 assert.match(results,/function ogrenciIlerlemeOzeti\(token\)/,'Private student progress API');
 assert.match(registry,/fen-besinlerdegerlendirme/,'Registered food assessment');
 assert.match(results,/function etkinlikSoruSonucuKaydet\(token, veri\)/,'Session-bound question result API');

@@ -76,7 +76,7 @@
       "ders": "Türkçe",
       "konum": "Turkce/ikilemeler.html",
       "baslik": "İkileme Dedektifi",
-      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
+      "takip": "otomatik_sonuc"
     },
     {
       "ders": "Türkçe",
@@ -172,7 +172,7 @@
       "ders": "Matematik",
       "konum": "Matematik/cikarmaislemi.html",
       "baslik": "Çıkarma Dedektifleri",
-      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
+      "takip": "otomatik_sonuc"
     },
     {
       "ders": "Matematik",
@@ -184,7 +184,7 @@
       "ders": "Fen Bilimleri",
       "konum": "Fen/besinkasifleri.html",
       "baslik": "Besin Kaşifleri: Görev Haritası",
-      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
+      "takip": "otomatik_sonuc"
     },
     {
       "ders": "Fen Bilimleri",
@@ -274,7 +274,7 @@
       "ders": "Sosyal Bilgiler",
       "konum": "Sosyal/oyunzamani.html",
       "baslik": "Geçmişten Günümüze Çocuk Oyunları",
-      "takip": "oyun_ici_bitis_dogrulamasi_bekliyor"
+      "takip": "otomatik_sonuc"
     },
     {
       "ders": "İnsan Hakları",
@@ -316,31 +316,31 @@
       "ders": "Matematik",
       "konum": "Matematik/dogalsayilardegerlendirme.html",
       "baslik": "Sayı Avcıları – Doğal Sayılar Değerlendirme",
-      "takip": "secim_bekliyor"
+      "takip": "otomatik_sonuc"
     },
     {
       "ders": "İnsan Hakları",
       "konum": "Insanhaklari/insanolmasorumlulugu.html",
       "baslik": "İnsan Olma Sorumluluğum",
-      "takip": "secim_bekliyor"
+      "takip": "otomatik_sonuc"
     },
     {
       "ders": "Trafik Güvenliği",
       "konum": "Trafik/yayaolaraktrafikkurallarietkinligi.html",
       "baslik": "Yaya Olarak Trafik Kurallarına Uyarım",
-      "takip": "secim_bekliyor"
+      "takip": "otomatik_sonuc"
     },
     {
       "ders": "Matematik",
       "konum": "Matematik/toplamacikarmaproblem1.html",
       "baslik": "Toplama ve Çıkarma Problemleri 1",
-      "takip": "secim_bekliyor"
+      "takip": "otomatik_sonuc"
     },
     {
       "ders": "Matematik",
       "konum": "Matematik/toplamacikarmaproblem2.html",
       "baslik": "Toplama ve Çıkarma Problemleri 2",
-      "takip": "secim_bekliyor"
+      "takip": "otomatik_sonuc"
     },
     {
       "ders": "Oyunlar",

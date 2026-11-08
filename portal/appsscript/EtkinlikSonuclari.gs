@@ -97,14 +97,20 @@ function ogrenciIlerlemeOzeti(token) {
     unique.add(activity); attempts++; correct+=d; total+=t;
   });
   // A result and a completion declaration for the same activity count once.
-  const paths = {
+  /* KATALOG BASLA: ilerleme-yollari — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
+const paths = {
     'mat-dogalsayilar-degerlendirme':'Matematik/dogalsayilardegerlendirme.html',
     'mat-toplamacikarma-1':'Matematik/toplamacikarmaproblem1.html',
     'mat-toplamacikarma-2':'Matematik/toplamacikarmaproblem2.html',
     'insan-sorumluluk':'Insanhaklari/insanolmasorumlulugu.html',
     'trafik-yaya':'Trafik/yayaolaraktrafikkurallarietkinligi.html',
-    'fen-besinlerdegerlendirme':'Fen/besinlerdegerlendirme.html'
+    'fen-besinlerdegerlendirme':'Fen/besinlerdegerlendirme.html',
+    'tur-ikilemeler':'Turkce/ikilemeler.html',
+    'mat-cikarmaislemi':'Matematik/cikarmaislemi.html',
+    'fen-besinkasifleri':'Fen/besinkasifleri.html',
+    'sos-oyunzamani':'Sosyal/oyunzamani.html'
   };
+/* KATALOG BITIR: ilerleme-yollari */
   const available = new Set(SECILI_ETKINLIKLER_);
   Object.keys(SONUC_IZINLI_ETKINLIKLER_).forEach(id=>available.add(paths[id]||id));
   const completed = new Set([...unique].map(id=>paths[id]||id));

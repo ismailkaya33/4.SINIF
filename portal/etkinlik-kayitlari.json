@@ -1,0 +1,32 @@
+{
+  "aciklama": "4/D portalında takip edilen etkinliklerin TEK listesi. Bir etkinlik eklemek veya adını değiştirmek için yalnızca bu dosyayı düzenleyin, sonra 'node tools/katalog-esitle.mjs' çalıştırın. Komut; sunucu izin listesini, öğrenci portalını ve öğretmen raporunu bu listeye göre günceller.",
+  "siteAdresi": "https://ismailkaya33.github.io/4.SINIF/",
+  "otomatikSonuc": [
+    {"id": "mat-kayipsayilar", "yol": "test/kayipsayilar.html", "ad": "🎮 Matematik • Kayıp Sayılar", "konu": "Matematik", "kazanim": "M.4.1.3.4", "maxTotal": 1000, "dersListesinde": false},
+    {"id": "mat-oruntuler", "yol": "test/oruntuler.html", "ad": "🧩 Matematik • Sayı Örüntüleri", "konu": "Matematik", "kazanim": "SAYI_ORUNTULERI_KOD_BEKLIYOR", "maxTotal": 1000, "dersListesinde": false},
+    {"id": "mat-dogalsayilar-degerlendirme", "yol": "Matematik/dogalsayilardegerlendirme.html", "ad": "Matematik • Doğal Sayılar Değerlendirme", "konu": "Matematik", "kazanim": "Doğal sayıları değerlendirme", "maxTotal": 1000, "dersListesinde": true},
+    {"id": "mat-toplamacikarma-1", "yol": "Matematik/toplamacikarmaproblem1.html", "ad": "Matematik • Toplama ve Çıkarma Problemleri 1", "konu": "Matematik", "kazanim": "Toplama ve çıkarma problemleri 1", "maxTotal": 1000, "dersListesinde": true},
+    {"id": "mat-toplamacikarma-2", "yol": "Matematik/toplamacikarmaproblem2.html", "ad": "Matematik • Toplama ve Çıkarma Problemleri 2", "konu": "Matematik", "kazanim": "Toplama ve çıkarma problemleri 2", "maxTotal": 1000, "dersListesinde": true},
+    {"id": "insan-sorumluluk", "yol": "Insanhaklari/insanolmasorumlulugu.html", "ad": "İnsan Hakları • İnsan Olma Sorumluluğu", "konu": "İnsan Hakları, Yurttaşlık ve Demokrasi", "kazanim": "İnsan olma sorumluluğu", "maxTotal": 1000, "dersListesinde": true},
+    {"id": "trafik-yaya", "yol": "Trafik/yayaolaraktrafikkurallarietkinligi.html", "ad": "Trafik Güvenliği • Yaya Olarak Trafik Kuralları", "konu": "Trafik Güvenliği", "kazanim": "Yaya olarak trafik kuralları", "maxTotal": 1000, "dersListesinde": true},
+    {"id": "fen-besinlerdegerlendirme", "yol": "Fen/besinlerdegerlendirme.html", "ad": "Fen Bilimleri • Besinler ve Özellikleri — Ünite Değerlendirme", "konu": "Fen Bilimleri", "kazanim": "Besinler ve Özellikleri — Ünite Değerlendirme", "maxTotal": 200, "dersListesinde": true},
+    {"id": "tur-ikilemeler", "yol": "Turkce/ikilemeler.html", "ad": "Türkçe • İkileme Dedektifi", "konu": "Türkçe", "kazanim": "İkilemeler", "maxTotal": 200, "dersListesinde": true},
+    {"id": "mat-cikarmaislemi", "yol": "Matematik/cikarmaislemi.html", "ad": "Matematik • Çıkarma Dedektifleri", "konu": "Matematik", "kazanim": "Çıkarma işlemi", "maxTotal": 200, "dersListesinde": true},
+    {"id": "fen-besinkasifleri", "yol": "Fen/besinkasifleri.html", "ad": "Fen Bilimleri • Besin Kaşifleri: Görev Haritası", "konu": "Fen Bilimleri", "kazanim": "Besinler — Görev Haritası final testi", "maxTotal": 200, "dersListesinde": true},
+    {"id": "sos-oyunzamani", "yol": "Sosyal/oyunzamani.html", "ad": "Sosyal Bilgiler • Geçmişten Günümüze Çocuk Oyunları", "konu": "Sosyal Bilgiler", "kazanim": "SB.4.2.3 Geçmişten günümüze çocuk oyunları", "maxTotal": 200, "dersListesinde": true}
+  ],
+  "seciliEtkinlikler": [
+    {"yol": "Turkce/ikilemeler.html", "ad": "Türkçe • İkileme Dedektifi"},
+    {"yol": "Turkce/pekistirme.html", "ad": "Türkçe • Pekiştirme Dedektifi 1"},
+    {"yol": "Turkce/sozavcıları.html", "ad": "Türkçe • Atasözleri ve Deyimler"},
+    {"yol": "Matematik/cikarmaislemi.html", "ad": "Matematik • Çıkarma Dedektifleri"},
+    {"yol": "Fen/besinkasifleri.html", "ad": "Fen • Besin Kaşifleri: Görev Haritası"},
+    {"yol": "Fen/besinlerdegerlendirme.html", "ad": "Fen • Besinler Ünite Değerlendirme"},
+    {"yol": "Sosyal/oyunzamani.html", "ad": "Sosyal • Geçmişten Günümüze Çocuk Oyunları"},
+    {"yol": "Matematik/dogalsayilardegerlendirme.html", "ad": "Matematik • Doğal Sayılar Değerlendirme"},
+    {"yol": "Matematik/toplamacikarmaproblem1.html", "ad": "Matematik • Toplama ve Çıkarma Problemleri 1"},
+    {"yol": "Matematik/toplamacikarmaproblem2.html", "ad": "Matematik • Toplama ve Çıkarma Problemleri 2"},
+    {"yol": "Insanhaklari/insanolmasorumlulugu.html", "ad": "İnsan Hakları • İnsan Olma Sorumluluğu"},
+    {"yol": "Trafik/yayaolaraktrafikkurallarietkinligi.html", "ad": "Trafik Güvenliği • Yaya Olarak Trafik Kuralları"}
+  ]
+}

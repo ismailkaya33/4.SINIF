@@ -85,6 +85,7 @@ function defterNotuDurumum(token) {
 /** Pilot: yalnız öğretmenin seçtiği mevcut altı etkinlik.
  * İşaret öğrenci beyanıdır; otomatik puan / doğru-yanlış sonucu değildir.
  */
+/* KATALOG BASLA: secili-etkinlikler — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
 const SECILI_ETKINLIKLER_ = Object.freeze([
  'Turkce/ikilemeler.html',
  'Turkce/pekistirme.html',
@@ -97,8 +98,9 @@ const SECILI_ETKINLIKLER_ = Object.freeze([
  'Matematik/toplamacikarmaproblem1.html',
  'Matematik/toplamacikarmaproblem2.html',
  'Insanhaklari/insanolmasorumlulugu.html',
- 'Trafik/yayaolaraktrafikkurallarietkinligi.html',
+ 'Trafik/yayaolaraktrafikkurallarietkinligi.html'
 ]);
+/* KATALOG BITIR: secili-etkinlikler */
 const ETKINLIK_BEYAN_SAYFASI_='ETKINLIK_TAMAMLAMA';
 function seciliEtkinlikMi_(id) {
  return typeof id==='string' && SECILI_ETKINLIKLER_.indexOf(id)!==-1;

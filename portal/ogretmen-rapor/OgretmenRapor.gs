@@ -37,7 +37,28 @@ function ogretmenRaporVerisi() {
     const key=String(r[0]).trim();
     if(!key||seen[key])return;
     seen[key]=true;
-    results.push({no:no,id:id,outcome:outcome,correct:correct,total:total,at:r[10] instanceof Date?r[10].getTime():0,order:results.length});
+    const wrongAttempts=Number(r[7]),firstTry=Number(r[8]);
+    results.push({no:no,id:id,outcome:outcome,correct:correct,total:total,
+      wrongAttempts:Number.isSafeInteger(wrongAttempts)&&wrongAttempts>=0?wrongAttempts:null,
+      firstTry:Number.isSafeInteger(firstTry)&&firstTry>=0&&firstTry<=total?firstTry:null,
+      at:r[10] instanceof Date?r[10].getTime():0,order:results.length});
+  });
+  // Zorlanılan etkinlikler: ilk denemede doğru oranı en düşük olan etkinlik en üstte.
+  const difficultyMap={};
+  results.forEach(function(x){
+    if(!difficultyMap[x.id])difficultyMap[x.id]={activityId:x.id,attempts:0,participants:{},firstTry:0,firstTryTotal:0,wrongAttempts:0,wrongAttemptCount:0};
+    const v=difficultyMap[x.id];v.attempts++;v.participants[x.no]=true;
+    if(x.firstTry!==null){v.firstTry+=x.firstTry;v.firstTryTotal+=x.total;}
+    if(x.wrongAttempts!==null){v.wrongAttempts+=x.wrongAttempts;v.wrongAttemptCount++;}
+  });
+  const difficulty=Object.keys(difficultyMap).map(function(k){
+    const v=difficultyMap[k];
+    return {activityId:v.activityId,attempts:v.attempts,participantCount:Object.keys(v.participants).length,
+      firstTryRate:v.firstTryTotal?v.firstTry/v.firstTryTotal:null,
+      avgWrongAttempts:v.wrongAttemptCount?v.wrongAttempts/v.wrongAttemptCount:null};
+  }).sort(function(a,b){
+    const ar=a.firstTryRate===null?2:a.firstTryRate,br=b.firstTryRate===null?2:b.firstTryRate;
+    return ar-br||(b.avgWrongAttempts||0)-(a.avgWrongAttempts||0);
   });
   const outcomeMap={};
   results.forEach(function(x) {
@@ -54,7 +75,9 @@ function ogretmenRaporVerisi() {
     const ids=[...new Set(mine.map(function(x){return x.id}))];
     return {no:no,ad:roster[no].ad,activityCount:ids.length,attemptCount:mine.length,correct:mine.reduce((n,x)=>n+x.correct,0),total:mine.reduce((n,x)=>n+x.total,0)};
   }).sort(function(a,b){return a.ad.localeCompare(b.ad,'tr')});
-  const allIds=['mat-kayipsayilar','mat-oruntuler','mat-dogalsayilar-degerlendirme','mat-toplamacikarma-1','mat-toplamacikarma-2','insan-sorumluluk','trafik-yaya']; // İzlenebilir etkinlikler
+  /* KATALOG BASLA: rapor-etkinlik-kimlikleri — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
+const allIds=["mat-kayipsayilar","mat-oruntuler","mat-dogalsayilar-degerlendirme","mat-toplamacikarma-1","mat-toplamacikarma-2","insan-sorumluluk","trafik-yaya","fen-besinlerdegerlendirme","tur-ikilemeler","mat-cikarmaislemi","fen-besinkasifleri","sos-oyunzamani"]; // İzlenebilir etkinlikler
+/* KATALOG BITIR: rapor-etkinlik-kimlikleri */
   results.forEach(function(x){if(allIds.indexOf(x.id)<0)allIds.push(x.id);});
   const activities=allIds.map(function(activityId){
     const attempted={};
@@ -71,13 +94,9 @@ function ogretmenRaporVerisi() {
     });
     return {id:activityId,completed:Object.keys(attempted).length,waiting:perStudent.length-Object.keys(attempted).length,students:studentStates};
   });
-  const selectedActivities=[
-   'Turkce/ikilemeler.html','Turkce/pekistirme.html','Turkce/sozavcıları.html',
-   'Matematik/cikarmaislemi.html','Fen/besinkasifleri.html','Sosyal/oyunzamani.html',
-   'Matematik/dogalsayilardegerlendirme.html','Matematik/toplamacikarmaproblem1.html',
-   'Matematik/toplamacikarmaproblem2.html','Insanhaklari/insanolmasorumlulugu.html',
-   'Trafik/yayaolaraktrafikkurallarietkinligi.html'
-  ];
+  /* KATALOG BASLA: rapor-secili-etkinlikler — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
+const selectedActivities=["Turkce/ikilemeler.html","Turkce/pekistirme.html","Turkce/sozavcıları.html","Matematik/cikarmaislemi.html","Fen/besinkasifleri.html","Fen/besinlerdegerlendirme.html","Sosyal/oyunzamani.html","Matematik/dogalsayilardegerlendirme.html","Matematik/toplamacikarmaproblem1.html","Matematik/toplamacikarmaproblem2.html","Insanhaklari/insanolmasorumlulugu.html","Trafik/yayaolaraktrafikkurallarietkinligi.html"];
+/* KATALOG BITIR: rapor-secili-etkinlikler */
   const completionSheet=ss.getSheetByName('ETKINLIK_TAMAMLAMA');
   const completionRows=completionSheet&&completionSheet.getLastRow()>1
     ?completionSheet.getRange(2,1,completionSheet.getLastRow()-1,4).getDisplayValues():[];
@@ -136,6 +155,6 @@ function ogretmenRaporVerisi() {
   });
   questionResults.sort(function(a,b){return a.ad.localeCompare(b.ad,'tr')||a.attemptId.localeCompare(b.attemptId)||a.question-b.question;});
   return {studentCount:Object.keys(roster).length,recordCount:results.length,
-    dersIcerikleri:RAPOR_DERS_ICERIKLERI_,outcomes:outcomes,students:perStudent,activities:activities,
+    dersIcerikleri:RAPOR_DERS_ICERIKLERI_,outcomes:outcomes,difficulty:difficulty,students:perStudent,activities:activities,
     completionActivities:completionActivities,notebooks:notebooks,questionResults:questionResults};
 }
