@@ -54,7 +54,24 @@ function renderQuestionDetails(items){
   table.appendChild(body);details.append(summary,table);root.appendChild(details);
  });
 }
-function renderDersKatalogu(groups){
+/* Ortak içerik listesi: GitHub'a yeni yüklenen etkinlikler ders içeriklerine kendiliğinden eklenir. */
+let sonDersGruplari=[];
+function katalogIleBirlestir(groups,k){
+ if(!k||!Array.isArray(k.icerikler))return groups;
+ const kopya=groups.map(g=>({ders:g.ders,icerikler:g.icerikler.slice()}));
+ const mevcut=new Set();kopya.forEach(g=>g.icerikler.forEach(i=>{try{mevcut.add(decodeURIComponent(new URL(i.url).pathname).replace(/^\/4\.SINIF\//,''))}catch(e){}}));
+ k.icerikler.forEach(function(it){
+  if(!it||it.gizli===true||typeof it.yol!=='string'||mevcut.has(it.yol))return;
+  let g=kopya.find(x=>x.ders===it.ders);if(!g){g={ders:String(it.ders||'Diğer'),icerikler:[]};kopya.push(g);}
+  g.icerikler.push({ad:String(it.ad||it.yol)+' 🆕',url:'https://ismailkaya33.github.io/4.SINIF/'+it.yol});mevcut.add(it.yol);
+ });
+ return kopya;
+}
+function katalogGetir(){
+ try{fetch('https://ismailkaya33.github.io/4.SINIF/icerik-katalogu.json?t='+Math.floor(Date.now()/300000),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(function(k){if(k)renderDersKatalogu(katalogIleBirlestir(sonDersGruplari,k),true)}).catch(function(){});}catch(e){}
+}
+function renderDersKatalogu(groups,birlesik){
+ if(!birlesik){sonDersGruplari=groups||[];setTimeout(katalogGetir,0);}
  const root=document.getElementById('dersKatalogu');root.replaceChildren();
  (groups||[]).forEach(function(group){
   const details=document.createElement('details'),summary=document.createElement('summary'),list=document.createElement('ul');

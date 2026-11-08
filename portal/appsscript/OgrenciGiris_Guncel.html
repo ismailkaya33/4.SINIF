@@ -725,6 +725,38 @@ dersKartlari.forEach(function(card){
 
 seciliEtkinlikButonlariKur();
 yeniIcerikleriGoster_();
+
+/* Ortak içerik listesi (sitedeki icerik-katalogu.json).
+ * Öğretmen bir ders klasörüne yeni etkinlik yükleyince GitHub listeye ekler; portal bu listede olup
+ * sayfada olmayan etkinlikleri ilgili dersin altına kendiliğinden ekler. Liste okunamazsa portal eskisi gibi çalışır. */
+const ICERIK_KATALOGU_ADRESI_="https://ismailkaya33.github.io/4.SINIF/icerik-katalogu.json";
+const KLASOR_DERS_={Turkce:["Türkçe","turkce"],Matematik:["Matematik","matematik"],Fen:["Fen Bilimleri","fen"],Sosyal:["Sosyal Bilgiler","sosyal"],Insanhaklari:["İnsan Hakları","insan"],Trafik:["Trafik Güvenliği","trafik"],Oyunlar:["Oyunlar","oyunlar"]};
+function siteYolu_(adres){try{const u=new URL(adres,baseNotes);if(u.origin!=="https://ismailkaya33.github.io")return"";return decodeURIComponent(u.pathname).replace(/^\/4\.SINIF\//,"")}catch(e){return""}}
+function icerikKatalogunuUygula_(k){
+ if(!k||!Array.isArray(k.icerikler))return;
+ const mevcut=new Set([...document.querySelectorAll("#dersIzgarasi a[href]")].map(a=>siteYolu_(a.href)));
+ Object.values(takipliOyunlar).forEach(adres=>mevcut.add(siteYolu_(adres)));
+ let eklenen=0;
+ k.icerikler.forEach(function(it){
+  if(!it||it.gizli===true||typeof it.yol!=="string"||!/^[A-Za-z]+\/[^\/<>"]+\.html$/.test(it.yol)||mevcut.has(it.yol))return;
+  const ders=KLASOR_DERS_[it.yol.split("/")[0]];if(!ders)return;
+  const kart=dersKartlari.find(c=>c.querySelector("summary strong")?.textContent.trim()===ders[0]);if(!kart)return;
+  const ad=String(it.ad||it.yol).slice(0,120);
+  const degerlendirme=/değerlendirme|deneme sınavı|testi/i.test(ad);
+  const panel=kart.querySelector('.courseSection[data-panel="'+(degerlendirme?"degerlendirme":"etkinlik")+'"]');if(!panel)return;
+  let ul=panel.querySelector(".courseLinks");
+  if(!ul){panel.querySelector(".sectionEmpty")?.remove();ul=document.createElement("ul");ul.className="courseLinks";panel.appendChild(ul);}
+  const li=document.createElement("li"),a=document.createElement("a");
+  a.href=baseNotes+it.yol;a.target="_blank";a.rel="noopener noreferrer";a.textContent=ad;
+  a.id="katalog-"+it.yol.replace(/[^A-Za-z0-9]+/g,"-").toLowerCase();
+  li.appendChild(a);ul.appendChild(li);mevcut.add(it.yol);eklenen++;
+  const sayi=kart.querySelector("summary small"),n=sayi?parseInt(sayi.textContent,10):NaN;
+  if(Number.isFinite(n))sayi.textContent=(n+1)+" etkinlik";
+  if(/^\d{4}-\d{2}-\d{2}$/.test(String(it.eklenme||"")))YENI_ICERIK_KATALOGU_.push({id:a.id,addedOn:it.eklenme,type:degerlendirme?"evaluation":"activity",course:ders[1],target:it.yol,title:ad});
+ });
+ if(eklenen)yeniIcerikleriGoster_();
+}
+try{fetch(ICERIK_KATALOGU_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(icerikKatalogunuUygula_).catch(function(){});}catch(e){}
 const mevcutToken=sessionStorage.getItem(anahtarAdi);
 if(mevcutToken){
  const istekNesli=++oturumNesli;
