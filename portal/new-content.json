@@ -325,6 +325,13 @@
       "type": "activity",
       "course": "sosyal",
       "target": "Sosyal/kurtulus.html"
+    },
+    {
+      "id": "recent-activity-carpmaordekvurma",
+      "addedOn": "2026-11-08",
+      "type": "activity",
+      "course": "oyunlar",
+      "target": "Oyunlar/carpmaordekvurma.html"
     }
   ]
 }

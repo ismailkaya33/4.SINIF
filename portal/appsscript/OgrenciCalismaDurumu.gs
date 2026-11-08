@@ -95,6 +95,7 @@ const SECILI_ETKINLIKLER_ = Object.freeze([
  'Fen/besinlerdegerlendirme.html',
  'Sosyal/oyunzamani.html',
  'Sosyal/kurtulus.html',
+ 'Oyunlar/carpmaordekvurma.html',
  'Matematik/dogalsayilardegerlendirme.html',
  'Matematik/toplamacikarmaproblem1.html',
  'Matematik/toplamacikarmaproblem2.html',
