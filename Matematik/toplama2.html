@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uzay Gemisi Tamiri - Matematik Operasyonu</title>
+<style>
+  * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body { background: #0b0c10; color: #c5c6c7; margin: 0; padding: 20px; display: flex; flex-direction: column; min-height: 100vh; }
+  h1 { text-align: center; color: #66fcff; margin-top: 0; }
+  #game-container { display: flex; flex: 1; flex-direction: column; max-width: 1100px; margin: 0 auto; width: 100%; gap: 20px; }
+  @media (min-width: 768px) { #game-container { flex-direction: row; } }
+  #visual-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #1f2833; border-radius: 10px; padding: 20px; overflow-y: auto; max-height: 80vh; }
+  #ui-area { flex: 1; display: flex; flex-direction: column; background: #1f2833; border-radius: 10px; padding: 20px; position: relative; }
+  
+  .ship-part { fill: #222; stroke: #45a29e; stroke-width: 2; transition: all 1s ease; }
+  .ship-part.repaired { fill: #66fcff; filter: drop-shadow(0 0 8px #66fcff); stroke: #fff; }
+  
+  .btn { background: #45a29e; color: #fff; border: none; padding: 12px 18px; margin: 5px; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background 0.3s, transform 0.1s; font-weight: bold; }
+  .btn:hover:not(:disabled) { background: #66fcff; color: #0b0c10; transform: scale(1.02); }
+  .btn:disabled { background: #444; color: #777; cursor: not-allowed; }
+  
+  #controls { margin-top: auto; display: flex; justify-content: space-between; padding-top: 20px; border-top: 2px solid #0b0c10; }
+  #feedback { margin: 15px 0; padding: 15px; border-radius: 5px; display: none; font-size: 15px; line-height: 1.4; }
+  .correct { background: #27ae60; color: #fff; border-left: 5px solid #2ecc71; }
+  .wrong { background: #c0392b; color: #fff; border-left: 5px solid #e74c3c; }
+  
+  .task-title { color: #66fcff; margin-top:0; border-bottom: 2px solid #45a29e; padding-bottom: 5px; }
+  .task-q { font-size: 18px; margin-bottom: 20px; line-height: 1.5; color: #fff; }
+  
+  /* Task UI Styles */
+  .mc-options { display: flex; flex-direction: column; gap: 10px; }
+  .mc-options button { text-align: left; padding: 15px; background: #2c3e50; border: 2px solid #45a29e; }
+  
+  .tf-options { display: flex; gap: 15px; }
+  .tf-options button { flex: 1; padding: 15px; font-size: 18px; }
+  
+  .match-container { display: flex; justify-content: space-between; gap: 15px; }
+  .match-col { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .match-btn { background: #2c3e50; border: 2px solid #45a29e; padding: 15px; color: #fff; cursor: pointer; border-radius: 5px; text-align: center; transition: all 0.2s; user-select: none; }
+  .match-btn.selected { background: #f39c12; border-color: #f1c40f; color: #000; font-weight: bold; }
+  .match-btn.locked { background: #27ae60; cursor: not-allowed; border-color: #2ecc71; opacity: 0.8; }
+  
+  .sort-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+  .sort-item { display: flex; justify-content: space-between; align-items: center; background: #2c3e50; padding: 12px 15px; border-radius: 5px; border: 1px solid #45a29e; font-size: 16px; }
+  .sort-controls button { background: #45a29e; border: none; color: #fff; font-size: 16px; cursor: pointer; padding: 5px 10px; border-radius: 3px; margin-left: 5px; }
+  
+  .classify-pool { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; min-height: 60px; border: 2px dashed #888; padding: 15px; border-radius: 8px; background: #1a242f; }
+  .classify-area { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+  .classify-cat { flex: 1; min-width: 120px; min-height: 120px; border: 2px solid #45a29e; padding: 10px; border-radius: 8px; cursor: pointer; background: #2c3e50; display: flex; flex-direction: column; gap: 8px; }
+  .classify-cat strong { display: block; border-bottom: 1px solid #45a29e; padding-bottom: 5px; margin-bottom: 5px; text-align: center; color: #66fcff; pointer-events: none; }
+  .classify-item { background: #34495e; padding: 10px; border-radius: 5px; cursor: pointer; border: 1px solid #45a29e; text-align: center; user-select: none; }
+  .classify-item.selected { background: #f39c12; color: #000; font-weight: bold; border-color: #f1c40f; }
+  
+  #progress-bar { height: 12px; background: #0b0c10; border-radius: 6px; margin-bottom: 20px; overflow: hidden; border: 1px solid #45a29e; }
+  #progress-fill { height: 100%; background: #66fcff; width: 0%; transition: width 0.4s ease; box-shadow: 0 0 10px #66fcff; }
+  
+  .report { width: 100%; }
+  .report h2 { color: #66fcff; border-bottom: 2px solid #45a29e; padding-bottom: 10px; }
+  .report p { font-size: 16px; margin: 5px 0; }
+  .report ul { list-style: none; padding: 0; }
+  .report li { margin-bottom: 15px; background: #2c3e50; padding: 15px; border-radius: 8px; border-left: 4px solid #f39c12; }
+  
+  input[type="text"], input[type="number"] { padding: 12px; font-size: 18px; width: 100%; border-radius: 5px; border: 2px solid #45a29e; background: #2c3e50; color: #fff; outline: none; }
+  input:focus { border-color: #66fcff; }
+</style>
+</head>
+<body>
+
+<h1>Uzay Gemisi Tamiri - Matematik Operasyonu</h1>
+
+<div id="game-container">
+  <div id="visual-area">
+    <svg id="ship-svg" viewBox="0 0 200 200" width="100%" height="auto" style="max-height: 400px; margin-bottom: 20px;">
+      <!-- Ana Gövde -->
+      <polygon id="part-1" class="ship-part" points="100,10 60,80 140,80" />
+      <rect id="part-2" class="ship-part" x="70" y="80" width="60" height="70" />
+      <!-- Sol Kanat -->
+      <polygon id="part-3" class="ship-part" points="70,100 20,150 70,150" />
+      <!-- Sağ Kanat -->
+      <polygon id="part-4" class="ship-part" points="130,100 180,150 130,150" />
+      <!-- Kalkan Jeneratörü (Cam) -->
+      <circle id="part-5" class="ship-part" cx="100" cy="110" r="15" />
+      <!-- Anten (İletişim) -->
+      <line id="part-6" class="ship-part" x1="100" y1="10" x2="100" y2="0" stroke-width="4" />
+      <!-- İtici Motorlar -->
+      <polygon id="part-7" class="ship-part" points="75,150 95,150 85,180" />
+      <polygon id="part-8" class="ship-part" points="105,150 125,150 115,180" />
+    </svg>
+    <div style="text-align: center; color: #888;">Doğru cevaplar geminin parçalarını tamir eder. Toplam 8 parça onarılmalı!</div>
+  </div>
+
+  <div id="ui-area">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    
+    <div id="task-content">
+      <h2 class="task-title" id="task-title">Görev 1 / 16</h2>
+      <div class="task-q" id="task-question">Soru metni burada...</div>
+      <div id="task-interaction"></div>
+    </div>
+    
+    <div id="feedback"></div>
+    
+    <div id="controls">
+       <button id="btn-prev" class="btn" onclick="goPrev()">Önceki</button>
+       <button id="btn-skip" class="btn" onclick="skipTask()" style="background:#f39c12;">Soruyu Geç</button>
+       <button id="btn-next" class="btn" onclick="goNext()">Sonraki</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const tasksData = [
+  {
+    id: "t1", type: "mc", skill: "M.4.1.2.1",
+    question: "Sistem arızası! Navigasyon bilgisayarını düzeltmek için 2456 ile 1323'ü hatasız toplamalısın.",
+    options: ["3779", "3789", "3679", "3879"], 
+    explanation: "Toplama işlemine birler basamağından başlamalısın. 6+3=9, 5+2=7, 4+3=7, 2+1=3. Doğru cevap 3779."
+  },
+  {
+    id: "t2", type: "tf", skill: "M.4.1.2.1",
+    question: "Toplama işlemi yaparken sayılar sağa veya sola kaydırılarak yazılabilir, basamakların alt alta gelmesi şart değildir.",
+    correct: false,
+    explanation: "Yanlış! Sayıları basamaklarına dikkat ederek, birler birlerin, onlar onların altına gelecek şekilde hizalayarak yazmalıyız."
+  },
+  {
+    id: "t3", type: "mc", skill: "M.4.1.2.1",
+    question: "Motor onarımı: 348 + 154 işlemi yapılmış ve sonuç 492 bulunmuştur. Bu işlemde yapılan hata nedir?",
+    options: ["Elde unutulmuştur", "Onlar basamağı yanlış toplanmıştır", "İşleme soldan başlanmıştır", "Hata yoktur"],
+    explanation: "8+4=12 eder, 2 yazılır 1 elde onlara aktarılır. 4+5+1(elde)=10 eder. Elde unutulduğu için sonuç hatalı bulunmuştur. Gerçek sonuç 502 olmalıydı."
+  },
+  {
+    id: "t4", type: "free", skill: "M.4.1.2.1",
+    question: "Oksijen tankı basınç ayarı: 4805 ile 2749 sayılarını toplayarak yeni basınç değerini giriniz.",
+    correct: "7554",
+    explanation: "5+9=14 (elde 1), 0+4+1=5, 8+7=15 (elde 1), 4+2+1=7. Cevap 7554'tür."
+  },
+  {
+    id: "t5", type: "mc", skill: "M.4.1.2.2",
+    question: "Kalkan enerjisini dengele: 326 + 154 işleminin sonucunu en yakın onluğa yuvarlayarak tahmin ediniz.",
+    options: ["480", "490", "500", "470"],
+    explanation: "Tahmin için toplananları yuvarlarız: 326 en yakın onluğa 330, 154 ise 150 olur. 330 + 150 = 480."
+  },
+  {
+    id: "t6", type: "match", skill: "M.4.1.2.2",
+    question: "İletişim frekanslarını EN YAKIN YÜZLÜĞE yuvarlanmış tahminleriyle eşleştiriniz.",
+    pairs: [
+      { l: "247 + 352", r: "600" },
+      { l: "389 + 276", r: "700" },
+      { l: "631 + 298", r: "900" }
+    ],
+    explanation: "Sayıları en yakın yüzlüğe yuvarlarken onlar basamağına bakarız. 247(200)+352(400)=600, 389(400)+276(300)=700, 631(600)+298(300)=900."
+  },
+  {
+    id: "t7", type: "tf", skill: "M.4.1.2.2",
+    question: "1245 + 678 işlemini en yakın yüzlüğe yuvarlayarak tahmin edersek gerçek sonuçtan daha büyük bir değer buluruz.",
+    correct: false,
+    explanation: "Gerçek sonuç 1923'tür. Tahminimiz ise 1200+700=1900'dür. Tahminimiz gerçek sonuçtan daha küçüktür. İfade yanlıştır."
+  },
+  {
+    id: "t8", type: "free", skill: "M.4.1.2.2",
+    question: "247 + 352 işleminin gerçek sonucu ile sayıları en yakın onluğa yuvarlayarak bulduğunuz tahmini sonuç arasındaki fark kaçtır?",
+    correct: "1",
+    explanation: "Gerçek sonuç 599. Tahmin: 250+350=600. Fark 600-599=1'dir."
+  },
+  {
+    id: "t9", type: "mc", skill: "M.4.1.2.3",
+    question: "Lazer bataryası gücü: 4800 + 700 işlemini zihinden toplayınız.",
+    options: ["5500", "5400", "5600", "5000"],
+    explanation: "Zihinden toplarken yüzlükleri düşün: 48 yüzlük + 7 yüzlük = 55 yüzlük, yani 5500."
+  },
+  {
+    id: "t10", type: "sort", skill: "M.4.1.2.3",
+    question: "Isı modüllerinin verilerini zihinden toplayıp KÜÇÜKTEN BÜYÜĞE doğru sıralayınız.",
+    items: [
+      { id: "s1", text: "1500 + 300" },
+      { id: "s2", text: "1900 + 200" },
+      { id: "s3", text: "2700 + 700" },
+      { id: "s4", text: "3200 + 1200" }
+    ],
+    correctOrder: ["s1", "s2", "s3", "s4"],
+    explanation: "Sonuçlar: 1500+300=1800, 1900+200=2100, 2700+700=3400, 3200+1200=4400. Sıralama bu şekilde olmalıydı."
+  },
+  {
+    id: "t11", type: "classify", skill: "M.4.1.2.3",
+    question: "Güç kablolarını zihinden toplayarak sonuçlarına göre doğru panellere yerleştiriniz.",
+    categories: ["5000'den Küçük", "5000'den Büyük"],
+    items: [
+      { id: "c1", text: "3400 + 1200", target: "5000'den Küçük" },
+      { id: "c2", text: "2800 + 1100", target: "5000'den Küçük" },
+      { id: "c3", text: "6000 + 1500", target: "5000'den Büyük" },
+      { id: "c4", text: "4200 + 900", target: "5000'den Büyük" }
+    ],
+    explanation: "3400+1200=4600 (<5000), 2800+1100=3900 (<5000), 6000+1500=7500 (>5000), 4200+900=5100 (>5000)."
+  },
+  {
+    id: "t12", type: "mc", skill: "M.4.1.2.1",
+    question: "Kargo bölmesi dengesi: 245 + ? = 500 işleminde verilmeyen toplanan kaçtır?",
+    options: ["255", "355", "245", "155"],
+    explanation: "Toplamdan verilen toplananı çıkarırız: 500 - 245 = 255."
+  },
+  {
+    id: "t13", type: "mc", skill: "M.4.1.2.4",
+    question: "Bir gezegende 235 mavi taş, mavi taşlardan 148 fazla kırmızı taş bulunmuştur. Toplam kaç taş bulunmuştur?",
+    options: ["618", "383", "483", "518"],
+    explanation: "Önce kırmızı taşları bulmalıyız: 235 + 148 = 383. Sonra ikisini toplamalıyız: 235 (mavi) + 383 (kırmızı) = 618."
+  },
+  {
+    id: "t14", type: "free", skill: "M.4.1.2.4",
+    question: "Uzay istasyonundan 125 uzay kredisi kazandın. Kaptan sana 75 kredi daha verdi. Toplam kaç kredin oldu?",
+    correct: "200",
+    explanation: "125 ile 75'i toplarız: 125 + 75 = 200 kredi."
+  },
+  {
+    id: "t15", type: "tf", skill: "M.4.1.2.4",
+    question: "Gemi ilk gün 278 ışık yılı, ikinci gün 356 ışık yılı yol gitti. Toplam gidilen yolu bulmak için 356'dan 278'i çıkarmalıyız.",
+    correct: false,
+    explanation: "Yanlış! Toplam yolu bulmak için iki mesafeyi toplamalıyız, çıkarmamalıyız."
+  },
+  {
+    id: "t16", type: "free", skill: "M.4.1.2.2",
+    question: "FİNAL ŞİFRESİ: 1260 ile 3850'yi topla (gerçek sonuç). Sonra bu iki sayıyı en yakın yüzlüğe yuvarlayarak topla (tahmini sonuç). Tahmini sonuçtan gerçek sonucu çıkar. Şifre kaçtır?",
+    correct: "90",
+    explanation: "Gerçek Sonuç: 1260+3850=5110. Tahmini Sonuç: 1300+3900=5200. Fark: 5200-5110=90."
+  }
+];
+
+let state = {
+  currentIndex: 0,
+  score: 0,
+  wrongCount: 0,
+  skippedCount: 0,
+  tasks: [],
+  results: {}
+};
+
+let taskUIState = {};
+
+function shuffle(array) {
+  let currentIndex = array.length, randomIndex;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+  }
+  return array;
+}
+
+function initTasks() {
+  state.tasks = JSON.parse(JSON.stringify(tasksData));
+  
+  let mcTasks = state.tasks.filter(t => t.type === 'mc');
+  let positions = [];
+  for(let i=0; i<mcTasks.length; i++) positions.push(i % 4);
+  shuffle(positions);
+  
+  mcTasks.forEach((t, i) => {
+     let correctOpt = t.options[0];
+     let wrongs = t.options.slice(1);
+     shuffle(wrongs);
+     let pos = positions[i] % t.options.length;
+     wrongs.splice(pos, 0, correctOpt);
+     t.options = wrongs;
+     t.correctIndex = pos;
+  });
+}
+
+function initGame() {
+  state.currentIndex = 0;
+  state.score = 0;
+  state.wrongCount = 0;
+  state.skippedCount = 0;
+  state.results = {};
+  initTasks();
+  
+  document.getElementById('task-content').style.display = 'block';
+  document.getElementById('controls').style.display = 'flex';
+  document.getElementById('visual-area').innerHTML = `
+    <svg id="ship-svg" viewBox="0 0 200 200" width="100%" height="auto" style="max-height: 400px; margin-bottom: 20px;">
+      <polygon id="part-1" class="ship-part" points="100,10 60,80 140,80" />
+      <rect id="part-2" class="ship-part" x="70" y="80" width="60" height="70" />
+      <polygon id="part-3" class="ship-part" points="70,100 20,150 70,150" />
+      <polygon id="part-4" class="ship-part" points="130,100 180,150 130,150" />
+      <circle id="part-5" class="ship-part" cx="100" cy="110" r="15" />
+      <line id="part-6" class="ship-part" x1="100" y1="10" x2="100" y2="0" stroke-width="4" />
+      <polygon id="part-7" class="ship-part" points="75,150 95,150 85,180" />
+      <polygon id="part-8" class="ship-part" points="105,150 125,150 115,180" />
+    </svg>
+    <div style="text-align: center; color: #888;">Doğru cevaplar geminin parçalarını tamir eder. Toplam 8 parça onarılmalı!</div>
+  `;
+  render();
+}
+
+function repairShipPart() {
+  let completedCount = Object.values(state.results).filter(r => r.status === 'completed').length;
+  let partIndex = Math.floor(completedCount / 2);
+  for(let i=1; i<=partIndex; i++) {
+      let part = document.getElementById('part-' + i);
+      if (part) part.classList.add('repaired');
+  }
+}
+
+function render() {
+  if (state.currentIndex >= state.tasks.length) {
+     showReport();
+     return;
+  }
+  
+  repairShipPart();
+  let task = state.tasks[state.currentIndex];
+  document.getElementById('task-title').innerText = `Görev ${state.currentIndex + 1} / ${state.tasks.length}`;
+  document.getElementById('task-question').innerText = task.question;
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('progress-fill').style.width = ((state.currentIndex) / state.tasks.length * 100) + '%';
+  
+  let btnNext = document.getElementById('btn-next');
+  let btnPrev = document.getElementById('btn-prev');
+  let btnSkip = document.getElementById('btn-skip');
+  
+  btnPrev.disabled = state.currentIndex === 0;
+  
+  let res = state.results[task.id];
+  if (res && res.status === 'completed') {
+      document.getElementById('task-interaction').innerHTML = `<div style="padding:20px; background:#27ae60; color:#fff; border-radius:5px; text-align:center; font-size:18px;">Bu görevi başarıyla tamamladın!</div>`;
+      btnNext.disabled = false;
+      btnSkip.disabled = true;
+  } else {
+      btnNext.disabled = (res && res.status === 'skipped') ? false : true;
+      btnSkip.disabled = false;
+      initTaskUI(task);
+      renderTaskUI();
+  }
+}
+
+function initTaskUI(task) {
+   taskUIState = {};
+   if (task.type === 'match') {
+       taskUIState.leftOpts = task.pairs.map(p => ({id: p.l, text: p.l, matched: false}));
+       taskUIState.rightOpts = task.pairs.map(p => ({id: p.l, text: p.r, matched: false}));
+       shuffle(taskUIState.leftOpts);
+       shuffle(taskUIState.rightOpts);
+       taskUIState.selL = null;
+   } else if (task.type === 'sort') {
+       taskUIState.items = [...task.items];
+       shuffle(taskUIState.items);
+   } else if (task.type === 'classify') {
+       taskUIState.pool = [...task.items];
+       shuffle(taskUIState.pool);
+       taskUIState.cats = {};
+       task.categories.forEach(c => taskUIState.cats[c] = []);
+       taskUIState.selected = null;
+   }
+}
+
+function renderTaskUI() {
+  let task = state.tasks[state.currentIndex];
+  let container = document.getElementById('task-interaction');
+  let html = '';
+  
+  if (task.type === 'mc') {
+      html += `<div class="mc-options">`;
+      task.options.forEach((opt, idx) => {
+         html += `<button class="btn" style="background:#2c3e50; border:2px solid #45a29e; color:#fff;" onclick="checkMC('${opt}')">${opt}</button>`;
+      });
+      html += `</div>`;
+  } 
+  else if (task.type === 'tf') {
+      html += `<div class="tf-options">
+        <button class="btn" style="background:#2980b9;" onclick="checkTF(true)">Doğru</button>
+        <button class="btn" style="background:#c0392b;" onclick="checkTF(false)">Yanlış</button>
+      </div>`;
+  }
+  else if (task.type === 'free') {
+      html += `<input type="text" id="free-input" placeholder="Cevabınızı buraya yazın..." onkeypress="if(event.key==='Enter') checkFree()">
+      <button class="btn" onclick="checkFree()" style="margin-top:15px; width:100%;">Cevapla</button>`;
+  }
+  else if (task.type === 'match') {
+      html += `<div class="match-container"><div class="match-col">`;
+      taskUIState.leftOpts.forEach(l => {
+         let cls = l.matched ? 'locked' : (taskUIState.selL === l.id ? 'selected' : '');
+         html += `<div class="match-btn ${cls}" onclick="clickMatchL('${l.id}')">${l.text}</div>`;
+      });
+      html += `</div><div class="match-col">`;
+      taskUIState.rightOpts.forEach(r => {
+         let cls = r.matched ? 'locked' : '';
+         html += `<div class="match-btn ${cls}" onclick="clickMatchR('${r.id}')">${r.text}</div>`;
+      });
+      html += `</div></div>`;
+  }
+  else if (task.type === 'sort') {
+      html += `<div class="sort-list">`;
+      taskUIState.items.forEach((item, index) => {
+         html += `<div class="sort-item">
+           <span>${item.text}</span>
+           <div class="sort-controls">
+             <button onclick="moveUp(${index})">▲</button>
+             <button onclick="moveDown(${index})">▼</button>
+           </div>
+         </div>`;
+      });
+      html += `</div><button class="btn" onclick="checkSort()" style="width:100%;">Sıralamayı Kontrol Et</button>`;
+  }
+  else if (task.type === 'classify') {
+      html += `<div style="margin-bottom:5px; color:#aaa;">Sınıflandırılacak Kartlar (Seçmek için tıkla):</div>`;
+      html += `<div class="classify-pool" onclick="moveToPool()">`;
+      taskUIState.pool.forEach(item => {
+          let sel = taskUIState.selected === item.id ? 'selected' : '';
+          html += `<div class="classify-item ${sel}" onclick="event.stopPropagation(); selectItemClassify('${item.id}')">${item.text}</div>`;
+      });
+      html += `</div><div class="classify-area">`;
+      task.categories.forEach(cat => {
+          html += `<div class="classify-cat" onclick="moveToCat('${cat}')"><strong>${cat}</strong>`;
+          taskUIState.cats[cat].forEach(item => {
+              let sel = taskUIState.selected === item.id ? 'selected' : '';
+              html += `<div class="classify-item ${sel}" onclick="event.stopPropagation(); selectItemClassify('${item.id}')">${item.text}</div>`;
+          });
+          html += `</div>`;
+      });
+      html += `</div><button class="btn" onclick="checkClassify()" style="width:100%;">Sınıflandırmayı Kontrol Et</button>`;
+  }
+  
+  container.innerHTML = html;
+}
+
+function submitAnswer(isCorrect, explanation, userAnswer) {
+  let task = state.tasks[state.currentIndex];
+  let res = state.results[task.id];
+  if (!res) {
+      res = { status: 'pending', attempts: 0, firstTry: true, awarded: false };
+      state.results[task.id] = res;
+  }
+  
+  res.attempts++;
+  if(userAnswer !== undefined) res.lastAnswer = userAnswer;
+  
+  if (isCorrect) {
+      res.status = 'completed';
+      if (!res.awarded) {
+          if (res.firstTry) state.score += 10;
+          res.awarded = true;
+      }
+      showFeedback(true, "Harika! Görev başarıyla tamamlandı.");
+      document.getElementById('btn-next').disabled = false;
+      document.getElementById('btn-skip').disabled = true;
+      repairShipPart();
+      setTimeout(() => render(), 1500); 
+  } else {
+      res.firstTry = false;
+      state.wrongCount++;
+      showFeedback(false, explanation);
+  }
+}
+
+function showFeedback(isCorrect, msg) {
+  let fb = document.getElementById('feedback');
+  fb.className = isCorrect ? 'correct' : 'wrong';
+  fb.innerHTML = `<strong>${isCorrect ? 'Doğru!' : 'Hata Analizi:'}</strong> <p style="margin-top:5px;">${msg}</p>`;
+  fb.style.display = 'block';
+}
+
+function goNext() {
+  if (state.currentIndex < state.tasks.length - 1) {
+      state.currentIndex++;
+      render();
+  } else {
+      showReport();
+  }
+}
+
+function goPrev() {
+  if (state.currentIndex > 0) {
+      state.currentIndex--;
+      render();
+  }
+}
+
+function skipTask() {
+  let task = state.tasks[state.currentIndex];
+  let res = state.results[task.id];
+  if (!res || res.status !== 'completed') {
+     if(!res) {
+         state.results[task.id] = { status: 'skipped', attempts: 0, firstTry: false, awarded: false, lastAnswer: "Geçildi" };
+     } else {
+         state.results[task.id].status = 'skipped';
+     }
+     state.skippedCount++;
+  }
+  goNext();
+}
+
+// Specific Handlers
+function checkMC(val) {
+   let task = state.tasks[state.currentIndex];
+   submitAnswer(val === task.options[task.correctIndex], task.explanation, val);
+}
+
+function checkTF(val) {
+   let task = state.tasks[state.currentIndex];
+   submitAnswer(val === task.correct, task.explanation, val ? "Doğru" : "Yanlış");
+}
+
+function checkFree() {
+   let task = state.tasks[state.currentIndex];
+   let val = document.getElementById('free-input').value.trim();
+   submitAnswer(val.toLowerCase() === task.correct.toLowerCase(), task.explanation, val);
+}
+
+function clickMatchL(id) {
+  if (taskUIState.leftOpts.find(x => x.id === id).matched) return;
+  taskUIState.selL = id;
+  renderTaskUI();
+}
+
+function clickMatchR(id) {
+  if (taskUIState.rightOpts.find(x => x.id === id).matched) return;
+  if (!taskUIState.selL) return;
+  
+  if (taskUIState.selL === id) {
+     taskUIState.leftOpts.find(x => x.id === id).matched = true;
+     taskUIState.rightOpts.find(x => x.id === id).matched = true;
+     taskUIState.selL = null;
+     renderTaskUI();
+     if (taskUIState.leftOpts.every(x => x.matched)) {
+         submitAnswer(true, state.tasks[state.currentIndex].explanation, "Eşleştirme Tamamlandı");
+     }
+  } else {
+     taskUIState.selL = null;
+     renderTaskUI();
+     submitAnswer(false, state.tasks[state.currentIndex].explanation, "Hatalı Eşleştirme");
+  }
+}
+
+function moveUp(idx) { 
+  if(idx>0) { 
+    let tmp = taskUIState.items[idx-1]; 
+    taskUIState.items[idx-1] = taskUIState.items[idx]; 
+    taskUIState.items[idx] = tmp; 
+    renderTaskUI(); 
+  } 
+}
+
+function moveDown(idx) { 
+  if(idx<taskUIState.items.length-1) { 
+    let tmp = taskUIState.items[idx+1]; 
+    taskUIState.items[idx+1] = taskUIState.items[idx]; 
+    taskUIState.items[idx] = tmp; 
+    renderTaskUI(); 
+  } 
+}
+
+function checkSort() {
+  let task = state.tasks[state.currentIndex];
+  let correct = true;
+  for(let i=0; i<task.correctOrder.length; i++) {
+      if(taskUIState.items[i].id !== task.correctOrder[i]) correct = false;
+  }
+  submitAnswer(correct, task.explanation, "Sıralama Gönderildi");
+}
+
+function selectItemClassify(id) {
+  taskUIState.selected = id;
+  renderTaskUI();
+}
+
+function moveToCat(catName) {
+  if (!taskUIState.selected) return;
+  let item = taskUIState.pool.find(x => x.id === taskUIState.selected);
+  if (item) {
+      taskUIState.pool = taskUIState.pool.filter(x => x.id !== taskUIState.selected);
+  } else {
+      for(let c in taskUIState.cats) {
+         let found = taskUIState.cats[c].find(x => x.id === taskUIState.selected);
+         if(found) {
+             item = found;
+             taskUIState.cats[c] = taskUIState.cats[c].filter(x => x.id !== taskUIState.selected);
+             break;
+         }
+      }
+  }
+  taskUIState.cats[catName].push(item);
+  taskUIState.selected = null;
+  renderTaskUI();
+}
+
+function moveToPool() {
+  if (!taskUIState.selected) return;
+  let item;
+  for(let c in taskUIState.cats) {
+     let found = taskUIState.cats[c].find(x => x.id === taskUIState.selected);
+     if(found) {
+         item = found;
+         taskUIState.cats[c] = taskUIState.cats[c].filter(x => x.id !== taskUIState.selected);
+         break;
+     }
+  }
+  if (item) {
+     taskUIState.pool.push(item);
+  }
+  taskUIState.selected = null;
+  renderTaskUI();
+}
+
+function checkClassify() {
+  let task = state.tasks[state.currentIndex];
+  if(taskUIState.pool.length > 0) {
+      showFeedback(false, "Lütfen tüm kartları ilgili panellere yerleştirin.");
+      return;
+  }
+  let correct = true;
+  for(let c in taskUIState.cats) {
+      taskUIState.cats[c].forEach(item => {
+          if (item.target !== c) correct = false;
+      });
+  }
+  submitAnswer(correct, task.explanation, "Sınıflandırma Gönderildi");
+}
+
+function showReport() {
+  document.getElementById('task-content').style.display = 'none';
+  document.getElementById('controls').style.display = 'none';
+  document.getElementById('feedback').style.display = 'none';
+  
+  let total = state.tasks.length;
+  let completed = 0;
+  let firstTry = 0;
+  let wrongAttempts = 0;
+  let skipped = 0;
+  
+  state.tasks.forEach(t => {
+     let res = state.results[t.id];
+     if (res) {
+        if (res.status === 'completed') completed++;
+        if (res.status === 'skipped') skipped++;
+        if (res.status === 'completed' && res.firstTry) firstTry++;
+        wrongAttempts += (res.status === 'completed' && res.attempts > 0) ? res.attempts - 1 : res.attempts;
+     } else {
+        skipped++;
+     }
+  });
+
+  let reportHtml = `<div class="report">
+    <h2>Operasyon Raporu</h2>
+    <div style="display:flex; flex-wrap:wrap; gap:20px; margin-bottom: 20px;">
+      <div><strong>Toplam Görev:</strong> ${total}</div>
+      <div><strong>Tamamlanan:</strong> ${completed}</div>
+      <div><strong>İlk Denemede Doğru:</strong> ${firstTry}</div>
+      <div><strong>Yanlış Denemeler:</strong> ${wrongAttempts}</div>
+      <div><strong>Geçilenler:</strong> ${skipped}</div>
+      <div style="color:#f1c40f; font-size:18px;"><strong>Toplam Puan:</strong> ${state.score}</div>
+    </div>`;
+
+  let needsReview = state.tasks.filter(t => {
+      let r = state.results[t.id];
+      return !r || r.status === 'skipped' || (r.status === 'completed' && !r.firstTry);
+  });
+
+  if (needsReview.length > 0) {
+      reportHtml += `<h3>Yanlış/Geçilen Görevleri İncele</h3><ul>`;
+      state.tasks.forEach((t, index) => {
+         let res = state.results[t.id];
+         if (!res || res.status === 'skipped' || (res.status === 'completed' && !res.firstTry)) {
+             let userAns = (res && res.lastAnswer) ? res.lastAnswer : "Cevap verilmedi";
+             let statusText = (!res || res.status === 'skipped') ? 'Geçildi' : 'Hatalı Deneme Yapıldı';
+             
+             reportHtml += `<li>
+               <strong style="color:#66fcff;">Görev ${index+1}:</strong> ${t.question} <br>
+               <div style="margin-top:8px;"><em>Durum:</em> ${statusText}</div>
+               <div><em>Senin Cevabın:</em> ${userAns}</div>
+               <div style="margin-top:8px; color:#ccc;"><em>Kısa Öğretici Açıklama:</em> ${t.explanation}</div>
+               <button class="btn" onclick="goToTask(${index})" style="margin-top:15px; width:100%;">Görevi Tekrar Çöz</button>
+             </li>`;
+         }
+      });
+      reportHtml += `</ul>`;
+  } else {
+      reportHtml += `<h3 style="color:#27ae60;">Tebrikler! Tüm görevleri ilk denemede mükemmel şekilde tamamladın. Uzay gemisi uçuşa hazır!</h3>`;
+  }
+
+  reportHtml += `<button class="btn" style="background:#e74c3c; width:100%; margin-top:20px;" onclick="initGame()">Oyunu Sıfırla ve Tekrar Oyna</button></div>`;
+  
+  document.getElementById('visual-area').innerHTML = reportHtml;
+}
+
+function goToTask(index) {
+  state.currentIndex = index;
+  document.getElementById('task-content').style.display = 'block';
+  document.getElementById('controls').style.display = 'flex';
+  
+  // Restore Ship SVG
+  document.getElementById('visual-area').innerHTML = `
+    <svg id="ship-svg" viewBox="0 0 200 200" width="100%" height="auto" style="max-height: 400px; margin-bottom: 20px;">
+      <polygon id="part-1" class="ship-part" points="100,10 60,80 140,80" />
+      <rect id="part-2" class="ship-part" x="70" y="80" width="60" height="70" />
+      <polygon id="part-3" class="ship-part" points="70,100 20,150 70,150" />
+      <polygon id="part-4" class="ship-part" points="130,100 180,150 130,150" />
+      <circle id="part-5" class="ship-part" cx="100" cy="110" r="15" />
+      <line id="part-6" class="ship-part" x1="100" y1="10" x2="100" y2="0" stroke-width="4" />
+      <polygon id="part-7" class="ship-part" points="75,150 95,150 85,180" />
+      <polygon id="part-8" class="ship-part" points="105,150 125,150 115,180" />
+    </svg>
+    <div style="text-align: center; color: #888;">Doğru cevaplar geminin parçalarını tamir eder. Toplam 8 parça onarılmalı!</div>
+  `;
+  render();
+}
+
+window.onload = initGame;
+</script>
+</body>
+</html>
