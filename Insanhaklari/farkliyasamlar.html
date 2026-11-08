@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4. Sınıf İnsan Hakları: Çocuk Yaşantılarını Karşılaştırıyoruz (Y.4.2.3)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Nunito & Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #fef3c7 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .card-hover {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.12);
+        }
+        .btn-bounce:active {
+            transform: scale(0.95);
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float {
+            animation: floatSlow 3s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+        }
+        .glow-active {
+            animation: pulseGlow 2s infinite;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 9999px;
+        }
+        .confetti-piece {
+            position: fixed;
+            width: 10px;
+            height: 14px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: confettiFall 2.5s ease-out forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 pb-12">
+
+    <!-- Top Header & Scoreboard -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-md border-b-4 border-sky-400">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- Title & Curriculum Tag -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-md animate-float">
+                    <i class="fa-solid fa-Hands-holding-child"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-amber-100 text-amber-800 text-xs font-extrabold px-2.5 py-0.5 rounded-full border border-amber-300">
+                            4. Sınıf İnsan Hakları • Y.4.2.3
+                        </span>
+                        <span class="hidden sm:inline-block bg-sky-100 text-sky-800 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                            Hak ve Özgürlükler
+                        </span>
+                    </div>
+                    <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 leading-tight">
+                        Çocukların Yaşantılarını Karşılaştırıyoruz
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Live Stats & Sound Toggle -->
+            <div class="flex items-center gap-2 sm:gap-4 ml-auto">
+                <!-- Badges Counter -->
+                <div class="flex items-center gap-1.5 bg-purple-50 border-2 border-purple-200 px-3 py-1.5 rounded-2xl" title="Kazanılan Rozetler">
+                    <i class="fa-solid fa-medal text-purple-600 text-lg"></i>
+                    <div class="text-xs">
+                        <span class="text-slate-500 block leading-none">Rozet</span>
+                        <span id="badgeCount" class="font-extrabold text-purple-700 text-sm">0 / 4</span>
+                    </div>
+                </div>
+
+                <!-- Score Counter -->
+                <div class="flex items-center gap-2 bg-amber-50 border-2 border-amber-300 px-3.5 py-1.5 rounded-2xl shadow-sm">
+                    <i class="fa-solid fa-star text-amber-500 text-xl"></i>
+                    <div>
+                        <span class="text-xs text-slate-500 block leading-none">Toplam Puan</span>
+                        <span id="scoreDisplay" class="font-extrabold text-amber-700 text-base">0</span>
+                    </div>
+                </div>
+
+                <!-- Sound Toggle -->
+                <button id="soundToggleBtn" onclick="toggleSound()" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition border border-slate-300" title="Ses Efektlerini Aç/Kapat">
+                    <i id="soundIcon" class="fa-solid fa-volume-high text-lg text-sky-600"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="max-w-6xl mx-auto px-4 pt-1 pb-2 overflow-x-auto">
+            <div class="flex items-center gap-2 min-w-max">
+                <button onclick="switchTab(1)" id="tabBtn1" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl font-heading font-semibold text-sm sm:text-base transition-all bg-sky-600 text-white shadow-md">
+                    <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">1</span>
+                    <i class="fa-solid fa-window-restore"></i> Yaşam Pencereleri
+                </button>
+                <button onclick="switchTab(2)" id="tabBtn2" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl font-heading font-semibold text-sm sm:text-base transition-all bg-slate-100 hover:bg-sky-50 text-slate-700">
+                    <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center text-xs font-bold">2</span>
+                    <i class="fa-solid fa-magnifying-glass-chart"></i> Senaryo Dedektifi
+                </button>
+                <button onclick="switchTab(3)" id="tabBtn3" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl font-heading font-semibold text-sm sm:text-base transition-all bg-slate-100 hover:bg-sky-50 text-slate-700">
+                    <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center text-xs font-bold">3</span>
+                    <i class="fa-solid fa-bridge-water"></i> Haklar Köprüsü
+                </button>
+                <button onclick="switchTab(4)" id="tabBtn4" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl font-heading font-semibold text-sm sm:text-base transition-all bg-slate-100 hover:bg-sky-50 text-slate-700">
+                    <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center text-xs font-bold">4</span>
+                    <i class="fa-solid fa-trophy"></i> Yarışma & Sertifika
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Curriculum Info Banner -->
+    <div class="max-w-6xl mx-auto px-4 mt-4">
+        <div class="bg-gradient-to-r from-indigo-600 via-sky-600 to-teal-500 rounded-2xl p-4 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-start gap-3">
+                <div class="bg-white/20 p-3 rounded-xl text-2xl shrink-0">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-base sm:text-lg flex items-center gap-2">
+                        Ders Kazanımı (Y.4.2.3)
+                    </h2>
+                    <p class="text-xs sm:text-sm text-sky-50 leading-relaxed">
+                        <strong>"Hak ve özgürlüklerini kullanabilen ve kullanamayan çocukların yaşantılarını karşılaştırır."</strong>
+                        Her çocuğun eğitim, sağlık, oyun, güvenli barınma ve düşüncesini ifade etme hakkı vardır. Bu haklara ulaşabilen ve ulaşamayan çocukların bir gününün nasıl geçtiğini birlikte inceleyelim!
+                    </p>
+                </div>
+            </div>
+            <!-- Earned Badges Strip -->
+            <div class="flex items-center gap-2 bg-white/15 px-3 py-2 rounded-xl shrink-0">
+                <div id="badgeSlot1" class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center text-white/40 transition-all" title="Gözlemci Rozeti (1. Bölüm)">
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+                <div id="badgeSlot2" class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center text-white/40 transition-all" title="Hak Dedektifi Rozeti (2. Bölüm)">
+                    <i class="fa-solid fa-user-secret"></i>
+                </div>
+                <div id="badgeSlot3" class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center text-white/40 transition-all" title="Empati Mimarı Rozeti (3. Bölüm)">
+                    <i class="fa-solid fa-heart-circle-check"></i>
+                </div>
+                <div id="badgeSlot4" class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center text-white/40 transition-all" title="Hak Koruyucusu Rozeti (4. Bölüm)">
+                    <i class="fa-solid fa-shield-heart"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-6xl mx-auto px-4 mt-6">
+
+        <!-- ==========================================
+             MODULE 1: YAŞAM PENCERELERİ (DAILY TIMELINE COMPARISON)
+             ========================================== -->
+        <section id="module1" class="module-section space-y-6">
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-lg border-2 border-sky-100">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-sky-600 bg-sky-50 px-3 py-1 rounded-full">1. Aşama: Gündelik Yaşam Karşılaştırması</span>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mt-1">Yaşam Pencereleri: İki Çocuk, İki Farklı Gün</h2>
+                        <p class="text-sm text-slate-600">Saat dilimlerine tıklayarak haklarını kullanabilen <strong>Ada</strong> ile haklarına erişmekte zorluk yaşayan <strong>Umut</strong>'un bir gününü karşılaştırın ve soruyu yanıtlayın.</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-xs font-bold text-slate-500">İlerleme:</span>
+                        <span id="m1ProgressText" class="bg-emerald-100 text-emerald-800 font-extrabold px-3 py-1 rounded-full text-sm">0 / 4 Saat İncelendi</span>
+                    </div>
+                </div>
+
+                <!-- Time Selector Buttons -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 my-5">
+                    <button onclick="selectTimeSlot(0)" id="timeBtn0" class="time-slot-btn flex items-center justify-center gap-2 p-3 rounded-2xl border-2 font-heading font-bold transition-all bg-sky-600 text-white border-sky-600 shadow-md">
+                        <i class="fa-solid fa-sun text-amber-300 text-lg"></i>
+                        <span>08:00 Sabah</span>
+                        <i id="timeCheck0" class="fa-solid fa-circle-check text-emerald-300 hidden"></i>
+                    </button>
+                    <button onclick="selectTimeSlot(1)" id="timeBtn1" class="time-slot-btn flex items-center justify-center gap-2 p-3 rounded-2xl border-2 font-heading font-bold transition-all bg-slate-50 text-slate-700 border-slate-200 hover:border-sky-300">
+                        <i class="fa-solid fa-cloud-sun text-amber-500 text-lg"></i>
+                        <span>12:30 Öğle</span>
+                        <i id="timeCheck1" class="fa-solid fa-circle-check text-emerald-500 hidden"></i>
+                    </button>
+                    <button onclick="selectTimeSlot(2)" id="timeBtn2" class="time-slot-btn flex items-center justify-center gap-2 p-3 rounded-2xl border-2 font-heading font-bold transition-all bg-slate-50 text-slate-700 border-slate-200 hover:border-sky-300">
+                        <i class="fa-solid fa-futbol text-emerald-500 text-lg"></i>
+                        <span>16:00 İkindi</span>
+                        <i id="timeCheck2" class="fa-solid fa-circle-check text-emerald-500 hidden"></i>
+                    </button>
+                    <button onclick="selectTimeSlot(3)" id="timeBtn3" class="time-slot-btn flex items-center justify-center gap-2 p-3 rounded-2xl border-2 font-heading font-bold transition-all bg-slate-50 text-slate-700 border-slate-200 hover:border-sky-300">
+                        <i class="fa-solid fa-moon text-indigo-500 text-lg"></i>
+                        <span>20:00 Akşam</span>
+                        <i id="timeCheck3" class="fa-solid fa-circle-check text-emerald-500 hidden"></i>
+                    </button>
+                </div>
+
+                <!-- Side-by-Side Windows -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <!-- Left Window: Can Exercise Rights -->
+                    <div class="rounded-3xl bg-gradient-to-b from-emerald-50 to-teal-50/50 border-2 border-emerald-300 p-5 relative overflow-hidden shadow-sm">
+                        <div class="flex items-center justify-between border-b border-emerald-200 pb-3 mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl shadow">
+                                    😊
+                                </div>
+                                <div>
+                                    <span class="text-xs font-extrabold uppercase text-emerald-700 bg-emerald-200/70 px-2.5 py-0.5 rounded-full">Haklarını Kullanabilen Çocuk</span>
+                                    <h3 class="text-lg font-bold text-emerald-950" id="m1PositiveTitle">Ada'nın Sabahı (08:00)</h3>
+                                </div>
+                            </div>
+                            <span id="m1RightBadge" class="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-xl shadow-sm">
+                                Eğitim Hakkı
+                            </span>
+                        </div>
+
+                        <div class="flex items-start gap-4 bg-white/80 p-4 rounded-2xl border border-emerald-200 mb-4">
+                            <div id="m1PosIcon" class="text-4xl shrink-0">🏫</div>
+                            <p id="m1PosDesc" class="text-slate-700 text-sm sm:text-base leading-relaxed font-medium"></p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 text-xs sm:text-sm">
+                            <div class="bg-emerald-100/80 p-3 rounded-xl border border-emerald-200">
+                                <span class="font-bold text-emerald-900 block mb-1"><i class="fa-solid fa-face-smile-beam mr-1"></i> Hissettiği Duygular:</span>
+                                <span id="m1PosFeeling" class="text-emerald-800 font-semibold">Güvende, meraklı, neşeli ve umutlu</span>
+                            </div>
+                            <div class="bg-emerald-100/80 p-3 rounded-xl border border-emerald-200">
+                                <span class="font-bold text-emerald-900 block mb-1"><i class="fa-solid fa-seedling mr-1"></i> Geleceğe Etkisi:</span>
+                                <span id="m1PosFuture" class="text-emerald-800 font-semibold">Yeteneklerini geliştirir, hayallerindeki mesleğe hazırlanır.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Window: Cannot Exercise Rights -->
+                    <div class="rounded-3xl bg-gradient-to-b from-amber-50 to-orange-50/60 border-2 border-amber-300 p-5 relative overflow-hidden shadow-sm">
+                        <div class="flex items-center justify-between border-b border-amber-200 pb-3 mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl shadow">
+                                    😔
+                                </div>
+                                <div>
+                                    <span class="text-xs font-extrabold uppercase text-amber-900 bg-amber-200/80 px-2.5 py-0.5 rounded-full">Hakkını Kullanamayan Çocuk</span>
+                                    <h3 class="text-lg font-bold text-amber-950" id="m1NegativeTitle">Umut'un Sabahı (08:00)</h3>
+                                </div>
+                            </div>
+                            <span id="m1DeprivedBadge" class="bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-xl shadow-sm">
+                                Eğitim Hakkı Engellenmiş
+                            </span>
+                        </div>
+
+                        <div class="flex items-start gap-4 bg-white/80 p-4 rounded-2xl border border-amber-200 mb-4">
+                            <div id="m1NegIcon" class="text-4xl shrink-0">🧰</div>
+                            <p id="m1NegDesc" class="text-slate-700 text-sm sm:text-base leading-relaxed font-medium"></p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 text-xs sm:text-sm">
+                            <div class="bg-amber-100/80 p-3 rounded-xl border border-amber-200">
+                                <span class="font-bold text-amber-900 block mb-1"><i class="fa-solid fa-cloud-rain mr-1"></i> Hissettiği Duygular:</span>
+                                <span id="m1NegFeeling" class="text-amber-800 font-semibold">Yorgun, üzgün, dışlanmış ve kaygılı</span>
+                            </div>
+                            <div class="bg-amber-100/80 p-3 rounded-xl border border-amber-200">
+                                <span class="font-bold text-amber-900 block mb-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Yaşamına Etkisi:</span>
+                                <span id="m1NegFuture" class="text-amber-800 font-semibold">Okuma-yazma ve bilimsel bilgiden geri kalır, gelişimi zorlaşır.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Reflection Question for Current Time Slot -->
+                <div class="mt-6 bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 sm:p-5">
+                    <div class="flex items-center gap-2 text-sky-900 font-bold text-base mb-3">
+                        <i class="fa-solid fa-lightbulb text-amber-500 text-xl"></i>
+                        <span id="m1QuestionPrompt">Karşılaştırma Sorusu:</span>
+                    </div>
+                    <div id="m1OptionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Dynamically populated buttons -->
+                    </div>
+                    <div id="m1FeedbackBox" class="hidden mt-3 p-3 rounded-xl text-sm font-bold"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             MODULE 2: SENARYO DEDEKTİFİ (CASE ANALYSIS)
+             ========================================== -->
+        <section id="module2" class="module-section hidden space-y-6">
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-lg border-2 border-sky-100">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-purple-600 bg-purple-50 px-3 py-1 rounded-full">2. Aşama: Vaka İncelemesi</span>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mt-1">Senaryo Dedektifi: Hangi Hak, Nasıl Bir Yaşantı?</h2>
+                        <p class="text-sm text-slate-600">Aşağıdaki 6 çocuğun öyküsünü okuyun. Önce ilgili olduğu <strong>temel hakkı</strong> seçin, ardından çocuğun bu hakkı <strong>kullanıp kullanamadığını</strong> belirleyin!</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="m2ProgressText" class="bg-purple-100 text-purple-800 font-extrabold px-3 py-1 rounded-full text-sm">0 / 6 Vaka Çözüldü</span>
+                    </div>
+                </div>
+
+                <!-- Case Navigation Pills -->
+                <div id="caseNavContainer" class="flex flex-wrap gap-2 my-4">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Active Case Card -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch mt-4">
+                    <!-- Story Display -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-indigo-50 via-sky-50 to-white rounded-3xl p-5 border-2 border-indigo-200 flex flex-col justify-between shadow-sm">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span id="caseNumberBadge" class="bg-indigo-600 text-white text-xs font-extrabold px-3 py-1 rounded-full">Vaka #1</span>
+                                <span id="caseSolvedTag" class="hidden bg-emerald-100 text-emerald-700 text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-300">
+                                    <i class="fa-solid fa-check mr-1"></i> Çözüldü
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div id="caseAvatar" class="w-16 h-16 rounded-2xl bg-white shadow border border-indigo-100 flex items-center justify-center text-4xl">
+                                    👧🏻
+                                </div>
+                                <div>
+                                    <h3 id="caseChildName" class="text-xl font-bold text-slate-800">Elif (10 Yaşında)</h3>
+                                    <p id="caseLocation" class="text-xs font-bold text-indigo-600">Günlük Yaşam Kesiti</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-4 rounded-2xl border border-indigo-100 shadow-inner mb-4">
+                                <p id="caseStoryText" class="text-slate-700 text-base leading-relaxed font-medium"></p>
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-100/70 rounded-2xl p-3.5 text-xs sm:text-sm text-indigo-950">
+                            <span class="font-extrabold block mb-1"><i class="fa-solid fa-magnifying-glass mr-1"></i> Dedektif İpucu:</span>
+                            <span id="caseHintText">Bu öyküde çocuğun hangi temel ihtiyacı veya özgürlüğü ön plandadır?</span>
+                        </div>
+                    </div>
+
+                    <!-- Detective Questions Panel -->
+                    <div class="lg:col-span-7 bg-slate-50 rounded-3xl p-5 border-2 border-slate-200 flex flex-col justify-between space-y-5">
+                        <!-- Step A: Which Right? -->
+                        <div>
+                            <label class="block text-sm font-extrabold text-slate-700 mb-2">
+                                <span class="inline-block w-6 h-6 rounded-full bg-indigo-600 text-white text-center leading-6 mr-1">A</span>
+                                Bu yaşantı öncelikle hangi temel hak ve özgürlük ile ilgilidir?
+                            </label>
+                            <div id="rightOptionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Step B: Can or Cannot Exercise? -->
+                        <div>
+                            <label class="block text-sm font-extrabold text-slate-700 mb-2">
+                                <span class="inline-block w-6 h-6 rounded-full bg-indigo-600 text-white text-center leading-6 mr-1">B</span>
+                                Bu çocuk hak ve özgürlüğünü kullanabiliyor mu? Yaşantısına etkisi nedir?
+                            </label>
+                            <div id="statusOptionsGrid" class="grid grid-cols-1 gap-2.5">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Submit & Feedback -->
+                        <div>
+                            <button onclick="checkCaseAnswer()" id="checkCaseBtn" class="w-full py-3.5 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-heading font-bold text-base shadow-md transition btn-bounce flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-check-double"></i> Analizi Kontrol Et (+25 Puan)
+                            </button>
+                            <div id="caseFeedbackBox" class="hidden mt-3 p-3.5 rounded-2xl text-sm font-bold"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             MODULE 3: HAKLAR KÖPRÜSÜ (SORTING & EMPATHY SOLUTIONS)
+             ========================================== -->
+        <section id="module3" class="module-section hidden space-y-6">
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-lg border-2 border-sky-100">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">3. Aşama: Sınıflandırma ve Çözüm Üretme</span>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mt-1">Haklar Köprüsü: Yaşantıları Ayırt Et & Çözüm Bul</h2>
+                        <p class="text-sm text-slate-600">Ortadaki kartta yer alan çocuk yaşantısının hangi gruba ait olduğunu seçin. Eğer bir hak ihlali varsa, bu durumu düzeltecek <strong>Empati ve Çözüm Önerisini</strong> işaretleyin!</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="m3ProgressText" class="bg-teal-100 text-teal-800 font-extrabold px-3 py-1 rounded-full text-sm">0 / 8 Kart Sınıflandırıldı</span>
+                    </div>
+                </div>
+
+                <!-- Active Sorting Card Area -->
+                <div id="sortingGameArea" class="my-6">
+                    <div class="max-w-2xl mx-auto bg-gradient-to-br from-sky-50 to-indigo-50 rounded-3xl p-6 border-2 border-sky-300 shadow-md text-center relative">
+                        <span id="sortCardCounter" class="inline-block bg-sky-600 text-white text-xs font-extrabold px-3 py-1 rounded-full mb-3">
+                            Durum Kartı 1 / 8
+                        </span>
+                        <div id="sortCardEmoji" class="text-5xl mb-3">🎨</div>
+                        <p id="sortCardStatement" class="text-lg sm:text-xl font-bold text-slate-800 leading-snug mb-6"></p>
+
+                        <!-- Two Categorization Buttons -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button onclick="classifyCard('can')" class="p-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-heading font-bold text-base shadow-md transition btn-bounce flex items-center justify-center gap-3">
+                                <i class="fa-solid fa-sun text-2xl text-amber-200"></i>
+                                <div class="text-left">
+                                    <span class="block text-xs uppercase opacity-90">Güneşli Yaka</span>
+                                    <span>Hakkını Kullanabilen Çocuk</span>
+                                </div>
+                            </button>
+                            <button onclick="classifyCard('cannot')" class="p-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-heading font-bold text-base shadow-md transition btn-bounce flex items-center justify-center gap-3">
+                                <i class="fa-solid fa-cloud-bolt text-2xl text-amber-100"></i>
+                                <div class="text-left">
+                                    <span class="block text-xs uppercase opacity-90">Bulutlu Yaka</span>
+                                    <span>Hakkını Kullanamayan Çocuk</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Solution Follow-up Modal/Panel (Appears when 'cannot' is correctly identified) -->
+                        <div id="solutionFollowUp" class="hidden mt-5 pt-5 border-t-2 border-amber-200 text-left bg-amber-50/90 p-4 rounded-2xl">
+                            <p class="text-sm font-extrabold text-amber-900 mb-2">
+                                <i class="fa-solid fa-hand-holding-heart text-rose-500 mr-1"></i>
+                                Harika tespit! Peki, bu çocuğun da haklarını kullanabilmesi için ne yapılmalıdır? (+10 Ek Puan)
+                            </p>
+                            <div id="solutionChoices" class="grid grid-cols-1 gap-2"></div>
+                        </div>
+
+                        <!-- Feedback Line -->
+                        <div id="sortFeedback" class="hidden mt-4 p-3 rounded-xl text-sm font-bold"></div>
+                    </div>
+                </div>
+
+                <!-- Sorted Columns Display -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+                    <!-- Sunny Side List -->
+                    <div class="bg-emerald-50/70 rounded-2xl p-4 border-2 border-emerald-200">
+                        <h3 class="font-bold text-emerald-900 text-base flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            Haklarını Kullanabilen Çocuk Yaşantıları
+                        </h3>
+                        <ul id="sortedCanList" class="space-y-2 text-xs sm:text-sm text-emerald-950">
+                            <li id="emptyCanMsg" class="text-slate-400 italic">Henüz kart eklenmedi...</li>
+                        </ul>
+                    </div>
+
+                    <!-- Cloudy Side List -->
+                    <div class="bg-amber-50/70 rounded-2xl p-4 border-2 border-amber-200">
+                        <h3 class="font-bold text-amber-900 text-base flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-circle-exclamation text-amber-600"></i>
+                            Haklarını Kullanamayan Çocuk Yaşantıları & Çözümler
+                        </h3>
+                        <ul id="sortedCannotList" class="space-y-2 text-xs sm:text-sm text-amber-950">
+                            <li id="emptyCannotMsg" class="text-slate-400 italic">Henüz kart eklenmedi...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             MODULE 4: BİLGİ YARIŞMASI & SERTİFİKA (QUIZ & CERTIFICATE)
+             ========================================== -->
+        <section id="module4" class="module-section hidden space-y-6">
+            <!-- Quiz Card -->
+            <div id="quizCardContainer" class="bg-white rounded-3xl p-5 sm:p-6 shadow-lg border-2 border-sky-100">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600 bg-amber-50 px-3 py-1 rounded-full">4. Aşama: Kazanım Değerlendirme</span>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mt-1">Bilgi Yarışması ve Empati Sertifikası</h2>
+                        <p class="text-sm text-slate-600">Kazanım sorularını yanıtlayarak <strong>"Çocuk Hakları ve Empati Koruyucusu Sertifikası"</strong> almaya hak kazanın!</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="quizStepBadge" class="bg-amber-100 text-amber-800 font-extrabold px-3 py-1 rounded-full text-sm">Soru 1 / 6</span>
+                    </div>
+                </div>
+
+                <div id="quizActiveBody" class="my-5">
+                    <div class="bg-slate-50 p-5 rounded-2xl border-2 border-slate-200 mb-4">
+                        <p id="quizQuestionText" class="text-base sm:text-lg font-bold text-slate-800 leading-relaxed"></p>
+                    </div>
+
+                    <div id="quizOptionsList" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Options injected via JS -->
+                    </div>
+
+                    <div id="quizFeedbackArea" class="hidden mt-4 p-4 rounded-2xl text-sm font-bold flex items-center justify-between">
+                        <span id="quizFeedbackMsg"></span>
+                        <button onclick="nextQuizQuestion()" id="nextQuizBtn" class="px-4 py-2 rounded-xl bg-slate-800 text-white font-bold text-xs hover:bg-slate-900 transition">
+                            Sonraki Soru <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Summary Table (Always helpful reference for Y.4.2.3) -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-lg border-2 border-indigo-100">
+                <h3 class="text-lg sm:text-xl font-bold text-indigo-950 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-table-columns text-indigo-600"></i>
+                    Özet Karşılaştırma Tablosu (Y.4.2.3 Kazanım Özeti)
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-indigo-50 text-indigo-950 border-b-2 border-indigo-200">
+                                <th class="p-3 font-extrabold rounded-tl-xl">Karşılaştırma Alanı</th>
+                                <th class="p-3 font-extrabold text-emerald-800 bg-emerald-50">Hak ve Özgürlüklerini Kullanabilen Çocuklar</th>
+                                <th class="p-3 font-extrabold text-amber-900 bg-amber-50 rounded-tr-xl">Hak ve Özgürlüklerini Kullanamayan Çocuklar</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-3 font-bold text-slate-700"><i class="fa-solid fa-graduation-cap text-sky-600 mr-1"></i> Eğitim Yaşantısı</td>
+                                <td class="p-3 bg-emerald-50/40 text-slate-700">Okula düzenli gider, kitaplara ulaşır, merak duygusu ve yetenekleri gelişir.</td>
+                                <td class="p-3 bg-amber-50/40 text-slate-700">Çocuk işçiliği veya imkânsızlık nedeniyle okula gidemez; potansiyelini gerçekleştirmekte zorlanır.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-700"><i class="fa-solid fa-heart-pulse text-rose-600 mr-1"></i> Sağlık ve Beslenme</td>
+                                <td class="p-3 bg-emerald-50/40 text-slate-700">Aşı olur, hastalandığında doktora gider, dengeli beslenir ve temiz suya ulaşır.</td>
+                                <td class="p-3 bg-amber-50/40 text-slate-700">Yetersiz beslenme ve tedavi eksikliği nedeniyle sık hastalanır, fiziksel gelişimi olumsuz etkilenir.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-700"><i class="fa-solid fa-gamepad text-purple-600 mr-1"></i> Oyun ve Dinlenme</td>
+                                <td class="p-3 bg-emerald-50/40 text-slate-700">Parkta ve arkadaşlarıyla güvenle oynar, sosyal becerileri ve hayal gücü güçlenir.</td>
+                                <td class="p-3 bg-amber-50/40 text-slate-700">Ağır sorumluluklar veya güvenli alan olmaması yüzünden oyun oynayamaz, çocukluğunu yaşayamaz.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-700"><i class="fa-solid fa-comments text-amber-600 mr-1"></i> İfade Özgürlüğü ve Duygular</td>
+                                <td class="p-3 bg-emerald-50/40 text-slate-700">Ailede ve okulda fikri sorulur; özgüvenli, mutlu, değerli ve güvende hisseder.</td>
+                                <td class="p-3 bg-amber-50/40 text-slate-700">Düşünceleri dikkate alınmaz; içine kapanık, üzgün, kaygılı ve yalnız hissedebilir.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Certificate Section -->
+            <div class="bg-gradient-to-br from-amber-100 via-yellow-50 to-sky-100 rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-amber-400 text-center relative overflow-hidden">
+                <div class="max-w-2xl mx-auto">
+                    <div class="w-16 h-16 rounded-full bg-amber-400 text-white flex items-center justify-center text-3xl mx-auto mb-3 shadow-md">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-bold text-slate-800">Çocuk Hakları ve Empati Koruyucusu Sertifikası</h3>
+                    <p class="text-sm text-slate-600 mt-1 mb-5">Adınızı yazarak sertifikanızı oluşturabilir ve empati sözünüzü kaydedebilirsiniz.</p>
+
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+                        <input type="text" id="studentNameInput" placeholder="Adınızı ve Soyadınızı Yazın..." class="px-4 py-3 rounded-2xl border-2 border-amber-300 bg-white text-slate-800 font-bold text-sm sm:text-base focus:outline-none focus:border-sky-500 w-full sm:w-72" oninput="updateCertificateName()">
+                        <button onclick="celebrateCertificate()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-heading font-bold text-sm sm:text-base shadow-md transition btn-bounce">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Kutla & Onayla
+                        </button>
+                    </div>
+
+                    <!-- Certificate Preview Card -->
+                    <div class="bg-white rounded-3xl p-6 border-4 border-double border-amber-500 shadow-inner text-center">
+                        <div class="text-xs font-extrabold uppercase tracking-widest text-amber-600 mb-1">T.C. Millî Eğitim Bakanlığı 4. Sınıf İnsan Hakları Kazanım Belgesi</div>
+                        <h4 class="text-xl sm:text-2xl font-bold text-indigo-950 mb-2" id="certStudentName">Sevgili Öğrencimiz</h4>
+                        <p class="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto leading-relaxed mb-4">
+                            <strong>"Y.4.2.3. Hak ve özgürlüklerini kullanabilen ve kullanamayan çocukların yaşantılarını karşılaştırır."</strong> kazanımı kapsamındaki etkinlikleri başarıyla inceleyerek her çocuğun eşit, güvenli ve mutlu bir yaşama hakkı olduğunu kavramış ve <strong>Hak Koruyucusu</strong> unvanını kazanmıştır.
+                        </p>
+                        <div class="flex flex-wrap items-center justify-center gap-4 border-t border-slate-200 pt-4 text-xs sm:text-sm font-bold text-slate-700">
+                            <span><i class="fa-solid fa-star text-amber-500 mr-1"></i> Toplam Puan: <strong id="certScoreVal" class="text-indigo-700">0</strong></span>
+                            <span><i class="fa-solid fa-medal text-purple-600 mr-1"></i> Kazanılan Rozet: <strong id="certBadgeVal" class="text-purple-700">0 / 4</strong></span>
+                            <span><i class="fa-solid fa-heart text-rose-500 mr-1"></i> Değer: <strong>Adalet, Eşitlik ve Empati</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Toast / Notification Banner -->
+    <div id="toastBanner" class="fixed bottom-5 right-5 z-50 hidden bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl border-2 border-amber-400 flex items-center gap-3 transition-all">
+        <span id="toastIcon" class="text-2xl">🏅</span>
+        <div>
+            <div id="toastTitle" class="font-bold text-sm text-amber-300">Yeni Rozet Kazanıldı!</div>
+            <div id="toastText" class="text-xs text-slate-200">Tebrikler!</div>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================
+           STATE & SOUND ENGINE (Web Audio API)
+           ========================================== */
+        let soundEnabled = true;
+        let totalScore = 0;
+        let earnedBadges = { 1: false, 2: false, 3: false, 4: false };
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(175, now + 0.12);
+                    gain.gain.setValueAtTime(0.14, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+                    osc.start(now);
+                    osc.stop(now + 0.07);
+                } else if (type === 'badge') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'triangle';
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.setValueAtTime(freq, now + idx * 0.09);
+                        g.gain.setValueAtTime(0.18, now + idx * 0.09);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.25);
+                        o.start(now + idx * 0.09);
+                        o.stop(now + idx * 0.09 + 0.25);
+                    });
+                }
+            } catch (e) {
+                // Ignore audio errors
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-lg text-sky-600';
+                playSound('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-lg text-slate-400';
+            }
+        }
+
+        function addScore(points) {
+            totalScore += points;
+            document.getElementById('scoreDisplay').textContent = totalScore;
+            document.getElementById('certScoreVal').textContent = totalScore;
+        }
+
+        function unlockBadge(stageNum, title, desc) {
+            if (earnedBadges[stageNum]) return;
+            earnedBadges[stageNum] = true;
+            playSound('badge');
+            launchConfetti();
+
+            const slot = document.getElementById(`badgeSlot${stageNum}`);
+            if (slot) {
+                slot.className = 'w-9 h-9 rounded-lg bg-amber-400 text-slate-900 flex items-center justify-center shadow-md scale-110 transition-all';
+            }
+
+            const count = Object.values(earnedBadges).filter(Boolean).length;
+            document.getElementById('badgeCount').textContent = `${count} / 4`;
+            document.getElementById('certBadgeVal').textContent = `${count} / 4`;
+
+            showToast('🏅 ' + title, desc);
+        }
+
+        function showToast(title, text) {
+            const banner = document.getElementById('toastBanner');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastText').textContent = text;
+            banner.classList.remove('hidden');
+            setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 4000);
+        }
+
+        function launchConfetti() {
+            const colors = ['#38bdf8', '#fbbf24', '#34d399', '#a78bfa', '#f87171'];
+            for (let i = 0; i < 32; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDuration = (1.6 + Math.random() * 1.4) + 's';
+                document.body.appendChild(piece);
+                setTimeout(() => piece.remove(), 3000);
+            }
+        }
+
+        /* ==========================================
+           TAB NAVIGATION
+           ========================================== */
+        function switchTab(tabNum) {
+            playSound('click');
+            for (let i = 1; i <= 4; i++) {
+                const section = document.getElementById(`module${i}`);
+                const btn = document.getElementById(`tabBtn${i}`);
+                if (i === tabNum) {
+                    section.classList.remove('hidden');
+                    btn.className = 'tab-btn flex items-center gap-2 px-4 py-2 rounded-xl font-heading font-semibold text-sm sm:text-base transition-all bg-sky-600 text-white shadow-md';
+                } else {
+                    section.classList.add('hidden');
+                    btn.className = 'tab-btn flex items-center gap-2 px-4 py-2 rounded-xl font-heading font-semibold text-sm sm:text-base transition-all bg-slate-100 hover:bg-sky-50 text-slate-700';
+                }
+            }
+        }
+
+        /* ==========================================
+           MODULE 1 DATA & LOGIC: YAŞAM PENCERELERİ
+           ========================================== */
+        const timelineData = [
+            {
+                timeLabel: "08:00 Sabah",
+                rightName: "Eğitim Hakkı",
+                deprivedName: "Eğitim Hakkı Engellenmiş",
+                posTitle: "Ada'nın Sabahı (08:00)",
+                posIcon: "🏫",
+                posDesc: "Ada sabah kahvaltısını yaptıktan sonra okul çantasını sırtına takar. Güvenli servisle veya yürüyerek okuluna ulaşır, öğretmenini ve arkadaşlarını sevgiyle selamlar.",
+                posFeeling: "Meraklı, neşeli, güvende ve heyecanlı",
+                posFuture: "Okuma-yazma, bilim ve sanat öğrenerek hayallerindeki mesleğe adım adım yaklaşır.",
+                negTitle: "Umut'un Sabahı (08:00)",
+                negIcon: "🧰",
+                negDesc: "Umut sabah erkenden uyanıp ailesinin geçimine yardım etmek için tamir atölyesine veya tarlaya gitmek zorunda kalır. Yaşıtları dersteyken o ağır işlerde çalışır.",
+                negFeeling: "Yorgun, üzgün, okul özlemi çeken",
+                negFuture: "Okula gidemediği için temel eğitimden mahrum kalır ve bedensel olarak yıpranır.",
+                question: "Sabah 08:00'de Ada ve Umut'un yaşantılarını karşılaştırdığımızda hangi sonuca ulaşırız?",
+                options: [
+                    { text: "Her iki çocuk da eğitim hakkını eşit şekilde kullanmaktadır.", correct: false },
+                    { text: "Ada eğitim hakkını kullanıp gelişirken, Umut çocuk işçiliği nedeniyle eğitim hakkından mahrum kalmaktadır.", correct: true },
+                    { text: "Çocukların okul yerine tamirhanede çalışması onların gelişimi için daha faydalıdır.", correct: false },
+                    { text: "Eğitim hakkı sadece bazı çocuklara tanınan bir ayrıcalıktır.", correct: false }
+                ],
+                solved: false
+            },
+            {
+                timeLabel: "12:30 Öğle",
+                rightName: "Sağlık ve Beslenme Hakkı",
+                deprivedName: "Sağlık ve Beslenme Yetersizliği",
+                posTitle: "Ada'nın Öğle Vakti (12:30)",
+                posIcon: "🥗",
+                posDesc: "Ada öğle arasında temiz suya ve dengeli bir öğle yemeğine ulaşır. Diş ağrısı başladığında ailesi onu hemen çocuk diş hekimine götürerek tedavisini yaptırır.",
+                posFeeling: "Sağlıklı, enerjik ve bakımlı",
+                posFuture: "Büyüme ve gelişmesi sağlıklı sürer, hastalıklara karşı dirençli olur.",
+                negTitle: "Umut'un Öğle Vakti (12:30)",
+                negIcon: "🚱",
+                negDesc: "Yaşadığı bölgede temiz içme suyu ve sağlık ocağı bulunmayan bir çocuk, yetersiz beslenir ve hastalandığında doktora ya da ilaca kolayca ulaşamaz.",
+                negFeeling: "Halsiz, ağrılı ve çaresiz",
+                negFuture: "Tedavi edilemeyen basit hastalıklar bile büyümesini ve yaşam kalitesini olumsuz etkiler.",
+                question: "Öğle vaktindeki bu iki yaşantı karşılaştırıldığında 'Sağlık Hakkı' ile ilgili ne söylenebilir?",
+                options: [
+                    { text: "Sağlık ve dengeli beslenme hakkına erişen çocuklar daha enerjik ve sağlıklı büyür.", correct: true },
+                    { text: "Çocukların doktora gitmesine gerek yoktur, hastalıklar kendiliğinden geçer.", correct: false },
+                    { text: "Temiz suya ulaşamamak çocukların sadece oyun süresini kısaltır.", correct: false },
+                    { text: "Sağlık hakkı yalnızca yetişkinler için geçerli bir haktır.", correct: false }
+                ],
+                solved: false
+            },
+            {
+                timeLabel: "16:00 İkindi",
+                rightName: "Oyun, Dinlenme ve Kültür Hakkı",
+                deprivedName: "Oyun ve Dinlenme Hakkı Kısıtlı",
+                posTitle: "Ada'nın İkindi Vakti (16:00)",
+                posIcon: "🎨",
+                posDesc: "Okuldan dönen Ada biraz dinlendikten sonra mahalledeki güvenli parkta arkadaşlarıyla ip atlar, bisiklet sürer ve resim kulübü etkinliklerine katılır.",
+                posFeeling: "Özgür, yaratıcı, sosyal ve mutlu",
+                posFuture: "Paylaşmayı, kurallara uymayı öğrenir; hayal gücü ve arkadaşlık bağları güçlenir.",
+                negTitle: "Umut'un İkindi Vakti (16:00)",
+                negIcon: "🧱",
+                negDesc: "Çevresinde güvenli bir oyun alanı olmayan veya tüm gün ev/tarla işlerinde çalıştırılan çocuk, yaşıtlarıyla oyun oynayacak ne zaman ne de güvenli bir park bulabilir.",
+                negFeeling: "Yalnız, sıkılmış ve çocukluğunu yaşayamamış",
+                negFuture: "Sosyal becerileri ve akranlarıyla kuracağı iletişim zayıflar, aşırı stres yaşar.",
+                question: "16:00 dilimindeki yaşantılara göre 'Oyun ve Dinlenme Hakkı' çocuğa ne kazandırır?",
+                options: [
+                    { text: "Oyun oynamak sadece zaman kaybıdır, çocukların gelişimine katkısı yoktur.", correct: false },
+                    { text: "Oyun ve dinlenme hakkını kullanan çocukların sosyal becerileri, neşesi ve hayal gücü gelişir.", correct: true },
+                    { text: "Çocuklar hiç dinlenmeden sürekli ders veya iş yapmalıdır.", correct: false },
+                    { text: "Güvenli parklar sadece büyük şehirlerdeki çocukların hakkıdır.", correct: false }
+                ],
+                solved: false
+            },
+            {
+                timeLabel: "20:00 Akşam",
+                rightName: "Güvenli Barınma ve İfade Özgürlüğü",
+                deprivedName: "Barınma ve İfade Hakkı İhlali",
+                posTitle: "Ada'nın Akşamı (20:00)",
+                posIcon: "🏡",
+                posDesc: "Akşam yemeğinde ailece sohbet edilir. Hafta sonu yapılacak etkinlik için Ada'nın da fikri sorulur ve dikkatle dinlenir. Ardından sıcak, güvenli odasında huzurla uyur.",
+                posFeeling: "Değerli, özgüvenli, huzurlu ve sevilen",
+                posFuture: "Kendi düşüncelerini saygıyla ifade edebilen, demokratik ve özgüvenli bir birey olur.",
+                negTitle: "Umut'un Akşamı (20:00)",
+                negIcon: "🌧️",
+                negDesc: "Savaş, göç veya yoksulluk nedeniyle soğuk bir çadırda barınmaya çalışan ya da aile içinde 'Sen çocuksun, karışma!' denilerek susturulan çocuk kendini güvensiz hisseder.",
+                negFeeling: "Korkmuş, değersiz hissettirilmiş ve çekingen",
+                posFutureNeg: "Özgüveni zedelenir, düşüncelerini söylemekten çekinir ve gelecek kaygısı taşır.",
+                negFuture: "Özgüveni zedelenir, düşüncelerini söylemekten çekinir ve sürekli kaygı duyar.",
+                question: "Akşam 20:00 penceresine baktığımızda, düşüncesini özgürce ifade edebilen ve güvenli bir yuvası olan çocuk nasıl hisseder?",
+                options: [
+                    { text: "Kendini değerli, güvende ve özgüvenli hisseder.", correct: true },
+                    { text: "Ailesinin kararlarına hiç saygı duymaz.", correct: false },
+                    { text: "Çocukların aile içinde fikir belirtmesi doğru değildir.", correct: false },
+                    { text: "İfade özgürlüğü sadece okul müdürünün kullanabileceği bir haktır.", correct: false }
+                ],
+                solved: false
+            }
+        ];
+
+        let currentSlotIndex = 0;
+
+        function selectTimeSlot(index) {
+            playSound('click');
+            currentSlotIndex = index;
+            const item = timelineData[index];
+
+            // Update button styles
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`timeBtn${i}`);
+                if (i === index) {
+                    btn.className = 'time-slot-btn flex items-center justify-center gap-2 p-3 rounded-2xl border-2 font-heading font-bold transition-all bg-sky-600 text-white border-sky-600 shadow-md';
+                } else {
+                    btn.className = 'time-slot-btn flex items-center justify-center gap-2 p-3 rounded-2xl border-2 font-heading font-bold transition-all bg-slate-50 text-slate-700 border-slate-200 hover:border-sky-300';
+                }
+            }
+
+            // Populate Positive & Negative Windows
+            document.getElementById('m1PositiveTitle').textContent = item.posTitle;
+            document.getElementById('m1RightBadge').textContent = item.rightName;
+            document.getElementById('m1PosIcon').textContent = item.posIcon;
+            document.getElementById('m1PosDesc').textContent = item.posDesc;
+            document.getElementById('m1PosFeeling').textContent = item.posFeeling;
+            document.getElementById('m1PosFuture').textContent = item.posFuture;
+
+            document.getElementById('m1NegativeTitle').textContent = item.negTitle;
+            document.getElementById('m1DeprivedBadge').textContent = item.deprivedName;
+            document.getElementById('m1NegIcon').textContent = item.negIcon;
+            document.getElementById('m1NegDesc').textContent = item.negDesc;
+            document.getElementById('m1NegFeeling').textContent = item.negFeeling;
+            document.getElementById('m1NegFuture').textContent = item.negFuture;
+
+            // Populate Question
+            document.getElementById('m1QuestionPrompt').textContent = `${item.timeLabel} Karşılaştırma Sorusu: ${item.question}`;
+            const optsContainer = document.getElementById('m1OptionsContainer');
+            optsContainer.innerHTML = '';
+
+            const feedbackBox = document.getElementById('m1FeedbackBox');
+            feedbackBox.classList.add('hidden');
+
+            item.options.forEach((opt, oIdx) => {
+                const btn = document.createElement('button');
+                btn.className = 'text-left p-3.5 rounded-xl border-2 bg-white hover:bg-sky-50 border-sky-200 font-semibold text-xs sm:text-sm text-slate-700 transition flex items-start gap-2.5';
+                if (item.solved && opt.correct) {
+                    btn.className = 'text-left p-3.5 rounded-xl border-2 bg-emerald-100 border-emerald-500 font-bold text-xs sm:text-sm text-emerald-900 flex items-start gap-2.5';
+                }
+                btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center shrink-0 text-xs">${['A','B','C','D'][oIdx]}</span><span>${opt.text}</span>`;
+                btn.onclick = () => answerTimeQuestion(index, opt.correct, btn);
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        function answerTimeQuestion(slotIdx, isCorrect, clickedBtn) {
+            const item = timelineData[slotIdx];
+            const feedbackBox = document.getElementById('m1FeedbackBox');
+            feedbackBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                playSound('correct');
+                clickedBtn.className = 'text-left p-3.5 rounded-xl border-2 bg-emerald-100 border-emerald-500 font-bold text-xs sm:text-sm text-emerald-900 flex items-start gap-2.5';
+                feedbackBox.className = 'mt-3 p-3 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+
+                if (!item.solved) {
+                    item.solved = true;
+                    addScore(20);
+                    document.getElementById(`timeCheck${slotIdx}`).classList.remove('hidden');
+                    const solvedCount = timelineData.filter(d => d.solved).length;
+                    document.getElementById('m1ProgressText').textContent = `${solvedCount} / 4 Saat İncelendi`;
+                    feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Harika! Doğru karşılaştırma yaptın ve +20 puan kazandın!`;
+
+                    if (solvedCount === 4) {
+                        unlockBadge(1, 'Keskin Gözlemci Rozeti', 'Yaşam Pencereleri bölümündeki tüm saat dilimlerini başarıyla karşılaştırdın!');
+                    }
+                } else {
+                    feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Doğru yanıt! Bu saat dilimini zaten tamamlamıştın.`;
+                }
+            } else {
+                playSound('wrong');
+                clickedBtn.className = 'text-left p-3.5 rounded-xl border-2 bg-rose-100 border-rose-400 font-bold text-xs sm:text-sm text-rose-900 flex items-start gap-2.5';
+                feedbackBox.className = 'mt-3 p-3 rounded-xl text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300';
+                feedbackBox.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Tekrar düşünelim! İki çocuğun yaşantısındaki farka dikkat ederek başka bir seçeneği dene.`;
+            }
+        }
+
+        /* ==========================================
+           MODULE 2 DATA & LOGIC: SENARYO DEDEKTİFİ
+           ========================================== */
+        const rightsList = [
+            "Eğitim Hakkı",
+            "Sağlık ve Beslenme Hakkı",
+            "Oyun ve Dinlenme Hakkı",
+            "Düşünceyi İfade Özgürlüğü",
+            "Güvenli Yaşam ve Barınma Hakkı"
+        ];
+
+        const casesData = [
+            {
+                id: 1,
+                name: "Zeynep (10 Yaşında)",
+                avatar: "👧🏻",
+                location: "Okul ve Bilim Kulübü",
+                story: "Zeynep her sabah okuluna severek gidiyor. Okuldaki fen laboratuvarında deneyler yapıyor, kütüphaneden ödünç kitaplar alıyor ve öğretmenine merak ettiği tüm soruları sorabiliyor.",
+                hint: "Zeynep'in okulda bilgiye ulaşması ve yeteneklerini geliştirmesi hangi temel hakkıdır?",
+                correctRight: "Eğitim Hakkı",
+                correctStatus: "can",
+                explanation: "Zeynep Eğitim Hakkını eksiksiz kullanabilmektedir. Bu sayede merak duygusu gelişir, kendine güveni artar ve geleceğe umutla bakar.",
+                solved: false
+            },
+            {
+                id: 2,
+                name: "Mert (11 Yaşında)",
+                avatar: "👦🏽",
+                location: "Mevsimlik Tarım Alanı",
+                story: "Mert, ailesiyle birlikte başka bir şehre pamuk toplamaya gittiği için aylarca okuluna gidemedi. Yaşıtları sınıfta ders işlerken Mert güneşin altında ağır çuvalları taşımak zorunda kalıyor.",
+                hint: "Mert'in çalışmak zorunda kaldığı için derslerinden ve okulundan uzak kalması hangi hakkın ihlalidir?",
+                correctRight: "Eğitim Hakkı",
+                correctStatus: "cannot",
+                explanation: "Mert Eğitim Hakkını kullanamamaktadır. Çocuk işçiliği Mert'in hem eğitimden geri kalmasına hem de fiziksel olarak yorulup üzülmesine yol açar.",
+                solved: false
+            },
+            {
+                id: 3,
+                name: "Kerem (9 Yaşında)",
+                avatar: "👦🏻",
+                location: "Aile Toplantısı",
+                story: "Keremlerin ailesi yeni taşındıkları evde odaların nasıl yerleştirileceğini konuşuyor. Babası Kerem'e dönüp: 'Sen çocuksun, büyüklerin işine karışma, odanı biz nasıl istersek öyle yaparız!' diyerek onu susturuyor.",
+                hint: "Kendisini ilgilendiren bir konuda Kerem'in fikrinin sorulmaması ve susturulması hangi özgürlükle ilgilidir?",
+                correctRight: "Düşünceyi İfade Özgürlüğü",
+                correctStatus: "cannot",
+                explanation: "Kerem Düşünceyi İfade Özgürlüğünü kullanamamaktadır. Fikri alınmayan çocuklar kendilerini değersiz hissedebilir ve özgüven kaybı yaşayabilir.",
+                solved: false
+            },
+            {
+                id: 4,
+                name: "Defne (10 Yaşında)",
+                avatar: "👧🏼",
+                location: "Sınıf Meclisi ve Ev",
+                story: "Defne sınıf başkanlığı seçiminde aday oluyor ve okul gazetesi için çevre koruma konulu bir yazı yazıyor. Evde de hafta sonu planı yapılırken ailesi Defne'nin önerisini dikkatle dinliyor.",
+                hint: "Defne'nin duygu ve düşüncelerini okulda ve ailede rahatça paylaşabilmesi hangi haktır?",
+                correctRight: "Düşünceyi İfade Özgürlüğü",
+                correctStatus: "can",
+                explanation: "Defne Düşünceyi İfade Özgürlüğünü kullanabilmektedir. Bu durum onun demokratik kültür kazanmasını ve kendini değerli hissetmesini sağlar.",
+                solved: false
+            },
+            {
+                id: 5,
+                name: "Rami (9 Yaşında)",
+                avatar: "👦🏾",
+                location: "Çatışma Bölgesi",
+                story: "Yaşadığı yerde çıkan çatışmalar nedeniyle evleri zarar gören Rami, geceleri yüksek seslerden korkarak uyanıyor. Güvenli bir evi ve oyun oynayabileceği huzurlu bir sokağı bulunmuyor.",
+                hint: "Savaş ve tehlikelerden korunmak, sıcak ve güvenli bir yuvada yaşamak hangi temel haktır?",
+                correctRight: "Güvenli Yaşam ve Barınma Hakkı",
+                correctStatus: "cannot",
+                explanation: "Rami Güvenli Yaşam ve Barınma Hakkını kullanamamaktadır. Savaş ve güvensiz ortamlar çocuklarda derin korku ve kaygı oluşturur.",
+                solved: false
+            },
+            {
+                id: 6,
+                name: "Beren (10 Yaşında)",
+                avatar: "👧🏽",
+                location: "Mahalle Parkı ve Spor Merkezi",
+                story: "Beren okul ödevlerini bitirdikten sonra mahallesindeki trafiğe kapalı güvenli parkta arkadaşlarıyla voleybol oynuyor, hafta sonları ise belediyenin ücretsiz yüzme kursuna giderek dinleniyor.",
+                hint: "Beren'in boş zamanlarını oyun oynayarak ve spor yaparak değerlendirmesi hangi hakkıdır?",
+                correctRight: "Oyun ve Dinlenme Hakkı",
+                correctStatus: "can",
+                explanation: "Beren Oyun ve Dinlenme Hakkını kullanabilmektedir. Oyun oynayan çocukların hem bedensel sağlığı hem de arkadaşlık ilişkileri güçlenir.",
+                solved: false
+            }
+        ];
+
+        let currentCaseIndex = 0;
+        let selectedRightOption = null;
+        let selectedStatusOption = null;
+
+        function renderCaseNav() {
+            const nav = document.getElementById('caseNavContainer');
+            nav.innerHTML = '';
+            casesData.forEach((c, idx) => {
+                const btn = document.createElement('button');
+                const isCurrent = idx === currentCaseIndex;
+                let baseCls = 'px-3.5 py-2 rounded-xl font-heading font-bold text-xs sm:text-sm transition flex items-center gap-2 border-2 ';
+                if (isCurrent) {
+                    baseCls += 'bg-indigo-600 text-white border-indigo-600 shadow-md';
+                } else if (c.solved) {
+                    baseCls += 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100';
+                } else {
+                    baseCls += 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200';
+                }
+                btn.className = baseCls;
+                btn.innerHTML = `<span>${c.avatar} ${c.name.split(' ')[0]}</span> ${c.solved ? '<i class="fa-solid fa-circle-check text-emerald-500"></i>' : ''}`;
+                btn.onclick = () => loadCase(idx);
+                nav.appendChild(btn);
+            });
+        }
+
+        function loadCase(index) {
+            playSound('click');
+            currentCaseIndex = index;
+            selectedRightOption = null;
+            selectedStatusOption = null;
+            const c = casesData[index];
+
+            renderCaseNav();
+
+            document.getElementById('caseNumberBadge').textContent = `Vaka #${c.id}`;
+            const solvedTag = document.getElementById('caseSolvedTag');
+            if (c.solved) {
+                solvedTag.classList.remove('hidden');
+                selectedRightOption = c.correctRight;
+                selectedStatusOption = c.correctStatus;
+            } else {
+                solvedTag.classList.add('hidden');
+            }
+
+            document.getElementById('caseAvatar').textContent = c.avatar;
+            document.getElementById('caseChildName').textContent = c.name;
+            document.getElementById('caseLocation').textContent = c.location;
+            document.getElementById('caseStoryText').textContent = `"${c.story}"`;
+            document.getElementById('caseHintText').textContent = c.hint;
+
+            renderCaseOptions();
+
+            const fb = document.getElementById('caseFeedbackBox');
+            if (c.solved) {
+                fb.className = 'mt-3 p-3.5 rounded-2xl text-sm font-bold bg-emerald-100 text-emerald-900 border border-emerald-300';
+                fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> ${c.explanation}`;
+                fb.classList.remove('hidden');
+            } else {
+                fb.classList.add('hidden');
+            }
+        }
+
+        function renderCaseOptions() {
+            const rightGrid = document.getElementById('rightOptionsGrid');
+            rightGrid.innerHTML = '';
+            rightsList.forEach(rName => {
+                const isSelected = selectedRightOption === rName;
+                const btn = document.createElement('button');
+                btn.className = `p-2.5 rounded-xl border-2 text-left text-xs sm:text-sm font-bold transition flex items-center justify-between ${
+                    isSelected
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                        : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300'
+                }`;
+                btn.innerHTML = `<span>${rName}</span> ${isSelected ? '<i class="fa-solid fa-check"></i>' : ''}`;
+                btn.onclick = () => {
+                    playSound('click');
+                    selectedRightOption = rName;
+                    renderCaseOptions();
+                };
+                rightGrid.appendChild(btn);
+            });
+
+            const statusGrid = document.getElementById('statusOptionsGrid');
+            statusGrid.innerHTML = '';
+            const statuses = [
+                {
+                    code: 'can',
+                    label: 'Hakkını Kullanabiliyor (Olumlu Yaşantı)',
+                    sub: 'Mutlu, güvende ve özgüvenli hisseder; potansiyelini geliştirir.',
+                    icon: 'fa-face-smile text-emerald-500'
+                },
+                {
+                    code: 'cannot',
+                    label: 'Hakkını Kullanamıyor (Hak İhlali / Zorlu Yaşantı)',
+                    sub: 'Üzgün, yorgun veya kaygılı hisseder; gelişimi olumsuz etkilenir.',
+                    icon: 'fa-face-frown text-amber-500'
+                }
+            ];
+
+            statuses.forEach(st => {
+                const isSelected = selectedStatusOption === st.code;
+                const btn = document.createElement('button');
+                btn.className = `p-3 rounded-xl border-2 text-left transition flex items-start gap-3 ${
+                    isSelected
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                        : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300'
+                }`;
+                btn.innerHTML = `
+                    <i class="fa-solid ${st.icon} text-xl mt-0.5 ${isSelected ? '!text-white' : ''}"></i>
+                    <div>
+                        <div class="font-bold text-xs sm:text-sm">${st.label}</div>
+                        <div class="text-xs ${isSelected ? 'text-indigo-100' : 'text-slate-500'}">${st.sub}</div>
+                    </div>
+                `;
+                btn.onclick = () => {
+                    playSound('click');
+                    selectedStatusOption = st.code;
+                    renderCaseOptions();
+                };
+                statusGrid.appendChild(btn);
+            });
+        }
+
+        function checkCaseAnswer() {
+            const c = casesData[currentCaseIndex];
+            const fb = document.getElementById('caseFeedbackBox');
+            fb.classList.remove('hidden');
+
+            if (!selectedRightOption || !selectedStatusOption) {
+                playSound('wrong');
+                fb.className = 'mt-3 p-3.5 rounded-2xl text-sm font-bold bg-amber-100 text-amber-900 border border-amber-300';
+                fb.innerHTML = `<i class="fa-solid fa-circle-info mr-1"></i> Lütfen hem (A) ilgili temel hakkı hem de (B) kullanım durumunu seçiniz!`;
+                return;
+            }
+
+            if (selectedRightOption === c.correctRight && selectedStatusOption === c.correctStatus) {
+                playSound('correct');
+                fb.className = 'mt-3 p-3.5 rounded-2xl text-sm font-bold bg-emerald-100 text-emerald-900 border border-emerald-300';
+
+                if (!c.solved) {
+                    c.solved = true;
+                    addScore(25);
+                    const solvedCount = casesData.filter(item => item.solved).length;
+                    document.getElementById('m2ProgressText').textContent = `${solvedCount} / 6 Vaka Çözüldü`;
+                    document.getElementById('caseSolvedTag').classList.remove('hidden');
+                    renderCaseNav();
+
+                    fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Tebrikler Dedektif! (+25 Puan) ${c.explanation}`;
+
+                    if (solvedCount === casesData.length) {
+                        unlockBadge(2, 'Usta Hak Dedektifi Rozeti', '6 vakanın tamamında çocukların yaşantılarını ve haklarını doğru analiz ettin!');
+                    }
+                } else {
+                    fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Doğru! ${c.explanation}`;
+                }
+            } else {
+                playSound('wrong');
+                fb.className = 'mt-3 p-3.5 rounded-2xl text-sm font-bold bg-rose-100 text-rose-900 border border-rose-300';
+                let hintMsg = '';
+                if (selectedRightOption !== c.correctRight) {
+                    hintMsg = 'Seçtiğin temel hak öyküyle tam uyuşmuyor. İpucunu tekrar oku!';
+                } else {
+                    hintMsg = 'Temel hakkı doğru buldun ama çocuğun bu hakkı kullanıp kullanamadığını tekrar kontrol et!';
+                }
+                fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> ${hintMsg}`;
+            }
+        }
+
+        /* ==========================================
+           MODULE 3 DATA & LOGIC: HAKLAR KÖPRÜSÜ
+           ========================================== */
+        const bridgeCards = [
+            {
+                emoji: "📚",
+                statement: "Okul kütüphanesinden istediği hikâye kitabını alıp teneffüste arkadaşlarıyla okuyan Selin'in yaşantısı",
+                category: "can",
+                rightTag: "Eğitim ve Kültür Hakkı"
+            },
+            {
+                emoji: "🧶",
+                statement: "Ailesine gelir sağlamak için okul saatinde halı dokuma tezgâhında çalıştırılan 10 yaşındaki Ali'nin yaşantısı",
+                category: "cannot",
+                rightTag: "Eğitim Hakkı İhlali / Çocuk İşçiliği",
+                solutions: [
+                    { text: "Ailesine sosyal destek sağlanmalı ve Ali'nin okula devam etmesi güvence altına alınmalıdır.", correct: true },
+                    { text: "Ali'nin daha hızlı halı dokuması için çalışma saatleri artırılmalıdır.", correct: false }
+                ]
+            },
+            {
+                emoji: "💉",
+                statement: "Sağlık ocağında düzenli aşıları yapılan ve hastalandığında doktor kontrolünden geçen Ece'nin yaşantısı",
+                category: "can",
+                rightTag: "Sağlık Hakkı"
+            },
+            {
+                emoji: "🗣️",
+                statement: "Sınıf kuralları belirlenirken söz hakkı alarak kendi önerisini özgürce söyleyen Bora'nın yaşantısı",
+                category: "can",
+                rightTag: "Düşünceyi İfade Özgürlüğü"
+            },
+            {
+                emoji: "🚧",
+                statement: "Mahallesinde hiç park olmadığı için tehlikeli araç trafiğinin olduğu sokakta oynamaya çalışan çocukların yaşantısı",
+                category: "cannot",
+                rightTag: "Güvenli Oyun Hakkı Kısıtlı",
+                solutions: [
+                    { text: "Çocukların dışarı çıkması tamamen yasaklanmalıdır.", correct: false },
+                    { text: "Yerel yönetimler tarafından mahalleye güvenli çocuk parkları ve spor alanları yapılmalıdır.", correct: true }
+                ]
+            },
+            {
+                emoji: "🤐",
+                statement: "Evde ve okulda sözü sürekli kesilen, 'Sen anlamazsın, sus bakalım!' denilerek susturulan çocuğun yaşantısı",
+                category: "cannot",
+                rightTag: "İfade Özgürlüğü İhlali",
+                solutions: [
+                    { text: "Yetişkinler çocuğun düşüncelerini saygıyla dinlemeli ve karar süreçlerine onu da katmalıdır.", correct: true },
+                    { text: "Çocuklar 18 yaşına gelene kadar hiçbir konuda fikir söylememelidir.", correct: false }
+                ]
+            },
+            {
+                emoji: "🏥",
+                statement: "Yüksek ateşi olmasına rağmen yakınlarda hastane ve doktor olmadığı için tedavi olamayan çocuğun yaşantısı",
+                category: "cannot",
+                rightTag: "Sağlık Hakkına Erişim Sorunu",
+                solutions: [
+                    { text: "Her bölgeye gezici sağlık ekipleri ve sağlık merkezleri ulaştırılarak ücretsiz tedavi sağlanmalıdır.", correct: true },
+                    { text: "Hasta çocukların kendi kendine iyileşmesi beklenmelidir.", correct: false }
+                ]
+            },
+            {
+                emoji: "🏠",
+                statement: "Kış mevsiminde sıcak, güvenli evinde ailesinin sevgisiyle korunarak uyuyan çocuğun yaşantısı",
+                category: "can",
+                rightTag: "Güvenli Barınma Hakkı"
+            }
+        ];
+
+        let currentBridgeIndex = 0;
+        let waitingForSolution = false;
+
+        function renderBridgeCard() {
+            const area = document.getElementById('sortingGameArea');
+            if (currentBridgeIndex >= bridgeCards.length) {
+                area.innerHTML = `
+                    <div class="max-w-xl mx-auto bg-emerald-50 border-2 border-emerald-300 rounded-3xl p-6 text-center">
+                        <div class="text-5xl mb-3">🌈</div>
+                        <h3 class="text-xl font-bold text-emerald-950">Tüm Yaşantı Kartlarını Sınıflandırdın!</h3>
+                        <p class="text-sm text-emerald-800 mt-1">Haklarını kullanabilen ve kullanamayan çocukların durumlarını başarıyla ayırt ettin ve harika çözüm önerileri sundun.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const card = bridgeCards[currentBridgeIndex];
+            document.getElementById('sortCardCounter').textContent = `Durum Kartı ${currentBridgeIndex + 1} / ${bridgeCards.length}`;
+            document.getElementById('sortCardEmoji').textContent = card.emoji;
+            document.getElementById('sortCardStatement').textContent = `"${card.statement}"`;
+            document.getElementById('solutionFollowUp').classList.add('hidden');
+            document.getElementById('sortFeedback').classList.add('hidden');
+            waitingForSolution = false;
+        }
+
+        function classifyCard(chosenCategory) {
+            if (waitingForSolution || currentBridgeIndex >= bridgeCards.length) return;
+
+            const card = bridgeCards[currentBridgeIndex];
+            const fb = document.getElementById('sortFeedback');
+            fb.classList.remove('hidden');
+
+            if (chosenCategory === card.category) {
+                playSound('correct');
+                addScore(15);
+
+                if (card.category === 'can') {
+                    fb.className = 'mt-4 p-3 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+                    fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Doğru! (+15 Puan) Bu çocuk <strong>${card.rightTag}</strong> kapsamında hakkını kullanabilmektedir.`;
+                    addSortedItemToList('can', card.statement, card.rightTag);
+                    setTimeout(() => {
+                        advanceBridgeCard();
+                    }, 1200);
+                } else {
+                    // Needs solution selection
+                    waitingForSolution = true;
+                    fb.className = 'mt-4 p-3 rounded-xl text-sm font-bold bg-amber-100 text-amber-900 border border-amber-300';
+                    fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Doğru tespit! (+15 Puan) Şimdi yukarıdaki çözüm önerilerinden doğru olanı seç!`;
+                    showSolutionFollowUp(card);
+                }
+            } else {
+                playSound('wrong');
+                fb.className = 'mt-4 p-3 rounded-xl text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300';
+                fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Dikkat! Bu yaşantının çocuğa olumlu mu yoksa olumsuz mu yansıdığını tekrar düşün.`;
+            }
+        }
+
+        function showSolutionFollowUp(card) {
+            const panel = document.getElementById('solutionFollowUp');
+            const choicesDiv = document.getElementById('solutionChoices');
+            choicesDiv.innerHTML = '';
+            panel.classList.remove('hidden');
+
+            card.solutions.forEach(sol => {
+                const btn = document.createElement('button');
+                btn.className = 'p-3 rounded-xl bg-white hover:bg-amber-100 border-2 border-amber-300 text-left text-xs sm:text-sm font-bold text-slate-800 transition flex items-center gap-2';
+                btn.innerHTML = `<i class="fa-solid fa-lightbulb text-amber-500"></i> <span>${sol.text}</span>`;
+                btn.onclick = () => {
+                    if (sol.correct) {
+                        playSound('correct');
+                        addScore(10);
+                        addSortedItemToList('cannot', card.statement, sol.text);
+                        advanceBridgeCard();
+                    } else {
+                        playSound('wrong');
+                        btn.className = 'p-3 rounded-xl bg-rose-100 border-2 border-rose-400 text-left text-xs sm:text-sm font-bold text-rose-900 flex items-center gap-2';
+                    }
+                };
+                choicesDiv.appendChild(btn);
+            });
+        }
+
+        function addSortedItemToList(type, statement, extraInfo) {
+            if (type === 'can') {
+                const empty = document.getElementById('emptyCanMsg');
+                if (empty) empty.remove();
+                const ul = document.getElementById('sortedCanList');
+                const li = document.createElement('li');
+                li.className = 'bg-white p-3 rounded-xl border border-emerald-200 shadow-sm flex items-start gap-2';
+                li.innerHTML = `<i class="fa-solid fa-sun text-amber-500 mt-1"></i><div><span class="font-semibold block">${statement}</span><span class="text-xs text-emerald-700 font-bold">${extraInfo}</span></div>`;
+                ul.appendChild(li);
+            } else {
+                const empty = document.getElementById('emptyCannotMsg');
+                if (empty) empty.remove();
+                const ul = document.getElementById('sortedCannotList');
+                const li = document.createElement('li');
+                li.className = 'bg-white p-3 rounded-xl border border-amber-200 shadow-sm flex items-start gap-2';
+                li.innerHTML = `<i class="fa-solid fa-wrench text-amber-600 mt-1"></i><div><span class="font-semibold block">${statement}</span><span class="text-xs text-teal-700 font-bold"><i class="fa-solid fa-check mr-1"></i>Çözüm: ${extraInfo}</span></div>`;
+                ul.appendChild(li);
+            }
+        }
+
+        function advanceBridgeCard() {
+            currentBridgeIndex++;
+            document.getElementById('m3ProgressText').textContent = `${currentBridgeIndex} / ${bridgeCards.length} Kart Sınıflandırıldı`;
+            if (currentBridgeIndex === bridgeCards.length) {
+                unlockBadge(3, 'Empati Mimarı Rozeti', 'Haklar Köprüsü bölümündeki tüm yaşantıları sınıflandırıp çözüm önerileri geliştirdin!');
+            }
+            renderBridgeCard();
+        }
+
+        /* ==========================================
+           MODULE 4 DATA & LOGIC: QUIZ & CERTIFICATE
+           ========================================== */
+        const quizQuestions = [
+            {
+                q: "1. Hak ve özgürlüklerini kullanabilen bir çocuk ile kullanamayan bir çocuğun yaşantısını karşılaştırdığımızda aşağıdakilerden hangisi söylenemez?",
+                options: [
+                    "Haklarını kullanabilen çocuklar geleceğe daha umutlu ve özgüvenli bakar.",
+                    "Eğitim ve oyun hakkından mahrum kalan çocukların sosyal ve zihinsel gelişimi olumsuz etkilenir.",
+                    "Haklarını kullanamayan çocuklar bu durumdan hiç etkilenmez ve her zaman çok mutludur.",
+                    "Sağlık hakkına ulaşabilen çocuklar hastalıklara karşı daha korunaklıdır."
+                ],
+                correct: 2,
+                explanation: "Haklarını kullanamayan çocuklar üzüntü, kaygı ve gelişim zorlukları yaşarlar; bu nedenle olumsuz etkilenirler."
+            },
+            {
+                q: "2. 10 yaşındaki Kerim okulda resim kursuna katılıp parkta arkadaşlarıyla oynarken; yaşıtı olan Hasan tarlada ağır işlerde çalışmaktadır. Bu iki yaşantı arasındaki temel fark nedir?",
+                options: [
+                    "Kerim eğitim ve oyun hakkını kullanabilirken, Hasan çocuk işçiliği nedeniyle bu haklarını kullanamamaktadır.",
+                    "Hasan kendi isteğiyle oyun oynamayı sevmemektedir.",
+                    "Çocuk hakları sadece şehirde yaşayan çocukları kapsar.",
+                    "Kerim'in yaptığı etkinlikler zaman kaybıdır."
+                ],
+                correct: 0,
+                explanation: "Her çocuğun eğitim ve oyun hakkı vardır; çocuk işçiliği bu hakların kullanılmasını engeller."
+            },
+            {
+                q: "3. Ailesinde ve okulunda düşüncelerini özgürce söyleyebilen, karar alınırken fikri sorulan bir çocuğun yaşantısında hangi özellik görülür?",
+                options: [
+                    "İçine kapanık ve çekingen olur.",
+                    "Kendini değerli hisseder, özgüveni ve iletişim becerisi gelişir.",
+                    "Arkadaşlarına karşı saygısız davranır.",
+                    "Okul derslerinde başarısız olur."
+                ],
+                correct: 1,
+                explanation: "Düşünceyi ifade özgürlüğünü kullanabilen çocuklar özgüvenli, mutlu ve demokratik bireyler olarak yetişir."
+            },
+            {
+                q: "4. Savaş, göç veya doğal afetler nedeniyle güvenli barınma, sağlık ve eğitim haklarını kullanamayan çocuklara karşı nasıl bir tutum sergilemeliyiz?",
+                options: [
+                    "Bu durumun bizi ilgilendirmediğini düşünmeliyiz.",
+                    "Onlarla oyun oynamaktan kaçınmalıyız.",
+                    "Empati kurmalı, haklarına kavuşmaları için yardımlaşma ve dayanışma içinde olmalıyiz.",
+                    "Sadece kendi haklarımızı korumamız yeterlidir."
+                ],
+                correct: 2,
+                explanation: "İnsan hakları bilinci, haklarına erişemeyen çocuklarla empati kurmayı ve dayanışma göstermeyi gerektirir."
+            },
+            {
+                q: "5. Aşağıdaki eşleştirmelerden hangisinde 'Hakkını Kullanabilen Çocuk Yaşantısı' doğru verilmiştir?",
+                options: [
+                    "Okul saatinde mendil satmak zorunda kalan çocuk",
+                    "Hastalandığında hastanede ücretsiz muayene olup ilaçlarına ulaşabilen çocuk",
+                    "Tehlikeli ve yıkık binaların arasında oyun oynamaya çalışan çocuk",
+                    "Aile toplantısında 'Sen çocuksun konuşma' denilerek susturulan çocuk"
+                ],
+                correct: 1,
+                explanation: "Hastalandığında doktora ve ilaca ulaşabilmek Sağlık Hakkının kullanolabildiğini gösterir."
+            },
+            {
+                q: "6. Çocuk Hakları Sözleşmesi'ne göre dünyadaki tüm çocukların hak ve özgürlüklerini kullanabilmesi neden önemlidir?",
+                options: [
+                    "Çocukların bedensel, zihinsel ve duygusal olarak sağlıklı, mutlu ve eşit bireyler olarak yetişmesi için.",
+                    "Sadece sınavlardan yüksek not almaları için.",
+                    "Çocukların yetişkinlerden daha fazla yetkiye sahip olması için.",
+                    "Oyun parklarının boş kalmaması için."
+                ],
+                correct: 0,
+                explanation: "Hak ve özgürlükler çocukların sağlıklı, güvenli, onurlu ve mutlu bir yaşam sürmesi için temel şarttır."
+            }
+        ];
+
+        let currentQuizIdx = 0;
+        let quizAnswered = false;
+
+        function renderQuizQuestion() {
+            if (currentQuizIdx >= quizQuestions.length) {
+                document.getElementById('quizActiveBody').innerHTML = `
+                    <div class="bg-emerald-50 border-2 border-emerald-300 rounded-3xl p-6 text-center">
+                        <div class="text-5xl mb-2">🏆</div>
+                        <h3 class="text-2xl font-bold text-emerald-950">Bilgi Yarışmasını Tamamladın!</h3>
+                        <p class="text-sm text-emerald-800 mt-1 mb-4">Y.4.2.3 kazanımı kapsamındaki tüm karşılaştırma sorularını başarıyla yanıtladın. Aşağıdan sertifikanı oluşturabilirsin!</p>
+                        <button onclick="resetQuiz()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Soruları Tekrar Çöz
+                        </button>
+                    </div>
+                `;
+                unlockBadge(4, 'Hak Koruyucusu Rozeti', 'Değerlendirme yarışmasını tamamlayarak Çocuk Hakları Koruyucusu oldun!');
+                return;
+            }
+
+            quizAnswered = false;
+            const item = quizQuestions[currentQuizIdx];
+            document.getElementById('quizStepBadge').textContent = `Soru ${currentQuizIdx + 1} / ${quizQuestions.length}`;
+            document.getElementById('quizQuestionText').textContent = item.q;
+            document.getElementById('quizFeedbackArea').classList.add('hidden');
+
+            const list = document.getElementById('quizOptionsList');
+            list.innerHTML = '';
+
+            item.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-sky-400 hover:bg-sky-50 text-left font-bold text-xs sm:text-sm text-slate-700 transition flex items-start gap-3';
+                btn.innerHTML = `<span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-800 font-extrabold flex items-center justify-center shrink-0">${['A','B','C','D'][idx]}</span><span>${optText}</span>`;
+                btn.onclick = () => selectQuizAnswer(idx, btn);
+                list.appendChild(btn);
+            });
+        }
+
+        function selectQuizAnswer(selectedIdx, btnElem) {
+            if (quizAnswered) return;
+            const item = quizQuestions[currentQuizIdx];
+            const fbArea = document.getElementById('quizFeedbackArea');
+            const fbMsg = document.getElementById('quizFeedbackMsg');
+            fbArea.classList.remove('hidden');
+
+            if (selectedIdx === item.correct) {
+                quizAnswered = true;
+                playSound('correct');
+                addScore(20);
+                btnElem.className = 'p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-100 text-left font-bold text-xs sm:text-sm text-emerald-950 flex items-start gap-3';
+                fbArea.className = 'mt-4 p-4 rounded-2xl text-sm font-bold flex flex-col sm:flex-row items-center justify-between gap-3 bg-emerald-100 text-emerald-900 border border-emerald-300';
+                fbMsg.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Doğru! (+20 Puan) ${item.explanation}`;
+            } else {
+                playSound('wrong');
+                btnElem.className = 'p-4 rounded-2xl border-2 border-rose-400 bg-rose-100 text-left font-bold text-xs sm:text-sm text-rose-900 flex items-start gap-3';
+                fbArea.className = 'mt-4 p-4 rounded-2xl text-sm font-bold flex flex-col sm:flex-row items-center justify-between gap-3 bg-rose-100 text-rose-900 border border-rose-300';
+                fbMsg.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Tekrar dene! Seçenekleri dikkatlice karşılaştır.`;
+            }
+        }
+
+        function nextQuizQuestion() {
+            playSound('click');
+            currentQuizIdx++;
+            renderQuizQuestion();
+        }
+
+        function resetQuiz() {
+            currentQuizIdx = 0;
+            document.getElementById('quizActiveBody').innerHTML = `
+                <div class="bg-slate-50 p-5 rounded-2xl border-2 border-slate-200 mb-4">
+                    <p id="quizQuestionText" class="text-base sm:text-lg font-bold text-slate-800 leading-relaxed"></p>
+                </div>
+                <div id="quizOptionsList" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                <div id="quizFeedbackArea" class="hidden mt-4 p-4 rounded-2xl text-sm font-bold flex items-center justify-between">
+                    <span id="quizFeedbackMsg"></span>
+                    <button onclick="nextQuizQuestion()" id="nextQuizBtn" class="px-4 py-2 rounded-xl bg-slate-800 text-white font-bold text-xs hover:bg-slate-900 transition">
+                        Sonraki Soru <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            `;
+            renderQuizQuestion();
+        }
+
+        function updateCertificateName() {
+            const val = document.getElementById('studentNameInput').value.trim();
+            document.getElementById('certStudentName').textContent = val ? val : 'Sevgili Öğrencimiz';
+        }
+
+        function celebrateCertificate() {
+            playSound('badge');
+            launchConfetti();
+            const val = document.getElementById('studentNameInput').value.trim() || 'Sevgili Öğrencimiz';
+            showToast('🎉 Tebrikler ' + val + '!', 'Çocuk Hakları ve Empati Koruyucusu Sertifikan hazır!');
+        }
+
+        /* ==========================================
+           INITIALIZE APPLICATION ON LOAD
+           ========================================== */
+        window.onload = function () {
+            selectTimeSlot(0);
+            loadCase(0);
+            renderBridgeCard();
+            renderQuizQuestion();
+        };
+    </script>
+</body>
+</html>
