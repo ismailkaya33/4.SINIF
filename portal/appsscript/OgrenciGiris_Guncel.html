@@ -2,381 +2,250 @@
 <html lang="tr"><head><base target="_top"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>4/D Öğrenci Girişi</title><!-- Evaluation stays outside tracked activities --><!-- UI changes ready for existing student deployment -->
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+/* ==========================================================
+   4/D ÖĞRENCİ PORTALI — TASARIM DÜZENİ
+   Renkler, köşe yuvarlaklıkları ve gölgeler yalnızca burada
+   tanımlanır. Yeni bir parça eklerken bu değişkenleri kullanın.
+   ========================================================== */
+:root{
+ --murekkep:#22345a;      /* ana yazı rengi */
+ --soluk:#5b6f88;         /* açıklama yazıları */
+ --cizgi:#dbe5f2;         /* kenarlıklar */
+ --zemin:#f3f7fd;         /* sayfa zemini */
+ --yuzey:#ffffff;         /* kartlar */
+ --yuzey-mavi:#f2f7ff;    /* hafif mavi kutular */
+ --mor:#6a4fc6;           /* ana düğme, seçili sekme */
+ --mor-koyu:#553bb0;
+ --mor-acik:#efeafe;
+ --mavi:#2c5fae;          /* bağlantı yazıları */
+ --turuncu:#f59f1c;       /* "bitirdim / bildir" gibi öğrenci eylemi */
+ --turuncu-koyu:#c97a08;
+ --yesil:#1d7d5a;
+ --yesil-acik:#dcf6ea;
+ --kirmizi:#a8364c;
+ --kirmizi-acik:#fdeef1;
+ --sari-acik:#fff3d6;
+ --odak:#f59f1c;          /* klavye odağı halkası */
+ --r-kucuk:12px;
+ --r-orta:16px;
+ --r-buyuk:22px;
+ --golge:0 4px 16px #2a4a7a14;
+ --golge-ust:0 10px 26px #2a4a7a22;
+ --yazi:'Nunito',system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+}
 
-body.oyunda{display:block;background:#0b172b}
-
-input{box-sizing:border-box;width:100%;padding:15px;font-size:22px;text-align:center;text-transform:uppercase;letter-spacing:3px;border:2px solid #b7c8e0;border-radius:10px}
-button{margin-top:16px;padding:14px 24px;background:#2459a6;color:#fff;border:0;border-radius:10px;cursor:pointer}
-button:disabled{opacity:.5;cursor:not-allowed}
-#cikis{background:#5a6b7f}#sonuc{margin-top:18px;line-height:1.5}[hidden]{display:none!important}
-a{color:#2459a6}#oyunPanel{position:fixed;inset:0;z-index:50;background:#081427;color:white;display:flex;flex-direction:column}#oyunUst{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:8px 14px;background:#10243d}#oyunCer{display:block;border:0;flex:1;width:100%;min-height:0}#oyunDurum{margin:0;padding:8px 14px;background:#173a52;color:white}#oyunPanel button{margin:0;padding:10px 14px;background:#4a6078}
-.dashboardTitle{font-size:1.25rem;margin:22px 0 6px}.hint{color:#51677d;font-size:.94rem}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:18px 0}.course{padding:18px;text-align:left;border:1px solid #d9e4f2;border-radius:14px;background:#f8fbff;display:flex;flex-direction:column;gap:8px}.course h3{margin:0;font-size:1.05rem}.course p{margin:0;color:#526579;line-height:1.35;font-size:.9rem}.course button{margin-top:auto;width:100%}.course button[disabled]{background:#dfe7ee;color:#5c6c7c;opacity:1;cursor:not-allowed}.course .icon{font-size:1.8rem}.sectionBadge{font-weight:bold;color:#236096;font-size:.8rem}#oturumAlani{text-align:left}#cikis{margin-top:0}.kutu{max-height:none}#oyunPanel{overscroll-behavior:contain}@media(max-width:620px){.kutu{padding:20px}.cards{grid-template-columns:1fr}}\n.cards.seven{grid-template-columns:repeat(auto-fit,minmax(235px,1fr))}.course summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}.course summary::after{content:"⌄";margin-left:auto}.course[open] summary::after{content:"⌃"}.course summary small{font-weight:normal;color:#68788b}.courseLinks{padding-left:19px;max-height:270px;overflow-y:auto;margin:10px 0}.courseLinks li{margin:10px 0}.courseLinks a{line-height:1.3}.sectionBadge{display:block;margin-top:12px}.course button{padding:11px 8px}@media(max-width:620px){.cards.seven{grid-template-columns:1fr}}\n
-/* AKILLI SINIF — gerçek HTML/CSS, görsel dosyaya bağımlı değil */
-:root{--ink:#243450;--muted:#597087;--blue:#3874c4;--lav:#8971ce;--mint:#d9f6e9;--line:#dae5f5}
+/* ---------- Temel ---------- */
 *{box-sizing:border-box}
-body:not(.oyunda){display:block;margin:0;min-height:100vh;background:linear-gradient(180deg,#d8edff 0,#eff7ff 280px,#f4f8ff 100%);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
-.kutu{width:min(1240px,96%);max-width:none;min-height:85vh;margin:24px auto 40px;padding:20px clamp(15px,2.8vw,35px) 32px;border:1px solid #e1eaf6;border-radius:26px;background:#ffffffea;box-shadow:0 13px 42px #36659b19;text-align:left}
-.kutu>h1{margin:7px 0 0;font-size:clamp(25px,3vw,40px);color:#252d59;letter-spacing:-.7px;line-height:1.2}
-.kutu>h1::before{content:"📚";font-size:.8em;margin-right:13px}
-.kutu>h2{margin:4px 0 25px;color:#8a70c8;font-size:clamp(16px,1.7vw,23px);font-weight:750}
-#girisAlani{width:min(490px,100%);margin:28px auto;padding:30px;background:linear-gradient(135deg,#f4faff,#f8f3ff);border:1px solid var(--line);border-radius:22px;text-align:center;box-shadow:0 10px 25px #385a8b16}
-#girisAlani p{font-size:1.1rem;color:var(--muted)}
-input{background:white;color:var(--ink)}
-button{background:linear-gradient(135deg,#8069c8,#9675cf);border-radius:12px;font-weight:750;box-shadow:none;transition:transform .12s,filter .12s}
-button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.06)}
-button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #dfac42;outline-offset:3px}
-#oturumAlani{padding-top:8px}
-.dashboardTitle{margin:10px 0 0;padding:14px 18px;background:linear-gradient(100deg,#dfeeff,#eef4ff);border-radius:18px;font-size:clamp(20px,2vw,29px);color:#203c76}
-.dashboardTitle::before{content:"📖 "}
-#oturumAlani>.hint{padding:12px 16px;margin:12px 0 15px;color:#54728a;background:#f5f9ff;border-radius:12px;line-height:1.5}
-.cards.seven{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:20px 0 25px;align-items:start}
-.course{display:block;min-width:0;padding:18px 16px;background:linear-gradient(160deg,#fff,#f5f9ff);border:1px solid #dae6f6;border-radius:18px;box-shadow:0 5px 16px #365b9510;transition:transform .12s,box-shadow .12s}
-.course:hover{transform:translateY(-2px);box-shadow:0 9px 19px #365b9519}
-.course summary{display:flex;flex-wrap:wrap;align-items:center;gap:9px;min-height:42px;list-style:none;cursor:pointer;color:#234b7a;font-size:1.07rem}
-.course summary>span{font-size:27px}
-.course summary small{font-size:.78rem;font-weight:500;color:#75879c}
-.course summary::after{content:"⌄";margin-left:auto;color:#7186ad;font-size:1.3rem}
-.course[open] summary::after{content:"⌃"}
-.course:nth-child(2){grid-column:span 2;background:linear-gradient(125deg,#f3faff,#fbf7ff);border-color:#c6dff8}
-.course:nth-child(2) summary{font-size:1.2rem;color:#244f84}
-.course:nth-child(2) button{margin:10px 10px 4px 0;min-height:58px;padding:13px 17px;font-size:1rem}
-.course .sectionBadge{display:block;width:fit-content;margin-top:15px;color:#27705c;background:var(--mint);border-radius:999px;padding:7px 12px;font-size:.85rem}
-.course p.hint{margin:13px 0;color:#60768d;font-size:.87rem;line-height:1.5}
-.courseLinks{margin:14px 0 0;padding:10px 8px 10px 26px;max-height:280px;overflow:auto;background:#fff;border:1px solid #e9eef9;border-radius:12px}
-.courseLinks li{margin:10px 0}
-.courseLinks a{color:#315ea1;font-weight:550;line-height:1.45}
-#oturumAlani>section{margin:20px 0 0;padding:20px;border:1px solid #ddd9f8;border-radius:19px;background:linear-gradient(135deg,#f1eefd,#fafaff)}
-#oturumAlani>section h3{margin:0 0 12px;font-size:1.3rem;color:#5a489b}
-#duyuruDurum{color:#5a6685}
-#duyuruListe{line-height:1.5}
-#cikis{display:block;margin:19px 0 4px auto;background:#fef0f2;color:#aa354f;border:1px solid #f0ccd5;box-shadow:none}
-#sonuc{text-align:left;color:#375a82;font-weight:650}
-#oyunPanel{z-index:60}
-@media(min-width:1000px){.course:nth-child(2)[open]{grid-column:span 2}}
-@media(max-width:850px){.cards.seven{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.kutu{width:100%;margin:0;min-height:100vh;padding:19px 13px;border-radius:0}.cards.seven{grid-template-columns:1fr}.course:nth-child(2),.course:nth-child(2)[open]{grid-column:span 1}.course:nth-child(2) button{width:100%}.kutu>h1{font-size:27px}#cikis{width:100%}}
-@media(prefers-reduced-motion:reduce){button,.course{transition:none}button:hover:not(:disabled),.course:hover{transform:none}}
-
-
-/* Akilli Sinif: ust karşılama ve öne çıkan etkinlikler */
-.welcomeBar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 17px;margin:5px 0 20px;border:1px solid #dceafb;border-radius:18px;background:linear-gradient(105deg,#e6f3ff,#f5efff);box-shadow:0 5px 16px #43659d13}
-.welcomeIdentity{display:flex;align-items:center;gap:13px;min-width:0}
-.welcomeAvatar{width:62px;height:62px;display:grid;place-items:center;flex:none;border-radius:50%;background:#c5ddfc;font-size:30px}
-.welcomeIdentity>div{display:grid;gap:2px;min-width:0}
-.welcomeLabel{color:#65758f;font-size:.88rem}
-#welcomeName{color:#28355e;font-size:clamp(17px,2vw,23px);overflow-wrap:anywhere}
-.sessionActive{color:#16825b;font-weight:700;font-size:.77rem}
-.welcomeBar #cikis{margin:0;padding:12px 17px;flex:none}
-.course:nth-child(2) button{background:linear-gradient(110deg,#8669cc,#9975db);border:1px solid #aa92e5}
-.course:nth-child(2) button::after{content:"  →"}
-@media(max-width:600px){.welcomeBar{flex-direction:column;align-items:stretch}.welcomeBar #cikis{width:100%}}
-/* Dokunmatik ekranlar icin kart ve etkinlik butonlarinda yeterli tiklama alani */
-@media(pointer:coarse){.featuredGame button,.course summary,#cikis{min-height:48px}}
-/* Klavye ile ders kartlari ve etkinlikler rahat secilebilsin. */
-.course summary:focus-visible,.featuredGame button:focus-visible{outline:3px solid #f4a83e;outline-offset:4px}
-/* Akilli Sinif — on plana alinmis iki takipli etkinlik */
-.featuredLessons{margin:17px 0 25px;padding:19px;border:1px solid #cfe1f7;border-radius:21px;background:linear-gradient(125deg,#e4f0ff,#f2ecff);box-shadow:0 7px 20px #2a599316}
-.featuredHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-.featuredEyebrow{display:inline-block;padding:6px 11px;border-radius:12px;background:#ddf7ed;color:#207460;font-size:.84rem;font-weight:800;letter-spacing:.3px}
-.featuredHeader h3{margin:7px 0 0;font-size:clamp(19px,2.1vw,26px);color:#253b78}
-.trackingPill{padding:8px 13px;background:#dff8eb;border-radius:30px;color:#267d61;font-size:.82rem;font-weight:750;white-space:nowrap}
-.featuredGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
-.featuredGame{display:flex;gap:13px;align-items:center;flex-wrap:wrap;padding:18px;border-radius:17px;border:1px solid #d6e7fa;background:#ffffffed;box-shadow:0 6px 15px #345f9c11}
-.gameSymbol{display:grid;place-items:center;width:69px;height:69px;flex:none;border-radius:17px;background:#dfefff;font-size:35px}
-.featuredText{flex:1;min-width:150px}
-.featuredText h4{margin:0 0 5px;color:#253763;font-size:1.21rem}
-.featuredText p{margin:0;color:#62738b;line-height:1.45;font-size:.92rem}
-.featuredGame button{margin:0;padding:12px 14px;white-space:nowrap;background:linear-gradient(130deg,#8e73cf,#9972cf)}
-.otherLessonsHeading{margin:24px 0 0;color:#2c477a;font-size:1.2rem}
-.cards.seven{margin-top:14px}
-.course:nth-child(2),.course:nth-child(2)[open]{grid-column:span 1}
-@media(max-width:850px){.featuredGrid{grid-template-columns:1fr}}
-@media(max-width:600px){.featuredHeader{flex-direction:column;align-items:flex-start}.featuredGame button{width:100%}.featuredGame{gap:10px}}
-/* Giriş yapan öğrenciye ait gerçek ilerleme değerleri */
-.progressPanel{margin:20px 0;padding:18px 21px;border:1px solid #bfdfec;border-radius:20px;background:linear-gradient(120deg,#eafaff,#f8fbff)}
-.progressTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.progressTitle h3{margin:0;color:#265774;font-size:1.23rem}
-.progressTitle>span{font-size:.85rem;color:#5a8091}
-#ilerlemeDurum{margin:9px 0;color:#5a738c;font-size:.88rem}
-.progressStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:12px}
-.progressStats>div{padding:13px 9px;background:white;border:1px solid #e0edf3;border-radius:12px;text-align:center}
-.progressStats strong{display:block;font-size:clamp(20px,2.6vw,30px);color:#287c85}
-.progressStats small{color:#597184;font-size:.78rem}
-.progressTrack{height:10px;margin-top:14px;border-radius:20px;background:#dce9ee;overflow:hidden}
-#ilerlemeBar{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#43bf9e,#64a6d8);transition:width .25s}
-@media(max-width:620px){.progressStats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-
-/* OKUNABILIRLIK GUNCELLEMESI — 4. sinif ogrencileri icin buyuk metin/dokunma alanlari */
-body:not(.oyunda){font-size:18px;line-height:1.55}
-.kutu{width:min(1420px,98%);padding:clamp(18px,2.7vw,40px)}
-.kutu>h1{font-size:clamp(32px,3.5vw,48px)}
-.kutu>h2{font-size:clamp(21px,2.1vw,28px)}
-.dashboardTitle{font-size:clamp(24px,2.4vw,33px);padding:18px 21px}
-#oturumAlani>.hint,.course p.hint{font-size:clamp(16px,1.3vw,19px);line-height:1.6}
-button{min-height:58px;padding:15px 22px;font-size:18px;line-height:1.35}
-#girisAlani{max-width:570px}
-#girisAlani p{font-size:20px}
-#kod{font-size:26px;min-height:64px}
-.welcomeLabel{font-size:17px}
-#welcomeName{font-size:clamp(23px,2.4vw,31px)}
-.sessionActive{font-size:16px}
-.welcomeAvatar{width:75px;height:75px;font-size:39px}
-.welcomeBar #cikis{font-size:17px;min-height:57px}
-.featuredEyebrow,.trackingPill{font-size:16px}
-.featuredHeader h3{font-size:clamp(24px,2.6vw,34px)}
-.featuredGame{min-height:165px;padding:23px}
-.gameSymbol{width:85px;height:85px;font-size:45px}
-.featuredText h4{font-size:clamp(21px,1.9vw,27px)}
-.featuredText p{font-size:clamp(17px,1.35vw,19px)}
-.featuredGame button{min-width:160px;min-height:64px;font-size:19px;padding:16px 19px}
-.otherLessonsHeading{font-size:25px}
-.cards.seven{gap:20px}
-.course{padding:21px 19px}
-.course summary,.course:nth-child(2) summary{font-size:clamp(20px,1.7vw,24px);min-height:60px;line-height:1.4}
-.course summary>span{font-size:34px}
-.course summary small{font-size:15px}
-.course .sectionBadge{font-size:16px;line-height:1.45}
-.courseLinks{max-height:380px}
-.courseLinks li{margin:14px 0}
-.courseLinks a{font-size:18px;line-height:1.6}
-.progressTitle h3,#oturumAlani>section h3{font-size:25px}
-.progressTitle>span,#ilerlemeDurum,#duyuruDurum{font-size:17px}
-.progressStats strong{font-size:clamp(25px,2.6vw,36px)}
-.progressStats small{font-size:16px;line-height:1.4}
-#oyunUst{min-height:68px;font-size:19px}
-#oyunPanel button{min-height:50px;font-size:17px}
-#oyunDurum{font-size:18px;line-height:1.5}
-@media(max-width:620px){
- body:not(.oyunda){font-size:17px}
- .kutu{padding:18px 14px}
- .featuredGame{padding:17px;min-height:unset}
- .featuredGame button{width:100%;font-size:19px}
- .welcomeAvatar{width:65px;height:65px}
- .course summary{font-size:21px}
- .courseLinks a{font-size:18px}
- .progressStats small{font-size:15px}
-}
-
-/* Duyurular sol ustte; ogrenci karşılama sagda */
-.portalTopStrip{display:grid;grid-template-columns:minmax(280px,1.05fr) minmax(330px,1fr);gap:17px;align-items:stretch;margin:5px 0 20px}
-#oturumAlani>.portalTopStrip>.noticeTopCard{min-width:0;margin:0;padding:18px 20px;background:linear-gradient(135deg,#f4efff,#ffffff);border:1px solid #dcd4f5;border-radius:20px;box-shadow:0 6px 18px #6358a113}
-.noticeTopCard h3{display:flex;align-items:center;gap:7px;margin:0 0 9px;font-size:clamp(21px,2vw,27px);color:#55448d}
-.noticeTopCard #duyuruDurum{margin:0;font-size:17px;line-height:1.5}
-.noticeTopCard #duyuruListe{max-height:220px;overflow-y:auto;font-size:17px}
-.noticeTopCard #duyuruListe article{padding:10px 0;border-bottom:1px solid #e5dff5}
-.portalTopStrip>.welcomeBar{margin:0;min-width:0}
-@media(max-width:800px){.portalTopStrip{grid-template-columns:1fr}.portalTopStrip>.welcomeBar{order:-1}}
-
-/* Nunito ve 4. sinif icin rahat okunabilir tipografi */
-
-body:not(.oyunda),body.oyunda,button,input{font-family:'Nunito',system-ui,Arial,sans-serif}
-#kod{letter-spacing:.35em;font-variant-numeric:tabular-nums;font-weight:900;text-transform:uppercase;padding-inline:21px}
-#kod::placeholder{letter-spacing:.13em;font-weight:600}
-.mathActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:15px 0}
-.mathActions button{display:flex;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:72px;margin:0;padding:12px 16px;border:1px solid #ed9b18;border-radius:15px;background:linear-gradient(150deg,#ffbd4a,#fca311);color:#35261b;box-shadow:0 4px 0 #c47c0b;font-size:clamp(18px,1.65vw,23px);font-weight:900}
-.mathActions button:hover:not(:disabled){filter:brightness(1.05)}
-.actionGlyph{display:inline-grid;place-items:center;width:35px;height:35px;flex:none;border-radius:10px;background:#ffffffb8;color:#885017;font-weight:900;font-size:25px}
-#oyunPanel button{background:#fca311;color:#25253c;font-weight:900}
-.course summary>.subjectIcon{display:grid;place-items:center;width:49px;height:49px;flex:none;border-radius:14px;background:#e3e9ff;color:#3a4d94;border:1px solid #c9d7ff;font-weight:900;font-size:15px;letter-spacing:.02em}
-.courseLinks{list-style:none;padding:10px;margin-top:13px;max-height:410px}
-.courseLinks li{margin:0 0 9px}
-.courseLinks a{display:flex;align-items:center;min-height:57px;padding:11px 14px;border:1px solid #d9e6f5;border-radius:12px;background:#f6faff;color:#244a83;text-decoration:none;font-size:18px;font-weight:800;line-height:1.35;transition:background .15s,transform .15s}
-.courseLinks a::before{content:"›";display:inline-grid;place-items:center;flex:none;width:27px;height:27px;margin-right:10px;border-radius:9px;background:#e5e7ff;color:#7157bc;font-size:27px;line-height:1}
-.courseLinks a:hover{background:#ecf3ff;transform:translateX(2px)}
-.courseLinks a:focus-visible{outline:3px solid #fca311;outline-offset:2px}
-.progressTrack{height:19px;border:1px solid #b9d8e6;background:#dce9ee;position:relative}
-#ilerlemeBar{position:relative;background:repeating-linear-gradient(115deg,#3aa2c4 0 13px,#51c4c1 13px 25px);box-shadow:inset 0 -3px 0 #147f9b88;transition:width .35s ease}
-#ilerlemeBar::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#ffffff55,transparent 60%)}
-@media(prefers-reduced-motion:no-preference){#ilerlemeBar{background-size:110px 100%;animation:xp-shift 3s linear infinite}@keyframes xp-shift{to{background-position:110px 0}}}
-@media(max-width:850px){.mathActions{grid-template-columns:1fr}}
-@media(max-width:620px){#kod{letter-spacing:.25em}.courseLinks a{font-size:18px;min-height:60px;padding:13px}.mathActions button{width:100%;min-height:72px}}
-
-/* Kullanici istegi: alt durum iletisi basliga, derslerde ozgun SVG ikonlar */
-.kutu{position:relative}
-.kutu>#sonuc{position:absolute;top:21px;right:35px;max-width:39%;margin:0;padding:10px 14px;background:#e2f8eb;border:1px solid #b7ead0;border-radius:13px;color:#176e51;text-align:center;text-shadow:none;font-size:16px;line-height:1.4;box-shadow:0 3px 10px #36638412}
-.kutu>#sonuc:empty{display:none}
-.course summary>.subjectIcon{display:grid;place-items:center;flex:none;width:68px;height:68px;border-radius:19px;background:linear-gradient(140deg,#edf3ff,#e2eaff);padding:6px;border:1px solid #cbdcf2}
-.course summary>.subjectIcon svg{width:100%;height:100%;display:block}
-.course summary>.subject-TR{background:#e7efff}
-.course summary>.subject-MAT{background:#dcf8ed}
-.course summary>.subject-FEN{background:#e6f3ff}
-.course summary>.subject-SOS{background:#e3f7fd}
-.course summary>.subject-HAK{background:#fff2d9}
-.course summary>.subject-TRF{background:#edf1ff}
-.course summary>.subject-OYN{background:#eee6ff}
-@media(max-width:900px){.kutu>#sonuc{position:static;max-width:100%;margin:10px 0 15px;text-align:left}}
-@media(max-width:620px){.course summary>.subjectIcon{width:65px;height:65px}}
-
-/* Kompakt acilir ilerleme seridi: ayrintilar istenince acilir */
-.progressCompact{margin:9px 0 18px;border:1px solid #c9def0;border-radius:16px;background:linear-gradient(110deg,#eef8ff,#f5f0ff);box-shadow:0 3px 12px #4876a310;overflow:hidden}
-.progressCompact>summary{display:flex;align-items:center;gap:15px;min-height:68px;padding:12px 17px;cursor:pointer;list-style:none;color:#2b527e;font-weight:900}
-.progressCompact>summary::-webkit-details-marker{display:none}
-.progressCompactName{flex:none;font-size:clamp(18px,1.6vw,23px)}
-.progressCompactTrack{flex:1;min-width:80px;max-width:none;height:14px;border-radius:30px;border:1px solid #bdd4e0;overflow:hidden;background:#d9e9f2}
-.progressCompactTrack #ilerlemeBar{height:100%;display:block;border-radius:30px;background:repeating-linear-gradient(115deg,#35a9c5 0 12px,#5ed1bf 12px 24px);transition:width .35s}
-.progressCompactScore{font-size:clamp(20px,2vw,26px);min-width:54px;text-align:right;color:#167b84}
-.progressCompactChevron{font-size:27px;color:#687b9d;line-height:1}
-.progressCompact[open] .progressCompactChevron{transform:rotate(180deg)}
-.progressCompactBody{padding:0 18px 17px;border-top:1px solid #ddeaf4}
-.progressCompactBody #ilerlemeDurum{font-size:16px;margin:11px 0}
-.progressCompactBody .progressStats{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:8px}
-@media(max-width:620px){.progressCompact>summary{flex-wrap:wrap;gap:10px;min-height:63px}.progressCompactName{width:calc(100% - 99px)}.progressCompactTrack{order:3;flex-basis:100%}.progressCompactScore{margin-left:auto}.progressCompactChevron{order:2}.progressCompactBody .progressStats{grid-template-columns:1fr 1fr}.progressCompactBody .progressStats small{font-size:13px}}
-
-/* Ders karti -> tam sayfa alt menu; Buyuk ve okunakli gezinme */
-#dersGeriSatiri{display:flex;align-items:center;gap:17px;margin:15px 0}
-#dersGeriSatiri[hidden]{display:none}
-#dersGeri{background:#fca311;color:#283148;font-weight:900;font-size:19px;min-height:58px}
-#dersSayfaBaslik{font-size:clamp(23px,2.5vw,35px);color:#253e77}
-#dersIzgarasi{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
-#dersIzgarasi>.course{min-height:127px;padding:23px}
-#dersIzgarasi>.course>summary{font-size:clamp(24px,2.2vw,32px);min-height:75px}
-#dersIzgarasi>.course>summary>.subjectIcon{width:77px;height:77px}
-#dersIzgarasi>.course:nth-child(2){grid-column:span 1}
-body.lessonView #dersIzgarasi{display:block;margin-top:10px}
-body.lessonView #dersIzgarasi>.course{display:none}
-body.lessonView #dersIzgarasi>.course.activeLesson{display:block;width:100%;padding:20px;border:none;box-shadow:none;background:transparent}
-body.lessonView #dersIzgarasi>.course.activeLesson>summary{display:none}
-body.lessonView .dashboardTitle,body.lessonView #oturumAlani>.hint,body.lessonView .progressCompact,body.lessonView .portalTopStrip{display:none!important}
-.courseTabs{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 20px}
-.courseTabs button{min-height:62px;font-size:19px;padding:13px 20px;background:#e9f0ff;color:#334e85;border:2px solid #d2dff3}
-.courseTabs button[aria-selected="true"]{background:#fca311;color:#2b3150;border-color:#ec9b12}
-.courseSection{padding:16px;border-radius:18px;border:1px solid #dce7f5;background:#f8fbff}
-.courseSection[hidden]{display:none}
-.courseSection .courseLinks{max-height:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
-.courseSection .courseLinks li{margin:0}
-.courseSection .courseLinks a{min-height:76px;font-size:19px}
-.notebookGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.noteCard{background:white;padding:17px;border:1px solid #d5e5f5;border-radius:16px;display:grid;gap:12px}
-.noteCard strong{font-size:20px;color:#2e507b}
-.noteCard a{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:11px;background:#e8f1ff;color:#265a96;font-weight:850;text-decoration:none;font-size:18px}
-.noteCard button{margin:0;min-height:54px;background:#fca311;color:#303349;font-size:18px}
-.noteCard button.done{background:#c9f5df;color:#236c51}
-.sectionEmpty{padding:24px;text-align:center;font-size:19px;color:#576e89}
-@media(max-width:720px){#dersIzgarasi{grid-template-columns:1fr}#dersIzgarasi>.course{min-height:110px}.courseSection .courseLinks,.notebookGrid{grid-template-columns:1fr}.courseTabs button{flex:1;font-size:17px;padding:12px}.lessonBackRow{flex-wrap:wrap}}
-
-/* Yalniz ogretmenin sectigi etkinliklerde ogrenci tamamlama bildirimi */
-.courseLinks li .completionButton{display:block;width:100%;min-height:52px;margin:5px 0 11px;padding:9px 13px;background:#fca311;color:#283347;border-radius:11px;font-size:17px;font-weight:900;text-align:center}
-.courseLinks li .completionButton.done{background:#c8f3dd;color:#236c51;cursor:default}
-.courseLinks li .completionButton:focus-visible{outline:3px solid #305fbd;outline-offset:2px}
-
-/* Defter notlari: buyuk ve erisilebilir yazdim kutucugu */
-.noteCheckbox{display:flex;align-items:center;gap:14px;min-height:62px;padding:12px 15px;border:2px solid #d1dff5;border-radius:13px;background:#f2f7ff;color:#2c4d7d;font-size:19px;font-weight:900;cursor:pointer}
-.noteCheckbox input{flex:none;appearance:auto;width:28px;height:28px;margin:0;accent-color:#267d67;cursor:pointer}
-.noteCheckbox.done{background:#d8f7e8;border-color:#96d7b5;color:#23684e;cursor:default}
-.noteCheckbox input:focus-visible{outline:3px solid #fca311;outline-offset:3px}
-.noteCheckbox input:disabled{cursor:default}
-/* Ana ders kartları: başlıklar daha rahat okunur. */
-#dersIzgarasi>.course{min-height:148px}
-#dersIzgarasi>.course>summary{font-size:clamp(28px,2.8vw,37px);min-height:86px}
-#dersIzgarasi>.course>summary>strong{font-size:inherit;line-height:1.18}
-@media(max-width:720px){#dersIzgarasi>.course{min-height:122px}#dersIzgarasi>.course>summary{font-size:clamp(27px,7vw,32px);min-height:72px}}
-/* Takipli iki oyun da aynı etkinlik listesinde görünür. */
-.courseLinks li .trackedLessonLink{display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:66px;margin:0;padding:14px 16px;background:#fff;border:1px solid #d9e4f2;border-radius:12px;color:#2459a6;font:inherit;font-size:19px;font-weight:800;text-align:left;cursor:pointer}
-.courseLinks li .trackedLessonLink:hover{background:#f3f8ff;border-color:#a9c3e5}
-.courseLinks li .trackedLessonLink:focus-visible{outline:3px solid #fca311;outline-offset:3px}
-/* Defter adı öne çıkar; yanında küçük bir Aç düğmesi. */
-.noteCard{grid-template-columns:minmax(0,1fr) auto;align-items:center}
-.noteCard strong{min-width:0;font-size:clamp(22px,2.4vw,27px);line-height:1.25}
-.noteCard a{width:auto;min-height:80px;padding:16px 30px;font-size:30px;white-space:nowrap}
-.noteCard .noteCheckbox{grid-column:1/-1}
-/* Uyari panosu duyurulardan bagimsiz, tarihli icerik kutusu. */
-.newContentPanel{margin:15px 0;padding:18px 20px;border:2px solid #efc5ca;border-radius:18px;background:#fff3f4;box-shadow:0 5px 15px #4936140d}
-.newContentPanel h3{margin:0 0 12px;color:#9a3b4a;font-size:21px}
-.newContentAlerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.newContentAlert{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #edc2c8;border-radius:12px;background:#fffafa;font-weight:800;color:#713d47}
-.teacherAccess{display:block;width:fit-content;margin:14px auto 0;padding:10px 16px;border:1px solid #c8d8ef;border-radius:10px;background:#eaf1fb;color:#2459a6;text-decoration:none;font-weight:800}.teacherAccess:hover{background:#dfeaff}.teacherAccess:focus-visible{outline:3px solid #fca311;outline-offset:3px}
-.course summary .newLight{margin-left:auto;padding:5px 10px;border-radius:999px;background:#e9473f;color:#fff;font-size:13px;font-weight:900;letter-spacing:.4px;box-shadow:0 3px 8px #e9473f40}.contentNewBadge{display:inline-block;margin-left:8px;padding:3px 7px;border-radius:999px;background:#e9473f;color:#fff;font-size:11px;font-weight:900;line-height:1.2;white-space:nowrap}.courseTabs button .contentNewBadge{margin-left:7px}
-
-@media(max-width:620px){.newContentPanel{padding:15px}.newContentAlert{font-size:16px}}
-
-/* Ekrana uyum: telefonda ve tablette yatay taşma olmasın. */
+[hidden]{display:none!important}
 html,body{width:100%;max-width:100%;overflow-x:hidden}
-body:not(.oyunda){min-width:0}
-.kutu{width:100%;max-width:1240px;min-width:0;margin:16px auto 24px;box-sizing:border-box}
-#oturumAlani,.portalTopStrip,.cards.seven,.course,.courseSection,.courseLinks,.notebookGrid,.noteCard,.newContentPanel,.newContentAlerts,.newContentAlert{min-width:0;max-width:100%}
-.courseLinks a,.noteCard strong{overflow-wrap:anywhere}
-@media(min-width:721px) and (max-width:850px){.cards.seven{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:720px){
- .kutu{width:100%;max-width:none;margin:0;padding:14px 12px 24px;border-radius:0}
- #dersIzgarasi{grid-template-columns:1fr}
- .notebookGrid{grid-template-columns:1fr}
-}
-@media(max-width:620px){
- .welcomeBar{flex-direction:row;align-items:center;gap:8px;padding:8px 10px;margin:4px 0 12px}
- .welcomeIdentity{gap:8px}
- .welcomeAvatar{width:42px;height:42px;font-size:22px}
- .welcomeLabel{font-size:.72rem}
- #welcomeName{font-size:17px}
- .sessionActive{font-size:.68rem}
- .welcomeBar #cikis{width:auto;padding:8px 10px;font-size:13px}
- .newContentPanel{padding:12px}
- .newContentAlerts{grid-template-columns:1fr}
- .newContentAlert{font-size:15px;padding:10px 12px}
- .noteCard{grid-template-columns:minmax(0,1fr)}
- .noteCard a{justify-self:start;min-height:72px;padding:14px 26px;font-size:27px}
-}
-@media(max-width:370px){
- .welcomeBar #cikis{font-size:12px;padding:7px 8px}
- .kutu{padding-left:10px;padding-right:10px}
-}
+body{margin:0;min-height:100vh;background:var(--zemin);color:var(--murekkep);font:600 18px/1.55 var(--yazi)}
+body.oyunda{background:#0b172b}
+h1,h2,h3,h4{font-family:var(--yazi);color:var(--murekkep);line-height:1.25}
+a{color:var(--mavi)}
+:is(button,a,summary,input):focus-visible{outline:3px solid var(--odak);outline-offset:3px}
 
-.examHome{margin:12px 0 17px}
-.examHome button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:64px;margin:0;padding:15px 20px;border:1px solid #df8a91;border-radius:16px;background:linear-gradient(110deg,#ffe4e6,#fff1f2);color:#7b2f3a;font-size:22px;font-weight:900;text-align:left;box-shadow:0 5px 14px #a33e4b18}
-.examHome button:hover:not(:disabled){background:linear-gradient(110deg,#ffdadd,#ffe9eb)}
-.examHint{margin:8px 0 0;padding:12px 15px;border:1px solid #f0c4c8;border-radius:12px;background:#fff9f9;color:#70444a;font-weight:700}
-body.lessonView .examHome{display:none}
-@media(max-width:620px){.examHome button{min-height:58px;padding:13px 15px;font-size:20px}}
+/* Düğmeler: tek aile, üç tür */
+button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;margin:0;padding:12px 20px;border:2px solid transparent;border-radius:var(--r-kucuk);background:var(--mor);color:#fff;font:800 18px/1.3 var(--yazi);cursor:pointer;transition:background .15s,transform .12s,box-shadow .15s}
+button:hover:not(:disabled){background:var(--mor-koyu);transform:translateY(-1px)}
+button:disabled{opacity:.55;cursor:not-allowed}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}button:hover:not(:disabled){transform:none}}
 
-/* Mobilde ilk ekranda giriş, ardından net bir çalışma akışı. */
-body.loginView .kutu{min-height:min(620px,calc(100vh - 48px));display:flex;flex-direction:column}
-body.loginView #girisAlani{margin:auto auto}
-body.loginView #kod-yardim{font-size:clamp(17px,4vw,20px);line-height:1.45}
-body.loginView .teacherAccess{margin:14px auto 0;padding:7px 10px;border:0;background:transparent;color:#536982;text-decoration:underline;font-size:15px;box-shadow:none}
-body.loginView #giris{min-height:52px}
-.progressCompactLabel{flex:none;color:#627c99;font-size:14px;font-weight:800}
-.activityStatus{display:inline-flex;align-items:center;min-height:30px;margin:4px 0 8px;padding:5px 9px;border-radius:999px;background:#edf2f7;color:#53677b;font-size:14px;font-weight:800}
-.activityStatus.hasResult{background:#d9f6e9;color:#17664f}
-.activityStatus.studentReport{background:#fff1d5;color:#795016}
-.completionHelp{display:block;margin:0 0 10px;color:#5c7187;font-size:14px;line-height:1.4}
-.newContentAlert{width:100%;min-height:56px;margin:0;color:#713d47;text-align:left;font:inherit;cursor:pointer}
-.newContentAlert::after{content:"Gör →";margin-left:auto;white-space:nowrap;color:#8a3645;font-weight:900}
-.newContentAlert:focus-visible{outline:3px solid #285fb0;outline-offset:3px}
-.course summary .newLight{animation:none}
-.courseLinks li .trackedLessonLink,.courseSection .courseLinks a,.noteCard a{overflow-wrap:anywhere}
-.noteHelp{margin:0 0 12px;padding:11px 13px;border-radius:12px;background:#f1f7ff;color:#47627d;font-size:16px;line-height:1.45}
-@media(max-width:620px){
- body.loginView .kutu{min-height:100svh;margin:0;padding:24px 14px}
- body.loginView #girisAlani{width:100%;margin:auto auto;padding:23px 18px}
- .progressCompact>summary{gap:8px;min-height:60px;padding:10px 11px;flex-wrap:wrap}
- .progressCompactName{font-size:17px}
- .progressCompactLabel{font-size:12px}
- .progressCompactTrack{flex-basis:100%;order:3;height:12px}
- .progressCompactScore{margin-left:auto;font-size:20px}
- .courseTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
- .courseTabs button{min-width:0;min-height:58px;padding:10px 7px;font-size:16px;line-height:1.2}
- .courseTabs button:last-child:nth-child(odd){grid-column:1/-1}
- .courseSection{padding:12px}
- .courseSection .courseLinks a{min-height:64px;padding:12px;font-size:18px}
- .noteCard{padding:15px}
- .noteCard a{min-height:54px;padding:12px 18px;font-size:19px}
- .activityStatus{font-size:13px}
- .completionHelp{font-size:13px}
+/* ---------- Sayfa kabı ve başlık ---------- */
+.kutu{position:relative;width:100%;max-width:1200px;min-height:85vh;margin:16px auto 28px;padding:clamp(18px,2.6vw,36px);background:var(--yuzey);border:1px solid var(--cizgi);border-radius:26px;box-shadow:var(--golge)}
+.kutu>h1{margin:0;font-size:clamp(28px,3.2vw,40px);font-weight:900;letter-spacing:-.5px}
+.kutu>h1::before{content:"📚";margin-right:12px;font-size:.85em}
+.kutu>h2{margin:2px 0 22px;color:var(--mor);font-size:clamp(18px,1.8vw,22px);font-weight:800}
+.hint{color:var(--soluk);font-size:17px;font-weight:600}
+
+/* Durum iletisi (hata / bilgi) */
+#sonuc{margin:0 0 14px;color:var(--mavi);font-weight:800}
+#sonuc:empty{display:none}
+.kutu>#sonuc{position:absolute;top:24px;right:32px;max-width:40%;padding:9px 14px;border:1px solid #b9e8d0;border-radius:var(--r-kucuk);background:var(--yesil-acik);color:var(--yesil);font-size:16px;line-height:1.4}
+
+/* ---------- Giriş ekranı ---------- */
+body.loginView .kutu{min-height:min(640px,calc(100vh - 48px));display:flex;flex-direction:column}
+#girisAlani{width:min(520px,100%);margin:auto;padding:30px 28px;border:1px solid var(--cizgi);border-radius:var(--r-buyuk);background:var(--yuzey-mavi);text-align:center;box-shadow:var(--golge)}
+#girisAlani p{margin:0 0 16px;color:var(--murekkep);font-size:20px;line-height:1.45}
+#kod{display:block;width:100%;min-height:64px;padding:12px 18px;border:2px solid #b6c8e2;border-radius:var(--r-kucuk);background:#fff;color:var(--murekkep);font:900 28px/1 var(--yazi);text-align:center;text-transform:uppercase;letter-spacing:.35em;font-variant-numeric:tabular-nums}
+#kod:focus{border-color:var(--mor);outline:none;box-shadow:0 0 0 4px #6a4fc633}
+#giris{width:100%;margin-top:14px;min-height:58px;font-size:20px}
+.teacherAccess{display:inline-block;margin-top:16px;color:var(--soluk);font-size:15px;font-weight:700}
+.teacherAccess:hover{color:var(--mavi)}
+
+/* ---------- Oturum: karşılama + duyurular ---------- */
+.portalTopStrip{display:grid;gap:14px;margin:0 0 16px}
+.welcomeBar{order:-1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:linear-gradient(105deg,#eaf3ff,#f3eeff)}
+.welcomeIdentity{display:flex;align-items:center;gap:12px;min-width:0}
+.welcomeAvatar{display:grid;place-items:center;flex:none;width:56px;height:56px;border-radius:50%;background:#d7e6fd;font-size:30px}
+.welcomeIdentity>div{display:grid;min-width:0}
+.welcomeLabel{color:var(--soluk);font-size:15px}
+#welcomeName{font-size:clamp(20px,2.2vw,26px);font-weight:900;overflow-wrap:anywhere}
+.sessionActive{color:var(--yesil);font-size:14px;font-weight:800}
+#cikis{flex:none;min-height:48px;padding:10px 16px;border-color:#f0c9d2;background:var(--kirmizi-acik);color:var(--kirmizi);font-size:16px}
+#cikis:hover:not(:disabled){background:#fbdde4}
+.noticeTopCard{padding:16px 20px;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:var(--yuzey)}
+.noticeTopCard h3{margin:0 0 4px;font-size:22px}
+#duyuruDurum{margin:0 0 6px;font-size:15px;font-weight:800}
+#duyuruListe{max-height:232px;overflow-y:auto;overscroll-behavior:contain;padding-right:6px;scrollbar-gutter:stable}
+#duyuruListe article{padding:10px 0;border-top:1px solid var(--cizgi)}
+#duyuruListe article h4{margin:0 0 2px;font-size:18px}
+#duyuruListe article p{margin:0;color:var(--soluk);font-size:17px;line-height:1.45;white-space:pre-line;overflow-wrap:anywhere}
+
+/* ---------- İlerleme şeridi ---------- */
+.progressCompact{margin:0 0 16px;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:var(--yuzey-mavi);overflow:hidden}
+.progressCompact>summary{display:flex;align-items:center;gap:14px;min-height:64px;padding:10px 18px;list-style:none;cursor:pointer;font-weight:900}
+.progressCompact>summary::-webkit-details-marker{display:none}
+.progressCompactName{flex:none;font-size:20px}
+.progressCompactLabel{flex:none;color:var(--soluk);font-size:14px;font-weight:800}
+.progressCompactTrack{flex:1;min-width:80px;height:14px;border-radius:99px;background:#dbe7f3;overflow:hidden}
+#ilerlemeBar{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#3aa8c4,#5fd0b8);transition:width .35s}
+.progressCompactScore{min-width:56px;color:#167b84;font-size:24px;text-align:right}
+.progressCompactChevron{color:var(--soluk);font-size:24px;line-height:1;transition:transform .2s}
+.progressCompact[open] .progressCompactChevron{transform:rotate(180deg)}
+.progressCompactBody{padding:0 18px 16px;border-top:1px solid var(--cizgi)}
+#ilerlemeDurum{margin:12px 0;color:var(--soluk);font-size:16px}
+.progressStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.progressStats>div{padding:12px 8px;border:1px solid var(--cizgi);border-radius:var(--r-kucuk);background:#fff;text-align:center}
+.progressStats strong{display:block;color:#167b84;font-size:28px}
+.progressStats small{color:var(--soluk);font-size:15px;line-height:1.3}
+
+/* ---------- Yeni içerikler ---------- */
+.newContentPanel{margin:0 0 16px}
+.newContentSummary{width:100%;justify-content:space-between;min-height:56px;padding:12px 18px;border-color:#efc9cf;background:var(--kirmizi-acik);color:var(--kirmizi);font-size:19px}
+.newContentSummary:hover:not(:disabled){background:#fbe1e6}
+.newContentSummary span{font-size:16px}
+.newContentDialog{width:min(760px,calc(100vw - 24px));max-height:min(82vh,760px);padding:18px;border:0;border-radius:var(--r-buyuk);background:#fff;color:var(--murekkep);box-shadow:0 22px 70px #10243d55}
+.newContentDialog::backdrop{background:#14243c99;backdrop-filter:blur(3px)}
+.newContentDialogHead{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 12px;border-bottom:1px solid var(--cizgi);background:#fff}
+.newContentDialogHead h3{margin:0;font-size:23px}
+.newContentClose{min-width:48px;min-height:48px;padding:6px 12px;background:var(--yuzey-mavi);color:var(--murekkep);font-size:24px}
+.newContentClose:hover:not(:disabled){background:#e3edfb}
+.newContentDialogBody{overflow-y:auto;max-height:calc(82vh - 90px);padding-top:12px}
+.newContentAlerts{display:grid;gap:12px}
+.newContentGroup{min-width:0;padding:14px;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:var(--yuzey-mavi)}
+.newContentGroup h4{margin:0 0 10px;font-size:19px}
+.newContentItems{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.newContentLink{width:100%;justify-content:space-between;min-height:56px;padding:10px 14px;border:1px solid var(--cizgi);background:#fff;color:var(--mavi);font-size:18px;text-align:left;text-decoration:none}
+.newContentLink:hover:not(:disabled){background:#eef4ff}
+.newContentLinkTitle{overflow-wrap:anywhere}
+.newContentLinkBadge{flex:none;color:var(--soluk);font-size:14px}
+.contentNewBadge,.course summary .newLight{display:inline-block;padding:3px 8px;border-radius:99px;background:#e2463f;color:#fff;font-size:12px;font-weight:900;letter-spacing:.3px;line-height:1.3;white-space:nowrap}
+.contentNewBadge{margin-left:8px}
+
+/* ---------- Dersler başlığı ve deneme sınavları ---------- */
+.dashboardTitle{margin:24px 0 2px;font-size:clamp(22px,2.3vw,28px);font-weight:900}
+.dashboardTitle::before{content:"📖 "}
+#oturumAlani>.hint{margin:0 0 14px}
+.examHome{margin:0 0 16px}
+.examHome button{width:100%;justify-content:space-between;min-height:62px;padding:12px 20px;border-color:#efc3cb;background:var(--kirmizi-acik);color:var(--kirmizi);font-size:21px;text-align:left}
+.examHome button:hover:not(:disabled){background:#fbe1e6}
+.examHint{margin:8px 0 0;padding:12px 16px;border:1px solid #efc3cb;border-radius:var(--r-kucuk);background:#fff9fa;color:var(--kirmizi)}
+
+/* ---------- Ders kartları ---------- */
+.cards.seven,#dersIzgarasi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0}
+@media(min-width:1100px){#dersIzgarasi{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.course{min-width:0;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:var(--yuzey);box-shadow:var(--golge);transition:transform .12s,box-shadow .15s}
+.course:hover{transform:translateY(-2px);box-shadow:var(--golge-ust)}
+.course>summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"ikon ad ok" "ikon sayi ok";align-items:center;column-gap:14px;min-height:96px;padding:14px 18px;list-style:none;cursor:pointer}
+.course>summary::-webkit-details-marker{display:none}
+.course>summary::after{content:"›";grid-area:ok;color:var(--mor);font-size:34px;line-height:1}
+.course>summary>.subjectIcon{grid-area:ikon;display:grid;place-items:center;width:64px;height:64px;padding:6px;border:1px solid var(--cizgi);border-radius:var(--r-orta)}
+.subjectIcon svg{display:block;width:100%;height:100%}
+.course>summary>strong{grid-area:ad;align-self:end;font-size:clamp(22px,2vw,26px);font-weight:900;overflow-wrap:anywhere}
+.course>summary>small{grid-area:sayi;align-self:start;color:var(--soluk);font-size:15px;font-weight:700}
+.course>summary>.newLight{grid-area:sayi;justify-self:end;align-self:start}
+.subject-TR{background:#e7efff}.subject-MAT{background:#dcf8ed}.subject-FEN{background:#e6f3ff}.subject-SOS{background:#e3f7fd}.subject-HAK{background:#fff2d9}.subject-TRF{background:#edf1ff}.subject-OYN{background:#eee6ff}
+
+/* ---------- Ders sayfası (bir ders açıldığında) ---------- */
+body.lessonView #dersIzgarasi{display:block}
+body.lessonView #dersIzgarasi>.course{display:none}
+body.lessonView #dersIzgarasi>.course.activeLesson{display:block;border:0;background:transparent;box-shadow:none;transform:none}
+body.lessonView #dersIzgarasi>.course.activeLesson>summary{display:none}
+body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.portalTopStrip,.examHome){display:none!important}
+.lessonBackRow{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin:4px 0 12px}
+#dersGeri{min-height:52px;border-color:var(--cizgi);background:var(--yuzey-mavi);color:var(--murekkep)}
+#dersGeri:hover:not(:disabled){background:#e3edfb}
+#dersSayfaBaslik{font-size:clamp(26px,2.8vw,34px);font-weight:900}
+.activeLesson>.hint{margin:0 0 12px}
+.courseTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 16px;padding:6px;border-radius:var(--r-orta);background:var(--yuzey-mavi);border:1px solid var(--cizgi)}
+.courseTabs button{min-width:0;min-height:54px;padding:10px 12px;background:transparent;color:var(--murekkep);font-size:18px}
+.courseTabs button:hover:not(:disabled){background:#e3edfb;transform:none}
+.courseTabs button[aria-selected="true"]{background:var(--mor);color:#fff;box-shadow:0 3px 10px #6a4fc644}
+.courseSection{padding:0}
+.sectionEmpty{margin:0;padding:28px;border:2px dashed var(--cizgi);border-radius:var(--r-orta);color:var(--soluk);text-align:center}
+
+/* Etkinlik listesi: her etkinlik aynı boyda bir kart */
+.courseLinks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:12px;margin:0;padding:0;list-style:none}
+.courseLinks li{display:flex;flex-direction:column;gap:8px;min-width:0;padding:6px;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:var(--yuzey)}
+.courseLinks li>a,.courseLinks li>.trackedLessonLink{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;min-height:62px;margin:0;padding:10px 12px;border:0;border-radius:var(--r-kucuk);background:transparent;color:var(--mavi);font:800 19px/1.35 var(--yazi);text-align:left;text-decoration:none;overflow-wrap:anywhere}
+.courseLinks li>a::before,.courseLinks li>.trackedLessonLink::before{content:"›";display:inline-grid;place-items:center;flex:none;width:32px;height:32px;border-radius:10px;background:var(--mor-acik);color:var(--mor);font-size:26px;line-height:1}
+.courseLinks li>a:hover,.courseLinks li>.trackedLessonLink:hover:not(:disabled){background:var(--yuzey-mavi);transform:none}
+.activityStatus{align-self:flex-start;display:inline-flex;align-items:center;min-height:28px;margin:0 8px 6px;padding:3px 10px;border-radius:99px;background:#edf2f7;color:var(--soluk);font-size:14px;font-weight:800}
+.activityStatus.hasResult{background:var(--yesil-acik);color:var(--yesil)}
+.activityStatus.studentReport{background:var(--sari-acik);color:#795016}
+.courseLinks li .completionButton{width:auto;min-height:48px;margin:0 8px 2px;padding:8px 14px;border-color:var(--turuncu-koyu);background:var(--turuncu);color:#2d2414;font-size:17px}
+.courseLinks li .completionButton:hover:not(:disabled){background:#f7ae3a}
+.courseLinks li .completionButton.done,.courseLinks li .completionButton.done:disabled{border-color:#a8e3c6;background:var(--yesil-acik);color:var(--yesil);opacity:1;cursor:default}
+.completionHelp{display:block;margin:0 8px 8px;color:var(--soluk);font-size:14px;line-height:1.4}
+
+/* Defter notları */
+.noteHelp{margin:0 0 12px;padding:12px 14px;border-radius:var(--r-kucuk);background:var(--yuzey-mavi);font-size:16px}
+.notebookGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.noteCard{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;min-width:0;padding:16px;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:var(--yuzey)}
+.noteCard strong{min-width:0;font-size:21px;line-height:1.3;overflow-wrap:anywhere}
+.noteCard a{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:10px 18px;border-radius:var(--r-kucuk);background:var(--mor);color:#fff;font-size:18px;font-weight:800;text-decoration:none;white-space:nowrap}
+.noteCard a:hover{background:var(--mor-koyu)}
+.noteCard .noteCheckbox{grid-column:1/-1}
+.noteCheckbox{display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 14px;border:2px solid var(--cizgi);border-radius:var(--r-kucuk);background:var(--yuzey-mavi);color:var(--murekkep);font-size:18px;font-weight:800;cursor:pointer}
+.noteCheckbox input{flex:none;width:28px;height:28px;margin:0;accent-color:var(--yesil);cursor:pointer}
+.noteCheckbox.done{border-color:#9edcbc;background:var(--yesil-acik);color:var(--yesil)}
+
+/* ---------- Oyun penceresi (takipli etkinlikler) ---------- */
+#oyunPanel{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;background:#081427;color:#fff;overscroll-behavior:contain}
+#oyunUst{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:8px 14px;background:#10243d;font-size:19px}
+#oyunUst strong{color:#fff}
+#oyundanDon{min-height:48px;padding:8px 16px;background:var(--turuncu);color:#2d2414;font-size:17px}
+#oyundanDon:hover:not(:disabled){background:#f7ae3a}
+#oyunCer{display:block;flex:1;width:100%;min-height:0;border:0;background:#fff}
+#oyunDurum{margin:0;padding:8px 14px;background:#173a52;color:#fff;font-size:17px}
+#oyunDurum:empty{display:none}
+
+/* ---------- Tablet ---------- */
+@media(max-width:850px){
+ #dersIzgarasi,.courseLinks,.notebookGrid{grid-template-columns:1fr}
+ .kutu>#sonuc{position:static;max-width:100%;margin:0 0 14px}
+ .progressStats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media(max-width:360px){
+/* ---------- Telefon ---------- */
+@media(max-width:620px){
+ body{font-size:17px}
+ .kutu{min-height:100vh;margin:0;padding:18px 14px 28px;border:0;border-radius:0;box-shadow:none}
+ body.loginView .kutu{min-height:100svh}
+ #girisAlani{padding:22px 16px}
+ .welcomeBar{padding:10px 12px;gap:8px}
+ .welcomeAvatar{width:44px;height:44px;font-size:24px}
+ #welcomeName{font-size:19px}
+ #cikis{min-height:44px;padding:8px 12px;font-size:14px}
+ .noticeTopCard{padding:14px}
+ .progressCompact>summary{flex-wrap:wrap;gap:8px 10px;padding:10px 14px}
+ .progressCompactName{font-size:18px}
+ .progressCompactTrack{order:3;flex-basis:100%}
+ .progressCompactScore{margin-left:auto;font-size:21px}
+ .course>summary{min-height:84px;padding:12px 14px;column-gap:12px}
+ .course>summary>.subjectIcon{width:56px;height:56px}
+ .course>summary>strong{font-size:22px}
+ .courseTabs button{min-height:52px;padding:8px 6px;font-size:15px}
+ .progressCompactLabel{display:none}
+ .examHome button{font-size:19px;min-height:58px}
+ .noteCard{grid-template-columns:1fr}
+ .noteCard a{justify-self:start}
+}
+@media(max-width:480px){
  .courseTabs{grid-template-columns:1fr}
- .courseTabs button:last-child:nth-child(odd){grid-column:auto}
+ .courseTabs button{justify-content:flex-start;padding:8px 14px;font-size:17px}
 }
-@media(prefers-reduced-motion:reduce){
- .course summary .newLight{animation:none}
- .progressCompactTrack #ilerlemeBar{transition:none}
-}
-\n.newContentGroup{min-width:0;padding:14px;background:#fff;border:1px solid #edc2c8;border-radius:14px}.newContentGroup h4{margin:0 0 10px;color:#713d47;font-size:17px}.newContentItems{display:grid;gap:8px;margin:0;padding:0;list-style:none}.newContentItems li{min-width:0}.newContentLink{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:54px;padding:11px 13px;border:1px solid #d8e3f0;border-radius:12px;background:#fff;color:#264d77;text-align:left;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}.newContentLink:focus-visible{outline:3px solid #285fb0;outline-offset:2px}.newContentLinkTitle{overflow-wrap:anywhere}.newContentLinkBadge{flex:none;font-size:13px;color:#55708a}@media(max-width:620px){.newContentAlerts{grid-template-columns:1fr}.newContentLink{min-height:58px}}\n.noticeTopCard #duyuruListe article h4{margin:0 0 6px;font-size:18px}.noticeTopCard #duyuruDurum{font-weight:800}.newContentPanel{padding:12px 14px}.newContentSummary{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:56px;padding:12px 15px;border:0;border-radius:12px;background:transparent;color:#713d47;font-size:20px;font-weight:900;text-align:left;cursor:pointer}.newContentSummary:hover{background:#ffffff8a}.newContentDialog{width:min(760px,calc(100vw - 24px));max-height:min(82vh,760px);padding:18px;border:0;border-radius:20px;background:#fff8fa;color:#253d5c;box-shadow:0 22px 70px #10243d55}.newContentDialog::backdrop{background:#14243c99;backdrop-filter:blur(3px)}.newContentDialogHead{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:#fff8fa;padding:0 0 12px;border-bottom:1px solid #eed7dc}.newContentDialogHead h3{margin:0;font-size:23px}.newContentClose{margin:0;min-width:48px;min-height:48px;padding:8px 14px;font-size:22px}.newContentDialogBody{overflow-y:auto;max-height:calc(82vh - 90px);padding-top:12px}.newContentAlerts{grid-template-columns:1fr}.newContentGroup h4{font-size:19px}.newContentLink{min-height:60px;font-size:18px}.newContentLinkBadge{font-size:15px}@media(max-width:620px){.newContentPanel{padding:7px}.newContentSummary{min-height:60px;font-size:21px}.newContentDialog{width:calc(100vw - 16px);max-height:88vh;padding:14px;border-radius:18px}.newContentDialogBody{max-height:calc(88vh - 84px)}.newContentLink{min-height:64px;font-size:18px;padding:14px}.newContentLinkBadge{font-size:14px}.noticeTopCard #duyuruListe{max-height:250px}.noticeTopCard #duyuruListe article{padding:13px 0}.noticeTopCard #duyuruListe article h4{font-size:20px}.noticeTopCard #duyuruListe article p{font-size:18px;line-height:1.55}button{min-height:52px;font-size:17px}}\n/* Compacta duyuru list without hiding older notices. */
-.noticeTopCard #duyuruListe{max-height:190px;overflow-y:auto;overscroll-behavior:contain;padding-right:5px;scrollbar-gutter:stable}
-.noticeTopCard #duyuruListe article{padding:7px 0;border-bottom:1px solid #e5dff5}
-.noticeTopCard #duyuruListe article h4{margin:0 0 3px;font-size:17px;line-height:1.3}
-.noticeTopCard #duyuruListe article p{margin:0;font-size:16px;line-height:1.4} .noticeTopCard #duyuruListe article p{white-space:pre-line;overflow-wrap:anywhere}
-@media(max-width:620px){.noticeTopCard #duyuruListe{max-height:185px}.noticeTopCard #duyuruListe article{padding:6px 0}.noticeTopCard #duyuruListe article h4{font-size:18px}.noticeTopCard #duyuruListe article p{font-size:16px;line-height:1.4}}</style></head><body class="loginView"><main class="kutu">
+</style></head><body class="loginView"><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
 <div id="girisAlani"><p id="kod-yardim">Öğretmeninin verdiği 6 karakterli sınıf kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" inputmode="text" enterkeyhint="go" spellcheck="false" aria-label="Öğrenci kodu" aria-describedby="kod-yardim"><button id="giris" type="button">Giriş Yap</button><a class="teacherAccess" href="https://script.google.com/macros/s/AKfycbzYet4urwswVKhlxobxrH6R0IC_a1e8hUzpj42d_XwqZkA7N0Gwl4epC1P5XvZBt3DcyQ/exec" target="_blank" rel="noopener">🔒 Öğretmen Paneli</a></div>
@@ -385,7 +254,7 @@ body.loginView #giris{min-height:52px}
 <section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 </div>
-<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactLabel">Tamamlanan çalışma</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran" aria-label="Çalışma tamamlama oranı">–</span><span class="progressCompactChevron" aria-hidden="true">⌄</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor. Bu bir not değildir; yalnızca kaydedilen çalışmaları gösterir.</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Tamamlanan etkinlik</small></div><div><strong id="ilerlemeDefter">–</strong><small>Yazılan defter notu</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru yanıt</small></div></div></div></details>
+<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactLabel">Tamamlanan çalışma</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran" aria-label="Çalışma tamamlama oranı">–</span><span class="progressCompactChevron" aria-hidden="true">▾</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor. Bu bir not değildir; yalnızca kaydedilen çalışmaları gösterir.</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Tamamlanan etkinlik</small></div><div><strong id="ilerlemeDefter">–</strong><small>Yazılan defter notu</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru yanıt</small></div></div></div></details>
 <section id="newContentPanel" class="newContentPanel" hidden>
  <button id="newContentOpen" class="newContentSummary" type="button" aria-haspopup="dialog">✨ Yeni İçerikler <span>İçerikleri gör →</span></button>
 </section>
@@ -394,7 +263,7 @@ body.loginView #giris{min-height:52px}
  <div id="newContentDialogBody" class="newContentDialogBody"><div id="newContentAlerts" class="newContentAlerts" aria-live="polite"></div></div>
 </dialog>
 <h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
-<p class="hint">Takipli çalışmalarda sonuç kaydedilir. Diğer bağlantılar yeni sekmede açılır; bitirince bu sekmeye dön.</p>
+<p class="hint">Bir derse dokun; etkinlikler, defter notları ve değerlendirmeler orada.</p>
 <section class="examHome" aria-label="Deneme Sınavları">
  <button id="denemeSinavlariBtn" type="button" aria-expanded="false" aria-controls="denemeSinavlariBilgi"><span>📝 Deneme Sınavları</span><span aria-hidden="true">→</span></button>
  <p id="denemeSinavlariBilgi" class="examHint" hidden>Deneme sınavları yüklendiğinde burada yer alacak.</p>
@@ -418,7 +287,7 @@ body.loginView #giris{min-height:52px}
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/noktalamaisaretleri.html" target="_blank" rel="noopener noreferrer">Noktalama İşaretleri</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/pekistirme.html" target="_blank" rel="noopener noreferrer">Pekiştirme Dedektifi 1</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/sozavcıları.html" target="_blank" rel="noopener noreferrer">Atasözleri ve Deyimler</a></li></ul></details>
-<details class="course"><summary><span class="subjectIcon subject-MAT" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="10" y="8" width="44" height="49" rx="9" fill="#66D6B1" stroke="#287C73" stroke-width="3"/><rect x="17" y="15" width="30" height="12" rx="3" fill="#F4FDFF"/><path d="M20 35h10m-5-5v10m13-10v10m-5-5h10M21 47h8m9-3 7 7m0-7-7 7" stroke="#195E66" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>Matematik</strong> <small>14 etkinlik</small></summary><p class="hint">Kayıp Sayılar ve Sayı Örüntüleri portaldan açılır ve sonuçları kaydedilir. Diğer bağlantıları yeni sekmede aç; bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><button id="oyunuAc" class="trackedLessonLink" type="button" aria-label="Sonucu kaydedilen etkinlik: Kayıp Sayılar">🎮 Kayıp Sayılar</button></li><li><button id="oruntulerAc" class="trackedLessonLink" type="button" aria-label="Sonucu kaydedilen etkinlik: Sayı Örüntüleri">🧩 Sayı Örüntüleri</button></li><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilar.html" target="_blank" rel="noopener noreferrer">Sayılar</a></li>
+<details class="course"><summary><span class="subjectIcon subject-MAT" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="10" y="8" width="44" height="49" rx="9" fill="#66D6B1" stroke="#287C73" stroke-width="3"/><rect x="17" y="15" width="30" height="12" rx="3" fill="#F4FDFF"/><path d="M20 35h10m-5-5v10m13-10v10m-5-5h10M21 47h8m9-3 7 7m0-7-7 7" stroke="#195E66" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>Matematik</strong> <small>14 etkinlik</small></summary><p class="hint">Bazı etkinlikler portalın içinde açılır ve sonucun öğretmenine kaydedilir. Diğerleri yeni sekmede açılır; bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><button id="oyunuAc" class="trackedLessonLink" type="button" aria-label="Sonucu kaydedilen etkinlik: Kayıp Sayılar">Kayıp Sayılar</button></li><li><button id="oruntulerAc" class="trackedLessonLink" type="button" aria-label="Sonucu kaydedilen etkinlik: Sayı Örüntüleri">Sayı Örüntüleri</button></li><li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilar.html" target="_blank" rel="noopener noreferrer">Sayılar</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayilarikarsilastirsirala.html" target="_blank" rel="noopener noreferrer">Sayıları Karşılaştırma ve Sıralama</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/sayiproblemleri.html" target="_blank" rel="noopener noreferrer">Sayı Problemleri Atölyesi</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Matematik/toplama.html" target="_blank" rel="noopener noreferrer">Toplama Yapalım</a></li>
@@ -590,7 +459,7 @@ function girisYap(){
   buton.disabled=false;
   if(cevap&&cevap.basarili===true&&typeof cevap.token==="string"&&tokenFormat.test(cevap.token)){
    sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();seciliEtkinlikDurumYukle();
-   sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+".";
+   sonuc.textContent="";
   }else{sonuc.textContent=cevap&&cevap.mesaj?cevap.mesaj:"Giriş doğrulanamadı."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Giriş sırasında hata oluştu. Tekrar dene."}).ogrenciGirisiYap(kod);
 }
@@ -835,7 +704,7 @@ dersKartlari.forEach(function(card){
  const evalLinks=[...panels.etkinlik.querySelectorAll("a")].filter(a=>/değerlendirme|deneme sınavı|testi/i.test(a.textContent));
  if(evalLinks.length){
   const ul=document.createElement("ul");ul.className="courseLinks";
-  evalLinks.forEach(a=>{const li=document.createElement("li");li.appendChild(a);ul.appendChild(li);});
+  evalLinks.forEach(a=>{const eski=a.closest("li");if(eski){ul.appendChild(eski);}else{const li=document.createElement("li");li.appendChild(a);ul.appendChild(li);}});
   panels.degerlendirme.appendChild(ul);
  }else{
   const msg=document.createElement("p");msg.className="sectionEmpty";
@@ -863,7 +732,7 @@ if(mevcutToken){
  google.script.run.withSuccessHandler(function(cevap){
   if(istekNesli!==oturumNesli||sessionStorage.getItem(anahtarAdi)!==mevcutToken)return;
   buton.disabled=false;
-  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();seciliEtkinlikDurumYukle();sonuc.textContent="✅ Hoş geldin, "+(cevap.ogrenciAdi||"öğrenci")+"."}
+  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();ilerlemeYukle();defterDurumYukle();seciliEtkinlikDurumYukle();sonuc.textContent=""}
   else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
 }

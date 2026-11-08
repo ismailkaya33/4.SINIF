@@ -11,7 +11,9 @@ import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
 
 const KOK = join(dirname(fileURLToPath(import.meta.url)), '..');
-const oku = p => readFileSync(join(KOK, p), 'utf8');
+// Windows'ta Git dosyaları CRLF satır sonuyla açabilir; karşılaştırma LF üzerinden yapılır.
+const oku = p => readFileSync(join(KOK, p), 'utf8').replace(/\r\n/g, '\n');
+const crlfMi = p => readFileSync(join(KOK, p), 'utf8').includes('\r\n');
 const js = v => JSON.stringify(v);
 const tekTirnak = v => "'" + String(v).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
 
@@ -134,7 +136,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     if (farkli.length) { console.error('Liste ile uyuşmayan dosyalar:\n - ' + farkli.join('\n - ') + '\nÇözüm: node tools/katalog-esitle.mjs'); process.exit(1); }
     console.log('Katalog kontrolü tamam: tüm dosyalar etkinlik listesiyle uyumlu.');
   } else {
-    for (const d of farkli) writeFileSync(join(KOK, d), yeniler[d], 'utf8');
+    for (const d of farkli) writeFileSync(join(KOK, d), crlfMi(d) ? yeniler[d].replace(/\n/g, '\r\n') : yeniler[d], 'utf8');
     console.log(farkli.length ? 'Güncellenen dosyalar:\n - ' + farkli.join('\n - ') : 'Değişiklik gerekmedi; her şey zaten uyumlu.');
   }
 }
