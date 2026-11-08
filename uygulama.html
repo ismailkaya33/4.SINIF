@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#C8102E">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="uygulama/ikon-192.png">
+<link rel="apple-touch-icon" href="uygulama/ikon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="4/D Portal">
+<title>4/D Sınıf Portalı</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:max(20px,env(safe-area-inset-top)) 16px 24px;background:#eef4fb;color:#233e63;font:600 17px/1.5 system-ui,Arial,sans-serif}
+.card{width:min(100%,520px);padding:28px 22px;border:1px solid #d5e2f1;border-top:8px solid #c8102e;border-radius:24px;background:#fff;text-align:center;box-shadow:0 12px 30px #203d6414}
+img{width:96px;height:96px;border-radius:22px}h1{font-size:1.6rem;margin:12px 0 6px}p{margin:0 0 18px;color:#51677d;font-weight:500}
+a.btn{display:block;margin:12px 0;padding:16px 18px;border-radius:16px;background:#c8102e;color:#fff;text-decoration:none;font-weight:800;font-size:1.1rem}
+a.btn.ikincil{background:#edf3fa;color:#294667}
+#kur{display:none;margin-top:8px;padding:14px 18px;width:100%;border:2px dashed #c8102e;border-radius:16px;background:#fff;color:#c8102e;font:inherit;font-weight:800;cursor:pointer}
+.not{margin-top:16px;font-size:.88rem;color:#6b7f93}
+</style>
+</head>
+<body>
+<main class="card">
+  <img src="uygulama/ikon-192.png" alt="">
+  <h1>4/D Sınıf Portalı</h1>
+  <p>Ne yapmak istiyorsun?</p>
+  <a class="btn" href="https://script.google.com/macros/s/AKfycbzXyUUynqADi0RQjqvEq4lvUUnwQ6bJa1aPueWfsgQTMNiuEbrFnZw5phWg_Eztwjer/exec">🔑 Öğrenci kodu ile giriş</a>
+  <a class="btn ikincil" href="materyaller.html">📚 Materyal kataloğu</a>
+  <button id="kur" type="button">📲 Bu portalı telefonuma kur</button>
+  <p class="not" id="iosNot" hidden>iPhone/iPad: Paylaş düğmesine (□↑) dokun, sonra “Ana Ekrana Ekle”yi seç.</p>
+</main>
+<script>
+(function(){
+  try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){}); }catch(e){}
+  var bekleyen=null, kur=document.getElementById('kur');
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();bekleyen=e;kur.style.display='block';});
+  kur.addEventListener('click',function(){if(!bekleyen)return;bekleyen.prompt();bekleyen.userChoice.finally(function(){bekleyen=null;kur.style.display='none';});});
+  var ios=/iphone|ipad|ipod/i.test(navigator.userAgent), kurulu=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  if(ios&&!kurulu)document.getElementById('iosNot').hidden=false;
+})();
+</script>
+</body>
+</html>
