@@ -161,9 +161,10 @@ function skip(){const t=current();if(t.status==="success"||t.status==="skipped")
 function navigate(delta){const target=state.currentIndex+delta;if(target<0||target>=state.tasks.length)return;if(delta>0&&!["success","skipped"].includes(current().status))return;state.currentIndex=target;render()}
 function emitVerifiedFinish(){
  const rows=state.tasks;
- if(rows.length!==16||rows.some(t=>t.status!=="success"))return;
+ if(state.finishSent||rows.length!==16||rows.some(t=>t.status!=="success"))return;
  const correct=rows.filter(t=>t.status==="success").length,wrong=rows.length-correct;
  const firstTry=rows.filter(t=>t.status==="success"&&t.attempts===1&&!t.hintUsed).length;
+ state.finishSent=true;
  const attemptId="ci_"+(window.crypto&&typeof window.crypto.randomUUID==='function'?window.crypto.randomUUID().replace(/-/g,''):Date.now().toString(36)+Math.random().toString(36).slice(2));
  window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"mat-cikarmaislemi",attemptId,correct,wrong,total:rows.length,wrongAttempts:state.wrongCount,firstTry,durationSeconds:Math.floor((Date.now()-state.startedAt)/1000)},"*");
 }
