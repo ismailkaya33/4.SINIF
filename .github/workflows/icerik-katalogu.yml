@@ -1,0 +1,53 @@
+name: 4D İçerik listesi — yeni yüklemeleri ekle
+# Bir ders klasörüne .html yüklendiğinde (ya da silindiğinde) icerik-katalogu.json'u günceller.
+# Portal, öğretmen raporu ve materyal kataloğu bu listeyi okuyarak yeni etkinliği kendiliğinden gösterir.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Turkce/*.html'
+      - 'Matematik/*.html'
+      - 'Fen/*.html'
+      - 'Sosyal/*.html'
+      - 'Insanhaklari/*.html'
+      - 'Trafik/*.html'
+      - 'Oyunlar/*.html'
+  workflow_dispatch:
+concurrency:
+  group: icerik-katalogu
+  cancel-in-progress: false
+permissions:
+  contents: write
+  pages: write
+jobs:
+  katalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Listeyi klasörlerle eşitle
+        run: node tools/icerik-katalogu-guncelle.mjs
+      - name: Değişiklik varsa kaydet
+        id: kaydet
+        run: |
+          set -eu
+          if git diff --quiet -- icerik-katalogu.json; then
+            echo "degisti=0" >> "$GITHUB_OUTPUT"; echo "Liste zaten güncel."; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add icerik-katalogu.json
+          git commit -m "İçerik listesini güncelle (otomatik)"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "degisti=1" >> "$GITHUB_OUTPUT"
+      - name: Siteyi yeniden yayımlat
+        if: steps.kaydet.outputs.degisti == '1'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds"

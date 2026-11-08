@@ -777,6 +777,38 @@
             document.getElementById('main-menu').style.display = 'grid';
         }
     </script>
+    <script>
+        // Ortak içerik listesi (icerik-katalogu.json): ders klasörüne yüklenen yeni etkinlikler
+        // bu sayfaya kendiliğinden eklenir. Liste okunamazsa sayfa eskisi gibi çalışır.
+        (function () {
+            var SAYFA = {Turkce:'turkce', Matematik:'matematik', Fen:'fen', Sosyal:'sosyal', Insanhaklari:'insan', Trafik:'trafik', Oyunlar:'oyunlar'};
+            function uygula(k) {
+                if (!k || !Array.isArray(k.icerikler)) return;
+                var mevcut = {};
+                document.querySelectorAll('.subject-page a[href]').forEach(function (a) { mevcut[decodeURIComponent(a.getAttribute('href'))] = true; });
+                var bugun = new Date(); bugun.setHours(0,0,0,0);
+                k.icerikler.forEach(function (it) {
+                    if (!it || it.gizli || typeof it.yol !== 'string' || mevcut[it.yol]) return;
+                    var sayfa = document.getElementById(SAYFA[it.yol.split('/')[0]]);
+                    var liste = sayfa && sayfa.querySelector('ul.game-list');
+                    if (!liste) return;
+                    var li = document.createElement('li'), a = document.createElement('a');
+                    a.href = it.yol; a.textContent = String(it.ad || it.yol);
+                    var gun = Math.round((bugun - new Date(String(it.eklenme) + 'T00:00:00')) / 86400000);
+                    if (gun >= 0 && gun < 3) {
+                        var b = document.createElement('span'); b.className = 'badge-yeni-kucuk'; b.textContent = 'YENİ'; a.appendChild(b);
+                        var btn = document.getElementById('btn-' + SAYFA[it.yol.split('/')[0]]);
+                        if (btn && !btn.querySelector('.badge-yeni')) { var bb = document.createElement('span'); bb.className = 'badge-yeni'; bb.textContent = 'YENİ'; btn.appendChild(bb); }
+                    }
+                    li.appendChild(a); liste.appendChild(li); mevcut[it.yol] = true;
+                });
+            }
+            try {
+                fetch('icerik-katalogu.json?t=' + Math.floor(Date.now() / 300000), {cache: 'no-store'})
+                    .then(function (r) { return r.ok ? r.json() : null; }).then(uygula).catch(function () {});
+            } catch (e) {}
+        })();
+    </script>
 
 
 <script type="module">
