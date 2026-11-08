@@ -318,6 +318,13 @@
       "type": "activity",
       "course": "matematik",
       "target": "Matematik/toplamacikarmaproblem2.html"
+    },
+    {
+      "id": "recent-activity-sos-kurtulus",
+      "addedOn": "2026-11-08",
+      "type": "activity",
+      "course": "sosyal",
+      "target": "Sosyal/kurtulus.html"
     }
   ]
 }

@@ -244,6 +244,11 @@
           "path": "Sosyal/oyunzamani.html",
           "title": "Geçmişten Günümüze Çocuk Oyunları",
           "tracking": "not-connected"
+        },
+        {
+          "path": "Sosyal/kurtulus.html",
+          "title": "Kurtuluş Yolu — Tarihin İzinde",
+          "tracking": "not-connected"
         }
       ]
     },
