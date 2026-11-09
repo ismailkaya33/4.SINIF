@@ -66,6 +66,11 @@ Büyük işlerde planı gösterip onay al (prototip → onay → devam).
 ## 6. Diğer çıktılar
 - **Defter notu / çalışma kâğıdı / ev ödevi / ölçme / sunum:** `references/egitim-icerik-standartlari.md` bölüm 4–6'ya uy (A4, az mürekkep; cevap anahtarı ayrı; kazanım–soru eşleşme tablosu; slaytta tek kavram).
 - Defter notu görselleri `<Ders>/DefterNotlari/` altına gider; portal defter listesi ayrıca güncellenir (portal dalı).
+- **Çıktı alınacak materyal (ev ödevi, sınıf içi etkinlik kâğıdı, çalışma kâğıdı, ölçme kâğıdı) siteye/portala gönderilmez
+  ve gönderilsin mi diye sorulmaz** (öğretmenin kararı: PDF'i basıp dağıtıyor). Öğretmen açıkça isterse gönderilir.
+  Bu dosyalar ders klasörüne değil `Baski/<Ders>/` klasörüne konur (yalnızca bu bilgisayarda; `.git/info/exclude` ile
+  GitHub'a gitmez). Teslim: HTML + Edge ile basılmış A4 PDF yan yana; cevap anahtarı ayrı PDF.
+  Defter notu bu kuralın dışındadır (portala gider).
 
 ## 7. Çalışma akışı ve dosyanın yeri
 1. Kazanımı 2–3 satırda özetle, türü ve mekaniği bir cümleyle gerekçelendir, kazanım planını yaz.
