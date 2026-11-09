@@ -43,7 +43,14 @@ p { margin: 0 0 .8em; }
 .topbar {
   position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 10px 16px; background: rgba(21, 17, 13, .92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+  /* Telefonlarda çentik / Dinamik Ada altında kalmasın */
+  padding-top: max(10px, env(safe-area-inset-top)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right));
 }
+#view { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); padding-bottom: max(60px, env(safe-area-inset-bottom)); }
+button.global-progress { background: none; border: 1px solid transparent; border-radius: 99px; padding: 6px 10px; cursor: pointer; min-height: 44px; color: var(--muted); font: inherit; font-size: 14px; }
+button.global-progress:hover { border-color: var(--line); background: var(--panel); }
+.global-progress .bar { display: block; }
+.global-progress .bar-fill { display: block; }
 .brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; cursor: pointer; padding: 6px; border-radius: 12px; min-height: 48px; }
 .brand:hover { background: var(--panel); }
 .brand-star { color: var(--red2); font-size: 22px; }
@@ -494,6 +501,47 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
 .map-zoom-tip.show { animation: ipucuGoster 4.5s both; }
 @keyframes ipucuGoster { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
 
+/* Bayraklar */
+.bayrak { display: inline-block; width: 1.45em; height: .97em; vertical-align: -.12em; margin-right: .3em; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .35); overflow: hidden; }
+.sort-card .bayrak { width: 1.6em; height: 1.07em; }
+
+/* Sahne, kart ve bilgi kartı haritaları */
+.cine-map { background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: 12px; }
+.mini-map { margin: 0 0 14px; }
+.mini-map .map-legend { margin-top: 6px; }
+.kosul-badge { display: inline-block; margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--gold); }
+
+/* İlerlemem ekranı */
+.prog-head { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; background: var(--bg2); border: 1px solid var(--line); border-radius: 20px; padding: 22px; margin-bottom: 26px; }
+.prog-ring { width: 130px; height: 130px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--gold) calc(var(--p) * 1%), var(--panel) 0); }
+.prog-ring span { width: 100px; height: 100px; border-radius: 50%; background: var(--bg2); display: grid; place-items: center; font: 800 28px var(--serif); color: var(--gold); }
+.prog-stats { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 0 0 14px; color: var(--muted); }
+.prog-stats b { color: var(--ink); font-size: 1.25em; }
+.rozet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.rozet-kutu { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 14px 10px; border-radius: 16px; background: var(--bg2); border: 1px dashed var(--line); opacity: .55; }
+.rozet-kutu.var { opacity: 1; border: 2px solid var(--gold); background: var(--panel); }
+.rozet-ikon { font-size: 34px; }
+.rozet-kutu b { font-size: 15px; line-height: 1.2; }
+.rozet-kutu small { color: var(--muted); font-size: 12px; }
+.prog-list { display: grid; gap: 12px; }
+.prog-bolum { background: var(--bg2); border: 1px solid var(--line); border-radius: 16px; padding: 4px 16px; }
+.prog-bolum summary { display: grid; grid-template-columns: 40px 1fr 120px auto; gap: 12px; align-items: center; cursor: pointer; padding: 10px 0; font-weight: 700; list-style: none; }
+.prog-bolum summary::-webkit-details-marker { display: none; }
+.pb-no { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--panel); border: 2px solid var(--gold); }
+.prog-sahne { border-top: 1px solid var(--line); padding: 12px 0; }
+.ps-ad { background: none; border: 0; padding: 4px 0; font: 700 18px var(--serif); color: var(--gold); cursor: pointer; text-align: left; }
+.ps-gorevler { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.ps-gorev { padding: 6px 12px; border-radius: 99px; border: 1px solid var(--line); background: var(--panel); font-size: 14px; cursor: pointer; min-height: 36px; }
+.ps-gorev.tam { background: rgba(63, 162, 107, .2); border-color: var(--green); }
+.ps-gorev:disabled { cursor: not-allowed; opacity: .5; }
+.prog-not { color: var(--muted); font-size: 14px; margin-top: 18px; }
+@media (max-width: 680px) {
+  .prog-head { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .prog-stats { justify-content: center; }
+  .prog-bolum summary { grid-template-columns: 36px 1fr auto; }
+  .prog-bolum summary .mini-bar { display: none; }
+}
+
 /* Soru yanındaki harita */
 .rq-map .map-box { margin: 0; }
 .rq-map-cap { margin: 0 0 8px; font-weight: 800; color: var(--gold); }
@@ -625,7 +673,14 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
 }
 @media (max-width: 680px) {
   body { font-size: 17px; }
-  .global-progress .gp-label, .global-progress .bar { display: none; }
+  .global-progress .bar { display: none; }
+  .global-progress .gp-label { display: none; }
+  .global-progress .gp-ikon { font-size: 19px; }
+  .topbar { gap: 6px; }
+  .topbar-right { gap: 6px; }
+  .icon-btn { width: 44px; height: 44px; font-size: 19px; }
+  .brand-text small { display: none; }
+  .brand-text b { font-size: 15px; letter-spacing: 1px; }
   .hero { padding: 24px 18px; }
   .timeline { grid-template-columns: repeat(3, 1fr); row-gap: 14px; }
   .tl-line { display: none; }
@@ -667,11 +722,12 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
       <span class="brand-text"><b>KURTULUŞ YOLU</b><small>Tarihin İzinde</small></span>
     </button>
     <div class="topbar-right">
-      <div class="global-progress" title="Tamamlanan görevler">
-        <span class="gp-label">İlerleme</span>
-        <div class="bar"><div class="bar-fill" id="globalBar"></div></div>
+      <button class="global-progress" id="progressBtn" type="button" title="İlerlememi gör" aria-label="İlerlememi gör">
+        <span class="gp-ikon" aria-hidden="true">📊</span><span class="gp-label">İlerlemem</span>
+        <span class="bar"><span class="bar-fill" id="globalBar"></span></span>
         <span class="gp-num" id="globalNum">0/0</span>
-      </div>
+      </button>
+      <button class="icon-btn" id="homeBtn2" type="button" aria-label="Ana menüye dön" title="Ana menü">🏠</button>
       <button class="icon-btn" id="soundBtn" type="button" aria-label="Sesi aç/kapat">🔊</button>
     </div>
   </header>
@@ -928,7 +984,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Selanik; limanı, treni, okulları ve gazeteleriyle canlı bir şehirdir. Burada Türkler, Rumlar, Yahudiler ve Bulgarlar bir arada yaşar.',
           'Bugün Selanik, Yunanistan sınırları içindedir. Mustafa’nın doğduğu ev ise müze olarak ziyaret ediliyor.'
         ],
-        bilgiKarti: { baslik: '🗂️ Kimlik kartı', satirlar: [['Doğum yılı', '1881'], ['Doğum yeri', 'Selanik'], ['Annesi', 'Zübeyde Hanım'], ['Babası', 'Ali Rıza Efendi'], ['Kardeşi', 'Makbule'], ['Doğduğu ev', 'Bugün müze']] } },
+        bilgiKarti: { img: 'zubeyde', baslik: '🗂️ Kimlik kartı', satirlar: [['Doğum yılı', '1881'], ['Doğum yeri', 'Selanik'], ['Annesi', 'Zübeyde Hanım'], ['Babası', 'Ali Rıza Efendi'], ['Kardeşi', 'Makbule'], ['Doğduğu ev', 'Bugün müze']] } },
       { tip: 'kartlar', id: 'aile', ad: 'Aileyi tanı', baslik: '👨‍👩‍👧 Mustafa’nın ailesi ve şehri', ok: false,
         kartlar: [
           { ikon: '👨', baslik: 'Ali Rıza Efendi', kisa: 'Babası', uzun: 'Ali Rıza Efendi bir süre memurluk yaptı, sonra kereste ticaretiyle uğraştı. Oğlunun yeni yöntemlerle eğitim veren bir okulda okumasını istedi. Mustafa küçük bir çocukken hastalanarak öldü.' },
@@ -967,7 +1023,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Rüştiyeden sonra <b>Manastır Askerî İdadisi</b>’ne (askerî lise) gitti. Burada tarihe, edebiyata ve güzel konuşmaya ilgi duydu.',
           'Arkadaşlarıyla vatanın sorunlarını konuşuyor, gelecekte ülkesine nasıl hizmet edebileceğini düşünüyordu.'
         ],
-        bilgiKarti: { baslik: '🏫 Okulları', satirlar: [['İlk okul', 'Mahalle Mektebi'], ['Sonra', 'Şemsi Efendi Okulu'], ['Ortaokul', 'Selanik Askerî Rüştiyesi'], ['Lise', 'Manastır Askerî İdadisi'], ['Yüksekokul', 'İstanbul Harp Okulu'], ['En üst okul', 'Harp Akademisi']] } },
+        bilgiKarti: { img: 'semsi', baslik: '🏫 Okulları', satirlar: [['İlk okul', 'Mahalle Mektebi'], ['Sonra', 'Şemsi Efendi Okulu'], ['Ortaokul', 'Selanik Askerî Rüştiyesi'], ['Lise', 'Manastır Askerî İdadisi'], ['Yüksekokul', 'İstanbul Harp Okulu'], ['En üst okul', 'Harp Akademisi']] } },
       { tip: 'bilgi', ad: '“Kemal” adı', img: 'rustiye', baslik: '✨ Mustafa nasıl “Mustafa Kemal” oldu?',
         kartlar: [
           { ikon: '🧮', baslik: 'Matematik sevgisi', yazi: 'Mustafa matematikte çok başarılıydı. Bazen arkadaşlarına ders anlatır, öğretmenine yardım ederdi.' },
@@ -1009,7 +1065,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Arkadaşlarıyla ülkenin sorunlarını konuşuyor, okulda el yazısıyla gizli bir gazete hazırlıyorlardı.',
           '1905’te <b>Kurmay Yüzbaşı</b> olarak mezun oldu ve ilk görev yeri olan <b>Şam</b>’a gönderildi.'
         ],
-        bilgiKarti: { baslik: '🎖️ Asker Mustafa Kemal', satirlar: [['Harp Okulu', '1899–1902'], ['İlk rütbesi', 'Teğmen'], ['Harp Akademisi', '1902–1905'], ['Mezuniyet', 'Kurmay Yüzbaşı (1905)'], ['İlk görev yeri', 'Şam (5. Ordu)'], ['Şam’da', 'Arkadaşlarıyla Vatan ve Hürriyet Cemiyeti’ni kurdu']] } },
+        bilgiKarti: { img: 'kurmay', baslik: '🎖️ Asker Mustafa Kemal', satirlar: [['Harp Okulu', '1899–1902'], ['İlk rütbesi', 'Teğmen'], ['Harp Akademisi', '1902–1905'], ['Mezuniyet', 'Kurmay Yüzbaşı (1905)'], ['İlk görev yeri', 'Şam (5. Ordu)'], ['Şam’da', 'Arkadaşlarıyla Vatan ve Hürriyet Cemiyeti’ni kurdu']] } },
       { tip: 'quiz', id: 'sinif', ad: 'Fotoğrafı incele', baslik: '🔎 Harp Akademisi’nde bir sınıf', img: 'akademiSinif',
         sorular: [
           { soru: 'Öğrencilerin başında ne var?', secenekler: ['Fes', 'Kalpak', 'Şapka'], dogru: 0,
@@ -1057,7 +1113,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Mustafa Kemal ve bazı genç subaylar gönüllü oldular. Kılık değiştirip Mısır üzerinden gizlice Trablusgarp’a gittiler.',
           'Orada yerli halkı örgütleyip <b>Tobruk</b> ve <b>Derne</b>’de İtalyanlara karşı savaştılar.'
         ],
-        bilgiKarti: { baslik: '🗂️ Savaş kartı', satirlar: [['Saldıran', 'İtalya'], ['Yer', 'Trablusgarp (bugünkü Libya)'], ['Mustafa Kemal', 'Tobruk ve Derne’de savaştı'], ['Bitiş', 'Uşi Antlaşması (18 Ekim 1912)'], ['Sonuç', 'Trablusgarp İtalya’ya bırakıldı']] } },
+        bilgiKarti: { img: 'trabHarita', baslik: '🗂️ Savaş kartı', satirlar: [['Saldıran', 'İtalya'], ['Yer', 'Trablusgarp (bugünkü Libya)'], ['Mustafa Kemal', 'Tobruk ve Derne’de savaştı'], ['Bitiş', 'Uşi Antlaşması (18 Ekim 1912)'], ['Sonuç', 'Trablusgarp İtalya’ya bırakıldı']] } },
       { tip: 'kesif', id: 'trabHarita', ad: 'Harita dedektifi', img: 'trabHarita', baslik: '🔎 Haritayı oku',
         aciklama: 'Bu harita bir ders kitabından. Renklere, gemilere ve noktalı oklara dikkat et.',
         ipuclari: [
@@ -1103,7 +1159,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Mustafa Kemal’in doğduğu Selanik artık Osmanlı’da değildi. Annesi ve kız kardeşi İstanbul’a göç etmek zorunda kaldı.',
           '1913’te Balkan devletleri kendi aralarında savaşmaya başlayınca (II. Balkan Savaşı) Osmanlı ordusu <b>Edirne</b>’yi geri aldı.'
         ],
-        bilgiKarti: { baslik: '🗂️ Balkan Savaşları', satirlar: [['I. Balkan Savaşı', '1912–1913'], ['Saldıranlar', 'Bulgaristan, Sırbistan, Yunanistan, Karadağ'], ['Kaybedilenler', 'Selanik, Manastır, Rumeli’nin büyük bölümü'], ['II. Balkan Savaşı', '1913'], ['Kazanılan', 'Edirne geri alındı'], ['Mustafa Kemal', 'Gelibolu’da (Bolayır) görev yaptı']] } },
+        bilgiKarti: { img: 'balkanSonra', baslik: '🗂️ Balkan Savaşları', satirlar: [['I. Balkan Savaşı', '1912–1913'], ['Saldıranlar', 'Bulgaristan, Sırbistan, Yunanistan, Karadağ'], ['Kaybedilenler', 'Selanik, Manastır, Rumeli’nin büyük bölümü'], ['II. Balkan Savaşı', '1913'], ['Kazanılan', 'Edirne geri alındı'], ['Mustafa Kemal', 'Gelibolu’da (Bolayır) görev yaptı']] } },
       { tip: 'album', id: 'balkanAlbum', ad: 'Fotoğraf albümü', baslik: '📷 Balkan Savaşları’nın acı yüzü',
         aciklama: 'Savaş yalnızca askerleri değil, çocukları, anneleri, yaşlıları da etkiledi. Yüz binlerce insan evini, köyünü bırakıp yola düştü. Bu insanlara <b>muhacir</b> (göçmen) denir.',
         fotolar: [
@@ -1150,7 +1206,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Balkan Savaşları’ndan sonra <b>Sofya</b>’ya askerî ataşe olarak atandı (1913). Buradan Avrupa’daki gelişmeleri dikkatle izledi.',
           'Avrupa iki gruba ayrılmıştı: <b>İtilaf Devletleri</b> ve <b>İttifak Devletleri</b>. Osmanlı Devleti yalnız kalmamak için bir müttefik arıyordu.'
         ],
-        bilgiKarti: { baslik: '⚖️ İki grup', satirlar: [['İtilaf Devletleri', 'İngiltere, Fransa, Rusya'], ['İttifak Devletleri', 'Almanya, Avusturya-Macaristan'], ['İtalya', 'Önce İttifak grubundaydı, savaşta taraf değiştirdi'], ['Osmanlı', '1914’te Almanya’nın yanında savaşa girdi']] } },
+        bilgiKarti: { harita: { gorunum: 'genis', donem: '1914', baslik: '1914’te Avrupa ve Osmanlı Devleti', sehirler: ['istanbul', 'sofya', 'belgrad', 'roma', 'atina'] }, baslik: '⚖️ İki grup', satirlar: [['İtilaf Devletleri', 'İngiltere, Fransa, Rusya'], ['İttifak Devletleri', 'Almanya, Avusturya-Macaristan'], ['İtalya', 'Önce İttifak grubundaydı, savaşta taraf değiştirdi'], ['Osmanlı', '1914’te Almanya’nın yanında savaşa girdi']] } },
       { tip: 'quiz', id: 'picardieGozlem', ad: 'Fotoğrafı incele', baslik: '🔎 Fransa’da bir tatbikat', img: 'picardie',
         sorular: [
           { soru: 'Fotoğrafın altında “Manœuvres de Picardie 1910” yazıyor. Bu yazı hangi dilde?', secenekler: ['Fransızca', 'Türkçe', 'Almanca'], dogru: 0,
@@ -1189,21 +1245,24 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
   S.dunyasavasi = {
     ad: 'Birinci Dünya Savaşı ve Cepheler', tarih: '1914–1918', kisa: 'Osmanlı ordusu aynı anda birçok cephede savaşıyor.',
     adimlar: [
-      { tip: 'sahne', poster: { ikon: '🌍', buyuk: '1914', alt: 'Birinci Dünya Savaşı başlıyor' }, tarih: '1914',
+      { tip: 'sahne', harita: { gorunum: 'genis', donem: '1914', baslik: 'Osmanlı’nın savaştığı cepheler (1914–1918)',
+          sehirler: ['istanbul', 'canakkale', 'sarikamis', 'kanal', 'bagdat', 'kudus'],
+          yazilar: [{ t: 'ÇANAKKALE', lon: 24.6, lat: 39.2, renk: '#9e0c24' }, { t: 'KAFKAS', lon: 43.6, lat: 41.4, renk: '#9e0c24' }, { t: 'IRAK', lon: 45.6, lat: 34.6, renk: '#9e0c24' },
+            { t: 'KANAL', lon: 30.6, lat: 29.9, renk: '#9e0c24' }, { t: 'SURİYE-FİLİSTİN', lon: 38.6, lat: 31.4, renk: '#9e0c24' }, { t: 'HİCAZ-YEMEN ↓', lon: 39.6, lat: 29.5, renk: '#9e0c24' }] }, tarih: '1914',
         metin: [
           '1914’te Avrupa’da <b>Birinci Dünya Savaşı</b> başladı. Savaş kısa sürede dünyanın birçok yerine yayıldı.',
           'Osmanlı Devleti, <b>Almanya</b>’nın yanında savaşa girdi. Kaybettiği toprakları geri almayı ve büyük devletlerin baskısından kurtulmayı umuyordu.',
           'Osmanlı ordusu aynı anda birçok cephede savaştı: Kafkas, Kanal, Irak, Suriye-Filistin, Hicaz-Yemen, Çanakkale ve Avrupa’daki cepheler.',
           'Askerler soğukta, sıcakta, çölde ve dağlarda büyük zorluklar yaşadı.'
         ],
-        bilgiKarti: { baslik: '🗂️ Savaş kartı', satirlar: [['Başlangıç', '1914'], ['Bitiş', '1918'], ['Osmanlı’nın tarafı', 'İttifak Devletleri (Almanya ile)'], ['En büyük başarı', 'Çanakkale'], ['Sonuç', 'Osmanlı yenildi; Mondros Ateşkesi (1918)']] } },
+        bilgiKarti: { img: 'askerBayrak', baslik: '🗂️ Savaş kartı', satirlar: [['Başlangıç', '1914'], ['Bitiş', '1918'], ['Osmanlı’nın tarafı', 'İttifak Devletleri (Almanya ile)'], ['En büyük başarı', 'Çanakkale'], ['Sonuç', 'Osmanlı yenildi; Mondros Ateşkesi (1918)']] } },
       { tip: 'kartlar', id: 'cepheKart', ad: 'Cepheleri tanı', baslik: '⚔️ Osmanlı’nın savaştığı cepheler', ok: false,
         kartlar: [
-          { ikon: '❄️', baslik: 'Kafkas Cephesi', kisa: 'Ruslara karşı', uzun: 'Doğu Anadolu’da Ruslara karşı savaşıldı. 1914–1915 kışında Sarıkamış’ta askerlerimiz ağır kış koşulları yüzünden çok büyük kayıplar verdi.' },
-          { ikon: '🚢', baslik: 'Kanal Cephesi', kisa: 'İngilizlere karşı', uzun: 'İngilizlerin Hindistan’a giden yolunu kesmek için Süveyş Kanalı’na saldırıldı ama başarılı olunamadı.' },
-          { ikon: '🌴', baslik: 'Irak Cephesi', kisa: 'İngilizlere karşı', uzun: 'Irak’ta İngilizlere karşı savaşıldı. 1916’da Kut’ül-Amare’de bir İngiliz ordusu teslim alındı; bu büyük bir başarıydı. Ama sonunda Bağdat kaybedildi.' },
-          { ikon: '⚓', baslik: 'Çanakkale Cephesi', kisa: 'İngiliz ve Fransızlara karşı', uzun: 'İngiliz ve Fransızlar İstanbul’u almak için Çanakkale Boğazı’nı geçmeye çalıştı. Türk askeri onları durdurdu: “Çanakkale geçilmez!”' },
-          { ikon: '🏜️', baslik: 'Suriye-Filistin Cephesi', kisa: 'İngilizlere karşı', uzun: 'İngilizler Mısır’dan kuzeye ilerledi. Mustafa Kemal savaşın son yılında bu cephede görev yaptı.' },
+          { ikon: '❄️', baslik: 'Kafkas Cephesi', kisa: 'Ruslara karşı', harita: { gorunum: 'genis', donem: '1914', sehirler: ['istanbul', 'canakkale', 'sarikamis', 'kanal', 'bagdat', 'kudus'], vurgu: 'sarikamis', baslik: 'Kafkas Cephesi: Sarıkamış' }, uzun: 'Doğu Anadolu’da Ruslara karşı savaşıldı. 1914–1915 kışında Sarıkamış’ta askerlerimiz ağır kış koşulları yüzünden çok büyük kayıplar verdi.' },
+          { ikon: '🚢', baslik: 'Kanal Cephesi', kisa: 'İngilizlere karşı', harita: { gorunum: 'genis', donem: '1914', sehirler: ['istanbul', 'canakkale', 'sarikamis', 'kanal', 'bagdat', 'kudus'], vurgu: 'kanal', baslik: 'Kanal Cephesi: Süveyş Kanalı' }, uzun: 'İngilizlerin Hindistan’a giden yolunu kesmek için Süveyş Kanalı’na saldırıldı ama başarılı olunamadı.' },
+          { ikon: '🌴', baslik: 'Irak Cephesi', kisa: 'İngilizlere karşı', harita: { gorunum: 'genis', donem: '1914', sehirler: ['istanbul', 'canakkale', 'sarikamis', 'kanal', 'bagdat', 'kudus'], vurgu: 'bagdat', baslik: 'Irak Cephesi: Bağdat' }, uzun: 'Irak’ta İngilizlere karşı savaşıldı. 1916’da Kut’ül-Amare’de bir İngiliz ordusu teslim alındı; bu büyük bir başarıydı. Ama sonunda Bağdat kaybedildi.' },
+          { ikon: '⚓', baslik: 'Çanakkale Cephesi', kisa: 'İngiliz ve Fransızlara karşı', harita: { gorunum: 'genis', donem: '1914', sehirler: ['istanbul', 'canakkale', 'sarikamis', 'kanal', 'bagdat', 'kudus'], vurgu: 'canakkale', baslik: 'Çanakkale Cephesi' }, uzun: 'İngiliz ve Fransızlar İstanbul’u almak için Çanakkale Boğazı’nı geçmeye çalıştı. Türk askeri onları durdurdu: “Çanakkale geçilmez!”' },
+          { ikon: '🏜️', baslik: 'Suriye-Filistin Cephesi', kisa: 'İngilizlere karşı', harita: { gorunum: 'genis', donem: '1914', sehirler: ['istanbul', 'canakkale', 'sarikamis', 'kanal', 'bagdat', 'kudus'], vurgu: 'kudus', baslik: 'Suriye-Filistin Cephesi: Kudüs' }, uzun: 'İngilizler Mısır’dan kuzeye ilerledi. Mustafa Kemal savaşın son yılında bu cephede görev yaptı.' },
           { ikon: '🕌', baslik: 'Hicaz-Yemen Cephesi', kisa: 'Kutsal şehirleri korumak için', uzun: 'Mekke ve Medine’yi korumak için savaşıldı. Medine’yi savunan Fahrettin Paşa, savaş bittikten sonra bile şehri uzun süre teslim etmedi.' }
         ] },
       { tip: 'album', id: 'seferberlikAlbum', ad: 'Fotoğraf albümü', baslik: '📷 Savaş her eve dokundu',
@@ -1245,7 +1304,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           '<b>25 Nisan 1915</b>’te düşman bu kez karaya asker çıkardı. <b>Mustafa Kemal</b>, Arıburnu’nda düşmanı durdurdu; Conkbayırı ve Anafartalar’da büyük başarılar kazandı.',
           'Mustafa Kemal askerlerine şöyle dedi: <i>“Ben size taarruzu emretmiyorum, ölmeyi emrediyorum!”</i> Çanakkale’de çok sayıda askerimiz şehit oldu.'
         ],
-        bilgiKarti: { baslik: '🗂️ Çanakkale kartı', satirlar: [['Deniz savaşları', '18 Mart 1915: Çanakkale Deniz Zaferi'], ['Kara savaşları', '25 Nisan 1915 – Ocak 1916'], ['Mustafa Kemal', '19. Tümen Komutanı, sonra Anafartalar Grubu Komutanı'], ['Kahramanlar', 'Seyit Onbaşı, Nusret mayın gemisi ve binlerce Mehmetçik'], ['Sonuç', 'Düşman geri çekildi: “Çanakkale geçilmez!”']] } },
+        bilgiKarti: { img: 'canakCephe', baslik: '🗂️ Çanakkale kartı', satirlar: [['Deniz savaşları', '18 Mart 1915: Çanakkale Deniz Zaferi'], ['Kara savaşları', '25 Nisan 1915 – Ocak 1916'], ['Mustafa Kemal', '19. Tümen Komutanı, sonra Anafartalar Grubu Komutanı'], ['Kahramanlar', 'Seyit Onbaşı, Nusret mayın gemisi ve binlerce Mehmetçik'], ['Sonuç', 'Düşman geri çekildi: “Çanakkale geçilmez!”']] } },
       { tip: 'kesif', id: 'tabya', ad: 'Fotoğraf dedektifi', img: 'canakCephe', baslik: '🔎 Bir tabyada askerler',
         aciklama: 'Tabya, topları ve askerleri korumak için toprak ve taştan yapılmış savunma yapısıdır.',
         ipuclari: [
@@ -1323,7 +1382,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
         kartlar: [
           { ikon: '🌊', baslik: 'Boğazlar açılacak', kisa: 'Çanakkale ve İstanbul boğazları', img: 'itilafDonanma', uzun: 'Boğazlar İtilaf Devletleri’nin gemilerine açılacak, kaleler onlara teslim edilecekti. Çanakkale’de geçilemeyen boğazlar artık savaşmadan açılıyordu. 13 Kasım 1918’de İtilaf donanması İstanbul önlerine demirledi.' },
           { ikon: '🪖', baslik: 'Ordu terhis edilecek', kisa: 'Askerler evlerine gönderilecek', uzun: 'Osmanlı ordusu küçültülecek, silah ve cephaneler teslim edilecekti. Böylece ülke kendini savunamaz hâle gelecekti.' },
-          { ikon: '⚠️', baslik: '7. madde', kisa: 'İstedikleri yeri işgal', uzun: 'İtilaf Devletleri kendi güvenliklerini tehdit eden bir durum olursa herhangi bir önemli noktayı işgal edebilecekti. Bu madde işgallerin kapısını açtı.' },
+          { ikon: '⚠️', baslik: '7. madde', kisa: 'İstedikleri yeri işgal', harita: { isgal: 1, baslik: '7. maddeden sonra: işgaller (Mart–Nisan 1919)' }, uzun: 'İtilaf Devletleri kendi güvenliklerini tehdit eden bir durum olursa herhangi bir önemli noktayı işgal edebilecekti. Bu madde işgallerin kapısını açtı.' },
           { ikon: '📡', baslik: 'Haberleşme ve ulaşım', kisa: 'Telgraf ve demiryolları', uzun: 'Demiryolları, telgraf ve limanlar İtilaf Devletleri’nin denetimine girecekti.' }
         ] },
       { tip: 'isgal', id: 'isgalBasliyor', ad: 'İşgal haritası', baslik: '🗺️ 7. maddenin sonucu: İşgaller başlıyor', kareler: [0, 1, 2],
@@ -1372,11 +1431,11 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Gemide <b>Mustafa Kemal Paşa</b> ve arkadaşları var. Herkes onun bir görevle Samsun’a gittiğini sanıyor.',
           'Ama Mustafa Kemal’in kafasında çok daha büyük bir plan var: <b>milleti kurtarmak!</b>'
         ],
-        bilgiKarti: { dugme: '🧳 Yolculuk bilgi kartı', baslik: '🧳 Yolculuk bilgi kartı', satirlar: [['Yola çıkış', '16 Mayıs 1919, İstanbul'], ['Varış', '19 Mayıs 1919 sabahı, Samsun'], ['Gemi', 'Bandırma Vapuru: eski ve yavaş bir yolcu gemisi'], ['Rota', 'İstanbul Boğazı’ndan Karadeniz’e çıkıp kıyı boyunca doğuya'], ['Resmî görev', '9. Ordu Müfettişi olarak bölgedeki karışıklıkları önlemek'], ['Asıl amaç', 'Anadolu’da halkı birleştirip bağımsızlık mücadelesini başlatmak']] } },
+        bilgiKarti: { dugme: '🧳 Yolculuk bilgi kartı', harita: { baslik: 'İstanbul’dan Samsun’a', sehirler: ['istanbul', 'sinop', 'samsun', 'inebolu', 'ankara'], vurgu: 'samsun', rota: { parcalar: [{ tip: 'deniz', noktalar: [[28.99, 41.02], [29.1, 41.24], [30.5, 41.35], [32.5, 41.9], [34.9, 42.1], [35.6, 41.75], [36.33, 41.29]] }] } }, baslik: '🧳 Yolculuk bilgi kartı', satirlar: [['Yola çıkış', '16 Mayıs 1919, İstanbul'], ['Varış', '19 Mayıs 1919 sabahı, Samsun'], ['Gemi', 'Bandırma Vapuru: eski ve yavaş bir yolcu gemisi'], ['Rota', 'İstanbul Boğazı’ndan Karadeniz’e çıkıp kıyı boyunca doğuya'], ['Resmî görev', '9. Ordu Müfettişi olarak bölgedeki karışıklıkları önlemek'], ['Asıl amaç', 'Anadolu’da halkı birleştirip bağımsızlık mücadelesini başlatmak']] } },
       { tip: 'kartlar', id: 'kosullar', ad: 'Dönemin koşulları', baslik: '🗓️ Samsun’a çıkmadan önce neler oldu?',
         gorev: 'Zaman şeridindeki <b>3 kartın</b> hepsine dokun ve neler olduğunu oku.',
         kartlar: [
-          { tarih: '30 Ekim 1918', ikon: '📜', baslik: 'Mondros Ateşkes Antlaşması', kisa: 'Osmanlı Devleti savaştan yenik çıktı.', uzun: 'Birinci Dünya Savaşı’nda yenilen Osmanlı Devleti, Mondros Ateşkes Antlaşması’nı imzaladı. Ordunun silahları ve askerleri azaltılacaktı. Antlaşmanın bir maddesine göre İtilaf Devletleri, kendilerini tehlikede gördükleri her yeri işgal edebilecekti. Bu madde, işgallerin kapısını açtı.' },
+          { tarih: '30 Ekim 1918', ikon: '📜', baslik: 'Mondros Ateşkes Antlaşması', kisa: 'Osmanlı Devleti savaştan yenik çıktı.', img: 'agamemnon', uzun: 'Birinci Dünya Savaşı’nda yenilen Osmanlı Devleti, Mondros Ateşkes Antlaşması’nı imzaladı. Ordunun silahları ve askerleri azaltılacaktı. Antlaşmanın bir maddesine göre İtilaf Devletleri, kendilerini tehlikede gördükleri her yeri işgal edebilecekti. Bu madde, işgallerin kapısını açtı.' },
           { tarih: '13 Kasım 1918', ikon: '⚓', baslik: 'İtilaf donanması İstanbul’da', kisa: 'Yabancı savaş gemileri başkente geldi.', img: 'itilafDonanma', uzun: 'İngiliz, Fransız, İtalyan ve Yunan savaş gemileri İstanbul önlerine demirledi. Osmanlı Devleti’nin başkentinde artık yabancı askerler dolaşıyordu. İstanbul’daki yönetim bu duruma karşı çıkamıyordu.' },
           { tarih: '15 Mayıs 1919', ikon: '🔥', baslik: 'İzmir’in işgali', kisa: 'Yunan askerleri İzmir’e çıktı.', img: 'izmirIsgal', uzun: 'Yunan askerleri İzmir’i işgal etti. Gazeteci Hasan Tahsin, işgalcilere ilk kurşunu atan kişi olarak bilinir. Bu olay bütün yurtta büyük üzüntü ve öfke yarattı. Mustafa Kemal ise bundan yalnızca dört gün sonra Samsun’a çıkacaktı.' }
         ],
@@ -1452,10 +1511,10 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
         bilgiKarti: { baslik: '🗂️ Amasya Genelgesi', satirlar: [['Tarih', '22 Haziran 1919'], ['Yer', 'Amasya'], ['Hazırlayanlar', 'Mustafa Kemal, Rauf Bey, Ali Fuat Paşa, Refet Bey'], ['Destek veren', 'Kâzım Karabekir Paşa'], ['Önemi', 'Millî Mücadele’nin nedeni, amacı ve yöntemi ilk kez açıklandı'], ['Çağrı', 'Sivas’ta millî bir kongre toplanacak']] } },
       { tip: 'kartlar', id: 'genelge', ad: 'Genelgeyi oku', baslik: '📜 Amasya Genelgesi’nin önemli kararları', ok: false,
         kartlar: [
-          { ikon: '⚠️', baslik: 'Vatan tehlikede', kisa: 'Neden mücadele?', uzun: 'Vatanın bütünlüğü ve milletin bağımsızlığı tehlikededir. Bu karar, Millî Mücadele’nin <b>nedenini</b> açıklar.' },
-          { ikon: '🏛️', baslik: 'İstanbul görev yapamıyor', kisa: 'Hükûmet çaresiz', uzun: 'İstanbul Hükûmeti üzerine aldığı sorumluluğu yerine getiremiyor. Bu durum milletimizi yok olmuş gibi gösteriyor.' },
-          { ikon: '💪', baslik: 'Millet kurtaracak', kisa: 'Millî egemenlik', uzun: 'Milletin bağımsızlığını yine milletin azim ve kararı kurtaracaktır. Bu karar Millî Mücadele’nin <b>amacını ve yöntemini</b> gösterir; ilk kez millî egemenlikten söz edilir.' },
-          { ikon: '🏙️', baslik: 'Sivas’ta kongre', kisa: 'Her yerden temsilci', uzun: 'Yurdun her yerinden temsilcilerin katılacağı millî bir kongre, Anadolu’nun en güvenli yerlerinden biri olan Sivas’ta toplanacaktır.' }
+          { ikon: '⚠️', baslik: 'Vatan tehlikede', kisa: 'Neden mücadele?', img: 'izmirIsgal', uzun: 'Vatanın bütünlüğü ve milletin bağımsızlığı tehlikededir. Bu karar, Millî Mücadele’nin <b>nedenini</b> açıklar.' },
+          { ikon: '🏛️', baslik: 'İstanbul görev yapamıyor', kisa: 'Hükûmet çaresiz', img: 'istanbulIsgal', uzun: 'İstanbul Hükûmeti üzerine aldığı sorumluluğu yerine getiremiyor. Bu durum milletimizi yok olmuş gibi gösteriyor.' },
+          { ikon: '💪', baslik: 'Millet kurtaracak', kisa: 'Millî egemenlik', img: 'sultanahmet', uzun: 'Milletin bağımsızlığını yine milletin azim ve kararı kurtaracaktır. Bu karar Millî Mücadele’nin <b>amacını ve yöntemini</b> gösterir; ilk kez millî egemenlikten söz edilir.' },
+          { ikon: '🏙️', baslik: 'Sivas’ta kongre', kisa: 'Her yerden temsilci', harita: { isgal: 2, sehirler: ['istanbul', 'izmir', 'samsun', 'amasya', 'sivas', 'erzurum', 'ankara'], vurgu: 'sivas', baslik: 'Sivas, işgal edilen yerlerden uzaktı (Haziran 1919)' }, uzun: 'Yurdun her yerinden temsilcilerin katılacağı millî bir kongre, Anadolu’nun en güvenli yerlerinden biri olan Sivas’ta toplanacaktır.' }
         ] },
       { tip: 'quiz', id: 'genelgeQuiz', ad: 'Sorular', baslik: '❓ Genelgeyi anlayalım',
         sorular: [
@@ -1486,7 +1545,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           '<b>Sivas Kongresi</b> (4–11 Eylül 1919) yurdun her yerinden gelen temsilcilerle toplandı. Bütün direniş cemiyetleri <b>Anadolu ve Rumeli Müdafaa-i Hukuk Cemiyeti</b> adıyla birleştirildi.',
           'Kongreler, millet adına kararları yürütmek için bir <b>Temsil Heyeti</b> seçti. Başkanı Mustafa Kemal’di.'
         ],
-        bilgiKarti: { dugme: '❓ Manda ve himaye ne demek?', baslik: '❓ Manda ve himaye ne demek?', satirlar: [['Manda', 'Bir ülkenin yönetiminin, güçlü bir devlete bırakılması'], ['Himaye', 'Güçlü bir devletin korumasına girmek'], ['Neden reddedildi?', 'Millet tam bağımsızlık istiyordu'], ['Mustafa Kemal ne dedi?', '“Ya istiklal, ya ölüm!”']] } },
+        bilgiKarti: { img: 'sivasKongre', dugme: '❓ Manda ve himaye ne demek?', baslik: '❓ Manda ve himaye ne demek?', satirlar: [['Manda', 'Bir ülkenin yönetiminin, güçlü bir devlete bırakılması'], ['Himaye', 'Güçlü bir devletin korumasına girmek'], ['Neden reddedildi?', 'Millet tam bağımsızlık istiyordu'], ['Mustafa Kemal ne dedi?', '“Ya istiklal, ya ölüm!”']] } },
       { tip: 'kesif', id: 'sivasFoto', ad: 'Fotoğraf dedektifi', img: 'sivasKongre', baslik: '🔎 Sivas Kongresi üyeleri',
         aciklama: 'Bu fotoğraf Sivas Kongresi’ne katılan temsilcileri gösteriyor. Dikkatli bak!',
         ipuclari: [
@@ -1544,7 +1603,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'İtilaf Devletleri buna çok kızdı. <b>16 Mart 1920</b>’de İstanbul’u resmen işgal ettiler, Meclis’i dağıttılar, bazı milletvekillerini Malta’ya sürgün ettiler.',
           'Mustafa Kemal hemen harekete geçti: Ankara’da, milletin seçtiği temsilcilerden oluşan <b>yeni bir meclis</b> açılacaktı!'
         ],
-        bilgiKarti: { baslik: '📜 Misak-ı Millî', satirlar: [['Kabul tarihi', '28 Ocak 1920'], ['Nerede?', 'İstanbul, Osmanlı Mebusan Meclisi'], ['Anlamı', 'Millî Ant, milletin yemini'], ['Önemli kararlar', 'Tam bağımsızlık; vatanın bölünmezliği; kapitülasyonlar kabul edilmeyecek']] } },
+        bilgiKarti: { img: 'meclis1920', baslik: '📜 Misak-ı Millî', satirlar: [['Kabul tarihi', '28 Ocak 1920'], ['Nerede?', 'İstanbul, Osmanlı Mebusan Meclisi'], ['Anlamı', 'Millî Ant, milletin yemini'], ['Önemli kararlar', 'Tam bağımsızlık; vatanın bölünmezliği; kapitülasyonlar kabul edilmeyecek']] } },
       { tip: 'quiz', id: 'golbasiGozlem', ad: 'Fotoğrafı incele', img: 'golbasi', baslik: '🔎 Halkla birlikte',
         sorular: [
           { soru: 'Fotoğrafta Mustafa Kemal kimlerle birlikte?', secenekler: ['Köylülerle, halkla', 'Yabancı askerlerle', 'Öğrencilerle'], dogru: 0, aciklama: 'Doğru. Mustafa Kemal köylülerle birlikte yere oturmuş, onlarla sohbet ediyor.' },
@@ -1553,10 +1612,10 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
         ] },
       { tip: 'kartlar', id: 'ankaraNeden', ad: 'Neden Ankara?', baslik: '🧭 Neden Ankara?', ok: false,
         kartlar: [
-          { ikon: '🚂', baslik: 'Demiryolu', kisa: 'Ulaşım kolay', uzun: 'Ankara’ya demiryolu ulaşıyordu. Asker ve malzeme taşımak kolaydı.' },
-          { ikon: '🛡️', baslik: 'Güvenli konum', kisa: 'Cepheye yakın, işgalden uzak', uzun: 'Ankara, batıdaki cepheye yakındı ama düşman işgalinden uzaktı.' },
+          { ikon: '🚂', baslik: 'Demiryolu', kisa: 'Ulaşım kolay', harita: { sehirler: ['istanbul', 'izmit', 'eskisehir', 'ankara', 'konya', 'sivas'], vurgu: 'ankara', baslik: 'İstanbul–Ankara demiryolu', rota: { parcalar: [{ tip: 'kara', noktalar: [[28.97, 41.01], [29.92, 40.77], [30.4, 40.4], [30.52, 39.78], [31.6, 39.7], [32.86, 39.93]] }], etiketler: [{ lon: 31.6, lat: 40.2, t: 'Demiryolu' }] } }, uzun: 'Ankara’ya demiryolu ulaşıyordu. Asker ve malzeme taşımak kolaydı.' },
+          { ikon: '🛡️', baslik: 'Güvenli konum', kisa: 'Cepheye yakın, işgalden uzak', harita: { isgal: 3, vurgu: 'ankara', baslik: 'Ankara ve işgal edilen yerler (1919 sonu)' }, uzun: 'Ankara, batıdaki cepheye yakındı ama düşman işgalinden uzaktı.' },
           { ikon: '📡', baslik: 'Haberleşme', kisa: 'Telgraf hatları', uzun: 'Telgraf hatlarıyla yurdun dört bir yanıyla kolayca haberleşilebiliyordu.' },
-          { ikon: '🤝', baslik: 'Halkın desteği', kisa: 'Coşkulu karşılama', uzun: 'Ankara halkı Millî Mücadele’yi destekliyordu ve Temsil Heyeti’ni coşkuyla karşıladı.' }
+          { ikon: '🤝', baslik: 'Halkın desteği', kisa: 'Coşkulu karşılama', img: 'golbasi', uzun: 'Ankara halkı Millî Mücadele’yi destekliyordu ve Temsil Heyeti’ni coşkuyla karşıladı.' }
         ] },
       { tip: 'eslestir', id: 'misakNS', ad: 'Neden–sonuç', baslik: '🔗 Neden oldu? Sonra ne oldu?',
         ciftler: [
@@ -1585,7 +1644,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Mustafa Kemal, Meclis’in başkanı seçildi. Meclis hem yasaları yapıyor hem de hükûmeti kuruyordu. Artık milletin iradesi Meclis’teydi.',
           'Atatürk, 23 Nisan’ı daha sonra <b>Türk çocuklarına armağan etti</b>. Bugün 23 Nisan’ı <b>Ulusal Egemenlik ve Çocuk Bayramı</b> olarak kutluyoruz.'
         ],
-        bilgiKarti: { baslik: '🏛️ TBMM kartı', satirlar: [['Açılış', '23 Nisan 1920, Cuma'], ['Yer', 'Ankara; bina bugün Kurtuluş Savaşı Müzesi'], ['İlk başkan', 'Mustafa Kemal'], ['Temel ilke', 'Millî egemenlik'], ['Bayram', 'Ulusal Egemenlik ve Çocuk Bayramı']] } },
+        bilgiKarti: { img: 'tbmmBina', baslik: '🏛️ TBMM kartı', satirlar: [['Açılış', '23 Nisan 1920, Cuma'], ['Yer', 'Ankara; bina bugün Kurtuluş Savaşı Müzesi'], ['İlk başkan', 'Mustafa Kemal'], ['Temel ilke', 'Millî egemenlik'], ['Bayram', 'Ulusal Egemenlik ve Çocuk Bayramı']] } },
       { tip: 'kesif', id: 'tbmmFoto', ad: 'Fotoğraf dedektifi', img: 'tbmmBina', baslik: '🔎 Birinci Meclis binası',
         ipuclari: [
           { ad: 'Bayrak', alanlar: [[9, 13, 12, 10]], aciklama: 'Binanın üzerinde Türk bayrağı dalgalanıyor.' },
@@ -1631,7 +1690,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Batı Anadolu’da efeler, Güney’de şehir halkı düşmana karşı direndi. Kadınlar cephane taşıdı, mermi hazırladı, yaralılara baktı.',
           'Kuvâyi Milliye düşmanı tam olarak durduramadı ama zaman kazandırdı ve milletin direnme gücünü gösterdi.'
         ],
-        bilgiKarti: { baslik: '🗂️ Kuvâyi Milliye', satirlar: [['Anlamı', 'Millî Kuvvetler'], ['Nasıl kuruldu?', 'İşgallere karşı halkın kendi çabasıyla'], ['Nerede?', 'Batı Anadolu ve Güney’de, işgal edilen yerlerde'], ['Önemi', 'Düzenli ordu kurulana kadar düşmanı oyaladı'], ['Sonra', 'Birlikler düzenli orduya katıldı']] } },
+        bilgiKarti: { img: 'efeler', baslik: '🗂️ Kuvâyi Milliye', satirlar: [['Anlamı', 'Millî Kuvvetler'], ['Nasıl kuruldu?', 'İşgallere karşı halkın kendi çabasıyla'], ['Nerede?', 'Batı Anadolu ve Güney’de, işgal edilen yerlerde'], ['Önemi', 'Düzenli ordu kurulana kadar düşmanı oyaladı'], ['Sonra', 'Birlikler düzenli orduya katıldı']] } },
       { tip: 'kesif', id: 'cephaneFoto', ad: 'Fotoğraf dedektifi', img: 'cephane', baslik: '🔎 Cephe gerisinde çalışanlar',
         ipuclari: [
           { ad: 'Fişekler', alanlar: [[18, 50, 50, 16], [60, 52, 26, 12]], aciklama: 'Masanın üzerinde yüzlerce fişek (mermi) var. Bunlar cepheye gönderilecekti.' },
@@ -1672,14 +1731,14 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
   S.doguguney = {
     ad: 'Doğu ve Güney Cepheleri', tarih: '1920–1921', kisa: 'Kars’ın kurtuluşu ve Maraş, Antep, Urfa’nın direnişi.',
     adimlar: [
-      { tip: 'sahne', poster: { ikon: '🛡️', buyuk: '1920', alt: 'Doğu ve Güney Cepheleri' }, tarih: '1920',
+      { tip: 'sahne', harita: { baslik: 'Doğu ve Güney cepheleri (1920)', sehirler: ['kars', 'sarikamis', 'erzurum', 'maras', 'antep', 'urfa', 'adana', 'ankara'], yazilar: [{ t: 'DOĞU CEPHESİ', lon: 41.6, lat: 41.15, renk: '#a84300' }, { t: 'GÜNEY CEPHESİ', lon: 37.9, lat: 38.35, renk: '#6c2a8a' }] }, tarih: '1920',
         metin: [
           'Yeni kurulan TBMM, düşmana karşı birkaç cephede birden mücadele etmek zorundaydı.',
           '<b>Doğu Cephesi</b>’nde Ermeni birliklerine karşı <b>Kâzım Karabekir Paşa</b> komutasındaki ordu savaştı. Sarıkamış ve <b>Kars</b> geri alındı.',
           '3 Aralık 1920’de imzalanan <b>Gümrü Antlaşması</b>, TBMM’nin imzaladığı ilk uluslararası antlaşmaydı. Doğu sınırımız güvenceye alındı.',
           '<b>Güney Cephesi</b>’nde Fransızlara ve onlarla birlikte hareket eden Ermeni birliklerine karşı düzenli ordu yoktu. <b>Maraş, Antep ve Urfa</b> halkı kahramanca direndi. Bu şehirler bugün <b>Kahramanmaraş, Gaziantep ve Şanlıurfa</b> adlarını taşıyor.'
         ],
-        bilgiKarti: { baslik: '🗂️ İki cephe', satirlar: [['Doğu Cephesi', 'Ermeni birliklerine karşı; komutan Kâzım Karabekir Paşa'], ['Doğu’nun sonucu', 'Gümrü Antlaşması (3 Aralık 1920)'], ['Güney Cephesi', 'Fransızlar ve Ermeni birliklerine karşı halkın direnişi'], ['Güney’in sonucu', 'Ankara Antlaşması (20 Ekim 1921) ile Fransızlar çekildi']] } },
+        bilgiKarti: { img: 'karabekir', baslik: '🗂️ İki cephe', satirlar: [['Doğu Cephesi', 'Ermeni birliklerine karşı; komutan Kâzım Karabekir Paşa'], ['Doğu’nun sonucu', 'Gümrü Antlaşması (3 Aralık 1920)'], ['Güney Cephesi', 'Fransızlar ve Ermeni birliklerine karşı halkın direnişi'], ['Güney’in sonucu', 'Ankara Antlaşması (20 Ekim 1921) ile Fransızlar çekildi']] } },
       { tip: 'harita', id: 'cepheHarita2', ad: 'Harita', baslik: '🗺️ Doğu ve Güney cephelerinde', gorunum: 'anadolu',
         sehirler: ['kars', 'sarikamis', 'gumru', 'erzurum', 'maras', 'antep', 'urfa', 'adana', 'diyarbakir', 'sivas', 'van', 'trabzon'], bilinen: ['erzurum'],
         hedefler: [
@@ -1724,7 +1783,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           '<b>Ocak 1921</b>’de İsmet Paşa komutasındaki düzenli ordu, <b>I. İnönü Savaşı</b>’nda Yunan ordusunu durdurdu. Bu, düzenli ordunun ilk zaferiydi.',
           '<b>II. İnönü Savaşı</b>’ndan (Mart–Nisan 1921) sonra Mustafa Kemal, İsmet Paşa’ya şöyle yazdı: <i>“Siz orada yalnız düşmanı değil, milletin makûs talihini de yendiniz.”</i>'
         ],
-        bilgiKarti: { baslik: '🗂️ 1921 kartı', satirlar: [['I. İnönü', '6–10 Ocak 1921'], ['İlk anayasa', 'Teşkilât-ı Esasiye (20 Ocak 1921)'], ['İstiklâl Marşı', '12 Mart 1921; Mehmet Âkif Ersoy yazdı'], ['II. İnönü', '23 Mart – 1 Nisan 1921'], ['İsmet Paşa', '1934’te “İnönü” soyadını aldı']] } },
+        bilgiKarti: { img: 'ismetPasa', baslik: '🗂️ 1921 kartı', satirlar: [['I. İnönü', '6–10 Ocak 1921'], ['İlk anayasa', 'Teşkilât-ı Esasiye (20 Ocak 1921)'], ['İstiklâl Marşı', '12 Mart 1921; Mehmet Âkif Ersoy yazdı'], ['II. İnönü', '23 Mart – 1 Nisan 1921'], ['İsmet Paşa', '1934’te “İnönü” soyadını aldı']] } },
       { tip: 'quiz', id: 'selamGozlem', ad: 'Fotoğrafı incele', img: 'tbmmSelam', baslik: '🔎 Meclis önünde bir tören',
         sorular: [
           { soru: 'Fotoğrafın ortasındaki kişi ne yapıyor?', secenekler: ['Askerî selam veriyor', 'Kitap okuyor', 'Yemek yiyor'], dogru: 0, aciklama: 'Doğru! Mustafa Kemal, Meclis önünden geçen orduyu selamlıyor.' },
@@ -1733,10 +1792,10 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
         ] },
       { tip: 'kartlar', id: 'inonuKart', ad: 'Olayları keşfet', baslik: '📅 1920–1921 yılları',
         kartlar: [
-          { tarih: '10 Ağustos 1920', ikon: '📜', baslik: 'Sevr Antlaşması', kisa: 'Yurdu paylaştıran antlaşma', uzun: 'Osmanlı Hükûmeti’nin imzaladığı Sevr Antlaşması Anadolu’yu parçalara bölüyordu. TBMM bu antlaşmayı tanımadı; Sevr hiçbir zaman uygulanamadı.' },
+          { tarih: '10 Ağustos 1920', ikon: '📜', baslik: 'Sevr Antlaşması', kisa: 'Yurdu paylaştıran antlaşma', harita: { baslik: 'Sevr’e göre paylaşım planı', sehirler: ['istanbul', 'izmir', 'ankara', 'erzurum', 'adana', 'antalya'], bolgeler: [{ bolge: 'sevrBogaz', renk: '#c0392b', ad: 'Boğazlar: uluslararası yönetime' }, { bolge: 'sevrYunan', renk: '#1f5fa8', ad: 'Yunanistan’a' }, { bolge: 'trakya', renk: '#1f5fa8' }, { bolge: 'sevrItalya', renk: '#1e8449', ad: 'İtalya’ya' }, { bolge: 'sevrFransa', renk: '#8e44ad', ad: 'Fransa’ya' }, { bolge: 'sevrErmeni', renk: '#b7950b', ad: 'Ermeni devletine' }, { bolge: 'musul', renk: '#d35400', ad: 'İngiltere’ye' }] }, uzun: 'Osmanlı Hükûmeti’nin imzaladığı Sevr Antlaşması Anadolu’yu parçalara bölüyordu. TBMM bu antlaşmayı tanımadı; Sevr hiçbir zaman uygulanamadı.' },
           { tarih: 'Ocak 1921', ikon: '⚔️', baslik: 'I. İnönü Savaşı', kisa: 'Düzenli ordunun ilk zaferi', img: 'ismetPasa', uzun: 'İsmet Paşa komutasındaki ordu Yunan ilerleyişini durdurdu. Halkın düzenli orduya güveni arttı.' },
           { tarih: '12 Mart 1921', ikon: '🎵', baslik: 'İstiklâl Marşı', kisa: 'Mehmet Âkif Ersoy’un şiiri', img: 'akif', uzun: 'Mehmet Âkif Ersoy’un yazdığı İstiklâl Marşı, TBMM’de millî marşımız olarak kabul edildi. Âkif, yarışma için konan ödülü almadı; şiirini millete armağan etti.' },
-          { tarih: 'Nisan 1921', ikon: '🏆', baslik: 'II. İnönü Savaşı', kisa: '“Makûs talih” yenildi', uzun: 'Yunan ordusu yeniden yenildi. Mustafa Kemal bu zaferle milletin kötü kaderinin değiştiğini söyledi.' }
+          { tarih: 'Nisan 1921', ikon: '🏆', baslik: 'II. İnönü Savaşı', kisa: '“Makûs talih” yenildi', img: 'tbmmSelam', uzun: 'Yunan ordusu yeniden yenildi. Mustafa Kemal bu zaferle milletin kötü kaderinin değiştiğini söyledi.' }
         ] },
       { tip: 'haritaKesif', id: 'sevrHarita', ad: 'Sevr haritası', baslik: '📜 Sevr: Kâğıt üzerinde kalan paylaşım planı', gorunum: 'anadolu', donem: '1920',
         aciklama: '10 Ağustos 1920’de İstanbul’daki Osmanlı Hükûmeti’ne <b>Sevr Antlaşması</b> imzalatıldı. Haritadaki taralı yerler, bu antlaşmaya göre Anadolu’nun nasıl paylaşılmak istendiğini gösteriyor. Taranmamış küçük alan Türklere bırakılıyordu. İşaretlere dokun ve öğren.',
@@ -1788,7 +1847,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           '<b>23 Ağustos 1921</b>’de başlayan savaş <b>22 gün 22 gece</b> sürdü. Mustafa Kemal şöyle dedi: <i>“Hattı müdafaa yoktur, sathı müdafaa vardır. O satıh bütün vatandır.”</i>',
           '<b>13 Eylül 1921</b>’de düşman geri çekildi. TBMM, Mustafa Kemal’e <b>Mareşal</b> rütbesi ve <b>Gazi</b> unvanı verdi.'
         ],
-        bilgiKarti: { baslik: '🗂️ Sakarya kartı', satirlar: [['Başkomutanlık Kanunu', '5 Ağustos 1921'], ['Savaşın başlangıcı', '23 Ağustos 1921'], ['Savaşın sonu', '13 Eylül 1921'], ['Süre', '22 gün 22 gece'], ['Önemi', 'Türk ordusunun son geri çekilişi oldu'], ['Mustafa Kemal’e', 'Mareşal rütbesi ve Gazi unvanı (19 Eylül 1921)']] } },
+        bilgiKarti: { img: 'mevzide', baslik: '🗂️ Sakarya kartı', satirlar: [['Başkomutanlık Kanunu', '5 Ağustos 1921'], ['Savaşın başlangıcı', '23 Ağustos 1921'], ['Savaşın sonu', '13 Eylül 1921'], ['Süre', '22 gün 22 gece'], ['Önemi', 'Türk ordusunun son geri çekilişi oldu'], ['Mustafa Kemal’e', 'Mareşal rütbesi ve Gazi unvanı (19 Eylül 1921)']] } },
       { tip: 'quiz', id: 'sakaryaGozlem', ad: 'Fotoğrafı incele', img: 'sakarya', baslik: '🔎 Cephede komutanlar',
         sorular: [
           { soru: 'Soldaki komutan ne yapıyor?', secenekler: ['Dürbünle uzakları izliyor', 'Uyuyor', 'Kitap okuyor'], dogru: 0, aciklama: 'Doğru! Komutanlar savaş alanını dürbünle dikkatle izliyor.' },
@@ -1799,8 +1858,8 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
         aciklama: 'Tekâlif-i Millîye “millî yükümlülükler” demektir. Her aile ordu için elinden geleni verdi.',
         kartlar: [
           { ikon: '🧦', baslik: 'Giyecek', kisa: 'Her aileden', uzun: 'Her aile orduya bir kat çamaşır, bir çift çorap ve bir çift çarık verdi.' },
-          { ikon: '🌾', baslik: 'Yiyecek', kisa: 'Ambarlardan', uzun: 'Halkın elindeki buğday, un ve yağ gibi yiyeceklerin bir bölümü orduya verildi.' },
-          { ikon: '🐂', baslik: 'Taşıt ve hayvan', kisa: 'Kağnılar yola çıktı', uzun: 'Halkın at arabaları ve kağnıları ordunun malzemelerini cepheye taşıdı.' },
+          { ikon: '🌾', baslik: 'Yiyecek', kisa: 'Ambarlardan', img: 'kadinlarTarla', uzun: 'Halkın elindeki buğday, un ve yağ gibi yiyeceklerin bir bölümü orduya verildi.' },
+          { ikon: '🐂', baslik: 'Taşıt ve hayvan', kisa: 'Kağnılar yola çıktı', img: 'kadinlarCephane', uzun: 'Halkın at arabaları ve kağnıları ordunun malzemelerini cepheye taşıdı.' },
           { ikon: '🔫', baslik: 'Silah', kisa: 'Teslim', uzun: 'Halkın elindeki silah ve cephanenin orduya teslim edilmesi istendi.' }
         ] },
       { tip: 'album', id: 'sakaryaAlbum', ad: 'Fotoğraf albümü', baslik: '📷 Cephede ve cephe gerisinde',
@@ -1841,7 +1900,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           '<b>30 Ağustos 1922</b>’de <b>Başkomutan Meydan Muharebesi</b> kazanıldı. Bu gün bugün <b>Zafer Bayramı</b> olarak kutlanıyor.',
           'Mustafa Kemal ordulara şöyle seslendi: <i>“Ordular! İlk hedefiniz Akdeniz’dir. İleri!”</i> Türk ordusu <b>9 Eylül 1922</b>’de İzmir’e girdi.'
         ],
-        bilgiKarti: { baslik: '🗂️ Büyük Zafer kartı', satirlar: [['Büyük Taarruz', '26 Ağustos 1922, Kocatepe'], ['Başkomutan Meydan Muharebesi', '30 Ağustos 1922, Dumlupınar'], ['“Ordular! İlk hedefiniz Akdeniz’dir”', '1 Eylül 1922'], ['İzmir’in kurtuluşu', '9 Eylül 1922'], ['Bayram', '30 Ağustos Zafer Bayramı']] } },
+        bilgiKarti: { img: 'kocatepe2', baslik: '🗂️ Büyük Zafer kartı', satirlar: [['Büyük Taarruz', '26 Ağustos 1922, Kocatepe'], ['Başkomutan Meydan Muharebesi', '30 Ağustos 1922, Dumlupınar'], ['“Ordular! İlk hedefiniz Akdeniz’dir”', '1 Eylül 1922'], ['İzmir’in kurtuluşu', '9 Eylül 1922'], ['Bayram', '30 Ağustos Zafer Bayramı']] } },
       { tip: 'kesif', id: 'izmirFoto', ad: 'Fotoğraf dedektifi', img: 'izmir1922', baslik: '🔎 İzmir’de süvariler',
         ipuclari: [
           { ad: 'Süvariler', alanlar: [[28, 38, 42, 30]], aciklama: 'Atlı askerler, yani süvariler, kalabalığın arasından geçiyor. İzmir’e ilk giren birlikler süvarilerdi.' },
@@ -1905,7 +1964,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
   S.haritada = {
     ad: 'Haritada Kurtuluş Savaşı', tarih: '1918–1923', kisa: 'İşgallerin yayılışını, cepheleri ve vatanın adım adım kurtuluşunu haritada izle.',
     adimlar: [
-      { tip: 'sahne', poster: { ikon: '🗺️', buyuk: '1918 → 1923', alt: 'Haritada Kurtuluş Savaşı' }, tarih: '1918–1923',
+      { tip: 'sahne', harita: { isgal: 4 }, tarih: '1918–1923',
         metin: [
           'Mondros’tan sonra vatanımızın dört bir yanı işgal edildi. Ordumuz dağıtılmış, halk yorgun ve yoksuldu.',
           'Ama millet pes etmedi. Doğuda, güneyde ve batıda, üç ayrı cephede aynı anda mücadele etti.',
@@ -1967,7 +2026,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           '<b>1 Kasım 1922</b>’de TBMM <b>saltanatı kaldırdı</b>. Artık ülkeyi padişah değil, milletin meclisi yönetecekti.',
           'Barış görüşmeleri İsviçre’nin <b>Lozan</b> şehrinde yapıldı. <b>24 Temmuz 1923</b>’te imzalanan <b>Lozan Antlaşması</b> ile yeni Türk devletinin bağımsızlığı bütün dünyaca tanındı.'
         ],
-        bilgiKarti: { baslik: '🗂️ Barışa giden yol', satirlar: [['Mudanya Ateşkesi', '11 Ekim 1922, İsmet Paşa'], ['Saltanatın kaldırılması', '1 Kasım 1922'], ['Lozan Antlaşması', '24 Temmuz 1923, heyet başkanı İsmet Paşa'], ['Kazanım', 'Bağımsızlık tanındı, kapitülasyonlar kaldırıldı'], ['Sonraya kalan', 'Irak sınırı (Musul) ve Hatay']] } },
+        bilgiKarti: { img: 'mudanyaEvi', baslik: '🗂️ Barışa giden yol', satirlar: [['Mudanya Ateşkesi', '11 Ekim 1922, İsmet Paşa'], ['Saltanatın kaldırılması', '1 Kasım 1922'], ['Lozan Antlaşması', '24 Temmuz 1923, heyet başkanı İsmet Paşa'], ['Kazanım', 'Bağımsızlık tanındı, kapitülasyonlar kaldırıldı'], ['Sonraya kalan', 'Irak sınırı (Musul) ve Hatay']] } },
       { tip: 'quiz', id: 'lozanGozlem', ad: 'Fotoğrafı incele', img: 'lozanImza', baslik: '🔎 Lozan’da imza günü',
         sorular: [
           { soru: 'Fotoğraftaki insanlar ne yapıyor?', secenekler: ['Bir masanın çevresinde belge imzalıyorlar', 'Futbol oynuyorlar', 'Yemek pişiriyorlar'], dogru: 0, aciklama: 'Doğru! Bu, Lozan Antlaşması’nın imza töreni.' },
@@ -1981,9 +2040,9 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
         ] },
       { tip: 'kartlar', id: 'lozanKart', ad: 'Kazanımlar', baslik: '🕊️ Lozan’da neler kazanıldı?', ok: false,
         kartlar: [
-          { ikon: '🌍', baslik: 'Bağımsızlık', kisa: 'Dünya tanıdı', uzun: 'Yeni Türk devleti bağımsız bir devlet olarak bütün dünyaca tanındı.' },
+          { ikon: '🌍', baslik: 'Bağımsızlık', kisa: 'Dünya tanıdı', img: 'lozanImza', uzun: 'Yeni Türk devleti bağımsız bir devlet olarak bütün dünyaca tanındı.' },
           { ikon: '⚖️', baslik: 'Kapitülasyonlar kaldırıldı', kisa: 'Yabancı ayrıcalıkları bitti', uzun: 'Yabancılara tanınan ekonomik ve hukuki ayrıcalıklar kaldırıldı. Artık ülkedeki herkes Türk yasalarına uyacaktı.', img: 'lozanGrup' },
-          { ikon: '🗺️', baslik: 'Sınırlar', kisa: 'Yeni sınırlar', uzun: 'Türkiye’nin sınırları büyük ölçüde belirlendi. Irak sınırı (Musul) ve Hatay meseleleri sonraya kaldı.' },
+          { ikon: '🗺️', baslik: 'Sınırlar', kisa: 'Yeni sınırlar', harita: { donem: 'bugun', baslik: 'Lozan’da sonraya kalan iki yer', sehirler: ['istanbul', 'ankara', 'izmir', 'edirne', 'antep'], bolgeler: [{ bolge: 'hatay', renk: '#8e44ad', ad: 'Hatay (1939’da Türkiye’ye katıldı)' }, { bolge: 'musul', renk: '#d35400', ad: 'Musul (1926’da Irak’a bırakıldı)' }] }, uzun: 'Türkiye’nin sınırları büyük ölçüde belirlendi. Irak sınırı (Musul) ve Hatay meseleleri sonraya kaldı.' },
           { ikon: '💰', baslik: 'Borçlar', kisa: 'Osmanlı borçları', uzun: 'Osmanlı’dan kalan borçlar, Osmanlı topraklarında kurulan devletler arasında paylaştırıldı. Türkiye kendi payını ödeyecekti.' }
         ] },
       { tip: 'haritaKesif', id: 'lozanHarita', ad: 'Lozan haritası', baslik: '🗺️ Lozan’da çizilen sınırlar', gorunum: 'genis', donem: 'bugun',
@@ -2026,7 +2085,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           '<b>29 Ekim 1923</b>’te TBMM, <b>Cumhuriyet</b>’i ilan etti. <b>Mustafa Kemal</b> ilk Cumhurbaşkanı, <b>İsmet Paşa</b> ilk Başbakan oldu.',
           'Cumhuriyet, milletin kendi yöneticilerini seçtiği yönetim biçimidir. (Yandaki fotoğraf ise 10 yıl sonra, Cumhuriyet’in <b>10. yıl</b> kutlamalarında çekildi.)'
         ],
-        bilgiKarti: { baslik: '🗂️ Cumhuriyet kartı', satirlar: [['Başkent', 'Ankara (13 Ekim 1923)'], ['Cumhuriyet’in ilanı', '29 Ekim 1923'], ['İlk Cumhurbaşkanı', 'Mustafa Kemal'], ['İlk Başbakan', 'İsmet Paşa'], ['Bayram', '29 Ekim Cumhuriyet Bayramı']] } },
+        bilgiKarti: { img: 'cumhGecit', baslik: '🗂️ Cumhuriyet kartı', satirlar: [['Başkent', 'Ankara (13 Ekim 1923)'], ['Cumhuriyet’in ilanı', '29 Ekim 1923'], ['İlk Cumhurbaşkanı', 'Mustafa Kemal'], ['İlk Başbakan', 'İsmet Paşa'], ['Bayram', '29 Ekim Cumhuriyet Bayramı']] } },
       { tip: 'quiz', id: 'onyilGozlem', ad: 'Fotoğrafı incele', img: 'onyil', baslik: '🔎 Bir Cumhuriyet töreni',
         sorular: [
           { soru: 'Cumhuriyet’in 10. yılında 10. Yıl Marşı söylendi. Marşta “On yılda on beş milyon genç yarattık her yaştan” deniyor. Bu söz ne anlatıyor?', secenekler: ['Milletin birlikte çalışarak kısa sürede büyük işler başardığını', 'Herkesin 10 yaşında olduğunu', 'Hiçbir şeyin değişmediğini'], dogru: 0, aciklama: 'Doğru! Savaştan yorgun ve yoksul çıkan millet, birlik içinde çalışarak ülkesini on yılda yeniden kurdu.' },
@@ -2068,7 +2127,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           '<b>1928</b>’de yeni <b>Türk harfleri</b> kabul edildi. Atatürk yurdu gezerek yeni harfleri kendisi öğretti; millet ona <b>Başöğretmen</b> dedi. Millet Mektepleri’nde büyükler de okuma yazma öğrendi.',
           '<b>1934</b>’te herkes bir soyadı aldı; TBMM, Mustafa Kemal’e <b>Atatürk</b> soyadını verdi. Aynı yıl kadınlar milletvekili seçme ve seçilme hakkı kazandı.'
         ],
-        bilgiKarti: { baslik: '🗂️ Yenilikler', satirlar: [['1924', 'Öğretim Birliği Kanunu'], ['1925', 'Şapka Kanunu'], ['1926', 'Türk Medenî Kanunu'], ['1928', 'Yeni Türk harfleri'], ['1930', 'Kadınlara belediye seçimlerinde seçme ve seçilme hakkı'], ['1934', 'Soyadı Kanunu; kadınlara milletvekili seçme ve seçilme hakkı']] } },
+        bilgiKarti: { img: 'milletMektebi', baslik: '🗂️ Yenilikler', satirlar: [['1924', 'Öğretim Birliği Kanunu'], ['1925', 'Şapka Kanunu'], ['1926', 'Türk Medenî Kanunu'], ['1928', 'Yeni Türk harfleri'], ['1930', 'Kadınlara belediye seçimlerinde seçme ve seçilme hakkı'], ['1934', 'Soyadı Kanunu; kadınlara milletvekili seçme ve seçilme hakkı']] } },
       { tip: 'kesif', id: 'harfFoto', ad: 'Fotoğraf dedektifi', img: 'kayseri', baslik: '🔎 Başöğretmen Atatürk',
         ipuclari: [
           { ad: 'Kara tahta', alanlar: [[3, 28, 47, 35]], aciklama: 'Bir kara tahtaya yeni Türk harfleri yazılmış. Atatürk halka harfleri tek tek anlatıyor.' },
@@ -2120,7 +2179,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           'Naaşı Ankara’ya getirildi. 1953’te yapımı tamamlanan <b>Anıtkabir</b>’e taşındı.',
           'Atatürk bize bağımsız, çağdaş ve milletin kendi kendini yönettiği bir <b>Cumhuriyet</b> bıraktı: <i>“Benim naçiz vücudum elbet bir gün toprak olacaktır, ancak Türkiye Cumhuriyeti ilelebet payidar kalacaktır.”</i>'
         ],
-        bilgiKarti: { baslik: '🗂️ Atatürk', satirlar: [['Doğum', '1881, Selanik'], ['Vefat', '10 Kasım 1938, saat 9.05, İstanbul'], ['Anıtkabir', 'Ankara (1953)'], ['Gençliğe Hitabe', '1927’de Nutuk’un sonunda'], ['Bize bıraktığı', 'Türkiye Cumhuriyeti']] } },
+        bilgiKarti: { img: 'mk1921', baslik: '🗂️ Atatürk', satirlar: [['Doğum', '1881, Selanik'], ['Vefat', '10 Kasım 1938, saat 9.05, İstanbul'], ['Anıtkabir', 'Ankara (1953)'], ['Gençliğe Hitabe', '1927’de Nutuk’un sonunda'], ['Bize bıraktığı', 'Türkiye Cumhuriyeti']] } },
       { tip: 'album', id: 'yasAlbum', ad: 'Fotoğraf albümü', baslik: '📷 Bütün millet yasta',
         aciklama: 'Atatürk’ün vefat haberi bütün yurdu derin bir üzüntüye boğdu. Fotoğraflar milletin ona olan sevgisini gösteriyor.',
         fotolar: [
@@ -2166,6 +2225,55 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
         ozet: ['Atatürk 10 Kasım 1938’de İstanbul’da hayatını kaybetti.', 'Anıtkabir, Ankara’dadır.', 'Atatürk bize bağımsız ve çağdaş Türkiye Cumhuriyeti’ni bıraktı.', 'Cumhuriyeti korumak ve yüceltmek biz gençlerin görevidir.'] }
     ]
   };
+})();
+
+</script>
+  <script>
+/* Dönemin ülke bayrakları (1912–1923), küçük SVG çizimler.
+   Windows bayrak emojilerini göstermediği için bayraklar burada çizilir.
+   Bayrak.ekle(metin): metindeki ülke adlarının önüne bayrağını koyar (her ülke bir kez). */
+(function () {
+  const yatay = (renkler) => renkler.map((r, i) => `<rect y="${i * 20 / renkler.length}" width="30" height="${20 / renkler.length + .2}" fill="${r}"/>`).join('');
+  const dikey = (renkler) => renkler.map((r, i) => `<rect x="${i * 10}" width="10.2" height="20" fill="${r}"/>`).join('');
+  const hilal = (cx, fill) => `<circle cx="${cx}" cy="10" r="5.2" fill="#fff"/><circle cx="${cx + 1.4}" cy="10" r="4.2" fill="${fill}"/><path fill="#fff" d="M${cx + 5.6},10 l-2.4,.8 1.5,-2 0,2.5 -1.5,-2z"/>`;
+  const CIZIM = {
+    osmanli: `<rect width="30" height="20" fill="#e30a17"/>${hilal(12, '#e30a17')}`,
+    almanya: yatay(['#000', '#fff', '#dd0000']),
+    avusturya: `<rect width="15" height="20" fill="#fff"/>${yatay(['#c8102e', '#fff', '#c8102e']).replace(/width="30"/g, 'width="15"')}<g transform="translate(15)">${yatay(['#c8102e', '#fff', '#3c7d3a']).replace(/width="30"/g, 'width="15"')}</g>`,
+    bulgaristan: yatay(['#fff', '#00966e', '#d62612']),
+    ingiltere: `<rect width="30" height="20" fill="#012169"/><path d="M0,0 30,20 M30,0 0,20" stroke="#fff" stroke-width="4"/><path d="M0,0 30,20 M30,0 0,20" stroke="#c8102e" stroke-width="1.6"/><path d="M15,0 v20 M0,10 h30" stroke="#fff" stroke-width="6"/><path d="M15,0 v20 M0,10 h30" stroke="#c8102e" stroke-width="3.4"/>`,
+    fransa: dikey(['#0055a4', '#fff', '#ef4135']),
+    rusya: yatay(['#fff', '#0039a6', '#d52b1e']),
+    italya: `${dikey(['#009246', '#fff', '#ce2b37'])}<rect x="12.6" y="6.5" width="4.8" height="6" fill="#ce2b37" stroke="#1f4fa0" stroke-width=".6"/><path d="M15,7 v5 M13,9.5 h4" stroke="#fff" stroke-width="1.2"/>`,
+    yunanistan: `${Array.from({ length: 9 }, (_, i) => `<rect y="${i * 20 / 9}" width="30" height="${20 / 9 + .1}" fill="${i % 2 ? '#fff' : '#0d5eaf'}"/>`).join('')}<rect width="11.1" height="11.1" fill="#0d5eaf"/><path d="M5.55,0 v11.1 M0,5.55 h11.1" stroke="#fff" stroke-width="2.2"/>`,
+    sirbistan: yatay(['#c6363c', '#0c4076', '#fff']),
+    karadag: yatay(['#c6363c', '#0c4076', '#fff']),
+    abd: `${Array.from({ length: 7 }, (_, i) => `<rect y="${i * 20 / 6.5}" width="30" height="${20 / 13}" fill="#b22234"/>`).join('')}<rect width="12" height="10.8" fill="#3c3b6e"/>`,
+    ermeni: yatay(['#d90012', '#0033a0', '#f2a800']),
+    japonya: `<rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="6" fill="#bc002d"/>`
+  };
+  const AD = { osmanli: 'Osmanlı Devleti', almanya: 'Almanya (Alman İmparatorluğu)', avusturya: 'Avusturya-Macaristan', bulgaristan: 'Bulgaristan', ingiltere: 'İngiltere (Birleşik Krallık)', fransa: 'Fransa', rusya: 'Rusya (Rus İmparatorluğu)', italya: 'İtalya (İtalya Krallığı)', yunanistan: 'Yunanistan', sirbistan: 'Sırbistan', karadag: 'Karadağ', abd: 'Amerika Birleşik Devletleri', ermeni: 'Ermenistan', japonya: 'Japonya' };
+  const svg = (id) => CIZIM[id] ? `<svg class="bayrak" viewBox="0 0 30 20" role="img" aria-label="${AD[id]} bayrağı">${CIZIM[id]}</svg>` : '';
+  /* Uzun adlar önce gelsin (Yunanistan, Yunan'dan önce denensin) */
+  const ADLAR = [
+    ['Avusturya-Macaristan', 'avusturya'], ['Yunanistan', 'yunanistan'], ['Bulgaristan', 'bulgaristan'], ['Sırbistan', 'sirbistan'],
+    ['İngiltere', 'ingiltere'], ['Karadağ', 'karadag'], ['Almanya', 'almanya'], ['Fransa', 'fransa'], ['Fransız', 'fransa'],
+    ['İngiliz', 'ingiltere'], ['İtalyan', 'italya'], ['İtalya', 'italya'], ['Rusya', 'rusya'], ['Ruslar', 'rusya'], ['Alman', 'almanya'],
+    ['Yunan', 'yunanistan'], ['Ermeni', 'ermeni'], ['ABD', 'abd'], ['Amerika', 'abd'], ['Japonya', 'japonya'], ['Osmanlı', 'osmanli']
+  ];
+  const harf = 'A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû';
+  const desen = new RegExp(`(^|[^${harf}])(${ADLAR.map(a => a[0]).join('|')})`, 'g');
+  const kod = Object.fromEntries(ADLAR);
+  function ekle(metin) {
+    if (!metin) return metin;
+    const konan = new Set();
+    /* HTML etiketlerinin içine dokunma: yalnızca etiket dışındaki metin parçalarında ara */
+    return String(metin).split(/(<[^>]+>)/).map(p => p.startsWith('<') ? p : p.replace(desen, (m, on, ad) => {
+      const id = kod[ad]; if (konan.has(id)) return m;
+      konan.add(id); return on + svg(id) + ad;
+    })).join('');
+  }
+  window.Bayrak = { svg, ekle, AD };
 })();
 
 </script>
@@ -2643,7 +2751,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
       onIsaret(cb) { isaretCb = cb; },
       onSehir(cb) { sehirCb = cb; },
       uzaklas,
-      lejantHTML() { return [...lejant.values()].map(x => `<span class="lg-item">${x}</span>`).join(''); }
+      lejantHTML() { const B = window.Bayrak ? Bayrak.ekle : (t) => t; return [...lejant.values()].map(x => `<span class="lg-item">${B(x)}</span>`).join(''); }
     };
   }
 
@@ -2735,11 +2843,14 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
   function git(hash) { if (location.hash === hash) render(); else location.hash = hash; }
   window.addEventListener('hashchange', render);
   $('#homeBtn').addEventListener('click', () => { Sfx.play('click'); git('#/'); });
+  $('#homeBtn2').addEventListener('click', () => { Sfx.play('click'); git('#/'); });
+  $('#progressBtn').addEventListener('click', () => { Sfx.play('click'); git('#/ilerleme'); });
 
   function render() {
     const h = location.hash || '#/';
     let m;
     window.scrollTo(0, 0);
+    if (!modal.hidden) { modal.classList.remove('open'); modal.hidden = true; modalKapaninca = null; } /* sayfa değişince açık pencereyi kapat */
     if ((m = h.match(/^#\/samsun\/(\d+)$/))) { location.replace('#/sahne/samsun/' + m[1]); return; }
     if ((m = h.match(/^#\/sahne\/([a-z0-9]+)\/(\d+)$/)) && SAHNELER[m[1]]) {
       const id = m[1]; const max = S.ulasilan[id] || 0;
@@ -2747,6 +2858,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
       if (i > max) { location.replace(`#/sahne/${id}/${max}`); return; }
       sahneCiz(id, i);
     } else if ((m = h.match(/^#\/bolum\/(\d)$/)) && BOLUMLER[m[1] - 1]) bolumEkrani(BOLUMLER[m[1] - 1]);
+    else if (h === '#/ilerleme') ilerlemeEkrani();
     else anaEkran();
     ilerlemeGuncelle();
     view.focus({ preventScroll: true });
@@ -2769,6 +2881,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
             ${sira ? `<button class="btn btn-primary btn-xl" id="startBtn" type="button">${n > 0 ? '▶ Kaldığın yerden devam et' : '▶ Yolculuğa başla'}</button>`
               : '<span class="all-done">🏆 Bütün yolculuğu tamamladın!</span>'}
             <button class="btn btn-ghost" id="howBtn" type="button">❓ Nasıl oynanır?</button>
+            ${n > 0 ? '<button class="btn btn-ghost" id="progBtn2" type="button">📊 İlerlemem</button>' : ''}
           </div>
           ${sira && n > 0 ? `<p class="hero-next">Sıradaki: <b>${SAHNELER[sira.id].ad}</b></p>` : ''}
         </div>
@@ -2826,6 +2939,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
         <button class="btn btn-small btn-ghost" id="resetBtn" type="button">↺ İlerlemeyi sıfırla</button>
       </section>`;
 
+    const pb2 = $('#progBtn2'); if (pb2) pb2.addEventListener('click', () => { Sfx.play('click'); git('#/ilerleme'); });
     const sb = $('#startBtn');
     if (sb) sb.addEventListener('click', () => { Sfx.play('click'); git(sahneLink(sira.id)); });
     $('#howBtn').addEventListener('click', () => modalAc(`<h2 id="modalTitle">Nasıl oynanır?</h2>
@@ -2846,6 +2960,58 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
       $('#yesReset').addEventListener('click', () => { const ses = S.ses; S = bos(); S.ses = ses; kaydet(); modalKapat(); toast('İlerleme sıfırlandı.'); render(); });
     });
     $$('[data-bolum]').forEach(n => n.addEventListener('click', () => { Sfx.play('click'); git('#/bolum/' + n.dataset.bolum); }));
+  }
+
+  /* ---------- İLERLEMEM EKRANI: bütün bölümler, sahneler, görevler ve rozetler tek bakışta ---------- */
+  function ilerlemeEkrani() {
+    const n = sayi(TUM), yuzde = Math.round(n / TUM.length * 100);
+    const rozetler = SIRA.map(s => {
+      const son = SAHNELER[s.id].adimlar.find(a => a.tip === 'final');
+      const g = sahneGorevleri(s.id);
+      return son && son.rozet ? { ...son.rozet, sahne: SAHNELER[s.id].ad, var: g.length > 0 && sayi(g) === g.length } : null;
+    }).filter(Boolean);
+    const kazanilan = rozetler.filter(r => r.var).length;
+    const mektup = Object.keys(S.mektuplar || {}).map(mektupMetni).filter(Boolean).length;
+    const sira = siradakiSahne();
+    view.innerHTML = `
+      <section class="prog-head">
+        <div class="prog-ring" style="--p:${yuzde}"><span>%${yuzde}</span></div>
+        <div>
+          <p class="eyebrow">Kurtuluş Yolu · İlerlemem</p>
+          <h1>Yolculuğum</h1>
+          <div class="prog-stats">
+            <span><b>${n}</b> / ${TUM.length} görev</span>
+            <span><b>${kazanilan}</b> / ${rozetler.length} rozet</span>
+            <span><b>${mektup}</b> mektup</span>
+          </div>
+          ${sira ? `<button class="btn btn-primary" type="button" id="devamBtn">▶ Sıradaki: ${SAHNELER[sira.id].ad}</button>` : '<p class="all-done">🏆 Bütün yolculuğu tamamladın!</p>'}
+        </div>
+      </section>
+
+      <h2 class="sec-title">🏅 Rozetlerim</h2>
+      <div class="rozet-grid">${rozetler.map(r => `<div class="rozet-kutu ${r.var ? 'var' : ''}" title="${r.sahne}"><span class="rozet-ikon">${r.var ? r.ikon : '🔒'}</span><b>${r.ad}</b><small>${r.sahne}</small></div>`).join('')}</div>
+
+      <h2 class="sec-title">📚 Bölümler ve görevler</h2>
+      <div class="prog-list">${BOLUMLER.map(b => {
+        const bg = bolumGorevleri(b); const d = sayi(bg);
+        return `<details class="prog-bolum" ${d > 0 && d < bg.length ? 'open' : ''}>
+          <summary><span class="pb-no">${d === bg.length ? '✓' : b.no}</span><span class="pb-ad">${b.no}. ${b.ad}</span>
+            <span class="mini-bar"><span style="width:${d / bg.length * 100}%"></span></span><small>${d}/${bg.length}</small></summary>
+          ${b.sahneler.map(id => {
+            const s = SAHNELER[id];
+            const gorevler = s.adimlar.map((a, i) => ({ a, i })).filter(x => x.a.id);
+            return `<div class="prog-sahne"><button type="button" class="ps-ad" data-git="${sahneLink(id)}">${s.ad} ▶</button>
+              <div class="ps-gorevler">${gorevler.map(({ a, i }) => {
+                const tam = bitti(id + '.' + a.id), acik = i <= (S.ulasilan[id] || 0);
+                return `<button type="button" class="ps-gorev ${tam ? 'tam' : ''}" ${acik ? `data-git="#/sahne/${id}/${i}"` : 'disabled'} title="${tam ? 'Tamamlandı' : acik ? 'Henüz bitmedi' : 'Kilitli: önceki adımları bitir'}">${tam ? '✓' : acik ? '○' : '🔒'} ${a.ad || VARSAYILAN_AD[a.tip]}</button>`;
+              }).join('')}</div></div>`;
+          }).join('')}
+        </details>`;
+      }).join('')}</div>
+      <p class="prog-not">İlerlemen yalnızca bu cihazda saklanır. Başka bir cihazda ya da tarayıcıda açarsan oradaki ilerleme ayrıdır.</p>
+      <div class="step-nav"><button type="button" class="btn btn-ghost" data-git="#/">🏠 Ana menü</button></div>`;
+    const db = $('#devamBtn'); if (db) db.addEventListener('click', () => { Sfx.play('click'); git(sahneLink(sira.id)); });
+    $$('[data-git]', view).forEach(x => x.addEventListener('click', () => { Sfx.play('click'); git(x.dataset.git); }));
   }
 
   /* ---------- BÖLÜM EKRANI ---------- */
@@ -2988,11 +3154,28 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
 
   /* ---------- Adım türleri ---------- */
   const RENDER = {};
+  const B = (t) => window.Bayrak ? Bayrak.ekle(t) : t;
+
+  /* Gösterim haritası (dokunma görevi olmayan, yalnızca bakılan harita).
+     hr: { gorunum, donem, sehirler, vurgu (öne çıkan şehir), isgal (ISGAL kare no), bolgeler, yazilar, rota, baslik } */
+  const haritaKutusu = (hr, id) => `<div class="mini-map"><p class="rq-map-cap">🗺️ ${hr.baslik || (hr.isgal != null ? `İşgal haritası · ${Harita.ISGAL[hr.isgal].tarih}` : 'Harita')}</p><div class="map-box" id="${id}"></div><div class="map-legend" id="${id}Leg"></div></div>`;
+  function haritaCiz(id, hr) {
+    const kutu = document.getElementById(id); if (!kutu) return;
+    const sh = hr.sehirler || ['istanbul', 'izmir', 'ankara', 'bursa', 'adana', 'antalya', 'antep', 'eskisehir', 'samsun', 'erzurum'];
+    const m = Harita.create(kutu, { gorunum: hr.gorunum || 'anadolu', donem: hr.donem || (hr.gorunum === 'genis' ? '1914' : '1920'), sehirSabit: true,
+      sehirler: sh, bilinen: sh, yazilar: hr.yazilar, bolgeler: hr.bolgeler });
+    if (hr.isgal != null) m.isgal(Harita.ISGAL[hr.isgal].bolgeler);
+    if (hr.vurgu) [].concat(hr.vurgu).forEach(v => m.reveal(v, 'correct'));
+    const lej = () => { const l = document.getElementById(id + 'Leg'); if (l) l.innerHTML = m.lejantHTML(); };
+    if (hr.rota) m.rotaCiz(hr.rota, lej);
+    lej();
+  }
 
   /* Tarihî sahne */
   RENDER.sahne = (body, a) => {
     let sahneGorsel;
     if (a.cizim === 'vapur') sahneGorsel = vapurCizimi();
+    else if (a.harita) sahneGorsel = `<div class="cine-map">${haritaKutusu(a.harita, 'sahneMap')}</div>`;
     else if (a.poster) sahneGorsel = `<div class="poster"><span class="poster-ikon">${a.poster.ikon}</span><span class="poster-buyuk">${a.poster.buyuk}</span><span class="poster-alt">${a.poster.alt || ''}</span>${etiket('cizim')}</div>`;
     else sahneGorsel = gorsel(a.img, { cls: 'cine-photo' });
     body.innerHTML = `
@@ -3007,6 +3190,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
           ${a.bilgiKarti ? `<button class="btn btn-ghost" type="button" id="infoBtn">${a.bilgiKarti.dugme || '🗂️ Bilgi kartı'}</button>` : ''}
         </div>
       </div>`;
+    if (a.harita) haritaCiz('sahneMap', a.harita);
     const d = $('#cineDate'); let k = 0; const t = a.tarih || '';
     const tick = () => { if (!document.body.contains(d)) return; d.textContent = t.slice(0, ++k); if (k < t.length) setTimeout(tick, 50); };
     if (t) tick(); else d.remove();
@@ -3014,7 +3198,10 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
     const hb = $('#hornBtn'); if (hb) hb.addEventListener('click', () => { Sfx.play('horn'); const s = $('.cine-ship'); s.classList.remove('bob'); void s.getBBox(); s.classList.add('bob'); });
     const ib = $('#infoBtn');
     if (ib) ib.addEventListener('click', () => modalAc(`<h2 id="modalTitle">${a.bilgiKarti.baslik}</h2>
-      <dl class="facts">${a.bilgiKarti.satirlar.map(([k2, v]) => `<dt>${k2}</dt><dd>${v}</dd>`).join('')}</dl>`));
+      ${a.bilgiKarti.img ? `<div class="modal-img">${gorsel(a.bilgiKarti.img, { notIcinde: true })}</div>` : ''}
+      ${a.bilgiKarti.harita ? haritaKutusu(a.bilgiKarti.harita, 'bilgiMap') : ''}
+      <dl class="facts">${a.bilgiKarti.satirlar.map(([k2, v]) => `<dt>${B(k2)}</dt><dd>${B(v)}</dd>`).join('')}</dl>`));
+    if (ib && a.bilgiKarti.harita) ib.addEventListener('click', () => haritaCiz('bilgiMap', a.bilgiKarti.harita));
   };
   function vapurCizimi() {
     return `<div class="photo-frame cine-svg-wrap"><svg class="cine-svg" viewBox="0 0 800 380" role="img" aria-label="Temsilî çizim: Bandırma Vapuru">
@@ -3052,7 +3239,7 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
       <div class="kosul-track">
         ${a.kartlar.map((k, j) => `<button type="button" class="kosul ${acilan.has(j) ? 'opened' : ''}" data-k="${j}" style="--d:${j * 0.12}s">
             ${k.tarih ? `<span class="kosul-date">${k.tarih}</span>` : ''}${k.img && IMG[k.img] ? `<span class="kosul-thumb"><img src="${IMG[k.img].src}" alt="" loading="lazy" draggable="false"></span>` : `<span class="kosul-icon">${k.ikon}</span>`}
-            <span class="kosul-title">${k.baslik}</span><span class="kosul-short">${k.kisa}</span>
+            <span class="kosul-title">${k.baslik}</span><span class="kosul-short">${B(k.kisa)}</span>${k.harita ? '<span class="kosul-badge">🗺️ Haritalı</span>' : ''}
             <span class="kosul-cta">${acilan.has(j) ? '✓ Okundu' : 'Dokun ve oku'}</span></button>`).join(a.ok === false ? '' : '<span class="kosul-arrow" aria-hidden="true">➜</span>')}
         ${a.son ? `<div class="kosul-final">${a.son.tarih ? `<span class="kosul-date">${a.son.tarih}</span>` : ''}<span class="kosul-icon">${a.son.ikon}</span><span class="kosul-title">${a.son.baslik}</span></div>` : ''}
       </div>
@@ -3060,11 +3247,12 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
     $$('.kosul', body).forEach(b => b.addEventListener('click', () => {
       const j = Number(b.dataset.k), k = a.kartlar[j];
       modalAc(`${k.tarih ? `<p class="modal-date">${k.tarih}</p>` : ''}<h2 id="modalTitle">${k.ikon} ${k.baslik}</h2>
-        ${k.img ? `<div class="modal-img">${gorsel(k.img, { notIcinde: true })}</div>` : ''}<p>${k.uzun}</p>`, () => {
+        ${k.img ? `<div class="modal-img">${gorsel(k.img, { notIcinde: true })}</div>` : ''}${k.harita ? haritaKutusu(k.harita, 'kartMap') : ''}<p>${k.uzun}</p>`, () => {
         acilan.add(j); b.classList.add('opened'); b.querySelector('.kosul-cta').textContent = '✓ Okundu';
         $('#kartSay').textContent = say();
         if (acilan.size === a.kartlar.length) ctx.tamamla();
       });
+      if (k.harita) haritaCiz('kartMap', k.harita);
     }));
   };
 
@@ -3394,10 +3582,10 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
         <div class="sort-bins">${a.gruplar.map(g => `<div class="bin" data-g="${g.id}"><button type="button" class="btn bin-btn" data-g="${g.id}">${g.ikon || ''} ${g.ad}</button><ul class="bin-list"></ul></div>`).join('')}</div>
       </div>
       <p class="counter" id="sortSay"></p>`;
-    const yerlestir = (j) => { const o = og[j]; $(`.bin[data-g="${o.grup}"] .bin-list`, body).insertAdjacentHTML('beforeend', `<li>${o.yazi}</li>`); };
+    const yerlestir = (j) => { const o = og[j]; $(`.bin[data-g="${o.grup}"] .bin-list`, body).insertAdjacentHTML('beforeend', `<li>${B(o.yazi)}</li>`); };
     const ciz = () => {
       $('#sortSay').textContent = `${Math.min(k, og.length)} / ${og.length} kart yerleştirildi`;
-      $('#sortCur').innerHTML = k < og.length ? `<div class="sort-card draggable" title="Sürükle">✋ ${og[sira[k]].yazi}</div>` : '<div class="sort-card done">✅ Bütün kartlar doğru grupta!</div>';
+      $('#sortCur').innerHTML = k < og.length ? `<div class="sort-card draggable" title="Sürükle">✋ ${B(og[sira[k]].yazi)}</div>` : '<div class="sort-card done">✅ Bütün kartlar doğru grupta!</div>';
       const c = $('.sort-card.draggable', body); if (c) surukle(c);
     };
     const sec = (g) => {
@@ -3459,19 +3647,14 @@ figcaption.cap-col { flex-direction: column; align-items: flex-start; gap: 4px; 
       const img = hr ? null : (s.img || a.img);
       kutu.innerHTML = `<div class="rq ${img || hr ? '' : 'rq-noimg'}">
         ${img ? `<div class="rq-img">${gorsel(img)}</div>` : ''}
-        ${hr ? `<div class="rq-img rq-map"><p class="rq-map-cap">🗺️ ${hr.baslik || (hr.isgal != null ? `İşgal haritası · ${Harita.ISGAL[hr.isgal].tarih}` : 'Harita')}</p><div class="map-box" id="rqMap"></div><div class="map-legend" id="rqLeg"></div></div>` : ''}
+        ${hr ? `<div class="rq-img rq-map">${haritaKutusu(hr, 'rqMap')}</div>` : ''}
         <div class="rq-q">
           <p class="rq-num">Soru ${sira + 1} / ${sorular.length}</p>
           <h3>${s.soru}</h3>
           ${karistir(s.secenekler.map((t, j) => ({ t, j }))).map(o => `<button type="button" class="btn btn-choice" data-j="${o.j}">${o.t}</button>`).join('')}
           <div class="rq-fb" id="rqFb" aria-live="polite"></div>
         </div></div>`;
-      if (hr) {
-        const sh = hr.sehirler || ['istanbul', 'izmir', 'ankara', 'bursa', 'adana', 'antalya', 'antep', 'eskisehir', 'samsun', 'erzurum'];
-        const m = Harita.create($('#rqMap'), { gorunum: 'anadolu', donem: hr.donem || '1920', sehirSabit: true, sehirler: sh, bilinen: sh, yazilar: hr.yazilar });
-        if (hr.isgal != null) m.isgal(Harita.ISGAL[hr.isgal].bolgeler);
-        $('#rqLeg').innerHTML = m.lejantHTML();
-      }
+      if (hr) haritaCiz('rqMap', hr);
       $$('.btn-choice', kutu).forEach(b => b.addEventListener('click', () => {
         const fbx = $('#rqFb');
         if (Number(b.dataset.j) === s.dogru) {
