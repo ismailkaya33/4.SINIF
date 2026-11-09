@@ -90,6 +90,10 @@ function bolumler(k) {
       eski: /function completionName\(id\)\{return \(\{[\s\S]*?\}\)\[id\]\|\|id\}/,
       yeni: 'const TAMAMLAMA_ADLARI=' + js(Object.fromEntries(k.seciliEtkinlikler.map(s => [s.yol, s.ad]))) + ';\n' +
         'function completionName(id){return TAMAMLAMA_ADLARI[id]||id}'
+    }, {
+      ad: 'rapor-etkinlik-yollari',
+      eski: /const ETKINLIK_YOLLARI=\{.*?\};/,
+      yeni: 'const ETKINLIK_YOLLARI=' + js(Object.fromEntries(oto.map(e => [e.yol, e.id]))) + ';'
     }]
   };
 }
