@@ -1,32 +1,119 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><base target="_top">
-<style>body{margin:0;padding:24px clamp(14px,3vw,42px) 56px;background:#f3f7fb;color:#23364b;font:16px/1.55 system-ui,sans-serif;max-width:1500px;margin-inline:auto}
-body>.reportHeader h1{margin:0;padding:28px 32px;background:linear-gradient(125deg,#17365c,#2864a5);border-radius:20px 20px 0 0;color:white;font-size:clamp(28px,4vw,38px)}#status{margin:0;padding:0 32px 24px;background:#2864a5;color:#e4effb;border-radius:0 0 20px 20px;font-weight:700}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:20px 0 26px}.stats p{margin:0;padding:19px 22px;background:white;border:1px solid #d9e4ef;border-radius:16px;box-shadow:0 4px 14px #19395c0c;color:#62748a;font-weight:700}.stats strong{display:block;color:#17365c;font-size:34px}
-body>.reportSection{margin:18px 0;padding:clamp(16px,2.2vw,26px);background:white;border:1px solid #d9e4ef;border-radius:18px;box-shadow:0 5px 18px #19395c0a;scroll-margin-top:78px}body>.reportSection h2{margin:0 0 8px;color:#17365c;font-size:clamp(21px,2.4vw,27px)}body>.reportSection>p{margin:7px 0 16px;color:#62748a}
-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #d9e4ef;border-radius:12px;overflow:hidden}th,td{padding:12px 13px;text-align:left;border-bottom:1px solid #d9e4ef;vertical-align:top}th{background:#eaf1f8;color:#17365c;font-size:14px;font-weight:900}tbody tr:nth-child(even){background:#f8fafc}.progress{height:10px;background:#e8eef5;border-radius:9px;overflow:hidden;min-width:90px}.progress span{display:block;height:100%;background:linear-gradient(90deg,#177c78,#48b6a7)}details{margin:12px 0;border:1px solid #d9e4ef;border-radius:13px;padding:14px;background:#fbfdff}summary{cursor:pointer;font-weight:800;color:#17365c}.notebookColumns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.notebookColumns>div{padding:12px 16px;background:#f5f9ff;border:1px solid #d9e4ef;border-radius:12px}.lessonCatalog{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
-button{min-height:44px;padding:10px 16px;border:0;border-radius:10px;background:#2864a5;color:white;font:inherit;font-weight:800;cursor:pointer}button:hover{background:#17365c}input,textarea{box-sizing:border-box;border:1px solid #bdccdc;border-radius:10px;font:inherit;padding:11px 12px}
-@media(max-width:650px){body{padding:12px 12px 36px}body>.reportHeader h1{padding:22px 20px 12px}#status{padding:0 20px 20px}.stats,.notebookColumns{grid-template-columns:1fr}.stats p{padding:15px 18px}body>.reportSection{padding:16px;margin:12px 0}table{display:block;width:100%;border:0;overflow:visible}thead{display:none}tbody{display:grid;gap:10px}tbody tr{display:grid;padding:5px 12px;border:1px solid #d9e4ef;border-radius:13px;background:white!important;box-shadow:0 3px 10px #19395c0a}tbody td{display:grid;grid-template-columns:minmax(100px,.75fr) minmax(0,1.25fr);gap:10px;padding:9px 0;border-bottom:1px solid #edf1f5;overflow-wrap:anywhere}tbody td:before{content:attr(data-label);color:#17365c;font-size:13px;font-weight:900}}
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base target="_top">
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#1b2b3f;--muted:#5f6f82;--line:#e2e8f0;--soft:#f7f9fc;--brand:#2457a6;--brand-d:#16365f;--brand-bg:#e8effa;--ok:#1d7f55;--ok-bg:#e3f4eb;--warn:#a96a12;--warn-bg:#fcf1de;--bad:#bf3b35;--bad-bg:#fbe8e7;--none:#6b7787;--none-bg:#eef1f5;--shadow:0 1px 2px #16365f0d,0 6px 18px #16365f0a}
+*{box-sizing:border-box}
+body{margin:0 auto;padding:20px clamp(16px,3vw,40px) 56px;max-width:1240px;background:var(--bg);color:var(--ink);font:15.5px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{line-height:1.25;color:var(--brand-d)}
+a{color:var(--brand)}
+.reportHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:26px 30px;background:linear-gradient(130deg,var(--brand-d),var(--brand));border-radius:18px;color:#fff}
+.reportHeader h1{margin:2px 0 6px;color:#fff;font-size:clamp(26px,3.6vw,34px)}
+.eyebrow{margin:0;color:#c9dbf5;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+#status{margin:0;color:#e3edfb;font-weight:600}
+.reportPrivacy{flex:none;padding:6px 12px;border-radius:999px;background:#ffffff1f;border:1px solid #ffffff33;font-size:13px;font-weight:700;white-space:nowrap}
+.reportNav{position:sticky;top:0;z-index:5;display:flex;gap:6px;margin:14px -4px 0;padding:8px 4px;overflow-x:auto;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(6px);scrollbar-width:thin}
+.reportNav a{flex:none;padding:7px 13px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--brand-d);font-size:14px;font-weight:700;text-decoration:none}
+.reportNav a:hover,.reportNav a:focus-visible{background:var(--brand-bg);border-color:#c5d5ee}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 6px}
+.stats p{margin:0;padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);color:var(--muted);font-size:14px;font-weight:600}
+.stats strong{display:block;color:var(--brand-d);font-size:30px;line-height:1.2;font-variant-numeric:tabular-nums}
+.reportSection{margin:16px 0;padding:clamp(16px,2.2vw,24px);background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);scroll-margin-top:64px}
+.reportSection h2{margin:0 0 4px;font-size:clamp(19px,2.2vw,23px)}
+.reportSection>p{margin:4px 0 16px;max-width:80ch;color:var(--muted);font-size:14.5px}
+.reportSection h3{margin:18px 0 8px;font-size:17px}
+table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-variant-numeric:tabular-nums}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+th{background:var(--soft);color:var(--brand-d);font-size:13px;font-weight:800}
+tbody tr:hover{background:#fafbfd}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}.badge.none{background:var(--none-bg);color:var(--none)}
+.badge.wrong{background:var(--bad-bg);color:var(--bad)}
+.meter{display:flex;align-items:center;gap:10px;min-width:130px}
+.meter b{flex:none;min-width:48px;font-weight:700;text-align:right}
+.progress{flex:1;height:8px;min-width:60px;background:var(--none-bg);border-radius:9px;overflow:hidden}
+.progress span{display:block;height:100%;border-radius:9px;background:var(--brand)}
+.progress.ok span{background:var(--ok)}.progress.warn span{background:#d9922b}.progress.bad span{background:var(--bad)}
+details{margin:8px 0;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+details[open]{background:var(--soft)}
+summary{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(90px,180px);align-items:center;gap:14px;padding:12px 16px;cursor:pointer;list-style:none;font-weight:700;color:var(--brand-d)}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"›";position:absolute;left:12px;top:50%;margin-top:-.7em;line-height:1.4;color:var(--muted);font-size:18px;transition:transform .15s}
+summary{position:relative;padding-left:26px}
+details[open]>summary:before{transform:rotate(90deg)}
+summary .sumCount{color:var(--muted);font-size:14px;font-weight:600;white-space:nowrap}
+summary.plain{display:block}
+details>table,details>.notebookColumns,details>ul{margin:0 14px 14px;width:calc(100% - 28px)}
+.notebookColumns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.notebookColumns>div{padding:10px 16px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.notebookColumns h3{margin:6px 0;font-size:15px}
+.notebookColumns ul{margin:0;padding-left:20px;columns:2;column-gap:20px}
+.lessonCatalog{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px;align-items:start}
+.lessonCatalog details{margin:0}
+.lessonCatalog ul{padding:0 0 4px 22px;margin:0 14px 12px}
+.lessonCatalog li{margin:4px 0}
+.empty{margin:4px 0;padding:14px 16px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);background:var(--soft)}
+label{display:block;font-weight:700;color:var(--brand-d);font-size:14px}
+input,textarea{display:block;width:100%;max-width:640px;margin:6px 0 14px;padding:10px 12px;border:1px solid #c7d3e1;border-radius:10px;font:inherit;color:var(--ink);background:#fff}
+input:focus,textarea:focus{outline:3px solid #2457a633;border-color:var(--brand)}
+button{min-height:42px;padding:9px 16px;border:0;border-radius:10px;background:var(--brand);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+button:hover{background:var(--brand-d)}button:disabled{opacity:.6;cursor:wait}
+button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondary:hover{background:#d6e3f6}
+.announcement{margin:10px 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.announcement p{margin:6px 0}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+ body{padding:12px 12px 36px}
+ .reportHeader{flex-direction:column;padding:20px}
+ .stats,.notebookColumns{grid-template-columns:1fr 1fr}.stats p{padding:12px 14px}.stats strong{font-size:24px}
+ .notebookColumns{grid-template-columns:1fr}
+ .reportSection{padding:16px;margin:12px 0}
+ summary{grid-template-columns:minmax(0,1fr) auto;row-gap:6px}summary .progress{grid-column:1/-1}
+ table{display:block;border:0;overflow:visible}thead{display:none}tbody{display:grid;gap:8px}
+ tbody tr{display:grid;padding:4px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card)!important}
+ tbody td{display:grid;grid-template-columns:minmax(96px,.8fr) minmax(0,1.2fr);gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #edf1f5;overflow-wrap:anywhere}
+ tbody td:before{content:attr(data-label);color:var(--brand-d);font-size:13px;font-weight:800}
+ details>table{margin:0 10px 10px;width:calc(100% - 20px)}
+}
 </style></head><body>
 <header class="reportHeader"><div><p class="eyebrow">4/D · öğretmen paneli</p><h1>Öğretmen Raporu</h1><p id="status" role="status">Yükleniyor...</p></div><span class="reportPrivacy">🔒 Öğretmene özel</span></header>
 <nav class="reportNav" aria-label="Rapor bölümleri"><a href="#difficultyPanel">Zorlanılanlar</a><a href="#outcomePanel">Kazanımlar</a><a href="#catalogPanel">Ders içerikleri</a><a href="#activityPanel">Etkinlikler</a><a href="#declarationPanel">Tamamlama</a><a href="#notebookPanel">Defter notları</a><a href="#studentPanel">Öğrenciler</a><a href="#announcementPanel">Duyurular</a></nav>
-<div class="stats"><p>Öğrenci: <strong id="count">—</strong></p><p>Geçerli sonuç: <strong id="results">—</strong></p></div>
+<div class="stats"><p>Öğrenci <strong id="count">—</strong></p><p>Geçerli sonuç <strong id="results">—</strong></p><p>Sonucu gelen etkinlik <strong id="activeActivities">—</strong></p><p>Henüz kaydı olmayan öğrenci <strong id="noRecordStudents">—</strong></p></div>
 <section id='difficultyPanel' class='reportSection'><h2>🎯 Zorlanılan etkinlikler</h2><p class="muted">En üstteki etkinlik, öğrencilerin ilk denemede en az doğru yaptığı etkinliktir. Tekrar ya da sınıf içi pekiştirme için ipucu verir; not yerine geçmez.</p><table><thead><tr><th>Etkinlik</th><th>Katılan öğrenci</th><th>Deneme</th><th>İlk denemede doğru</th><th>Deneme başına yanlış</th></tr></thead><tbody id="difficulty"></tbody></table></section>
-<section id='outcomePanel' class='reportSection'><h2>Kazanımlar</h2><p class="muted">Henüz gerçek öğrenci kaydı yoksa bu bölüm boş kalır. Başarı oranı, kaydedilmiş tüm tamamlanma denemelerindeki doğru cevapların oranıdır.</p><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
+<section id='outcomePanel' class='reportSection'><h2>🧭 Kazanımlar</h2><p class="muted">Henüz gerçek öğrenci kaydı yoksa bu bölüm boş kalır. Başarı oranı, kaydedilmiş tüm tamamlanma denemelerindeki doğru cevapların oranıdır.</p><table><thead><tr><th>Etkinlik</th><th>Kazanım</th><th>Katılım</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="outcomes"></tbody></table></section>
 <section id='catalogPanel' class='reportSection'><h2>📚 Ders içerikleri</h2><p class="muted">Yedi dersin portal bağlantıları burada. Bu alan içerik kataloğudur; öğrenci sonuçları ve tamamlama kayıtları aşağıdaki takip bölümlerinde gösterilir.</p><div id="dersKatalogu" class="lessonCatalog"></div></section>
-<section id='activityPanel' class='reportSection'><h2>Etkinliğe göre katılım</h2><p>“Henüz sonuç yok”, öğrencinin oyuna hiç girmediğini kanıtlamaz. Yalnızca tamamlanmış kayıt bulunmadığını gösterir.</p><div id="activitySections"></div></section><section id="questionPanel" class="reportSection"><h2>Besinler Değerlendirmesi — Soru bazlı yanıtlar</h2><p class="muted">Öğrenci oturumuyla eşleşen her kontrolün deneme geçmişi gösterilir. TEST türündeki kayıtlar raporda yer almaz.</p><div id="questionSections"></div></section><section id='declarationPanel' class='reportSection'><h2>Seçilen etkinlikler — Tamamlama bildirimleri</h2><p class="muted">Bu bölüm öğrencinin “Etkinliği Tamamladım” beyanını gösterir. Otomatik doğru-yanlış puanı değildir. MİSAFİR hariçtir.</p><div id="declarationSections"></div></section><section id='notebookPanel' class='reportSection'><h2>📒 Defter Notları — Yazdım Takibi</h2>
+<section id='activityPanel' class='reportSection'><h2>📊 Etkinliğe göre katılım</h2><p>“Henüz sonuç yok”, öğrencinin oyuna hiç girmediğini kanıtlamaz. Yalnızca tamamlanmış kayıt bulunmadığını gösterir.</p><div id="activitySections"></div></section><section id="questionPanel" class="reportSection"><h2>🥗 Besinler Değerlendirmesi — Soru bazlı yanıtlar</h2><p class="muted">Öğrenci oturumuyla eşleşen her kontrolün deneme geçmişi gösterilir. TEST türündeki kayıtlar raporda yer almaz.</p><div id="questionSections"></div></section><section id='declarationPanel' class='reportSection'><h2>✅ Seçilen etkinlikler — Tamamlama bildirimleri</h2><p class="muted">Bu bölüm öğrencinin “Etkinliği Tamamladım” beyanını gösterir. Otomatik doğru-yanlış puanı değildir. MİSAFİR hariçtir.</p><div id="declarationSections"></div></section><section id='notebookPanel' class='reportSection'><h2>📒 Defter Notları — Yazdım Takibi</h2>
 <p class="muted">Öğrencinin kendi işaretlediği beyanlardır; öğretmen doğrulaması değildir. MİSAFİR kayıtları hariçtir. Her notu açarak yazanları ve henüz işaretlemeyenleri görebilirsin.</p>
 <div id="notebookSections"></div></section>
-<section id='studentPanel' class='reportSection'><h2>Öğrenciler</h2><p>Katılım durumu, kaydı bulunan etkinliklere göre hesaplanır. Hiç kaydı olmayan öğrenci için “Henüz kayıt yok” gösterilir; oyuna girip girmediği bu veriden anlaşılamaz.</p><table><thead><tr><th>Öğrenci</th><th>Katılım durumu</th><th>Farklı etkinlik</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="students"></tbody></table></section>
+<section id='studentPanel' class='reportSection'><h2>👥 Öğrenciler</h2><p>Katılım durumu, kaydı bulunan etkinliklere göre hesaplanır. Hiç kaydı olmayan öğrenci için “Henüz kayıt yok” gösterilir; oyuna girip girmediği bu veriden anlaşılamaz.</p><table><thead><tr><th>Öğrenci</th><th>Katılım durumu</th><th>Farklı etkinlik</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="students"></tbody></table></section>
 <section id='announcementPanel' class='reportSection'><h2>📢 Duyuru taslağı oluştur</h2><p class="muted">Yeni duyurular başlangıçta TASLAK durumundadır. Bu bölüm, duyuruyu henüz öğrencilere yayımlamaz.</p>
-<label for="duyuruBaslik">Başlık</label><input id="duyuruBaslik" maxlength="120" style="display:block;max-width:600px;width:95%;padding:9px;margin:6px 0 12px">
-<label for="duyuruMetin">Duyuru metni</label><textarea id="duyuruMetin" maxlength="1500" rows="4" style="display:block;max-width:600px;width:95%;padding:9px;margin:6px 0 12px"></textarea>
+<label for="duyuruBaslik">Başlık</label><input id="duyuruBaslik" maxlength="120">
+<label for="duyuruMetin">Duyuru metni</label><textarea id="duyuruMetin" maxlength="1500" rows="4"></textarea>
 <button id="duyuruKaydet" type="button">Taslak olarak kaydet</button> <span id="duyuruMesaj" role="status"></span>
-<h3>Mevcut duyurular</h3><p id="duyuruListeMesaj" role="status"></p><div id="duyuruListe"></div><button id="duyuruYenile" type="button">Duyuruları yenile</button></section>
+<h3>Mevcut duyurular</h3><p id="duyuruListeMesaj" role="status"></p><div id="duyuruListe"></div><button id="duyuruYenile" class="secondary" type="button">Duyuruları yenile</button></section>
 <script>
 "use strict";
-function renderRows(id,items){const target=document.getElementById(id);const labels=[...target.closest('table').querySelectorAll('thead th')].map(th=>th.textContent.trim());items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v,i){const td=document.createElement('td');td.textContent=String(v);td.dataset.label=labels[i]||'';tr.appendChild(td)});target.appendChild(tr)})}
+/* Görünüm yardımcıları: hücreye metin ya da hazır öğe (rozet, çubuk) konabilir. */
+function fill(td,v){if(v instanceof Node)td.appendChild(v);else td.textContent=String(v)}
+function renderRows(id,items){const target=document.getElementById(id);const labels=[...target.closest('table').querySelectorAll('thead th')].map(th=>th.textContent.trim());items.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v,i){const td=document.createElement('td');fill(td,v);td.dataset.label=labels[i]||'';tr.appendChild(td)});target.appendChild(tr)})}
+function makeTable(headers,rows){
+ const table=document.createElement('table'),thead=document.createElement('thead'),hr=document.createElement('tr'),body=document.createElement('tbody');
+ headers.forEach(function(h){const th=document.createElement('th');th.textContent=h;hr.appendChild(th)});thead.appendChild(hr);
+ rows.forEach(function(row){const tr=document.createElement('tr');row.forEach(function(v,i){const td=document.createElement('td');fill(td,v);td.dataset.label=headers[i]||'';tr.appendChild(td)});body.appendChild(tr)});
+ table.append(thead,body);return table;
+}
 function ratio(a,b){return b?(100*a/b).toFixed(1)+'%':'—'}
+function tone(rate){return rate===null||rate===undefined?'':rate>=.75?'ok':rate>=.5?'warn':'bad'}
+function progressBar(rate,neutral){const p=document.createElement('div'),s=document.createElement('span');p.className='progress'+(neutral?'':' '+tone(rate));s.style.width=Math.max(0,Math.min(1,rate||0))*100+'%';p.appendChild(s);return p}
+function meter(rate,text,neutral){if(rate===null||rate===undefined||isNaN(rate))return '—';const m=document.createElement('div'),b=document.createElement('b');m.className='meter';b.textContent=text;m.append(progressBar(rate,neutral),b);return m}
+function ratioMeter(a,b){return b?meter(a/b,ratio(a,b)):'—'}
+function badge(text){const s=document.createElement('span');s.textContent=text;s.className='badge '+(/^(Tamamlandı|Tamamladım|En az|Doğru)/.test(text)?'ok':text==='Yanlış'?'wrong':'none');return s}
+function progressSummary(title,done,total,verb){
+ const summary=document.createElement('summary'),t=document.createElement('span'),c=document.createElement('span');
+ t.textContent=title;c.className='sumCount';c.textContent=done+'/'+total+' '+verb+' ('+ratio(done,total)+')';
+ summary.append(t,c,progressBar(total?done/total:0,true));return summary;
+}
+function emptyNote(rootId,text){const root=document.getElementById(rootId);if(root.children.length)return;const p=document.createElement('p');p.className='empty';p.textContent=text;root.appendChild(p)}
 /* KATALOG BASLA: rapor-etkinlik-adlari — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
 const ETKINLIK_ADLARI={"mat-kayipsayilar":"🎮 Matematik • Kayıp Sayılar","mat-oruntuler":"🧩 Matematik • Sayı Örüntüleri","mat-dogalsayilar-degerlendirme":"Matematik • Doğal Sayılar Değerlendirme","mat-toplamacikarma-1":"Matematik • Toplama ve Çıkarma Problemleri 1","mat-toplamacikarma-2":"Matematik • Toplama ve Çıkarma Problemleri 2","insan-sorumluluk":"İnsan Hakları • İnsan Olma Sorumluluğu","trafik-yaya":"Trafik Güvenliği • Yaya Olarak Trafik Kuralları","fen-besinlerdegerlendirme":"Fen Bilimleri • Besinler ve Özellikleri — Ünite Değerlendirme","tur-ikilemeler":"Türkçe • İkileme Dedektifi","mat-cikarmaislemi":"Matematik • Çıkarma Dedektifleri","fen-besinkasifleri":"Fen Bilimleri • Besin Kaşifleri: Görev Haritası","sos-oyunzamani":"Sosyal Bilgiler • Geçmişten Günümüze Çocuk Oyunları"};
 function activityName(id){return ETKINLIK_ADLARI[id]||id}
@@ -38,20 +125,17 @@ function completionName(id){return TAMAMLAMA_ADLARI[id]||id}
 function outcomeName(k){return ({'M.4.1.3.4':'Çıkarma işleminde verilmeyen eksilen veya çıkanı bulma'})[k]||k}
 function renderQuestionDetails(items){
  const root=document.getElementById('questionSections');root.replaceChildren();
- if(!items.length){const p=document.createElement('p');p.textContent='Henüz soru yanıtı kaydedilmedi.';root.appendChild(p);return}
+ if(!items.length){const p=document.createElement('p');p.className='empty';p.textContent='Henüz soru yanıtı kaydedilmedi.';root.appendChild(p);return}
  const groups=new Map();
  items.forEach(function(item){const key=item.ad+'|'+item.attemptId;if(!groups.has(key))groups.set(key,{ad:item.ad,attemptId:item.attemptId,items:[]});groups.get(key).items.push(item)});
  groups.forEach(function(group){
   const details=document.createElement('details'),summary=document.createElement('summary');
-  summary.textContent=group.ad+' — deneme …'+group.attemptId+' — '+group.items.length+' soru kaydı';
-  const table=document.createElement('table'),thead=document.createElement('thead'),body=document.createElement('tbody');
-  thead.innerHTML='<tr><th>Soru</th><th>Yanıt geçmişi</th><th>Son durum</th></tr>';table.appendChild(thead);
-  group.items.sort(function(a,b){return a.question-b.question}).forEach(function(item){
-   const tr=document.createElement('tr'),history=item.choices.map(function(x){return x==='correct'?'Doğru':x==='wrong'?'Yanlış':'Yanıtlanmadı'});
-   ['Soru '+item.question,history.join(' → '),history[history.length-1]||'—'].forEach(function(value){const td=document.createElement('td');td.textContent=value;tr.appendChild(td)});
-   body.appendChild(tr);
+  summary.className='plain';summary.textContent=group.ad+' — deneme …'+group.attemptId+' — '+group.items.length+' soru kaydı';
+  const rows=group.items.sort(function(a,b){return a.question-b.question}).map(function(item){
+   const history=item.choices.map(function(x){return x==='correct'?'Doğru':x==='wrong'?'Yanlış':'Yanıtlanmadı'});
+   return ['Soru '+item.question,history.join(' → '),badge(history[history.length-1]||'—')];
   });
-  table.appendChild(body);details.append(summary,table);root.appendChild(details);
+  details.append(summary,makeTable(['Soru','Yanıt geçmişi','Son durum'],rows));root.appendChild(details);
  });
 }
 /* Ortak içerik listesi: GitHub'a yeni yüklenen etkinlikler ders içeriklerine kendiliğinden eklenir. */
@@ -75,7 +159,7 @@ function renderDersKatalogu(groups,birlesik){
  const root=document.getElementById('dersKatalogu');root.replaceChildren();
  (groups||[]).forEach(function(group){
   const details=document.createElement('details'),summary=document.createElement('summary'),list=document.createElement('ul');
-  summary.textContent=group.ders+' — '+group.icerikler.length+' içerik';
+  summary.className='plain';summary.textContent=group.ders+' — '+group.icerikler.length+' içerik';
   group.icerikler.forEach(function(item){
    const li=document.createElement('li'),link=document.createElement('a');
    link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=item.ad;
@@ -95,36 +179,41 @@ function duyuruListele(){
  msg.textContent='Duyurular okunuyor...';
  google.script.run.withSuccessHandler(function(rows){
   el.replaceChildren();const aktif=rows.filter(function(d){return String(d.durum||'').trim().toUpperCase()!=='ARSIV';});msg.textContent=aktif.length?'':'Aktif duyuru veya taslak yok.';
-  rows.filter(function(d){return String(d.durum||'').trim().toUpperCase()!=='ARSIV';}).forEach(function(d){
+  aktif.forEach(function(d){
    const block=document.createElement('div'),title=document.createElement('strong'),meta=document.createElement('p'),text=document.createElement('p'),btn=document.createElement('button');
-   title.textContent=d.baslik;meta.textContent='Durum: '+d.durum;text.textContent=d.metin;
+   title.textContent=d.baslik;meta.textContent='Durum: ';meta.appendChild(badge(String(d.durum)));text.textContent=d.metin;
+   if(d.durum==='YAYINDA')meta.lastChild.className='badge ok';
    const next=d.durum==='YAYINDA'?'ARSIV':'YAYINDA';
-   btn.type='button';btn.textContent=next==='YAYINDA'?'Yayımla':'Arşivle';
+   btn.type='button';btn.textContent=next==='YAYINDA'?'Yayımla':'Arşivle';if(next==='ARSIV')btn.className='secondary';
    btn.addEventListener('click',function(){
     if(!confirm('“'+d.baslik+'” duyurusunu '+(next==='YAYINDA'?'öğrencilere yayımlamak':'arşivlemek')+' istiyor musun?'))return;
     btn.disabled=true;
     google.script.run.withSuccessHandler(function(){duyuruListele();}).withFailureHandler(function(e){btn.disabled=false;msg.textContent='İşlem hatası: '+(e&&e.message||'Bilinmiyor');}).ogretmenDuyuruDurumDegistir(d.kimlik,next);
    });
-   block.append(title,meta,text,btn);block.style.cssText='padding:12px;border:1px solid #dbe4ef;border-radius:10px;margin:10px 0';el.appendChild(block);
+   block.className='announcement';block.append(title,meta,text,btn);el.appendChild(block);
   });
  }).withFailureHandler(function(e){msg.textContent='Duyuru listesi alınamadı: '+(e&&e.message||'Bilinmiyor');}).ogretmenDuyuruListesi();
 }
 document.getElementById('duyuruYenile').addEventListener('click',duyuruListele);
 duyuruListele();
 google.script.run.withSuccessHandler(function(r){
- document.getElementById('status').textContent='Rapor güncel. MİSAFİR kayıtları hariç.';
+ const saat=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+ document.getElementById('status').textContent='Rapor güncel ('+saat+' itibarıyla). MİSAFİR kayıtları hariç.';
  document.getElementById('count').textContent=r.studentCount;
  document.getElementById('results').textContent=r.recordCount;
+ const acts=r.activities||[];
+ document.getElementById('activeActivities').textContent=acts.filter(a=>a.completed>0).length+' / '+acts.length;
+ document.getElementById('noRecordStudents').textContent=(r.students||[]).filter(x=>!(x.activityCount>0)).length;
  renderDersKatalogu(r.dersIcerikleri||[]);
  renderQuestionDetails(r.questionResults||[]);
  const difficulty=r.difficulty||[];
- if(difficulty.length)renderRows('difficulty',difficulty.map(x=>[activityName(x.activityId),x.participantCount+' / '+r.studentCount,x.attempts,x.firstTryRate===null?'—':(100*x.firstTryRate).toFixed(0)+'%',x.avgWrongAttempts===null?'—':x.avgWrongAttempts.toFixed(1)]));
+ if(difficulty.length)renderRows('difficulty',difficulty.map(x=>[activityName(x.activityId),x.participantCount+' / '+r.studentCount,x.attempts,x.firstTryRate===null?'—':meter(x.firstTryRate,(100*x.firstTryRate).toFixed(0)+'%'),x.avgWrongAttempts===null?'—':x.avgWrongAttempts.toFixed(1)]));
  else renderRows('difficulty',[['Henüz gerçek öğrenci sonucu yok.','—','—','—','—']]);
- renderRows('outcomes',r.outcomes.map(x=>[activityName(x.activityId),outcomeName(x.outcome)+' ('+x.outcome+')',x.participantCount+' / '+r.studentCount+' ('+ratio(x.participantCount,r.studentCount)+')',x.attempts,ratio(x.correct,x.total)]));
+ if((r.outcomes||[]).length)renderRows('outcomes',r.outcomes.map(x=>[activityName(x.activityId),outcomeName(x.outcome)+' ('+x.outcome+')',x.participantCount+' / '+r.studentCount+' ('+ratio(x.participantCount,r.studentCount)+')',x.attempts,ratioMeter(x.correct,x.total)]));
+ else renderRows('outcomes',[['Henüz kazanım kaydı yok.','—','—','—','—']]);
  (r.notebooks||[]).forEach(function(n){
-  const wrap=document.createElement('details'),summary=document.createElement('summary');
-  summary.textContent=n.title+' — '+n.completed+'/'+r.studentCount+' yazdım ('+ratio(n.completed,r.studentCount)+')';
-  wrap.appendChild(summary);
+  const wrap=document.createElement('details');
+  wrap.appendChild(progressSummary(n.title,n.completed,r.studentCount,'yazdım'));
   const cols=document.createElement('div');cols.className='notebookColumns';
   [['✅ Yazdım',n.completedStudents],['◻ Henüz işaretlemedi',n.waitingStudents]].forEach(function(pair){
     const panel=document.createElement('div'),heading=document.createElement('h3'),list=document.createElement('ul');
@@ -136,22 +225,18 @@ google.script.run.withSuccessHandler(function(r){
   wrap.appendChild(cols);document.getElementById('notebookSections').appendChild(wrap);
  });
  (r.completionActivities||[]).forEach(function(a){
-  const wrap=document.createElement('details'),heading=document.createElement('summary');
-  heading.textContent=completionName(a.id)+' — '+a.completed+'/'+r.studentCount+' bildirim ('+ratio(a.completed,r.studentCount)+')';
-  wrap.appendChild(heading);
-  const table=document.createElement('table'),thead=document.createElement('thead');
-  thead.innerHTML='<tr><th>Öğrenci</th><th>Bildirim durumu</th></tr>';table.appendChild(thead);
-  const tbody=document.createElement('tbody');
-  a.students.forEach(function(st){const tr=document.createElement('tr');[st.ad,st.status].forEach(function(value){const td=document.createElement('td');td.textContent=value;tr.appendChild(td)});tbody.appendChild(tr)});
-  table.appendChild(tbody);wrap.appendChild(table);
+  const wrap=document.createElement('details');
+  wrap.appendChild(progressSummary(completionName(a.id),a.completed,r.studentCount,'bildirim'));
+  wrap.appendChild(makeTable(['Öğrenci','Bildirim durumu'],a.students.map(st=>[st.ad,badge(st.status)])));
   document.getElementById('declarationSections').appendChild(wrap);
  });
- (r.activities||[]).forEach(function(a){
- const wrap=document.createElement('details'),heading=document.createElement('summary');heading.textContent=activityName(a.id)+' — '+a.completed+'/'+r.studentCount+' tamamlandı ('+ratio(a.completed,r.studentCount)+')';wrap.appendChild(heading);
- const table=document.createElement('table'),thead=document.createElement('thead');thead.innerHTML='<tr><th>Öğrenci</th><th>Sonuç durumu</th><th>Doğru oranı</th></tr>';table.appendChild(thead);
- const body=document.createElement('tbody');a.students.forEach(function(st){const tr=document.createElement('tr');[st.ad,st.status,ratio(st.correct,st.total)].forEach(function(v){const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});body.appendChild(tr)});
- table.appendChild(body);wrap.appendChild(table);document.getElementById('activitySections').appendChild(wrap);
+ acts.forEach(function(a){
+  const wrap=document.createElement('details');
+  wrap.appendChild(progressSummary(activityName(a.id),a.completed,r.studentCount,'tamamlandı'));
+  wrap.appendChild(makeTable(['Öğrenci','Sonuç durumu','Doğru oranı'],a.students.map(st=>[st.ad,badge(st.status),ratioMeter(st.correct,st.total)])));
+  document.getElementById('activitySections').appendChild(wrap);
  });
- renderRows('students',r.students.map(x=>[x.ad,x.activityCount>0?"En az bir etkinlik tamamlandı":"Henüz kayıt yok",x.activityCount,x.attemptCount,ratio(x.correct,x.total)]));
+ emptyNote('activitySections','Henüz takip edilen etkinlik yok.');emptyNote('declarationSections','Henüz tamamlama bildirimi yok.');emptyNote('notebookSections','Henüz defter notu yok.');
+ renderRows('students',(r.students||[]).map(x=>[x.ad,badge(x.activityCount>0?"En az bir etkinlik tamamlandı":"Henüz kayıt yok"),x.activityCount,x.attemptCount,ratioMeter(x.correct,x.total)]));
 }).withFailureHandler(function(e){document.getElementById('status').textContent='Rapor hatası: '+(e&&e.message||'Bilinmiyor')}).ogretmenRaporVerisi();
 </script></body></html>
