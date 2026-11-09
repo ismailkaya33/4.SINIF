@@ -13,6 +13,8 @@ Kullanıcı öğretmendir ve kod bilmez. Her adımı sade Türkçe ile, teknik t
    - `correct + wrong = total`, `firstTry <= correct`, `attemptId` 12–80 karakter
    - Mesaj yalnızca **bir kez** gider (`finishSent` benzeri bir bayrak) ve "Yeniden oyna" bayrağı sıfırlar.
 2. Göndermiyorsa önce bunu `main` dalında ekle. Bu değişiklik GitHub Pages ile birkaç dakikada yayına çıkar.
+   `4d-icerik-uret` ile üretilen etkinliklerde `rapor_motoru.js` v2 bu mesajı zaten gönderir; yalnızca `OYUN.id` portal
+   kimliğiyle aynı olmalı. Oyunlar klasörü takibe alınmaz (öğretmenin kararı).
 
 ## Kayıt (hazirlik/kazanim-takibi-20261101 dalı)
 1. `portal/etkinlik-kayitlari.json` → `otomatikSonuc` listesine ekle: `id`, `yol`, `ad`, `konu`, `kazanim`, `maxTotal`, `dersListesinde`.
