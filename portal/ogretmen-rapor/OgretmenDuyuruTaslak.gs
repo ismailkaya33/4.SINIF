@@ -40,6 +40,11 @@ function duyuruEkleOgretmen(baslik,metin,bitisTarihi) {
 // Güvenlik: yeni duyuru TASLAK olarak kaydedilir; öğretmen E-Tablodaki durumu
 // YAYINDA yapana kadar öğrenciler tarafından okunmaz.
 
+/** "Arşiv", "ARŞİV", "Yayında " gibi elle yazılmış durumları tek biçime getirir. */
+function ogretmenDuyuruDurumuNormal_(v){
+  return String(v||'').trim().toUpperCase().replace(/̇/g,'')
+    .replace(/Ş/g,'S').replace(/İ/g,'I').replace(/Ğ/g,'G').replace(/Ü/g,'U').replace(/Ö/g,'O').replace(/Ç/g,'C');
+}
 /** Özel öğretmen projesinde mevcut duyuruları listeler. */
 function ogretmenDuyuruListesi() {
   const id=PropertiesService.getScriptProperties().getProperty('OZEL_TABLO_ID');
@@ -48,8 +53,14 @@ function ogretmenDuyuruListesi() {
   if(!sh)return [];
   const n=sh.getLastRow()-1;
   if(n<1)return [];
-  return sh.getRange(2,1,n,5).getValues().reverse().slice(0,50).map(function(r){
-    return {kimlik:String(r[0]),baslik:String(r[1]),metin:String(r[2]),durum:String(r[3]),
+  // Arşivdekiler çoğalınca yayındaki/taslak duyurular listeden düşmesin:
+  // arşiv dışı olanların hepsi, arşivden en yeni 30'u gönderilir.
+  let arsivSayisi=0;
+  return sh.getRange(2,1,n,5).getValues().reverse().filter(function(r){
+    if(ogretmenDuyuruDurumuNormal_(r[3])!=='ARSIV')return true;
+    return ++arsivSayisi<=30;
+  }).map(function(r){
+    return {kimlik:String(r[0]),baslik:String(r[1]),metin:String(r[2]),durum:ogretmenDuyuruDurumuNormal_(r[3]),
       bitis:r[4] instanceof Date&&Number.isFinite(r[4].getTime())?[r[4].getFullYear(),String(r[4].getMonth()+1).padStart(2,'0'),String(r[4].getDate()).padStart(2,'0')].join('-'):''};
   });
 }

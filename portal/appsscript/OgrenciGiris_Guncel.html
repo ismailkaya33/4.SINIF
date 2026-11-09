@@ -85,12 +85,30 @@ body.loginView .kutu{min-height:min(640px,calc(100vh - 48px));display:flex;flex-
 #cikis{flex:none;min-height:48px;padding:10px 16px;border-color:#f0c9d2;background:var(--kirmizi-acik);color:var(--kirmizi);font-size:16px}
 #cikis:hover:not(:disabled){background:#fbdde4}
 .noticeTopCard{padding:16px 20px;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:var(--yuzey)}
-.noticeTopCard h3{margin:0 0 4px;font-size:22px}
-#duyuruDurum{margin:0 0 6px;font-size:15px;font-weight:800}
-#duyuruListe{max-height:232px;overflow-y:auto;overscroll-behavior:contain;padding-right:6px;scrollbar-gutter:stable}
-#duyuruListe article{padding:10px 0;border-top:1px solid var(--cizgi)}
-#duyuruListe article h4{margin:0 0 2px;font-size:18px}
-#duyuruListe article p{margin:0;color:var(--soluk);font-size:17px;line-height:1.45;white-space:pre-line;overflow-wrap:anywhere}
+.noticeTopCard h3{margin:0 0 10px;font-size:26px;font-weight:900}
+#duyuruDurum{margin:0 0 8px;font-size:17px;font-weight:800}
+#duyuruDurum:empty{display:none}
+/* Duyuru kartları: her duyuru ayrı renkli kart, maddeler ayrı satır */
+#duyuruListe,.eskiDuyurular>div{display:grid;gap:16px}
+.duyuruKart{--vurgu:var(--turuncu);--vurgu-zemin:#fff8ea;margin:0;padding:18px 22px 20px;border:1px solid var(--cizgi);border-left:8px solid var(--vurgu);border-radius:var(--r-orta);background:var(--vurgu-zemin);box-shadow:var(--golge)}
+.duyuruKart.renk1{--vurgu:var(--mor);--vurgu-zemin:#f6f2ff}
+.duyuruKart.renk2{--vurgu:#2c8fae;--vurgu-zemin:#eef8fc}
+.duyuruKart.renk3{--vurgu:var(--yesil);--vurgu-zemin:#eefaf4}
+.duyuruUst{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 12px}
+.duyuruUst h4{flex:1 1 220px;margin:0;font-size:clamp(22px,2.4vw,27px);font-weight:900;overflow-wrap:anywhere}
+.duyuruTarih{padding:4px 12px;border-radius:99px;background:#fff;border:1px solid var(--cizgi);color:var(--soluk);font-size:16px;font-weight:800;white-space:nowrap}
+.duyuruYeni{padding:4px 12px;border-radius:99px;background:var(--kirmizi);color:#fff;font-size:15px;font-weight:900;letter-spacing:.05em}
+.duyuruMetin>p{margin:0 0 10px;color:var(--murekkep);font-size:21px;font-weight:700;line-height:1.6;overflow-wrap:anywhere}
+.duyuruMetin>p:last-child{margin-bottom:0}
+.duyuruMaddeler{display:grid;gap:10px;margin:4px 0 12px;padding:0;list-style:none}
+.duyuruMaddeler:last-child{margin-bottom:0}
+.duyuruMaddeler li{display:flex;align-items:flex-start;gap:14px;padding:12px 16px;border-radius:var(--r-kucuk);background:#fff;border:1px solid var(--cizgi);font-size:21px;font-weight:700;line-height:1.5;overflow-wrap:anywhere}
+.duyuruNo{display:grid;place-items:center;flex:none;min-width:38px;height:38px;padding:0 6px;border-radius:99px;background:var(--vurgu);color:#fff;font-size:19px;font-weight:900;line-height:1}
+.duyuruMaddeler.isaretli .duyuruNo{min-width:16px;width:16px;height:16px;margin-top:10px;padding:0}
+.eskiDuyurular{border:1px dashed #b6c8e2;border-radius:var(--r-orta);background:var(--yuzey-mavi)}
+.eskiDuyurular>summary{min-height:56px;display:flex;align-items:center;padding:12px 18px;color:var(--mavi);font-size:19px;font-weight:900;cursor:pointer}
+.eskiDuyurular>div{padding:0 14px 14px}
+@media(max-width:600px){.duyuruKart{padding:16px 16px 18px}.duyuruMetin>p,.duyuruMaddeler li{font-size:19px}}
 
 /* ---------- İlerleme şeridi ---------- */
 .progressCompact{margin:0 0 16px;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:var(--yuzey-mavi);overflow:hidden}
@@ -433,6 +451,40 @@ function ilerlemeYukle(){
   if(sessionStorage.getItem(anahtarAdi)===token&&istek===ilerlemeIstekSirasi)status.textContent="İlerleme bilgileri şu anda alınamadı.";
  }).ogrenciIlerlemeOzeti(token);
 }
+/* Duyuru metnini paragraf + numaralı/işaretli madde gruplarına ayırır.
+   "1. ... 2. ..." aynı satıra yazılmışsa da ayrı maddelere böler. */
+function duyuruParcala_(metin){
+ const temiz=String(metin||"").replace(/\r\n?/g,"\n").replace(/([^\n])[ \t]+(?=(?:[1-9]|[1-9][0-9])[.)][ \t]+\S)/g,"$1\n");
+ const gruplar=[];
+ temiz.split("\n").map(function(s){return s.trim()}).filter(Boolean).forEach(function(satir){
+  let m=/^(\d{1,2})[.)]\s+(.+)$/.exec(satir),tur="p",no="",yazi=satir;
+  if(m){tur="ol";no=m[1];yazi=m[2]}else if((m=/^[-•*–]\s+(.+)$/.exec(satir))){tur="ul";yazi=m[1]}
+  const son=gruplar[gruplar.length-1];
+  if(tur!=="p"&&son&&son.tur===tur)son.maddeler.push({no:no,yazi:yazi});
+  else gruplar.push(tur==="p"?{tur:tur,yazi:yazi}:{tur:tur,maddeler:[{no:no,yazi:yazi}]});
+ });
+ return gruplar;
+}
+function duyuruKartiYap_(d,i){
+ const kart=document.createElement("article"),ust=document.createElement("div"),baslik=document.createElement("h4"),govde=document.createElement("div");
+ kart.className="duyuruKart renk"+(i%4);ust.className="duyuruUst";govde.className="duyuruMetin";
+ baslik.textContent=d.baslik;ust.appendChild(baslik);
+ const zaman=Number(d.zaman)||0;
+ if(zaman){
+  if(Date.now()-zaman<3*864e5){const yeni=document.createElement("span");yeni.className="duyuruYeni";yeni.textContent="YENİ";ust.appendChild(yeni)}
+  const tarih=document.createElement("span");tarih.className="duyuruTarih";
+  try{tarih.textContent="📅 "+new Date(zaman).toLocaleDateString("tr-TR",{day:"numeric",month:"long"})}catch(e){tarih.textContent=""}
+  if(tarih.textContent)ust.appendChild(tarih);
+ }
+ duyuruParcala_(d.metin).forEach(function(g){
+  if(g.tur==="p"){const p=document.createElement("p");p.textContent=g.yazi;govde.appendChild(p);return}
+  const liste=document.createElement(g.tur==="ol"?"ol":"ul");liste.className="duyuruMaddeler"+(g.tur==="ul"?" isaretli":"");
+  g.maddeler.forEach(function(md){const li=document.createElement("li"),no=document.createElement("span"),yazi=document.createElement("span");no.className="duyuruNo";no.setAttribute("aria-hidden","true");no.textContent=md.no;yazi.textContent=md.yazi;li.append(no,yazi);liste.appendChild(li)});
+  govde.appendChild(liste);
+ });
+ kart.append(ust,govde);
+ return kart;
+}
 function duyurulariYukle(){
  const token=sessionStorage.getItem(anahtarAdi),durum=document.getElementById("duyuruDurum"),liste=document.getElementById("duyuruListe");
  if(!token)return;
@@ -443,8 +495,10 @@ function duyurulariYukle(){
   if(!r||r.basarili!==true){durum.textContent="Duyurular alınamadı.";return}
   const duyurular=Array.isArray(r.duyurular)?r.duyurular:[];
   if(!duyurular.length){durum.textContent="Henüz yayımlanmış duyuru yok.";return}
-  durum.textContent=duyurular.length+" duyuru";
-  duyurular.forEach(function(d){const el=document.createElement("article"),title=document.createElement("h4"),p=document.createElement("p");title.textContent=d.baslik;const metin=String(d.metin||"").replace(/\r\n?/g,"\n");p.textContent=metin.replace(/([^\n])\s+(?=(?:[1-9]|[1-9][0-9])\.[ \t]+\S)/g,"$1\n");el.append(title,p);liste.appendChild(el)});
+  durum.textContent="";
+  const kartlar=duyurular.map(duyuruKartiYap_);
+  liste.append.apply(liste,kartlar.slice(0,3));
+  if(kartlar.length>3){const eski=document.createElement("details"),ozet=document.createElement("summary"),ic=document.createElement("div");eski.className="eskiDuyurular";ozet.textContent="📂 Önceki duyurular ("+(kartlar.length-3)+")";ic.append.apply(ic,kartlar.slice(3));eski.append(ozet,ic);liste.appendChild(eski)}
  }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
 }
 function tokenTemizle(){menuyeDon();yazilanNotlar.clear();bitirilenEtkinlikler.clear();kaydedilenEtkinlikler.clear();baslatilanEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}

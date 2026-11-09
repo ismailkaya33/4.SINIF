@@ -19,6 +19,9 @@ assert.equal(run().tamamlananCalisma,5);assert.equal(run().oran,50);assert.ok(ru
 vm.runInContext("globalThis.noticeDate=new Date(2026,10,5)",ctx);
 data.DUYURULAR=[[1,ctx.noticeDate,'Metin','YAYINDA',''],[2,'Başlık','Diğer','YAYINDA',''],[3,'Arşiv','Gizli','ARSIV','']];
 const notices=ctx.ogrenciDuyurulari('valid');assert.equal(notices.duyurular.length,2);assert.equal(notices.duyurular[1].baslik,'05.11.2026');assert.equal(notices.duyurular[0].baslik,'Başlık');
+const stamp=Date.now()-3600e3;
+data.DUYURULAR=[[stamp,'Elle yazılmış','Metin',' Yayında ',''],[stamp-1,'Elle arşiv','Gizli','Arşiv',''],[stamp-2,'Büyük arşiv','Gizli','ARŞİV','']];
+const hand=ctx.ogrenciDuyurulari('valid').duyurular;assert.equal(hand.length,1);assert.equal(hand[0].baslik,'Elle yazılmış');assert.equal(hand[0].zaman,stamp);
 const html=fs.readFileSync(root+'OgrenciGiris_Guncel.html','utf8');
 for(const block of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi))new vm.Script(block[1]);
 console.log('PASS: completion growth, notes-only progress, duplicate/alias deduplication, student isolation, stable accuracy, authorization, date titles, portal syntax. Total tasks:',total);

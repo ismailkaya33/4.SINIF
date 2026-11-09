@@ -68,6 +68,13 @@ button:hover{background:var(--brand-d)}button:disabled{opacity:.6;cursor:wait}
 button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondary:hover{background:#d6e3f6}
 .announcement{margin:10px 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
 .announcement p{margin:6px 0}
+.announcement .annText{white-space:pre-line;overflow-wrap:anywhere}
+.announcement.live{border-left:5px solid var(--ok);background:#fff}
+.annArchive{margin-top:18px;border-style:dashed}
+.annArchive>summary{display:block}
+.annArchive .announcement{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:8px 14px;padding:10px 14px;background:#fff}
+.annArchive .announcement strong{flex:1 1 220px;color:var(--muted)}
+.annArchive .announcement button{min-height:36px;padding:6px 12px;font-size:14px}
 @media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){
  body{padding:12px 12px 36px}
@@ -96,7 +103,7 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 <section id='studentPanel' class='reportSection'><h2>👥 Öğrenciler</h2><p>Katılım durumu, kaydı bulunan etkinliklere göre hesaplanır. Hiç kaydı olmayan öğrenci için “Henüz kayıt yok” gösterilir; oyuna girip girmediği bu veriden anlaşılamaz.</p><table><thead><tr><th>Öğrenci</th><th>Katılım durumu</th><th>Farklı etkinlik</th><th>Deneme</th><th>Doğru oranı</th></tr></thead><tbody id="students"></tbody></table></section>
 <section id='announcementPanel' class='reportSection'><h2>📢 Duyuru taslağı oluştur</h2><p class="muted">Yeni duyurular başlangıçta TASLAK durumundadır. Bu bölüm, duyuruyu henüz öğrencilere yayımlamaz.</p>
 <label for="duyuruBaslik">Başlık</label><input id="duyuruBaslik" maxlength="120">
-<label for="duyuruMetin">Duyuru metni</label><textarea id="duyuruMetin" maxlength="1500" rows="4"></textarea>
+<label for="duyuruMetin">Duyuru metni</label><p class="muted" style="margin:2px 0 0;font-size:13.5px">İpucu: Maddeleri ayrı satırlara “1. …”, “2. …” ya da “- …” diye yaz; öğrenci ekranında her madde ayrı kutuda görünür.</p><textarea id="duyuruMetin" maxlength="1500" rows="4"></textarea>
 <button id="duyuruKaydet" type="button">Taslak olarak kaydet</button> <span id="duyuruMesaj" role="status"></span>
 <h3>Mevcut duyurular</h3><p id="duyuruListeMesaj" role="status"></p><div id="duyuruListe"></div><button id="duyuruYenile" class="secondary" type="button">Duyuruları yenile</button></section>
 <script>
@@ -250,20 +257,40 @@ function duyuruListele(){
  const el=document.getElementById('duyuruListe'),msg=document.getElementById('duyuruListeMesaj');
  msg.textContent='Duyurular okunuyor...';
  google.script.run.withSuccessHandler(function(rows){
-  el.replaceChildren();const aktif=rows.filter(function(d){return String(d.durum||'').trim().toUpperCase()!=='ARSIV';});msg.textContent=aktif.length?'':'Aktif duyuru veya taslak yok.';
-  aktif.forEach(function(d){
-   const block=document.createElement('div'),title=document.createElement('strong'),meta=document.createElement('p'),text=document.createElement('p'),btn=document.createElement('button');
-   title.textContent=d.baslik;meta.textContent='Durum: ';meta.appendChild(badge(String(d.durum)));text.textContent=d.metin;
-   if(d.durum==='YAYINDA')meta.lastChild.className='badge ok';
-   const next=d.durum==='YAYINDA'?'ARSIV':'YAYINDA';
-   btn.type='button';btn.textContent=next==='YAYINDA'?'Yayımla':'Arşivle';if(next==='ARSIV')btn.className='secondary';
+  el.replaceChildren();rows=Array.isArray(rows)?rows:[];
+  // "Arşiv", "ARŞİV", "arsiv " gibi elle yazılmış durumlar da arşiv sayılır.
+  const norm=function(v){return String(v||'').trim().toUpperCase().replace(/̇/g,'').replace(/Ş/g,'S').replace(/İ/g,'I').replace(/Ğ/g,'G').replace(/Ü/g,'U').replace(/Ö/g,'O').replace(/Ç/g,'C');};
+  const aktif=[],arsiv=[];rows.forEach(function(d){d.durum=norm(d.durum);(d.durum==='ARSIV'?arsiv:aktif).push(d);});
+  aktif.sort(function(a,b){return (a.durum==='YAYINDA'?0:1)-(b.durum==='YAYINDA'?0:1);});
+  msg.textContent=aktif.length?'':'Aktif duyuru veya taslak yok.';
+  function durumButonu(d,next,label,cls){
+   const btn=document.createElement('button');btn.type='button';btn.textContent=label;if(cls)btn.className=cls;
    btn.addEventListener('click',function(){
-    if(!confirm('“'+d.baslik+'” duyurusunu '+(next==='YAYINDA'?'öğrencilere yayımlamak':'arşivlemek')+' istiyor musun?'))return;
+    const ne={YAYINDA:'öğrencilere yayımlamak',ARSIV:'arşive kaldırmak'}[next];
+    if(!confirm('“'+d.baslik+'” duyurusunu '+ne+' istiyor musun?'))return;
     btn.disabled=true;
     google.script.run.withSuccessHandler(function(){duyuruListele();}).withFailureHandler(function(e){btn.disabled=false;msg.textContent='İşlem hatası: '+(e&&e.message||'Bilinmiyor');}).ogretmenDuyuruDurumDegistir(d.kimlik,next);
    });
-   block.className='announcement';block.append(title,meta,text,btn);el.appendChild(block);
+   return btn;
+  }
+  aktif.forEach(function(d){
+   const block=document.createElement('div'),title=document.createElement('strong'),meta=document.createElement('p'),text=document.createElement('p');
+   title.textContent=d.baslik;meta.textContent='Durum: ';meta.appendChild(badge(d.durum==='YAYINDA'?'Yayında':d.durum==='TASLAK'?'Taslak':String(d.durum)));text.textContent=d.metin;text.className='annText';
+   if(d.durum==='YAYINDA')meta.lastChild.className='badge ok';
+   block.className='announcement'+(d.durum==='YAYINDA'?' live':'');block.append(title,meta,text);
+   if(d.durum==='YAYINDA')block.appendChild(durumButonu(d,'ARSIV','Arşive kaldır','secondary'));
+   else{block.appendChild(durumButonu(d,'YAYINDA','Yayımla'));block.appendChild(document.createTextNode(' '));block.appendChild(durumButonu(d,'ARSIV','Arşive kaldır','secondary'));}
+   el.appendChild(block);
   });
+  if(arsiv.length){
+   const box=document.createElement('details'),sum=document.createElement('summary');
+   box.className='annArchive';sum.className='plain';sum.textContent='🗄️ Arşiv ('+arsiv.length+') — öğrenciler görmez, açmak için tıkla';box.appendChild(sum);
+   arsiv.forEach(function(d){
+    const row=document.createElement('div'),title=document.createElement('strong');
+    row.className='announcement';title.textContent=d.baslik;row.append(title,durumButonu(d,'YAYINDA','Yeniden yayımla','secondary'));box.appendChild(row);
+   });
+   el.appendChild(box);
+  }
  }).withFailureHandler(function(e){msg.textContent='Duyuru listesi alınamadı: '+(e&&e.message||'Bilinmiyor');}).ogretmenDuyuruListesi();
 }
 document.getElementById('duyuruYenile').addEventListener('click',duyuruListele);
