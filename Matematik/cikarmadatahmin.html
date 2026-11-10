@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tahmin Ustası: Çıkarmada Tahmin</title>
+<style>
+:root{--bg:#f4f6fa;--kart:#fff;--yazi:#1c2430;--soluk:#5b6470;--cizgi:#c9d1dc;--mavi:#2b5fd9;--mavi-acik:#e7eefc;--ok:#1b7f4b;--hata:#b3261e;--turuncu:#b26a00;--gercek:#7a4fc9}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--kart:#1b212a;--yazi:#e8ecf2;--soluk:#a3adbb;--cizgi:#3a4350;--mavi:#7ba2ff;--mavi-acik:#223150;--ok:#6fdc9f;--hata:#ff9a92;--turuncu:#ffc266;--gercek:#c3a6ff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--yazi);font:19px/1.5 system-ui,"Segoe UI",Roboto,Arial,sans-serif}
+#app{max-width:760px;margin:0 auto;padding:16px}
+.kart{background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:18px;margin:12px 0}
+h1{font-size:1.6rem;margin:0 0 6px}
+h2{font-size:1.25rem;margin:0 0 6px}
+.ust{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.95rem;color:var(--soluk);flex-wrap:wrap}
+.asama{display:inline-block;background:var(--mavi-acik);color:var(--mavi);border-radius:999px;padding:2px 12px;font-weight:700}
+.ilerleme{height:10px;background:var(--cizgi);border-radius:6px;overflow:hidden;margin:8px 0 0}
+.ilerleme i{display:block;height:100%;background:var(--mavi)}
+.soru{font-size:1.3rem;font-weight:600;margin:6px 0 14px}
+.islem{font-size:1.8rem;font-weight:800;letter-spacing:.02em;text-align:center;margin:6px 0 12px;font-variant-numeric:tabular-nums}
+.yonerge{font-size:1rem;color:var(--soluk);margin:0 0 10px}
+.sec{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sec.uzun{grid-template-columns:1fr}
+@media (max-width:480px){.sec{grid-template-columns:1fr}}
+button{font:inherit;min-height:56px;border-radius:14px;border:2px solid var(--mavi);background:var(--kart);color:var(--yazi);cursor:pointer;padding:8px 14px;text-align:left}
+.sec button{font-variant-numeric:tabular-nums}
+button.dolu{background:var(--mavi);color:#fff;text-align:center}
+button.yanlis{border-color:var(--hata);opacity:.55}
+button.yanlis::after{content:"  ✗"}
+button.dogru{border-color:var(--ok);background:var(--ok);color:#fff}
+button.dogru::after{content:"  ✓"}
+button:disabled{cursor:default}
+button:focus-visible{outline:3px solid var(--turuncu);outline-offset:2px}
+.araclar{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.araclar button{min-height:48px;text-align:center}
+.gb{min-height:2.4em;margin-top:12px;font-weight:600}
+.gb.ok{color:var(--ok)}.gb.hata{color:var(--hata)}.gb.ip{color:var(--turuncu)}
+.karsilastir{margin-top:12px;border-top:1px dashed var(--cizgi);padding-top:10px;font-size:1rem}
+.cubuk{display:grid;grid-template-columns:7.5em 1fr 4.2em;align-items:center;gap:8px;margin:6px 0}
+.cubuk .yol{height:22px;background:var(--cizgi);border-radius:8px;overflow:hidden}
+.cubuk .yol i{display:block;height:100%;border-radius:8px}
+.cubuk b{text-align:right;font-variant-numeric:tabular-nums}
+.not{font-size:.95rem;color:var(--soluk)}
+.kural{background:var(--mavi-acik);border-radius:12px;padding:10px 14px;margin:10px 0}
+.ses{float:right;min-height:40px;font-size:.9rem;padding:4px 10px}
+#dev{margin-top:12px;width:100%}
+@media (prefers-reduced-motion:no-preference){button{transition:background .15s,opacity .15s}.cubuk .yol i{transition:width .5s}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 2;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+})();
+
+</script>
+<script>
+'use strict';
+/* ===================== VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda) =====================
+ * Her madde:
+ *   id      : kısa kimlik (değiştirmeyin; rapor bunu kullanır)
+ *   asama   : 1 = Tahmin et, 2 = Karşılaştır, 3 = Kontrol et
+ *   soru    : öğrencinin okuyacağı yönerge;  islem: büyük yazılacak işlem (isteğe bağlı)
+ *   dogru   : doğru seçenek;  yanlislar: [ [seçenek, yanılgı etiketi], ... ]
+ *   ipucu   : en fazla 3 kademe ipucu;  why: neden doğru (kısa açıklama)
+ *   tahmin / gercek : (isteğe bağlı) cevaptan sonra karşılaştırma çubukları için
+ * Yanılgı etiketleri:
+ *   gercek-sonuc  : tahmin etmek yerine işlemi tam yaptı
+ *   hep-asagi     : iki sayıyı da aşağı yuvarladı
+ *   tek-sayi      : yalnız bir sayıyı yuvarladı
+ *   yanlis-basamak: istenenden farklı basamağa yuvarladı
+ *   toplama-yapti : yuvarlanmış sayıları çıkarmak yerine topladı
+ *   ters-yon      : farkı doğru buldu ama "büyük/küçük" yönünü karıştırdı
+ *   fark-yerine-toplam : farkı bulmak yerine tahmin ile gerçek sonucu topladı
+ *   tahmini-fark-sandi : tahminin kendisini fark sandı
+ *   tahmin-kesin-sanir : tahminin gerçek sonuçla tam aynı olması gerektiğini sandı
+ *   buyuk-basamak-iyi  : büyük basamağa yuvarlamanın her zaman daha yakın sonuç verdiğini sandı
+ *   tahminsiz-onay     : tahmin yapmadan sonucu "doğru" kabul etti
+ *   islem-hatasi       : farkları hesaplarken işlem hatası yaptı
+ */
+const OYUN = {
+  id: 'mat-cikarmadatahmin',
+  ad: 'Tahmin Ustası: Çıkarmada Tahmin',
+  kazanimlar: [
+    { kod: 'M.4.1.3.3', ad: 'Çıkarma işleminin sonucunu tahmin eder, tahminini işlem sonucuyla karşılaştırır' }
+  ],
+  asamalar: {
+    1: { ad: 'Tahmin et', kural: 'Tahmin için önce eksileni ve çıkanı istenen basamağa yuvarla, sonra yuvarlanmış sayıları çıkar. Birler (ya da onlar) basamağı 5 veya daha büyükse yukarı, 5\'ten küçükse aşağı yuvarlanır.' },
+    2: { ad: 'Karşılaştır', kural: 'Tahmin ile gerçek sonucu karşılaştırırken büyük olandan küçük olanı çıkar. Sonra tahminin gerçek sonuçtan büyük mü küçük mü olduğuna bak.' },
+    3: { ad: 'Kontrol et', kural: 'Bir sonucun makul olup olmadığını anlamak için tahmin yap. Sonuç tahmine yakınsa makuldür; çok uzaksa işlem yeniden kontrol edilmelidir.' }
+  },
+  maddeler: [
+    /* ---- 1. aşama: Tahmin et ---- */
+    { id: 't1', asama: 1, soru: 'En yakın yüzlüğe yuvarlayarak sonucu tahmin et.', islem: '487 − 213', dogru: '300',
+      yanlislar: [['200', 'hep-asagi'], ['287', 'tek-sayi'], ['274', 'gercek-sonuc']],
+      ipucu: ['Önce 487\'yi en yakın yüzlüğe yuvarla. Onlar basamağı 8, 5\'ten büyük.', '487 → 500, 213 → 200. Şimdi 500 − 200 kaç?'],
+      why: '487 yaklaşık 500, 213 yaklaşık 200. Tahmin: 500 − 200 = 300.', tahmin: 300, gercek: 274 },
+    { id: 't2', asama: 1, soru: 'En yakın onluğa yuvarlayarak sonucu tahmin et.', islem: '82 − 37', dogru: '40',
+      yanlislar: [['50', 'hep-asagi'], ['42', 'tek-sayi'], ['45', 'gercek-sonuc']],
+      ipucu: ['37\'nin birler basamağı 7. 7, 5\'ten büyük mü küçük mü?', '82 → 80, 37 → 40. Şimdi 80 − 40 kaç?'],
+      why: '82 yaklaşık 80, 37 yaklaşık 40. Tahmin: 80 − 40 = 40.', tahmin: 40, gercek: 45 },
+    { id: 't3', asama: 1, soru: 'En yakın yüzlüğe yuvarlayarak sonucu tahmin et.', islem: '735 − 368', dogru: '300',
+      yanlislar: [['400', 'hep-asagi'], ['370', 'yanlis-basamak'], ['367', 'gercek-sonuc']],
+      ipucu: ['Yüzlüğe yuvarlarken onlar basamağına bakılır. 368\'in onlar basamağı 6.', '735 → 700, 368 → 400. Şimdi 700 − 400 kaç?'],
+      why: '735 yaklaşık 700, 368 yaklaşık 400. Tahmin: 700 − 400 = 300.', tahmin: 300, gercek: 367 },
+    { id: 't4', asama: 1, soru: 'En yakın yüzlüğe yuvarlayarak sonucu tahmin et.', islem: '951 − 649', dogru: '400',
+      yanlislar: [['300', 'hep-asagi'], ['351', 'tek-sayi'], ['302', 'gercek-sonuc']],
+      ipucu: ['951\'in onlar basamağı 5. 5 olunca yukarı mı aşağı mı yuvarlanır?', '951 → 1000, 649 → 600. Şimdi 1000 − 600 kaç?'],
+      why: '951 yaklaşık 1000 (onlar basamağı 5, yukarı), 649 yaklaşık 600. Tahmin: 1000 − 600 = 400.', tahmin: 400, gercek: 302 },
+    { id: 't5', asama: 1, soru: 'En yakın onluğa yuvarlayarak sonucu tahmin et.', islem: '563 − 248', dogru: '310',
+      yanlislar: [['320', 'hep-asagi'], ['400', 'yanlis-basamak'], ['315', 'gercek-sonuc']],
+      ipucu: ['Onluğa yuvarlarken birler basamağına bakılır. 248\'in birler basamağı 8.', '563 → 560, 248 → 250. Şimdi 560 − 250 kaç?'],
+      why: '563 yaklaşık 560, 248 yaklaşık 250. Tahmin: 560 − 250 = 310.', tahmin: 310, gercek: 315 },
+
+    /* ---- 2. aşama: Karşılaştır ---- */
+    { id: 'k1', asama: 2, soru: 'En yakın yüzlüğe yuvarlayarak tahmin: 600 − 300 = 300. Gerçek sonuç: 353. Hangisi doğru?', islem: '642 − 289', dogru: 'Tahmin, gerçek sonuçtan 53 küçük.',
+      yanlislar: [['Tahmin, gerçek sonuçtan 53 büyük.', 'ters-yon'], ['Tahmin, gerçek sonuçtan 653 küçük.', 'fark-yerine-toplam'], ['Tahmin, gerçek sonuçtan 300 küçük.', 'tahmini-fark-sandi']],
+      ipucu: ['Hangisi daha büyük: 300 mü, 353 mü?', 'Farkı bulmak için büyükten küçüğü çıkar: 353 − 300.'],
+      why: '353 − 300 = 53. Tahmin (300), gerçek sonuçtan (353) 53 küçük.', tahmin: 300, gercek: 353 },
+    { id: 'k2', asama: 2, soru: 'En yakın onluğa yuvarlayarak tahmin: 80 − 40 = 40. Gerçek sonuç: 35. Hangisi doğru?', islem: '78 − 43', dogru: 'Tahmin, gerçek sonuçtan 5 büyük.',
+      yanlislar: [['Tahmin, gerçek sonuçtan 5 küçük.', 'ters-yon'], ['Tahmin, gerçek sonuçtan 75 büyük.', 'fark-yerine-toplam'], ['Tahmin, gerçek sonuçla aynı.', 'tahmin-kesin-sanir']],
+      ipucu: ['40 ile 35\'i karşılaştır. Hangisi büyük?', 'Fark: 40 − 35 kaç?'],
+      why: '40 − 35 = 5. Tahmin (40), gerçek sonuçtan (35) 5 büyük.', tahmin: 40, gercek: 35 },
+    { id: 'k3', asama: 2, soru: 'En yakın yüzlüğe yuvarlayarak tahmin: 800 − 400 = 400. Gerçek sonuç: 423. Hangisi doğru?', islem: '815 − 392', dogru: 'Tahmin, gerçek sonuçtan 23 küçük.',
+      yanlislar: [['Tahmin, gerçek sonuçtan 23 büyük.', 'ters-yon'], ['Tahmin, gerçek sonuçtan 823 küçük.', 'fark-yerine-toplam'], ['Tahmin, gerçek sonuçtan 400 küçük.', 'tahmini-fark-sandi']],
+      ipucu: ['400 mü daha büyük, 423 mü?', 'Fark: 423 − 400 kaç?'],
+      why: '423 − 400 = 23. Tahmin (400), gerçek sonuçtan (423) 23 küçük.', tahmin: 400, gercek: 423 },
+    { id: 'k4', asama: 2, soru: 'İki tahmin yapıldı. Onluğa yuvarlayarak: 530 − 180 = 350. Yüzlüğe yuvarlayarak: 500 − 200 = 300. Gerçek sonuç 357. Hangisi doğru?', islem: '534 − 177',
+      dogru: 'Onluğa yuvarlayarak yapılan tahmin gerçek sonuca daha yakın.',
+      yanlislar: [['Yüzlüğe yuvarlayarak yapılan tahmin gerçek sonuca daha yakın.', 'buyuk-basamak-iyi'], ['İki tahmin de gerçek sonuca aynı uzaklıkta.', 'islem-hatasi'], ['İki tahmin de yanlış; tahmin gerçek sonuçla aynı çıkmalı.', 'tahmin-kesin-sanir']],
+      ipucu: ['Her tahmin ile 357 arasındaki farkı bul.', '357 − 350 = 7 ve 357 − 300 = 57. Hangisi daha küçük fark?'],
+      why: '357 − 350 = 7, 357 − 300 = 57. Onluğa yuvarlayarak yapılan tahmin daha yakın. Tahmin her zaman yaklaşık bir sonuçtur.', tahmin: 350, gercek: 357 },
+
+    /* ---- 3. aşama: Kontrol et ---- */
+    { id: 'c1', asama: 3, soru: 'Efe bu işlemin sonucunu 508 buldu. En yakın yüzlüğe yuvarlayarak tahmin et ve kontrol et.', islem: '704 − 296',
+      dogru: 'Makul değil. Tahmin 400; 508 buna çok uzak.',
+      yanlislar: [['Makul. 508, 500\'e yakın bir sayı.', 'tahminsiz-onay'], ['Makul değil. Tahmin 1000 olmalı.', 'toplama-yapti'], ['Makul. Sonuç eksilenden küçük, bu yeterli.', 'tahminsiz-onay']],
+      ipucu: ['704 → 700, 296 → 300. Tahmin kaç?', 'Tahmin 400. 508 ile 400 arasındaki fark 100\'den fazla.'],
+      why: '700 − 300 = 400. 508, tahminden 108 fazla; Efe işlemini yeniden kontrol etmeli (gerçek sonuç 408).', tahmin: 400, gercek: 408 },
+    { id: 'c2', asama: 3, soru: 'Zeynep bu işlemin sonucunu 426 buldu. En yakın yüzlüğe yuvarlayarak tahmin et ve kontrol et.', islem: '913 − 487',
+      dogru: 'Makul. Tahmin 400; 426 buna yakın.',
+      yanlislar: [['Makul değil. Tahmin 500; 426 uzak.', 'hep-asagi'], ['Makul değil. Sonuç tahminle tam aynı olmalıydı.', 'tahmin-kesin-sanir'], ['Makul değil. Tahmin 1400 olmalı.', 'toplama-yapti']],
+      ipucu: ['913 → 900. 487\'nin onlar basamağı 8, yukarı mı aşağı mı?', '900 − 500 = 400. 426, 400\'e yakın mı?'],
+      why: '913 yaklaşık 900, 487 yaklaşık 500. Tahmin 400. 426 tahmine yakın, sonuç makul.', tahmin: 400, gercek: 426 },
+    { id: 'c3', asama: 3, soru: 'Bir kütüphanede 1285 kitap var. 612 kitap ödünç verildi. Kütüphanede kalan kitap sayısını en yakın yüzlüğe yuvarlayarak tahmin et.', islem: '1285 − 612',
+      dogru: '700',
+      yanlislar: [['600', 'hep-asagi'], ['1900', 'toplama-yapti'], ['673', 'gercek-sonuc']],
+      ipucu: ['1285\'in onlar basamağı 8. Yüzlüğe yuvarlayınca kaç olur?', '1285 → 1300, 612 → 600. 1300 − 600 kaç?'],
+      why: '1285 yaklaşık 1300, 612 yaklaşık 600. Tahmin: 1300 − 600 = 700 kitap.', tahmin: 700, gercek: 673 },
+    { id: 'c4', asama: 3, soru: 'Okul gezisi için 850 TL toplandı. 236 TL harcandı. Kalan parayı en yakın yüzlüğe yuvarlayarak tahmin et.', islem: '850 − 236',
+      dogru: '700 TL',
+      yanlislar: [['600 TL', 'hep-asagi'], ['1100 TL', 'toplama-yapti'], ['614 TL', 'gercek-sonuc']],
+      ipucu: ['850\'nin onlar basamağı 5. 5 olunca yukarı yuvarlanır.', '850 → 900, 236 → 200. 900 − 200 kaç?'],
+      why: '850 yaklaşık 900, 236 yaklaşık 200. Tahmin: 900 − 200 = 700 TL.', tahmin: 700, gercek: 614 }
+  ]
+};
+
+/* ===================== MOTOR ===================== */
+const app = document.getElementById('app');
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const depo = (() => { const mem = {}; return {
+  oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
+  yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } } }; })();
+const DEPO_REKOR = 'rekor-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
+
+/* Ses (Web Audio, kapatılabilir) */
+let sesAcik = depo.oku(DEPO_SES) !== '0', ctx = null;
+function bip(dogru) {
+  if (!sesAcik) return;
+  try {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = dogru ? 660 : 220; o.type = 'sine';
+    g.gain.setValueAtTime(0.08, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.26);
+  } catch (e) { /* ses yok */ }
+}
+function sesDugme() { return '<button class="ses" id="ses" aria-pressed="' + sesAcik + '">' + (sesAcik ? '🔊 Ses açık' : '🔈 Ses kapalı') + '</button>'; }
+function sesBagla() { const b = document.getElementById('ses'); if (b) b.onclick = () => { sesAcik = !sesAcik; depo.yaz(DEPO_SES, sesAcik ? '1' : '0'); b.outerHTML = sesDugme(); sesBagla(); }; }
+
+let sira = [], idx = 0, durum = null, ilkTur = 0, sonAsama = 0, tekrarEklendi = false;
+
+function baslangic() {
+  const rekor = depo.oku(DEPO_REKOR);
+  app.innerHTML = '<div class="kart">' + sesDugme() + '<h1>🎯 ' + esc(OYUN.ad) + '</h1>' +
+    '<p>Bazen tam sonuca değil, <b>yaklaşık</b> sonuca ihtiyacımız olur. Buna <b>tahmin</b> denir.</p>' +
+    '<p>Üç aşama var: <b>1) Tahmin et</b> · <b>2) Karşılaştır</b> · <b>3) Kontrol et</b>. Toplam ' + OYUN.maddeler.length + ' soru.</p>' +
+    '<p class="not">Yanlış yaparsan ipucu alıp bir kez daha deneyebilirsin. Klavyede 1–4 tuşlarıyla seçebilir, Enter ile devam edebilirsin.</p>' +
+    (rekor ? '<p class="not">Önceki en iyi sonucun: ' + esc(rekor) + ' soru ilk denemede doğru.</p>' : '') +
+    '<p><button class="dolu" id="basla">Başla</button></p></div>';
+  sesBagla();
+  document.getElementById('basla').onclick = () => {
+    RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+    // Aşamalar sırayla (kolaydan zora), her aşamanın içi karışık
+    sira = [1, 2, 3].flatMap(a => shuffle(OYUN.maddeler.filter(m => m.asama === a))).map(m => ({ m, tekrar: false }));
+    ilkTur = sira.length; idx = 0; sonAsama = 0; tekrarEklendi = false; soru();
+  };
+  document.getElementById('basla').focus();
+}
+
+function asamaGiris(a, sonra) {
+  const s = OYUN.asamalar[a];
+  app.innerHTML = '<div class="kart"><span class="asama">' + a + '. aşama</span><h2 style="margin-top:8px">' + esc(s.ad) + '</h2>' +
+    '<div class="kural">📌 ' + esc(s.kural) + '</div><button class="dolu" id="dev">Hadi başlayalım →</button></div>';
+  const d = document.getElementById('dev'); d.onclick = sonra; d.focus();
+}
+
+function soru() {
+  if (idx >= sira.length) {
+    // İlk tur bitti: ilk denemede bilinemeyen sorulara bir şans daha (seviyeye katılmaz)
+    if (!tekrarEklendi) {
+      tekrarEklendi = true;
+      // En fazla 6 soru tekrar edilir (çok zorlanan öğrenci için etkinlik uzamasın); her aşamadan dengeli seçilir
+      const zor = sira.slice(0, ilkTur).filter(x => !x.ilkDogru);
+      const ek = [1, 2, 3].flatMap(a => shuffle(zor.filter(x => x.m.asama === a)).slice(0, 2))
+        .concat(shuffle(zor)).filter((x, i, d) => d.indexOf(x) === i).slice(0, 6).map(x => ({ m: x.m, tekrar: true }));
+      if (ek.length) {
+        sira = sira.concat(shuffle(ek));
+        app.innerHTML = '<div class="kart"><h2>🔁 Bir şans daha</h2><p>İlk denemede zorlandığın ' + ek.length + ' soruya yeniden bakalım. Bu kez ipuçlarını hatırla!</p>' +
+          '<button class="dolu" id="dev">Devam →</button></div>';
+        const d = document.getElementById('dev'); d.onclick = soru; d.focus();
+        return;
+      }
+    }
+    bitisEkrani(); return;
+  }
+  const x = sira[idx], m = x.m;
+  if (!x.tekrar && m.asama !== sonAsama) { sonAsama = m.asama; asamaGiris(m.asama, soru); return; }
+  const sec = shuffle([[m.dogru, '']].concat(m.yanlislar));
+  const uzun = sec.some(s => s[0].length > 14);
+  durum = { x, m, sec, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+  const yuzde = Math.round(idx * 100 / sira.length);
+  app.innerHTML = '<div class="ust"><span class="asama">' + (x.tekrar ? '🔁 Bir şans daha' : m.asama + '. aşama · ' + esc(OYUN.asamalar[m.asama].ad)) + '</span>' +
+    '<span>Soru ' + (idx + 1) + ' / ' + sira.length + '</span></div><div class="ilerleme" aria-hidden="true"><i style="width:' + yuzde + '%"></i></div>' +
+    '<div class="kart">' + (m.islem ? '<div class="islem" aria-label="İşlem: ' + esc(m.islem.replace('−', 'eksi')) + '">' + esc(m.islem) + '</div>' : '') +
+    '<div class="soru">' + esc(m.soru) + '</div><div class="sec' + (uzun ? ' uzun' : '') + '">' +
+    sec.map((s, i) => '<button data-i="' + i + '" aria-label="Seçenek ' + (i + 1) + ': ' + esc(s[0]) + '">' + (i + 1) + ') ' + esc(s[0]) + '</button>').join('') +
+    '</div><div class="araclar"><button id="ip">💡 İpucu</button></div><div class="gb" id="gb" aria-live="polite"></div></div>';
+  app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => sec_(+b.dataset.i); });
+  document.getElementById('ip').onclick = ipucuVer;
+}
+
+function ipucuVer() {
+  if (!durum || durum.kilit) return;
+  const ip = durum.m.ipucu;
+  if (durum.ipucu >= ip.length) return;
+  durum.ipucu++;
+  const gb = document.getElementById('gb'); gb.className = 'gb ip';
+  gb.textContent = '💡 ' + ip.slice(0, durum.ipucu).join(' ');
+  if (durum.ipucu >= ip.length) { const b = document.getElementById('ip'); b.disabled = true; b.textContent = '💡 İpuçları bitti'; }
+}
+
+function sec_(i) {
+  if (!durum || durum.kilit) return;
+  const btn = app.querySelectorAll('.sec button')[i];
+  if (!btn || btn.disabled) return;
+  const [metin, yan] = durum.sec[i], gb = document.getElementById('gb');
+  durum.deneme++;
+  if (metin === durum.m.dogru) { btn.classList.add('dogru'); bip(true); bitir(false, 'ok', '✅ Doğru! ' + durum.m.why); return; }
+  btn.classList.add('yanlis'); btn.disabled = true; bip(false);
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = yan;
+  if (durum.deneme >= 2) {
+    app.querySelectorAll('.sec button').forEach((b, k) => { if (durum.sec[k][0] === durum.m.dogru) b.classList.add('dogru'); });
+    bitir(true, 'hata', 'Çözüme birlikte bakalım: ' + durum.m.why); return;
+  }
+  gb.className = 'gb hata'; gb.textContent = 'Henüz değil. Bir daha dene; istersen 💡 ipucu al.';
+}
+
+function karsilastirma(m) {
+  if (m.tahmin == null || m.gercek == null) return '';
+  const enb = Math.max(m.tahmin, m.gercek), fark = Math.abs(m.tahmin - m.gercek);
+  const satir = (ad, v, renk) => '<div class="cubuk"><span>' + ad + '</span><span class="yol"><i style="width:' + Math.round(v * 100 / enb) + '%;background:' + renk + '"></i></span><b>' + v + '</b></div>';
+  return '<div class="karsilastir" role="img" aria-label="Tahmin ' + m.tahmin + ', gerçek sonuç ' + m.gercek + ', fark ' + fark + '">' +
+    satir('🎯 Tahmin', m.tahmin, 'var(--mavi)') + satir('🧮 Gerçek', m.gercek, 'var(--gercek)') +
+    '<div class="not">Fark: ' + fark + (fark === 0 ? ' (tam aynı!)' : m.tahmin > m.gercek ? ' · tahmin gerçek sonuçtan büyük' : ' · tahmin gerçek sonuçtan küçük') + '</div></div>';
+}
+
+function bitir(cozumGoruldu, sinif, mesaj) {
+  durum.kilit = true;
+  const ilkDogru = durum.deneme === 1 && !cozumGoruldu;
+  durum.x.ilkDogru = ilkDogru;
+  RaporMotoru.kaydet({ kazanim: OYUN.kazanimlar[0].kod, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
+    ilkDenemeDogru: ilkDogru, deneme: durum.deneme, ipucu: durum.ipucu,
+    cozumGoruldu, sureMs: Date.now() - durum.t0, tekrar: durum.x.tekrar });
+  const gb = document.getElementById('gb'); gb.className = 'gb ' + sinif; gb.textContent = mesaj;
+  gb.insertAdjacentHTML('afterend', karsilastirma(durum.m));
+  app.querySelectorAll('.sec button, #ip').forEach(b => { b.disabled = true; });
+  const dev = document.createElement('button'); dev.className = 'dolu'; dev.id = 'dev';
+  dev.textContent = idx + 1 < sira.length || !tekrarEklendi ? 'Devam →' : 'Karnemi gör';
+  dev.onclick = () => { idx++; soru(); };
+  app.querySelector('.kart').appendChild(dev); dev.focus();
+}
+
+function bitisEkrani() {
+  durum = null;
+  RaporMotoru.ekranCiz(app);
+  const ilk = RaporMotoru.ozet().reduce((t, x) => t + x.dogru, 0), eski = parseInt(depo.oku(DEPO_REKOR), 10) || 0;
+  if (ilk > eski) depo.yaz(DEPO_REKOR, String(ilk));
+  const k = document.createElement('div'); k.className = 'kart';
+  k.innerHTML = '<b>Unutma:</b> Tahmin yaklaşık bir sonuçtur. Önce yuvarla, sonra çıkar; sonucunu tahminle karşılaştırarak kontrol et.';
+  app.appendChild(k);
+  const yeniden = document.createElement('button'); yeniden.className = 'dolu'; yeniden.textContent = '↻ Yeniden oyna';
+  yeniden.onclick = baslangic; app.appendChild(yeniden);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key >= '1' && e.key <= '4' && durum && !durum.kilit && document.querySelector('.sec')) sec_(+e.key - 1);
+  else if (e.key === 'Enter' && document.activeElement && document.activeElement.id !== 'dev') { const d = document.getElementById('dev'); if (d) { e.preventDefault(); d.click(); } }
+});
+baslangic();
+</script>
+</body>
+</html>
