@@ -1,0 +1,454 @@
+﻿<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konum Kâşifi: Yönler ve Yer Tarifi</title>
+<style>
+:root{--bg:#f3f7f2;--kart:#fff;--yazi:#1c2430;--soluk:#5b6470;--cizgi:#c9d1dc;--mavi:#2b5fd9;--mavi-acik:#e7eefc;--ok:#1b7f4b;--hata:#b3261e;--turuncu:#b26a00;--yol:#d9dde3;--yesil:#e3f2df}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--kart:#1b212a;--yazi:#e8ecf2;--soluk:#a3adbb;--cizgi:#3a4350;--mavi:#7ba2ff;--mavi-acik:#223150;--ok:#6fdc9f;--hata:#ff9a92;--turuncu:#ffc266;--yol:#2c333d;--yesil:#1f2b22}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--yazi);font:19px/1.5 system-ui,"Segoe UI",Roboto,Arial,sans-serif}
+#app{max-width:760px;margin:0 auto;padding:16px}
+.kart{background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:18px;margin:12px 0}
+h1{font-size:1.6rem;margin:0 0 6px}
+h2{font-size:1.25rem;margin:0 0 6px}
+.ust{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.95rem;color:var(--soluk);flex-wrap:wrap}
+.asama{display:inline-block;background:var(--mavi-acik);color:var(--mavi);border-radius:999px;padding:2px 12px;font-weight:700}
+.ilerleme{height:10px;background:var(--cizgi);border-radius:6px;overflow:hidden;margin:8px 0 0}
+.ilerleme i{display:block;height:100%;background:var(--mavi)}
+.soru{font-size:1.25rem;font-weight:600;margin:6px 0 14px}
+.sahne{font-size:2.2rem;text-align:center;margin:2px 0 8px;letter-spacing:.1em}
+.sec{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.sec{grid-template-columns:1fr}}
+button{font:inherit;min-height:56px;border-radius:14px;border:2px solid var(--mavi);background:var(--kart);color:var(--yazi);cursor:pointer;padding:8px 14px;text-align:left}
+button.dolu{background:var(--mavi);color:#fff;text-align:center}
+button.yanlis{border-color:var(--hata);opacity:.55}
+button.yanlis::after{content:"  ✗"}
+button.dogru{border-color:var(--ok);background:var(--ok);color:#fff}
+button.dogru::after{content:"  ✓"}
+button:disabled{cursor:default}
+button:focus-visible{outline:3px solid var(--turuncu);outline-offset:2px}
+.araclar{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.araclar button{min-height:48px;text-align:center}
+.gb{min-height:2.4em;margin-top:12px;font-weight:600}
+.gb.ok{color:var(--ok)}.gb.hata{color:var(--hata)}.gb.ip{color:var(--turuncu)}
+.not{font-size:.95rem;color:var(--soluk)}
+.kural{background:var(--mavi-acik);border-radius:12px;padding:10px 14px;margin:10px 0}
+.ses{float:right;min-height:40px;font-size:.9rem;padding:4px 10px}
+#dev{margin-top:12px;width:100%}
+/* Harita: 3x3 mahalle, kuzey yukarıda; aradaki boşluklar yol */
+.harita-kap{position:relative;margin:0 0 12px;padding:28px 28px 28px 28px;background:var(--yesil);border-radius:16px;border:1px solid var(--cizgi)}
+.harita{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;background:repeat-x center/24px 4px linear-gradient(90deg,var(--cizgi) 50%,transparent 50%),var(--yol);padding:14px;border-radius:12px}
+.yapi{min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;background:var(--kart);border:2px solid var(--cizgi);border-radius:12px;padding:4px 2px;font-size:1.05rem;font-weight:600;color:var(--yazi);line-height:1.15}
+.yapi .em{font-size:1.7rem;line-height:1}
+button.yapi{cursor:pointer;border-color:var(--mavi)}
+.yapi.vurgu{outline:3px solid var(--turuncu);outline-offset:1px}
+.yon{position:absolute;font-weight:800;font-size:1.1rem;color:var(--hata)}
+.yon.k{top:4px;left:50%;transform:translateX(-50%)}.yon.g{bottom:4px;left:50%;transform:translateX(-50%);color:var(--soluk)}
+.yon.d{right:6px;top:50%;transform:translateY(-50%);color:var(--soluk)}.yon.b{left:6px;top:50%;transform:translateY(-50%);color:var(--soluk)}
+.pusula{display:grid;grid-template-columns:repeat(3,auto);gap:2px 10px;justify-content:center;font-size:.95rem;margin:6px 0 10px;color:var(--soluk)}
+.pusula b{color:var(--yazi)}
+@media (max-width:420px){.harita-kap{padding:24px 22px}.harita{gap:10px;padding:10px}.yapi{font-size:1rem;min-height:70px}}
+@media (prefers-reduced-motion:no-preference){button{transition:background .15s,opacity .15s}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 2;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+})();
+
+</script>
+<script>
+'use strict';
+/* ===================== VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda) =====================
+ * HARITA: 3 sütun x 3 satır. Kuzey yukarıda. [sütun, satır]: sütun 0 = batı, 2 = doğu; satır 0 = kuzey, 2 = güney.
+ * Maddeler:
+ *   tur 'secim' : dogru + yanlislar [[seçenek, yanılgı etiketi], ...]
+ *   tur 'harita': öğrenci haritada yapıya dokunur. dogru = yapı kimliği, yanlislar = {yapı kimliği: yanılgı etiketi}
+ *                 (listede olmayan yanlış yapı 'tarif-izlenmedi' sayılır)
+ *   harita: true → soru haritayla birlikte gösterilir;  ipucu: en fazla 3 kademe;  why: neden doğru
+ * Yanılgı etiketleri:
+ *   kuzey-guney-karisik, dogu-bati-karisik : karşıt yönleri karıştırdı
+ *   ara-yon-eksik      : ara yön yerine yalnız bir ana yön söyledi
+ *   ara-yon-karisik    : yanlış ara yön seçti
+ *   referans-ters      : "A, B'nin neresinde?" sorusunu tersinden cevapladı
+ *   gunes-bati-sanir   : Güneş'in batıdan doğduğunu sandı
+ *   sag-sol-karisik    : yöne dönükken sağı ve solu karıştırdı
+ *   arka-yon           : arkasında kalan yönü seçti
+ *   golge-gunes-karisik: gölgenin Güneş'e doğru düştüğünü sandı
+ *   pusula-yanilgisi   : pusulanın gidilecek yönü gösterdiğini sandı
+ *   ara-yon-adi        : ara yönün adını yanlış kurdu
+ *   tarif-izlenmedi    : tarifteki adımları sırayla izlemedi
+ *   yan-yon            : doğru yöne dik (yandaki) bir yön seçti
+ *   on-yon             : yüzünün döndüğü yönü kolunun gösterdiği yön sandı
+ *   sabah-aksam-golgesi: öğle gölgesini sabah/akşam gölgesiyle karıştırdı
+ *   dogu-sanir         : pusulanın Güneş'in doğduğu yönü gösterdiğini sandı
+ */
+const OYUN = {
+  id: 'sos-konum',
+  ad: 'Konum Kâşifi: Yönler ve Yer Tarifi',
+  kazanimlar: [
+    { kod: 'SB.4.3.1', ad: 'Çevresindeki bir yerin konumu ile ilgili çıkarımlarda bulunur' }
+  ],
+  harita: [
+    { id: 'firin', ad: 'Fırın', em: '🥖', yer: [0, 0] }, { id: 'park', ad: 'Park', em: '🌳', yer: [1, 0] }, { id: 'kutuphane', ad: 'Kütüphane', em: '📚', yer: [2, 0] },
+    { id: 'cami', ad: 'Cami', em: '🕌', yer: [0, 1] }, { id: 'okul', ad: 'Okul', em: '🏫', yer: [1, 1] }, { id: 'hastane', ad: 'Hastane', em: '🏥', yer: [2, 1] },
+    { id: 'ev', ad: 'Ali\'nin evi', em: '🏠', yer: [0, 2] }, { id: 'market', ad: 'Market', em: '🛒', yer: [1, 2] }, { id: 'eczane', ad: 'Eczane', em: '💊', yer: [2, 2] }
+  ],
+  asamalar: {
+    1: { ad: 'Yön bul', kural: 'Güneş doğudan doğar, batıdan batar. Sabah Güneş\'e dönersen önün doğu, arkan batı, solun kuzey, sağın güney olur. Pusulanın renkli ucu her zaman kuzeyi gösterir.' },
+    2: { ad: 'Haritada yön', kural: 'Haritalarda kuzey yukarıdadır. Ana yönler: kuzey, güney, doğu, batı. İki ana yönün arası ara yöndür: kuzeydoğu, kuzeybatı, güneydoğu, güneybatı.' },
+    3: { ad: 'Tarifle yeri bul', kural: 'Yer tarifini adım adım izle. Her adımda haritada nerede olduğunu düşün. Sonra doğru yapıya dokun.' }
+  },
+  maddeler: [
+    /* ---- 1. aşama: Yön bul ---- */
+    { id: 'y1', asama: 1, tur: 'secim', sahne: '🌅 🧍', soru: 'Ali sabah erkenden, Güneş\'in doğduğu yöne dönüp duruyor. Ali hangi yöne bakıyor?', dogru: 'Doğu',
+      yanlislar: [['Batı', 'gunes-bati-sanir'], ['Kuzey', 'yan-yon'], ['Güney', 'yan-yon']],
+      ipucu: ['Güneş her sabah aynı yönden doğar.', 'Güneş doğudan doğar, batıdan batar.'], why: 'Güneş doğudan doğar. Sabah Güneş\'e dönen Ali doğuya bakıyor.' },
+    { id: 'y2', asama: 1, tur: 'secim', sahne: '🌅 🧍 👈', soru: 'Ali sabah Güneş\'e doğru, yani doğuya bakıyor. Sol kolunu yana açarsa sol kolu hangi yönü gösterir?', dogru: 'Kuzey',
+      yanlislar: [['Güney', 'sag-sol-karisik'], ['Batı', 'arka-yon'], ['Doğu', 'on-yon']],
+      ipucu: ['Önü doğu, arkası batı. Geriye sağ ve sol kalıyor.', 'Doğuya bakan birinin sağı güney, solu kuzeydir.'], why: 'Doğuya bakarken önün doğu, arkan batı, sağın güney, solun kuzeydir.' },
+    { id: 'y3', asama: 1, tur: 'secim', sahne: '☀️ 🧍 ⬇️', soru: 'Öğle vakti güneşli bir günde okul bahçesindesin. Gölgen hangi yöne düşer?', dogru: 'Kuzey',
+      yanlislar: [['Güney', 'golge-gunes-karisik'], ['Doğu', 'sabah-aksam-golgesi'], ['Batı', 'sabah-aksam-golgesi']],
+      ipucu: ['Gölge, Güneş\'in tam ters tarafına düşer.', 'Ülkemizde öğle vakti Güneş güney tarafımızdadır.'], why: 'Öğle vakti Güneş güneydedir; gölge ters tarafa, yani kuzeye düşer.' },
+    { id: 'y4', asama: 1, tur: 'secim', sahne: '🧭', soru: 'Pusulanın renkli (çoğu zaman kırmızı) ucu neyi gösterir?', dogru: 'Her zaman kuzeyi',
+      yanlislar: [['Her zaman güneyi', 'kuzey-guney-karisik'], ['Gideceğimiz yeri', 'pusula-yanilgisi'], ['Güneş\'in doğduğu yeri', 'dogu-sanir']],
+      ipucu: ['Pusulayı hangi yöne çevirirsen çevir, iğne hep aynı yöne döner.', 'Bu yön haritalarda yukarıda gösterilir.'], why: 'Pusulanın renkli ucu her zaman kuzeyi gösterir. Diğer yönleri kuzeye göre buluruz.' },
+    { id: 'y5', asama: 1, tur: 'secim', sahne: '⬆️ ↗️ ➡️', soru: 'Kuzey ile doğunun tam ortasındaki yöne ne ad verilir?', dogru: 'Kuzeydoğu',
+      yanlislar: [['Doğukuzey', 'ara-yon-adi'], ['Güneydoğu', 'kuzey-guney-karisik'], ['Kuzeybatı', 'dogu-bati-karisik']],
+      ipucu: ['Ara yönlerin adı kuzey ya da güney ile başlar.', 'Önce kuzey, sonra doğu: ...'], why: 'Kuzey ile doğunun arası kuzeydoğudur. Ara yön adları "kuzey" ya da "güney" ile başlar.' },
+
+    /* ---- 2. aşama: Haritada yön ---- */
+    { id: 'h1', asama: 2, tur: 'secim', harita: true, vurgu: ['park', 'okul'], soru: 'Park, okulun hangi yönündedir?', dogru: 'Kuzey',
+      yanlislar: [['Güney', 'kuzey-guney-karisik'], ['Doğu', 'yan-yon'], ['Kuzeydoğu', 'ara-yon-karisik']],
+      ipucu: ['Okulu bul. Park okulun üstünde mi, altında mı?', 'Haritada yukarısı kuzeydir.'], why: 'Park, okulun tam yukarısında. Haritada yukarı kuzeydir.' },
+    { id: 'h2', asama: 2, tur: 'secim', harita: true, vurgu: ['hastane', 'okul'], soru: 'Hastane, okulun hangi yönündedir?', dogru: 'Doğu',
+      yanlislar: [['Batı', 'dogu-bati-karisik'], ['Güneydoğu', 'ara-yon-karisik'], ['Kuzey', 'yan-yon']],
+      ipucu: ['Hastane okulun sağında mı, solunda mı?', 'Kuzey yukarıdaysa sağ taraf doğudur.'], why: 'Hastane okulun sağında. Kuzey yukarıdayken sağ taraf doğudur.' },
+    { id: 'h3', asama: 2, tur: 'secim', harita: true, vurgu: ['kutuphane', 'okul'], soru: 'Kütüphane, okulun hangi yönündedir?', dogru: 'Kuzeydoğu',
+      yanlislar: [['Kuzeybatı', 'dogu-bati-karisik'], ['Güneydoğu', 'kuzey-guney-karisik'], ['Kuzey', 'ara-yon-eksik']],
+      ipucu: ['Kütüphane okulun hem yukarısında hem sağında.', 'Yukarısı kuzey, sağı doğu. İkisini birleştir.'], why: 'Kütüphane okulun hem kuzeyinde hem doğusunda kalıyor: kuzeydoğu.' },
+    { id: 'h4', asama: 2, tur: 'secim', harita: true, vurgu: ['ev', 'okul'], soru: 'Ali\'nin evi, okulun hangi yönündedir?', dogru: 'Güneybatı',
+      yanlislar: [['Güneydoğu', 'dogu-bati-karisik'], ['Kuzeybatı', 'kuzey-guney-karisik'], ['Batı', 'ara-yon-eksik']],
+      ipucu: ['Ev okulun aşağısında ve solunda.', 'Aşağısı güney, solu batı. İkisini birleştir.'], why: 'Ali\'nin evi okulun hem güneyinde hem batısında: güneybatı.' },
+    { id: 'h5', asama: 2, tur: 'secim', harita: true, vurgu: ['okul', 'eczane'], soru: 'Dikkat! Bu kez soru tersten: Okul, eczanenin hangi yönündedir?', dogru: 'Kuzeybatı',
+      yanlislar: [['Güneydoğu', 'referans-ters'], ['Kuzeydoğu', 'dogu-bati-karisik'], ['Güneybatı', 'kuzey-guney-karisik']],
+      ipucu: ['Önce eczanenin üzerinde durduğunu düşün. Okul oradan nereye düşüyor?', 'Okul, eczanenin yukarısında ve solunda.'], why: 'Eczaneden bakınca okul yukarıda (kuzey) ve solda (batı): kuzeybatı. Eczane ise okulun güneydoğusundadır.' },
+    { id: 'h6', asama: 2, tur: 'secim', harita: true, vurgu: ['firin', 'cami'], soru: 'Fırın, caminin hangi yönündedir?', dogru: 'Kuzey',
+      yanlislar: [['Güney', 'referans-ters'], ['Kuzeydoğu', 'ara-yon-karisik'], ['Batı', 'yan-yon']],
+      ipucu: ['Camiyi bul. Fırın onun hangi tarafında?', 'Fırın caminin tam yukarısında.'], why: 'Fırın caminin tam yukarısında, yani kuzeyinde.' },
+
+    /* ---- 3. aşama: Tarifle yeri bul (haritada dokun) ---- */
+    { id: 't1', asama: 3, tur: 'harita', soru: 'Okulun hemen batısındaki yapıya dokun.', dogru: 'cami',
+      yanlislar: { hastane: 'dogu-bati-karisik', park: 'yan-yon', market: 'yan-yon' },
+      ipucu: ['Önce okulu bul.', 'Batı, haritanın sol tarafıdır.'], why: 'Okulun hemen solunda, yani batısında cami var.' },
+    { id: 't2', asama: 3, tur: 'harita', soru: 'Parkın doğusunda ve hastanenin kuzeyinde olan yapıya dokun.', dogru: 'kutuphane',
+      yanlislar: { firin: 'dogu-bati-karisik', eczane: 'kuzey-guney-karisik', okul: 'tarif-izlenmedi' },
+      ipucu: ['Parkın sağ tarafına bak.', 'Hastanenin yukarısına bak. İki ipucunun buluştuğu yapı hangisi?'], why: 'Parkın doğusunda ve hastanenin kuzeyinde kütüphane var.' },
+    { id: 't3', asama: 3, tur: 'harita', soru: 'Marketin batısında ve caminin güneyinde olan yapıya dokun.', dogru: 'ev',
+      yanlislar: { eczane: 'dogu-bati-karisik', firin: 'kuzey-guney-karisik', okul: 'tarif-izlenmedi' },
+      ipucu: ['Marketin sol tarafına bak.', 'Caminin aşağısına bak. İkisinin buluştuğu yer?'], why: 'Marketin batısında ve caminin güneyinde Ali\'nin evi var.' },
+    { id: 't4', asama: 3, tur: 'harita', soru: 'Ali evinden çıkıyor. Önce kuzeye yürüyüp caminin önüne geliyor. Sonra doğuya dönüyor ve önüne çıkan ilk yapıya giriyor. Ali nereye girdi?', dogru: 'okul',
+      yanlislar: { cami: 'tarif-izlenmedi', firin: 'tarif-izlenmedi', market: 'tarif-izlenmedi', hastane: 'tarif-izlenmedi' },
+      ipucu: ['Önce Ali\'nin evini bul, sonra yukarı (kuzeye) çık.', 'Caminin önündesin. Şimdi sağa (doğuya) doğru ilk yapı hangisi?'], why: 'Evden kuzeye yürüyünce camiye gelir; caminin doğusundaki ilk yapı okuldur.' }
+  ]
+};
+
+/* ===================== MOTOR ===================== */
+const app = document.getElementById('app');
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const depo = (() => { const mem = {}; return {
+  oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
+  yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } } }; })();
+const DEPO_REKOR = 'rekor-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
+const yapiAdi = id => (OYUN.harita.find(y => y.id === id) || {}).ad || id;
+
+let sesAcik = depo.oku(DEPO_SES) !== '0', ctx = null;
+function bip(dogru) {
+  if (!sesAcik) return;
+  try {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = dogru ? 660 : 220; o.type = 'sine';
+    g.gain.setValueAtTime(0.08, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.26);
+  } catch (e) { /* ses yok */ }
+}
+function sesDugme() { return '<button class="ses" id="ses" aria-pressed="' + sesAcik + '">' + (sesAcik ? '🔊 Ses açık' : '🔈 Ses kapalı') + '</button>'; }
+function sesBagla() { const b = document.getElementById('ses'); if (b) b.onclick = () => { sesAcik = !sesAcik; depo.yaz(DEPO_SES, sesAcik ? '1' : '0'); b.outerHTML = sesDugme(); sesBagla(); }; }
+
+/* Haritayı çiz: tiklanir=true ise yapılar düğme olur */
+function haritaHTML(tiklanir, vurgu) {
+  const hucre = OYUN.harita.slice().sort((a, b) => a.yer[1] - b.yer[1] || a.yer[0] - b.yer[0]).map(y => {
+    const ic = '<span class="em" aria-hidden="true">' + y.em + '</span><span>' + esc(y.ad) + '</span>';
+    const v = vurgu && vurgu.includes(y.id) ? ' vurgu' : '';
+    return tiklanir ? '<button class="yapi' + v + '" data-yapi="' + y.id + '" aria-label="' + esc(y.ad) + '">' + ic + '</button>'
+                    : '<div class="yapi' + v + '">' + ic + '</div>';
+  }).join('');
+  return '<div class="harita-kap" role="group" aria-label="Mahalle haritası, kuzey yukarıda">' +
+    '<span class="yon k">K ⬆</span><span class="yon g">G</span><span class="yon d">D</span><span class="yon b">B</span>' +
+    '<div class="harita">' + hucre + '</div></div>';
+}
+
+let sira = [], idx = 0, durum = null, ilkTur = 0, sonAsama = 0, tekrarEklendi = false;
+
+function baslangic() {
+  const rekor = depo.oku(DEPO_REKOR);
+  app.innerHTML = '<div class="kart">' + sesDugme() + '<h1>🧭 ' + esc(OYUN.ad) + '</h1>' +
+    '<p>Bir yerin <b>konumunu</b> anlatmak için yönleri kullanırız. Bugün yön bulacak, haritada yön söyleyecek ve tarifle yer bulacaksın.</p>' +
+    '<p>Üç aşama var: <b>1) Yön bul</b> · <b>2) Haritada yön</b> · <b>3) Tarifle yeri bul</b>. Toplam ' + OYUN.maddeler.length + ' soru.</p>' +
+    '<p class="not">Yanlış yaparsan ipucu alıp bir kez daha deneyebilirsin. Klavyede 1–4 tuşlarıyla seçebilir, Enter ile devam edebilirsin.</p>' +
+    (rekor ? '<p class="not">Önceki en iyi sonucun: ' + esc(rekor) + ' soru ilk denemede doğru.</p>' : '') +
+    '<p><button class="dolu" id="basla">Başla</button></p></div>';
+  sesBagla();
+  document.getElementById('basla').onclick = () => {
+    RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+    sira = [1, 2, 3].flatMap(a => shuffle(OYUN.maddeler.filter(m => m.asama === a))).map(m => ({ m, tekrar: false }));
+    ilkTur = sira.length; idx = 0; sonAsama = 0; tekrarEklendi = false; soru();
+  };
+  document.getElementById('basla').focus();
+}
+
+function asamaGiris(a, sonra) {
+  const s = OYUN.asamalar[a];
+  app.innerHTML = '<div class="kart"><span class="asama">' + a + '. aşama</span><h2 style="margin-top:8px">' + esc(s.ad) + '</h2>' +
+    '<div class="kural">📌 ' + esc(s.kural) + '</div>' + (a >= 2 ? haritaHTML(false) : '') + '<button class="dolu" id="dev">Hadi başlayalım →</button></div>';
+  const d = document.getElementById('dev'); d.onclick = sonra; d.focus();
+}
+
+function soru() {
+  if (idx >= sira.length) {
+    if (!tekrarEklendi) {
+      tekrarEklendi = true;
+      const zor = sira.slice(0, ilkTur).filter(x => !x.ilkDogru);
+      const ek = [1, 2, 3].flatMap(a => shuffle(zor.filter(x => x.m.asama === a)).slice(0, 2))
+        .concat(shuffle(zor)).filter((x, i, d) => d.indexOf(x) === i).slice(0, 6).map(x => ({ m: x.m, tekrar: true }));
+      if (ek.length) {
+        sira = sira.concat(shuffle(ek));
+        app.innerHTML = '<div class="kart"><h2>🔁 Bir şans daha</h2><p>İlk denemede zorlandığın ' + ek.length + ' soruya yeniden bakalım. Bu kez ipuçlarını hatırla!</p>' +
+          '<button class="dolu" id="dev">Devam →</button></div>';
+        const d = document.getElementById('dev'); d.onclick = soru; d.focus();
+        return;
+      }
+    }
+    bitisEkrani(); return;
+  }
+  const x = sira[idx], m = x.m;
+  if (!x.tekrar && m.asama !== sonAsama) { sonAsama = m.asama; asamaGiris(m.asama, soru); return; }
+  durum = { x, m, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+  const yuzde = Math.round(idx * 100 / sira.length);
+  let govde;
+  if (m.tur === 'harita') {
+    govde = '<div class="soru">' + esc(m.soru) + '</div>' + haritaHTML(true);
+  } else {
+    durum.sec = shuffle([[m.dogru, '']].concat(m.yanlislar));
+    govde = (m.sahne ? '<div class="sahne" aria-hidden="true">' + m.sahne + '</div>' : '') +
+      (m.harita ? haritaHTML(false, m.vurgu) : '') + '<div class="soru">' + esc(m.soru) + '</div><div class="sec">' +
+      durum.sec.map((s, i) => '<button data-i="' + i + '" aria-label="Seçenek ' + (i + 1) + ': ' + esc(s[0]) + '">' + (i + 1) + ') ' + esc(s[0]) + '</button>').join('') + '</div>';
+  }
+  app.innerHTML = '<div class="ust"><span class="asama">' + (x.tekrar ? '🔁 Bir şans daha' : m.asama + '. aşama · ' + esc(OYUN.asamalar[m.asama].ad)) + '</span>' +
+    '<span>Soru ' + (idx + 1) + ' / ' + sira.length + '</span></div><div class="ilerleme" aria-hidden="true"><i style="width:' + yuzde + '%"></i></div>' +
+    '<div class="kart">' + govde + '<div class="araclar"><button id="ip">💡 İpucu</button></div><div class="gb" id="gb" aria-live="polite"></div></div>';
+  app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => sec_(+b.dataset.i); });
+  app.querySelectorAll('button.yapi').forEach(b => { b.onclick = () => yapiSec(b.dataset.yapi); });
+  document.getElementById('ip').onclick = ipucuVer;
+}
+
+function ipucuVer() {
+  if (!durum || durum.kilit) return;
+  const ip = durum.m.ipucu;
+  if (durum.ipucu >= ip.length) return;
+  durum.ipucu++;
+  const gb = document.getElementById('gb'); gb.className = 'gb ip';
+  gb.textContent = '💡 ' + ip.slice(0, durum.ipucu).join(' ');
+  if (durum.ipucu >= ip.length) { const b = document.getElementById('ip'); b.disabled = true; b.textContent = '💡 İpuçları bitti'; }
+}
+
+/* Ortak cevap değerlendirme: dogruMu, yanılgı etiketi, işaretlenecek düğme, doğru düğme */
+function cevapla(dogruMu, yan, btn, dogruBtn) {
+  const gb = document.getElementById('gb');
+  durum.deneme++;
+  if (dogruMu) { btn.classList.add('dogru'); bip(true); bitir(false, 'ok', '✅ Doğru! ' + durum.m.why); return; }
+  btn.classList.add('yanlis'); btn.disabled = true; bip(false);
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = yan;
+  if (durum.deneme >= 2) { dogruBtn.classList.add('dogru'); bitir(true, 'hata', 'Çözüme birlikte bakalım: ' + durum.m.why); return; }
+  gb.className = 'gb hata'; gb.textContent = 'Henüz değil. Bir daha dene; istersen 💡 ipucu al.';
+}
+function sec_(i) {
+  if (!durum || durum.kilit || durum.m.tur === 'harita') return;
+  const btns = app.querySelectorAll('.sec button'), btn = btns[i];
+  if (!btn || btn.disabled) return;
+  const [metin, yan] = durum.sec[i];
+  cevapla(metin === durum.m.dogru, yan, btn, btns[durum.sec.findIndex(s => s[0] === durum.m.dogru)]);
+}
+function yapiSec(id) {
+  if (!durum || durum.kilit || durum.m.tur !== 'harita') return;
+  const btn = app.querySelector('button.yapi[data-yapi="' + id + '"]');
+  if (!btn || btn.disabled) return;
+  const dogruMu = id === durum.m.dogru;
+  if (!dogruMu) { const gb = document.getElementById('gb'); gb.className = 'gb hata'; }
+  cevapla(dogruMu, durum.m.yanlislar[id] || 'tarif-izlenmedi', btn, app.querySelector('button.yapi[data-yapi="' + durum.m.dogru + '"]'));
+  if (!dogruMu && durum.deneme === 1) document.getElementById('gb').textContent = 'Henüz değil: burası ' + yapiAdi(id) + '. Tarifi bir daha oku; istersen 💡 ipucu al.';
+}
+
+function bitir(cozumGoruldu, sinif, mesaj) {
+  durum.kilit = true;
+  const ilkDogru = durum.deneme === 1 && !cozumGoruldu;
+  durum.x.ilkDogru = ilkDogru;
+  RaporMotoru.kaydet({ kazanim: OYUN.kazanimlar[0].kod, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
+    ilkDenemeDogru: ilkDogru, deneme: durum.deneme, ipucu: durum.ipucu,
+    cozumGoruldu, sureMs: Date.now() - durum.t0, tekrar: durum.x.tekrar });
+  const gb = document.getElementById('gb'); gb.className = 'gb ' + sinif; gb.textContent = mesaj;
+  app.querySelectorAll('.sec button, button.yapi, #ip').forEach(b => { b.disabled = true; });
+  const dev = document.createElement('button'); dev.className = 'dolu'; dev.id = 'dev';
+  dev.textContent = idx + 1 < sira.length || !tekrarEklendi ? 'Devam →' : 'Karnemi gör';
+  dev.onclick = () => { idx++; soru(); };
+  app.querySelector('.kart').appendChild(dev); dev.focus();
+}
+
+function bitisEkrani() {
+  durum = null;
+  RaporMotoru.ekranCiz(app);
+  const ilk = RaporMotoru.ozet().reduce((t, x) => t + x.dogru, 0), eski = parseInt(depo.oku(DEPO_REKOR), 10) || 0;
+  if (ilk > eski) depo.yaz(DEPO_REKOR, String(ilk));
+  const k = document.createElement('div'); k.className = 'kart';
+  k.innerHTML = '<b>Unutma:</b> Haritada kuzey yukarıdadır. Güneş doğudan doğar, pusula kuzeyi gösterir. Yer tarif ederken yönleri ve yakındaki yapıları kullan.';
+  app.appendChild(k);
+  const yeniden = document.createElement('button'); yeniden.className = 'dolu'; yeniden.textContent = '↻ Yeniden oyna';
+  yeniden.onclick = baslangic; app.appendChild(yeniden);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key >= '1' && e.key <= '4' && durum && !durum.kilit && document.querySelector('.sec')) sec_(+e.key - 1);
+  else if (e.key === 'Enter' && document.activeElement && document.activeElement.id !== 'dev' && !document.activeElement.classList.contains('yapi')) { const d = document.getElementById('dev'); if (d) { e.preventDefault(); d.click(); } }
+});
+baslangic();
+</script>
+</body>
+</html>
