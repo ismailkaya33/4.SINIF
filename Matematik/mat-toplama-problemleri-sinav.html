@@ -28,6 +28,7 @@ button:disabled{opacity:.45;cursor:default}
 .gezgin button.simdi{border-color:var(--yazi);border-width:3px}
 .alt{display:flex;gap:10px;justify-content:space-between;margin-top:16px;flex-wrap:wrap}
 .alt button{min-width:130px}
+.gorsel{margin:4px 0 14px}.gorsel svg{display:block;width:100%;max-width:520px;height:auto;margin:0 auto;border-radius:14px}
 .uyari{background:var(--mavi-acik);border-radius:12px;padding:12px;margin:12px 0}
 @media (prefers-reduced-motion:no-preference){button{transition:background .15s}}
 </style>
@@ -163,6 +164,98 @@ const RaporMotoru = (() => {
 
 </script>
 <script>
+/* ===== GÖRSELLER (sorulara eşlik eden basit çizimler; fiyatlar soru metninde de yazılı) ===== */
+const GORSEL = (() => {
+  const Y = 'font-family="system-ui,Segoe UI,Arial,sans-serif" font-weight="800"';
+  const etiket = (x, y, t, r = -8) =>
+    `<g transform="translate(${x} ${y}) rotate(${r})"><rect x="-47" y="-15" width="94" height="30" rx="7" fill="#ffd84d" stroke="#8a6d00" stroke-width="2"/>` +
+    `<circle cx="-38" cy="0" r="3.2" fill="#8a6d00"/><text x="5" y="6" text-anchor="middle" font-size="16" fill="#3a2c00" ${Y}>${t}</text></g>`;
+  const ad = (x, y, t) => `<text x="${x}" y="${y}" text-anchor="middle" font-size="15" fill="#33404f" ${Y}>${t}</text>`;
+  const svg = (w, h, ic, alt) => `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${alt}" xmlns="http://www.w3.org/2000/svg"><rect width="${w}" height="${h}" rx="14" fill="#f3f7ff"/>${ic}</svg>`;
+  const zemin = (w, y) => `<rect x="0" y="${y}" width="${w}" height="4" fill="#d7deea"/>`;
+
+  const buzdolabi = (x) => `<rect x="${x}" y="40" width="72" height="150" rx="8" fill="#2f63b5" stroke="#1d3f78" stroke-width="3"/>` +
+    `<line x1="${x}" y1="92" x2="${x + 72}" y2="92" stroke="#1d3f78" stroke-width="3"/>` +
+    `<rect x="${x + 58}" y="58" width="6" height="22" rx="3" fill="#dfe8f7"/><rect x="${x + 58}" y="104" width="6" height="34" rx="3" fill="#dfe8f7"/>`;
+  const bilgisayar = (x) => `<rect x="${x}" y="92" width="92" height="62" rx="6" fill="#2b3340"/><rect x="${x + 6}" y="98" width="80" height="48" rx="3" fill="#7fc4ff"/>` +
+    `<path d="M${x + 14} 140 l18-20 14 12 16-22 18 30z" fill="#4aa36b" opacity=".85"/><rect x="${x + 40}" y="154" width="12" height="20" fill="#5a6474"/><rect x="${x + 24}" y="172" width="44" height="8" rx="4" fill="#5a6474"/>`;
+  const camasir = (x) => `<rect x="${x}" y="96" width="84" height="94" rx="8" fill="#e9edf3" stroke="#8b97a8" stroke-width="3"/>` +
+    `<line x1="${x}" y1="116" x2="${x + 84}" y2="116" stroke="#8b97a8" stroke-width="2"/><circle cx="${x + 12}" cy="106" r="4" fill="#4b5768"/><rect x="${x + 50}" y="102" width="24" height="8" rx="3" fill="#4b5768"/>` +
+    `<circle cx="${x + 42}" cy="152" r="27" fill="#b9d4ef" stroke="#4b5768" stroke-width="5"/><path d="M${x + 24} 158 q18 -12 36 0" stroke="#7fa6cf" stroke-width="4" fill="none"/>`;
+  const hali = (x) => `<g transform="translate(${x} 150) skewX(-18)"><rect width="96" height="40" rx="3" fill="#c0392b"/><rect x="8" y="7" width="80" height="26" fill="none" stroke="#f5c26b" stroke-width="3"/>` +
+    `<path d="M48 11 l10 9 -10 9 -10-9z" fill="#f5c26b"/>${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<line x1="${4 + i * 12.5}" y1="40" x2="${4 + i * 12.5}" y2="47" stroke="#8e2a20" stroke-width="2"/>`).join('')}</g>`;
+
+  const fiyat = svg(500, 230,
+    zemin(500, 190) + buzdolabi(22) + etiket(58, 26, '4 586 TL') + ad(58, 216, 'Buzdolabı') +
+    bilgisayar(122) + etiket(168, 66, '2 899 TL', 6) + ad(168, 216, 'Bilgisayar') +
+    camasir(248) + etiket(290, 72, '2 379 TL', -6) + ad(290, 216, 'Çamaşır mak.') +
+    hali(378) + etiket(430, 118, '365 TL', 7) + ad(420, 216, 'Halı'),
+    'Buzdolabı 4 586 TL, bilgisayar 2 899 TL, çamaşır makinesi 2 379 TL, halı 365 TL');
+
+  const koltuk = `<rect x="22" y="112" width="140" height="56" rx="14" fill="#c8323a"/><rect x="34" y="84" width="116" height="44" rx="14" fill="#a8262e"/>` +
+    `<rect x="14" y="104" width="26" height="64" rx="12" fill="#b52b33"/><rect x="144" y="104" width="26" height="64" rx="12" fill="#b52b33"/>` +
+    `<rect x="48" y="96" width="34" height="26" rx="8" fill="#f2c14e"/><rect x="102" y="96" width="34" height="26" rx="8" fill="#f2c14e"/>` +
+    `<rect x="30" y="168" width="8" height="14" fill="#5b3a1e"/><rect x="146" y="168" width="8" height="14" fill="#5b3a1e"/>`;
+  const dolap = `<rect x="200" y="36" width="104" height="146" rx="6" fill="#7a4b2a" stroke="#4e2f19" stroke-width="3"/>` +
+    `<line x1="252" y1="36" x2="252" y2="182" stroke="#4e2f19" stroke-width="3"/><rect x="212" y="50" width="30" height="58" rx="4" fill="#8f5b35"/><rect x="262" y="50" width="30" height="58" rx="4" fill="#8f5b35"/>` +
+    `<rect x="212" y="118" width="30" height="52" rx="4" fill="#8f5b35"/><rect x="262" y="118" width="30" height="52" rx="4" fill="#8f5b35"/>` +
+    `<circle cx="246" cy="112" r="3.5" fill="#e6c27a"/><circle cx="258" cy="112" r="3.5" fill="#e6c27a"/>`;
+  const sifonyer = `<rect x="340" y="112" width="120" height="70" rx="5" fill="#6d4124" stroke="#4e2f19" stroke-width="3"/>` +
+    [0, 1, 2].map(i => `<rect x="350" y="${119 + i * 20}" width="100" height="16" rx="3" fill="#86522f"/><rect x="392" y="${125 + i * 20}" width="16" height="4" rx="2" fill="#e6c27a"/>`).join('');
+  const esya = svg(480, 230,
+    zemin(480, 182) + koltuk + etiket(92, 66, '2 416 TL', -7) + ad(92, 212, 'Koltuk') +
+    dolap + etiket(252, 22, '2 184 TL', 6) + ad(252, 212, 'Dolap') +
+    sifonyer + etiket(400, 92, '1 125 TL', -5) + ad(400, 212, 'Şifonyer'),
+    'Koltuk 2 416 TL, dolap 2 184 TL, şifonyer 1 125 TL');
+
+  const tv = svg(320, 170,
+    `<rect x="70" y="18" width="180" height="112" rx="8" fill="#252c37"/><rect x="80" y="28" width="160" height="92" rx="4" fill="#5fb8f5"/>` +
+    `<circle cx="205" cy="52" r="12" fill="#ffe27a"/><path d="M80 120 l45-42 30 26 28-20 57 36z" fill="#3f9a5e"/>` +
+    `<rect x="150" y="130" width="20" height="16" fill="#4a5363"/><rect x="118" y="146" width="84" height="9" rx="4" fill="#4a5363"/>`,
+    'Televizyon');
+
+  const ekmek = (x, y) => `<ellipse cx="${x}" cy="${y}" rx="26" ry="13" fill="#d99a4e" stroke="#9c6526" stroke-width="2"/>` +
+    `<path d="M${x - 12} ${y - 7} l6 10 M${x} ${y - 9} l6 10 M${x + 12} ${y - 7} l6 10" stroke="#9c6526" stroke-width="2.5"/>`;
+  const firinci = svg(320, 170,
+    `<rect x="20" y="40" width="160" height="10" fill="#9c7a55"/><rect x="20" y="96" width="160" height="10" fill="#9c7a55"/><rect x="20" y="150" width="160" height="10" fill="#9c7a55"/>` +
+    ekmek(52, 28) + ekmek(110, 28) + ekmek(160, 30) + ekmek(52, 84) + ekmek(110, 84) + ekmek(160, 84) + ekmek(52, 138) + ekmek(110, 138) +
+    `<circle cx="250" cy="92" r="26" fill="#f2c9a0"/><path d="M222 70 q-4-30 18-26 q10-16 22 0 q22-4 16 26z" fill="#fff" stroke="#c9d1dc" stroke-width="2"/>` +
+    `<circle cx="241" cy="90" r="3" fill="#33404f"/><circle cx="259" cy="90" r="3" fill="#33404f"/><path d="M240 102 q10 8 20 0" stroke="#33404f" stroke-width="3" fill="none"/>` +
+    `<path d="M214 170 q4-48 36-50 q32 2 36 50z" fill="#fff" stroke="#c9d1dc" stroke-width="2"/>`,
+    'Ekmek satan fırıncı');
+
+  const bisiklet = svg(320, 170,
+    `<rect x="0" y="140" width="320" height="30" rx="0" fill="#9fd18b"/><circle cx="250" cy="34" r="16" fill="#ffe27a"/>` +
+    `<circle cx="100" cy="126" r="30" fill="none" stroke="#2b3340" stroke-width="6"/><circle cx="214" cy="126" r="30" fill="none" stroke="#2b3340" stroke-width="6"/>` +
+    `<path d="M100 126 L140 80 L196 80 L214 126 M140 80 L160 126 L196 80 M160 126 L100 126" fill="none" stroke="#e0533d" stroke-width="6" stroke-linejoin="round"/>` +
+    `<path d="M196 80 l6-16 h14" stroke="#2b3340" stroke-width="5" fill="none"/><rect x="128" y="70" width="26" height="7" rx="3" fill="#2b3340"/>` +
+    `<path d="M142 70 L170 34 L206 62" stroke="#3a7bd5" stroke-width="12" stroke-linecap="round" fill="none"/>` +
+    `<path d="M142 72 L160 104 L160 126" stroke="#33404f" stroke-width="9" stroke-linecap="round" fill="none"/>` +
+    `<circle cx="176" cy="22" r="13" fill="#f2c9a0"/><path d="M162 20 q14-22 30 0z" fill="#2f9e5b"/>`,
+    'Bisiklet süren çocuk');
+
+  const kisi = (x, r, g) => `<circle cx="${x}" cy="${118 - r}" r="${r}" fill="#f2c9a0"/><rect x="${x - r}" y="${118}" width="${r * 2}" height="${r * 2.4}" rx="${r * .8}" fill="${g}"/>`;
+  const tiyatro = svg(320, 170,
+    `<rect x="0" y="0" width="320" height="170" rx="14" fill="#2a1430"/><rect x="40" y="150" width="240" height="14" fill="#7a4b2a"/>` +
+    `<path d="M0 0 h70 q-6 80 22 150 h-92z" fill="#c0262f"/><path d="M320 0 h-70 q6 80 -22 150 h92z" fill="#c0262f"/>` +
+    `<path d="M0 0 h320 v24 q-20 14 -40 0 q-20 14 -40 0 q-20 14 -40 0 q-20 14 -40 0 q-20 14 -40 0 q-20 14 -40 0 q-20 14 -40 0 q-20 14 -40 0z" fill="#a01c25"/>` +
+    kisi(124, 14, '#3a7bd5') + kisi(162, 16, '#f2c14e') + kisi(200, 14, '#4aa36b'),
+    'Tiyatro sahnesi');
+
+  const firin = `<rect x="40" y="58" width="110" height="112" rx="8" fill="#e9edf3" stroke="#8b97a8" stroke-width="3"/>` +
+    `<rect x="52" y="90" width="86" height="64" rx="6" fill="#3b4452"/><rect x="60" y="98" width="70" height="48" rx="4" fill="#f0a64a" opacity=".55"/>` +
+    [0, 1, 2, 3].map(i => `<circle cx="${62 + i * 22}" cy="74" r="6" fill="#4b5768"/>`).join('');
+  const bulasik = `<rect x="200" y="58" width="96" height="112" rx="8" fill="#e9edf3" stroke="#8b97a8" stroke-width="3"/>` +
+    `<rect x="200" y="58" width="96" height="22" rx="8" fill="#cfd6e0"/><rect x="226" y="66" width="44" height="6" rx="3" fill="#4b5768"/>` +
+    `<rect x="214" y="96" width="68" height="60" rx="5" fill="none" stroke="#8b97a8" stroke-width="2"/><rect x="232" y="102" width="32" height="6" rx="3" fill="#8b97a8"/>`;
+  const makineler = svg(340, 220, zemin(340, 170) + firin + etiket(95, 34, '1 874 TL', -6) + ad(95, 200, 'Fırın') +
+    bulasik + etiket(248, 34, '2 675 TL', 6) + ad(248, 200, 'Bulaşık makinesi'),
+    'Fırın 1 874 TL, bulaşık makinesi 2 675 TL');
+
+  return { fiyat, esya, tv, firinci, bisiklet, tiyatro, makineler };
+})();
+</script>
+<script>
 'use strict';
 /* ===== VERİ (öğretmen yalnızca burayı düzenler) ===== */
 const OYUN = {
@@ -185,6 +278,7 @@ const OYUN = {
  "maddeler": [
   {
    "id": "t1",
+   "gorsel": "fiyat",
    "kaz": "M.4.1.3.4",
    "soru": "Mağazadaki fiyatlar: buzdolabı 4 586 TL, bilgisayar 2 899 TL, çamaşır makinesi 2 379 TL, halı 365 TL. Buzdolabı ile bilgisayar alan babam satıcıya 8 000 lira verdiğinde kaç lira para üstü alır?",
    "dogru": "515",
@@ -206,6 +300,7 @@ const OYUN = {
   },
   {
    "id": "t2",
+   "gorsel": "fiyat",
    "kaz": "M.4.1.3.4",
    "soru": "Mağazadaki fiyatlar: buzdolabı 4 586 TL, bilgisayar 2 899 TL, çamaşır makinesi 2 379 TL, halı 365 TL. Annem satıcıdan çamaşır makinesi ve halı aldı. Satıcıya 3 000 lira verirse kaç lira para üstü alır?",
    "dogru": "256",
@@ -227,6 +322,7 @@ const OYUN = {
   },
   {
    "id": "t3",
+   "gorsel": "fiyat",
    "kaz": "M.4.1.3.4",
    "soru": "Mağazadaki fiyatlar: buzdolabı 4 586 TL, bilgisayar 2 899 TL, çamaşır makinesi 2 379 TL, halı 365 TL. Buzdolabı, bilgisayar ile halının toplamından kaç lira fazladır?",
    "dogru": "1 322",
@@ -248,6 +344,7 @@ const OYUN = {
   },
   {
    "id": "t4",
+   "gorsel": "fiyat",
    "kaz": "M.4.1.2.4",
    "soru": "Mağazadaki fiyatlar: buzdolabı 4 586 TL, bilgisayar 2 899 TL, çamaşır makinesi 2 379 TL, halı 365 TL. Babam buzdolabı, çamaşır makinesi ve bilgisayar aldığında satıcıya kaç lira öder?",
    "dogru": "9 864",
@@ -290,6 +387,7 @@ const OYUN = {
   },
   {
    "id": "t6",
+   "gorsel": "firinci",
    "kaz": "M.4.1.2.4",
    "soru": "Bir fırıncı her gün bir önceki günden 25 fazla ekmek satmıştır. İlk gün 179 ekmek sattığına göre 3 günde toplam kaç ekmek satmıştır?",
    "dogru": "612",
@@ -311,6 +409,7 @@ const OYUN = {
   },
   {
    "id": "t7",
+   "gorsel": "bisiklet",
    "kaz": "M.4.1.2.4",
    "soru": "Bir bisikletli ilk gün 475 metre, ikinci gün ilk gününden 198 metre daha az uzunlukta yol gitmiştir. Bisikletli iki günde toplam kaç metre yol gitmiştir?",
    "dogru": "752",
@@ -353,6 +452,7 @@ const OYUN = {
   },
   {
    "id": "t9",
+   "gorsel": "tv",
    "kaz": "M.4.1.2.4",
    "soru": "Bir esnaf 3 847 lira olan televizyonu 1 089 lira zamlı satmıştır. Esnaf televizyonu kaç liraya satmıştır?",
    "dogru": "4 936",
@@ -437,6 +537,7 @@ const OYUN = {
   },
   {
    "id": "t13",
+   "gorsel": "tiyatro",
    "kaz": "M.4.1.2.4",
    "soru": "Bir tiyatro oyununu birinci gün 708 kişi, ikinci gün birinci günden 172 az kişi izlemiştir. Tiyatroyu iki günde toplam kaç kişi izlemiştir?",
    "dogru": "1 244",
@@ -458,6 +559,7 @@ const OYUN = {
   },
   {
    "id": "t14",
+   "gorsel": "makineler",
    "kaz": "M.4.1.2.2",
    "soru": "Babam 1 874 liraya fırın, 2 675 liraya bulaşık makinesi alacak. İkisinin en yakın onluğa yuvarlanarak elde edilen tahminî toplam fiyatı ile gerçek fiyatı arasındaki fark kaç liradır?",
    "dogru": "1",
@@ -479,6 +581,7 @@ const OYUN = {
   },
   {
    "id": "t15",
+   "gorsel": "esya",
    "kaz": "M.4.1.2.2",
    "soru": "Bir mağazada koltuk 2 416 TL, dolap 2 184 TL, şifonyer 1 125 TL'dir. Sevim Hanım bu üç ürünü almak istiyor. Satıcı, her ürünün fiyatını en yakın yüzlüğe yuvarlayıp bulduğu sonuçtan 400 lira çıkarmıştır. Buna göre satıcının Sevim Hanım'a teklif ettiği fiyat kaç TL'dir?",
    "dogru": "5 300",
@@ -561,7 +664,7 @@ function soruCiz() {
   const m = S.sira[S.i], sec = S.sec[m.id], son = S.i === S.sira.length - 1;
   S.t = Date.now();
   app.innerHTML = '<div class="ust"><span>Soru ' + (S.i + 1) + ' / ' + S.sira.length + '</span><span>' + Object.keys(S.cevap).length + ' soru cevaplı</span></div>' +
-    '<div class="kart"><div class="soru" id="soru">' + esc(m.soru) + '</div>' +
+    '<div class="kart">' + (m.gorsel && GORSEL[m.gorsel] ? '<div class="gorsel">' + GORSEL[m.gorsel] + '</div>' : '') + '<div class="soru" id="soru">' + esc(m.soru) + '</div>' +
     '<div class="sec" role="radiogroup" aria-labelledby="soru">' + sec.map((s, k) =>
       '<button role="radio" aria-checked="' + (S.cevap[m.id] === s[0]) + '" data-k="' + k + '" class="' + (S.cevap[m.id] === s[0] ? 'secili' : '') + '">' + String.fromCharCode(65 + k) + ') ' + esc(s[0]) + '</button>').join('') + '</div>' +
     '<div class="alt"><button class="ikincil" id="onceki"' + (S.i === 0 ? ' disabled' : '') + '>← Önceki</button>' +
