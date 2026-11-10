@@ -101,7 +101,8 @@ const SECILI_ETKINLIKLER_ = Object.freeze([
  'Matematik/toplamacikarmaproblem2.html',
  'Insanhaklari/insanolmasorumlulugu.html',
  'Trafik/yayaolaraktrafikkurallarietkinligi.html',
- 'Insanhaklari/farkliyasamlar.html'
+ 'Insanhaklari/farkliyasamlar.html',
+ 'Matematik/cikarmadatahmin.html'
 ]);
 /* KATALOG BITIR: secili-etkinlikler */
 const ETKINLIK_BEYAN_SAYFASI_='ETKINLIK_TAMAMLAMA';

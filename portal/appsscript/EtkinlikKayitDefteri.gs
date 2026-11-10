@@ -16,7 +16,8 @@ const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({
   'mat-cikarmaislemi': Object.freeze({konu:'Matematik',kazanim:'Çıkarma işlemi',maxTotal:200}),
   'fen-besinkasifleri': Object.freeze({konu:'Fen Bilimleri',kazanim:'Besinler — Görev Haritası final testi',maxTotal:200}),
   'sos-oyunzamani': Object.freeze({konu:'Sosyal Bilgiler',kazanim:'SB.4.2.3 Geçmişten günümüze çocuk oyunları',maxTotal:200}),
-  'insan-farkliyasamlar': Object.freeze({konu:'İnsan Hakları, Yurttaşlık ve Demokrasi',kazanim:'Y.4.2.3 Çocuk yaşantılarını karşılaştırma',maxTotal:200})
+  'insan-farkliyasamlar': Object.freeze({konu:'İnsan Hakları, Yurttaşlık ve Demokrasi',kazanim:'Y.4.2.3 Çocuk yaşantılarını karşılaştırma',maxTotal:200}),
+  'mat-cikarmadatahmin': Object.freeze({konu:'Matematik',kazanim:'M.4.1.3.3 Çıkarmada tahmin',maxTotal:200})
 });
 /* KATALOG BITIR: sunucu-izin-listesi */
 function etkinlikTanimi_(id) {
