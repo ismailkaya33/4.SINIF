@@ -12,6 +12,9 @@ Ayrı bir sohbet projesi kullanılmaz. Kurallar burada ve `.claude/skills/` alt�
 | `4d-icerik-uret` | Etkinlik, oyun, değerlendirme, defter notu, çalışma kâğıdı, sunum üretmek (kalite kuralları burada) |
 | `4d-etkinlik-takibe-al` | Bir etkinliğin sonucu öğretmen paneline düşsün |
 | `4d-canli-kontrol` | Gönderilen değişikliğin canlıda çalıştığını kontrol etmek |
+| `4d-haftalik-hatirlatma` | Yıllık plana göre bu/sıradaki haftanın konuları ve portalda eksik etkinlik/defter notu |
+
+Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yillik-plan-oku.mjs` → `YillikPlan/yillik-plan.json`.
 
 ## Parçalar (ayrıntı: `MIMARI.md`)
 - **Etkinlik sitesi:** `main` dalı → GitHub Pages `https://ismailkaya33.github.io/4.SINIF/`. Ders klasörleri:
