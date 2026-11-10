@@ -105,7 +105,8 @@ const SECILI_ETKINLIKLER_ = Object.freeze([
  'Matematik/cikarmadatahmin.html',
  'Matematik/mat-toplama-problemleri-sinav.html',
  'Sosyal/konumkasifi.html',
- 'Turkce/tur-atasozu-deyim-sinav.html'
+ 'Turkce/tur-atasozu-deyim-sinav.html',
+ 'Turkce/cikarimbaslik.html'
 ]);
 /* KATALOG BITIR: secili-etkinlikler */
 const ETKINLIK_BEYAN_SAYFASI_='ETKINLIK_TAMAMLAMA';
