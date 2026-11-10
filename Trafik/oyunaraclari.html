@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Güvenli Sürüş: Oyun Araçları</title>
+<style>
+:root{--bg:#f2f5f9;--kart:#fff;--yazi:#1c2430;--soluk:#5b6470;--cizgi:#c9d1dc;--mavi:#2b5fd9;--mavi-acik:#e7eefc;--ok:#1b7f4b;--hata:#b3261e;--turuncu:#b26a00;--sari:#fff4d6}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--kart:#1b212a;--yazi:#e8ecf2;--soluk:#a3adbb;--cizgi:#3a4350;--mavi:#7ba2ff;--mavi-acik:#223150;--ok:#6fdc9f;--hata:#ff9a92;--turuncu:#ffc266;--sari:#2e2a1d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--yazi);font:19px/1.5 system-ui,"Segoe UI",Roboto,Arial,sans-serif}
+#app{max-width:760px;margin:0 auto;padding:16px}
+.kart{background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:18px;margin:12px 0}
+h1{font-size:1.6rem;margin:0 0 6px}
+h2{font-size:1.25rem;margin:0 0 6px}
+.ust{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.95rem;color:var(--soluk);flex-wrap:wrap}
+.asama{display:inline-block;background:var(--mavi-acik);color:var(--mavi);border-radius:999px;padding:2px 12px;font-weight:700}
+.ilerleme{height:10px;background:var(--cizgi);border-radius:6px;overflow:hidden;margin:8px 0 0}
+.ilerleme i{display:block;height:100%;background:var(--mavi)}
+.sahne{font-size:2.4rem;text-align:center;margin:2px 0 8px;letter-spacing:.12em}
+.durum{background:var(--sari);border-radius:12px;padding:10px 14px;margin:0 0 12px;font-size:1.08rem}
+.soru{font-size:1.2rem;font-weight:600;margin:6px 0 14px}
+.sec{display:grid;grid-template-columns:1fr;gap:10px}
+.sec.coklu{grid-template-columns:1fr 1fr}
+@media (max-width:480px){.sec.coklu{grid-template-columns:1fr}}
+button{font:inherit;min-height:56px;border-radius:14px;border:2px solid var(--mavi);background:var(--kart);color:var(--yazi);cursor:pointer;padding:8px 14px;text-align:left}
+button.dolu{background:var(--mavi);color:#fff;text-align:center}
+button.yanlis{border-color:var(--hata);opacity:.55}
+button.yanlis::after{content:"  ✗"}
+button.dogru{border-color:var(--ok);background:var(--ok);color:#fff}
+button.dogru::after{content:"  ✓"}
+.sec.coklu button[aria-pressed="true"]{background:var(--mavi-acik);border-width:3px}
+.sec.coklu button[aria-pressed="true"]::before{content:"☑ "}
+.sec.coklu button[aria-pressed="false"]::before{content:"☐ "}
+.sec.coklu button.eksik{border-color:var(--turuncu);border-style:dashed}
+button:disabled{cursor:default}
+button:focus-visible{outline:3px solid var(--turuncu);outline-offset:2px}
+.araclar{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.araclar button{min-height:48px;text-align:center}
+.gb{min-height:2.4em;margin-top:12px;font-weight:600}
+.gb.ok{color:var(--ok)}.gb.hata{color:var(--hata)}.gb.ip{color:var(--turuncu)}
+.not{font-size:.95rem;color:var(--soluk)}
+.kural{background:var(--mavi-acik);border-radius:12px;padding:10px 14px;margin:10px 0}
+.ses{float:right;min-height:40px;font-size:.95rem;padding:4px 10px}
+#dev{margin-top:12px;width:100%}
+@media (prefers-reduced-motion:no-preference){button{transition:background .15s,opacity .15s}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 2;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+})();
+
+</script>
+<script>
+'use strict';
+/* ===================== VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda) =====================
+ * Maddeler:
+ *   tur 'secim': dogru + yanlislar [[seçenek, yanılgı etiketi], ...]
+ *   tur 'coklu': birden çok doğru seçilir, sonra "Kontrol et". dogrular = [...], yanlislar = [[seçenek, etiket], ...]
+ *                (eksik bırakılan doğru için etiket: eksikEtiket)
+ *   durum: (isteğe bağlı) sarı kutudaki olay;  sahne: emoji;  ipucu: en fazla 3 kademe;  why: neden doğru
+ * Yanılgı etiketleri:
+ *   tasit-yolu            : taşıt yolunu ya da kenarını oyun yeri sandı
+ *   otopark-guvenli-sanir : otoparkı ya da site yolunu güvenli sandı
+ *   ara-sokak-guvenli-sanir: araç az geçiyor diye sokağı güvenli sandı
+ *   kaldirim-yaya         : yayaların yürüdüğü kaldırımı oyun yeri sandı
+ *   yaya-gecidi-oyun      : yaya geçidini oyun alanı sandı
+ *   zemin-uygunsuz        : merdivenli/engebeli yeri uygun sandı
+ *   hizla-gecer           : tehlikeyi hızlanarak geçebileceğini sandı
+ *   gorunur-sanir         : araç sürücülerinin kendisini mutlaka göreceğini sandı
+ *   donanim-ihmal         : koruyucu donanımı gereksiz saydı
+ *   kask-eksik            : kaskı (ya da başka bir koruyucuyu) seçmedi
+ *   uygunsuz-giysi        : oyun aracına uygun olmayan giysi/ayakkabı seçti
+ *   dikkat-dagitici       : kulaklık gibi dikkati dağıtan şeyi seçti
+ *   kontrol-ihmal         : aracı kullanmadan önce kontrolü atladı
+ *   kask-yanlis           : kaskı yanlış taktı
+ *   riskli-idare          : bozuk aracı idare ederek kullanmayı seçti
+ *   tehlike-anlamaz       : tehlikeyi fark etmedi
+ *   sorumluluk-devri      : bozuk aracı başkasına verdi
+ *   yavas-guvenli-sanir   : yavaş gidince kurala uymaya gerek olmadığını sandı
+ *   yaya-oncelik          : yayaya yol vermedi
+ */
+const OYUN = {
+  id: 'trafik-oyunaraclari',
+  ad: 'Güvenli Sürüş: Oyun Araçları',
+  kazanimlar: [
+    { kod: 'TG.4.1.6', ad: 'Taşıt trafiğine kapalı alanlarda oyun araçlarını güvenli kullanır' }
+  ],
+  asamalar: {
+    1: { ad: 'Doğru yer', kural: 'Bisiklet, paten, kaykay ve scooter gibi oyun araçları taşıt trafiğine kapalı alanlarda kullanılır: park, oyun bahçesi, kaykay parkı gibi. Araba yolu, otopark ve yayaların yürüdüğü kaldırım oyun yeri değildir.' },
+    2: { ad: 'Donan ve kontrol et', kural: 'Oyun aracına binmeden önce kask, dizlik ve dirseklik gibi koruyucuları tak. Aracın frenini ve tekerleklerini kontrol et. Bozuk aracı kullanma.' },
+    3: { ad: 'Ne yapmalı?', kural: 'Güvenli alanda bile dikkatli ol: yayalara yol ver, kaygan ve karanlık yerde oynama, tek kişilik araca iki kişi binme.' }
+  },
+  maddeler: [
+    /* ---- 1. aşama: Doğru yer ---- */
+    { id: 'a1', asama: 1, tur: 'secim', sahne: '🛹', soru: 'Kaykay kaymak için en uygun yer hangisidir?', dogru: 'Kaykay parkı',
+      yanlislar: [['Araba yolunun kenarı', 'tasit-yolu'], ['Apartmanın otoparkı', 'otopark-guvenli-sanir'], ['Yayaların yürüdüğü kalabalık kaldırım', 'kaldirim-yaya']],
+      ipucu: ['Araçların hiç girmediği yeri düşün.', 'Otoparkta da araçlar girip çıkar.'], why: 'Kaykay parkı taşıt trafiğine kapalıdır ve kaykay için yapılmıştır.' },
+    { id: 'a2', asama: 1, tur: 'secim', sahne: '🚲', soru: 'Bisiklet sürmeyi yeni öğrenen Efe nerede çalışmalıdır?', dogru: 'Trafiğe kapalı, geniş bir parkta',
+      yanlislar: [['Araç az geçen bir ara sokakta', 'ara-sokak-guvenli-sanir'], ['Benzin istasyonunun önünde', 'tasit-yolu'], ['Merdivenli bir alt geçitte', 'zemin-uygunsuz']],
+      ipucu: ['"Az araç geçiyor" demek "hiç araç geçmiyor" demek değildir.', 'Düz, geniş ve araçların girmediği bir yer ara.'], why: 'Taşıt trafiğine kapalı, düz ve geniş bir park en güvenli yerdir. Ara sokaktan da araç geçebilir.' },
+    { id: 'a3', asama: 1, tur: 'secim', sahne: '🛴', soru: 'Hangisi taşıt trafiğine kapalı bir alandır?', dogru: 'Okulun oyun bahçesi',
+      yanlislar: [['Otobüs durağının önü', 'tasit-yolu'], ['Sitenin otopark giriş yolu', 'otopark-guvenli-sanir'], ['Yaya geçidi', 'yaya-gecidi-oyun']],
+      ipucu: ['Hangisine hiç araç girmez?', 'Yaya geçidi, araç yolunun üzerindedir.'], why: 'Okulun oyun bahçesine taşıt girmez. Durak, otopark yolu ve yaya geçidi araç trafiğinin içindedir.' },
+
+    /* ---- 2. aşama: Donan ve kontrol et ---- */
+    { id: 'd1', asama: 2, tur: 'coklu', sahne: '⛸️', soru: 'Ayşe parkta paten kayacak. Hangilerini takmalı? Doğru olanların HEPSİNİ seç, sonra "Kontrol et"e bas.',
+      dogrular: ['Kask', 'Dizlik', 'Dirseklik'], eksikEtiket: 'kask-eksik',
+      yanlislar: [['Terlik', 'uygunsuz-giysi'], ['Müzik dinlemek için kulaklık', 'dikkat-dagitici'], ['Ucu yerde sürünen uzun atkı', 'uygunsuz-giysi']],
+      ipucu: ['Düşünce en çok baş, dizler ve dirsekler zarar görür.', 'Üç koruyucu var. Dikkati dağıtan ya da takılabilecek şeyleri seçme.'],
+      why: 'Kask başı, dizlik dizleri, dirseklik dirsekleri korur. Kulaklık dikkati dağıtır; terlik ve sarkan atkı düşmeye yol açabilir.' },
+    { id: 'd2', asama: 2, tur: 'coklu', sahne: '🚲 🔧', soru: 'Kerem parkta bisiklete binmeden önce neler yapmalı? Doğru olanların HEPSİNİ seç, sonra "Kontrol et"e bas.',
+      dogrular: ['Kaskını takıp çene kayışını bağlar.', 'Frenleri sıkıp tutuyor mu dener.', 'Tekerleklerin havasına bakar.'], eksikEtiket: 'kontrol-ihmal',
+      yanlislar: [['Kaskını gidona asar.', 'donanim-ihmal'], ['Ayakkabı bağcıklarını çözük bırakır.', 'uygunsuz-giysi']],
+      ipucu: ['Önce kendini, sonra bisikleti hazırla.', 'Kask başta olmalı. Bisikletin durmasını ve yuvarlanmasını sağlayan parçaları kontrol et.'],
+      why: 'Kask başta ve kayışı bağlı olmalı; fren ve tekerlekler kontrol edilmeli. Asılı kask korumaz, çözük bağcık zincire takılabilir.' },
+    { id: 'd3', asama: 2, tur: 'secim', sahne: '⛑️', soru: 'Kask nasıl takılmalıdır?', dogru: 'Alnı örtecek biçimde, çene kayışı bağlı olarak',
+      yanlislar: [['Başın arkasına itilmiş, alnı açıkta kalacak biçimde', 'kask-yanlis'], ['Çene kayışı açık, rahat dursun diye', 'kask-yanlis'], ['Kask yalnız bisiklette takılır; paten ve kaykayda gerekmez.', 'donanim-ihmal']],
+      ipucu: ['Düşünce kaskın yerinden oynamaması gerekir.', 'Alın da korunmalı.'], why: 'Kask alnı örtmeli ve çene kayışı bağlı olmalıdır. Paten, kaykay ve scooterda da kask takılır.' },
+    { id: 'd4', asama: 2, tur: 'secim', sahne: '🛴 ⚠️', soru: 'Deniz scooter\'ının freninin tutmadığını fark etti. Ne yapmalı?', dogru: 'Kullanmaz; büyüklerine söyler ve tamir ettirir.',
+      yanlislar: [['Ayağıyla sürterek durmayı dener ve kullanır.', 'riskli-idare'], ['Yalnızca yokuş aşağı inerken kullanır.', 'tehlike-anlamaz'], ['Scooter\'ı arkadaşına verir.', 'sorumluluk-devri']],
+      ipucu: ['Freni tutmayan araç durdurulamaz.', 'Bozuk araç kimse için güvenli değildir.'], why: 'Freni bozuk araç kullanılmaz. Büyüklere haber verilir ve araç tamir ettirilir.' },
+
+    /* ---- 3. aşama: Ne yapmalı? ---- */
+    { id: 's1', asama: 3, tur: 'secim', sahne: '🌧️ ⛸️', durum: 'Yağmurdan sonra parkın zemini ıslak ve kaygan. Ece patenini kaymak istiyor.', soru: 'En doğru davranış hangisidir?',
+      dogru: 'Zemin kuruyana kadar bekler.',
+      yanlislar: [['Hızlı kayarak kaygan yerleri çabucak geçer.', 'hizla-gecer'], ['Dikkatli kayacağı için dizliklerini takmaz.', 'donanim-ihmal'], ['Islak zemin daha kaygan ve eğlenceli diye hemen kayar.', 'tehlike-anlamaz']],
+      ipucu: ['Islak zeminde tekerlekler kayar.', 'Tehlike geçene kadar beklemek de güvenli bir seçimdir.'], why: 'Islak ve kaygan zeminde düşme tehlikesi artar. Zemin kuruyana kadar beklemek en güvenlisidir.' },
+    { id: 's2', asama: 3, tur: 'secim', sahne: '🛴 👫', durum: 'Can\'ın scooter\'ı tek kişilik. Arkadaşı, Can\'ın arkasına binmek istiyor.', soru: 'Can ne yapmalı?',
+      dogru: 'Scooter tek kişilik olduğu için sırayla binmeyi önerir.',
+      yanlislar: [['Birlikte binerler ama yavaş giderler.', 'yavas-guvenli-sanir'], ['Birlikte binip hızlıca bir tur atarlar.', 'hizla-gecer'], ['Arkadaşı arkada ayakta durur, Can kaskını ona verir.', 'donanim-ihmal']],
+      ipucu: ['Tek kişilik araç kaç kişiyi taşıyabilir?', 'Yavaş gitmek, iki kişinin dengesini bozmayı engellemez.'], why: 'Tek kişilik oyun aracına iki kişi binilmez; denge bozulur. Sırayla binmek hem adil hem güvenlidir.' },
+    { id: 's3', asama: 3, tur: 'secim', sahne: '🚲 🧒', durum: 'Mert parkta bisiklet sürerken önüne küçük bir çocuk çıktı.', soru: 'Mert ne yapmalı?',
+      dogru: 'Yavaşlar, durur ve çocuğun geçmesini bekler.',
+      yanlislar: [['Zil çalarak hızla yanından geçer.', 'yaya-oncelik'], ['"Çekil!" diye bağırır ve yoluna devam eder.', 'yaya-oncelik'], ['Hızlanıp çocuğun önünden geçer.', 'hizla-gecer']],
+      ipucu: ['Parkta yürüyenler de var. Kim önce geçmeli?', 'Küçük çocuklar ani hareket edebilir.'], why: 'Parkta yayalara, özellikle küçük çocuklara yol verilir. Yavaşlayıp durmak çarpışmayı önler.' },
+    { id: 's4', asama: 3, tur: 'secim', sahne: '🌆 🛹', durum: 'Hava kararmaya başladı. Parkın bu bölümü iyi aydınlatılmamış.', soru: 'Zeynep ne yapmalı?',
+      dogru: 'Oyunu bitirir, aracını alıp eve döner.',
+      yanlislar: [['Kaskını çıkarır ki çevreyi daha iyi görsün.', 'donanim-ihmal'], ['Karanlıkta daha hızlı kayıp oyunu çabuk bitirir.', 'hizla-gecer'], ['Araba yolunun kenarındaki sokak lambasının altında oynar.', 'tasit-yolu']],
+      ipucu: ['Karanlıkta engelleri ve insanları görmek zordur.', 'Işıklı yer arıyorsan araba yolu yine de oyun yeri değildir.'], why: 'Karanlıkta çukurları, engelleri ve insanları göremeyiz. En güvenlisi oyunu bitirip eve dönmektir.' },
+    { id: 's5', asama: 3, tur: 'secim', sahne: '🛴 🚗', durum: 'Deniz parkta scooter kayıyor. Parkın çıkışında karşıya geçmesi gereken bir araba yolu var.', soru: 'Deniz yolu nasıl geçmeli?',
+      dogru: 'Scooter\'dan iner, elinde taşır ve yaya gibi karşıya geçer.',
+      yanlislar: [['Hızlanıp yolu çabucak kayarak geçer.', 'hizla-gecer'], ['Kaymaya devam eder; nasılsa sürücüler onu görür.', 'gorunur-sanir'], ['Kaldırımda yayaların arasından hızla kayarak yaya geçidine gider.', 'kaldirim-yaya']],
+      ipucu: ['Oyun aracı taşıt yolunda kullanılmaz.', 'Yolu geçerken bir yaya gibi davranmalıyız.'], why: 'Oyun araçları taşıt yolunda kullanılmaz. Yolu geçerken araçtan inilir, araç elde taşınır ve yaya kurallarına uyulur.' }
+  ]
+};
+
+/* ===================== MOTOR ===================== */
+const app = document.getElementById('app');
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const depo = (() => { const mem = {}; return {
+  oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
+  yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } } }; })();
+const DEPO_REKOR = 'rekor-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
+
+let sesAcik = depo.oku(DEPO_SES) !== '0', ctx = null;
+function bip(dogru) {
+  if (!sesAcik) return;
+  try {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = dogru ? 660 : 220; o.type = 'sine';
+    g.gain.setValueAtTime(0.08, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.26);
+  } catch (e) { /* ses yok */ }
+}
+function sesDugme() { return '<button class="ses" id="ses" aria-pressed="' + sesAcik + '">' + (sesAcik ? '🔊 Ses açık' : '🔈 Ses kapalı') + '</button>'; }
+function sesBagla() { const b = document.getElementById('ses'); if (b) b.onclick = () => { sesAcik = !sesAcik; depo.yaz(DEPO_SES, sesAcik ? '1' : '0'); b.outerHTML = sesDugme(); sesBagla(); }; }
+
+let sira = [], idx = 0, durum = null, ilkTur = 0, sonAsama = 0, tekrarEklendi = false;
+
+function baslangic() {
+  const rekor = depo.oku(DEPO_REKOR);
+  app.innerHTML = '<div class="kart">' + sesDugme() + '<h1>🛴 ' + esc(OYUN.ad) + '</h1>' +
+    '<p>Bisiklet, paten, kaykay ve scooter çok eğlencelidir. Güvenli kullanmak için <b>doğru yeri</b> seçmeli, <b>koruyucularımızı</b> takmalı ve <b>dikkatli</b> olmalıyız.</p>' +
+    '<p>Üç aşama var: <b>1) Doğru yer</b> · <b>2) Donan ve kontrol et</b> · <b>3) Ne yapmalı?</b> Toplam ' + OYUN.maddeler.length + ' soru.</p>' +
+    '<p class="not">Yanlış yaparsan ipucu alıp bir kez daha deneyebilirsin. Klavyede rakam tuşlarıyla seçebilir, Enter ile devam edebilirsin.</p>' +
+    (rekor ? '<p class="not">Önceki en iyi sonucun: ' + esc(rekor) + ' soru ilk denemede doğru.</p>' : '') +
+    '<p><button class="dolu" id="basla">Başla</button></p></div>';
+  sesBagla();
+  document.getElementById('basla').onclick = () => {
+    RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+    sira = [1, 2, 3].flatMap(a => shuffle(OYUN.maddeler.filter(m => m.asama === a))).map(m => ({ m, tekrar: false }));
+    ilkTur = sira.length; idx = 0; sonAsama = 0; tekrarEklendi = false; soru();
+  };
+  document.getElementById('basla').focus();
+}
+
+function asamaGiris(a, sonra) {
+  const s = OYUN.asamalar[a];
+  app.innerHTML = '<div class="kart"><span class="asama">' + a + '. aşama</span><h2 style="margin-top:8px">' + esc(s.ad) + '</h2>' +
+    '<div class="kural">📌 ' + esc(s.kural) + '</div><button class="dolu" id="dev">Hadi başlayalım →</button></div>';
+  const d = document.getElementById('dev'); d.onclick = sonra; d.focus();
+}
+
+function soru() {
+  if (idx >= sira.length) {
+    if (!tekrarEklendi) {
+      tekrarEklendi = true;
+      const zor = sira.slice(0, ilkTur).filter(x => !x.ilkDogru);
+      const ek = [1, 2, 3].flatMap(a => shuffle(zor.filter(x => x.m.asama === a)).slice(0, 2))
+        .concat(shuffle(zor)).filter((x, i, d) => d.indexOf(x) === i).slice(0, 6).map(x => ({ m: x.m, tekrar: true }));
+      if (ek.length) {
+        sira = sira.concat(shuffle(ek));
+        app.innerHTML = '<div class="kart"><h2>🔁 Bir şans daha</h2><p>İlk denemede zorlandığın ' + ek.length + ' soruya yeniden bakalım. Kuralları hatırla!</p>' +
+          '<button class="dolu" id="dev">Devam →</button></div>';
+        const d = document.getElementById('dev'); d.onclick = soru; d.focus();
+        return;
+      }
+    }
+    bitisEkrani(); return;
+  }
+  const x = sira[idx], m = x.m;
+  if (!x.tekrar && m.asama !== sonAsama) { sonAsama = m.asama; asamaGiris(m.asama, soru); return; }
+  durum = { x, m, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+  const yuzde = Math.round(idx * 100 / sira.length);
+  let secenekler;
+  if (m.tur === 'coklu') {
+    durum.sec = shuffle(m.dogrular.map(d => [d, '', true]).concat(m.yanlislar.map(y => [y[0], y[1], false])));
+    durum.secili = new Set();
+    secenekler = '<div class="sec coklu">' + durum.sec.map((s, i) => '<button data-i="' + i + '" aria-pressed="false">' + esc(s[0]) + '</button>').join('') + '</div>';
+  } else {
+    durum.sec = shuffle([[m.dogru, '']].concat(m.yanlislar));
+    secenekler = '<div class="sec">' + durum.sec.map((s, i) => '<button data-i="' + i + '" aria-label="Seçenek ' + (i + 1) + ': ' + esc(s[0]) + '">' + (i + 1) + ') ' + esc(s[0]) + '</button>').join('') + '</div>';
+  }
+  app.innerHTML = '<div class="ust"><span class="asama">' + (x.tekrar ? '🔁 Bir şans daha' : m.asama + '. aşama · ' + esc(OYUN.asamalar[m.asama].ad)) + '</span>' +
+    '<span>Soru ' + (idx + 1) + ' / ' + sira.length + '</span></div><div class="ilerleme" aria-hidden="true"><i style="width:' + yuzde + '%"></i></div>' +
+    '<div class="kart">' + (m.sahne ? '<div class="sahne" aria-hidden="true">' + m.sahne + '</div>' : '') +
+    (m.durum ? '<div class="durum">' + esc(m.durum) + '</div>' : '') + '<div class="soru">' + esc(m.soru) + '</div>' + secenekler +
+    '<div class="araclar">' + (m.tur === 'coklu' ? '<button class="dolu" id="kontrol">Kontrol et</button>' : '') + '<button id="ip">💡 İpucu</button></div>' +
+    '<div class="gb" id="gb" aria-live="polite"></div></div>';
+  app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => (m.tur === 'coklu' ? degistir(+b.dataset.i) : sec_(+b.dataset.i)); });
+  if (m.tur === 'coklu') document.getElementById('kontrol').onclick = kontrolEt;
+  document.getElementById('ip').onclick = ipucuVer;
+}
+
+function ipucuVer() {
+  if (!durum || durum.kilit) return;
+  const ip = durum.m.ipucu;
+  if (durum.ipucu >= ip.length) return;
+  durum.ipucu++;
+  const gb = document.getElementById('gb'); gb.className = 'gb ip';
+  gb.textContent = '💡 ' + ip.slice(0, durum.ipucu).join(' ');
+  if (durum.ipucu >= ip.length) { const b = document.getElementById('ip'); b.disabled = true; b.textContent = '💡 İpuçları bitti'; }
+}
+
+function sec_(i) {
+  if (!durum || durum.kilit || durum.m.tur === 'coklu') return;
+  const btns = app.querySelectorAll('.sec button'), btn = btns[i];
+  if (!btn || btn.disabled) return;
+  const [metin, yan] = durum.sec[i], gb = document.getElementById('gb');
+  durum.deneme++;
+  if (metin === durum.m.dogru) { btn.classList.add('dogru'); bip(true); bitir(false, 'ok', '✅ Doğru! ' + durum.m.why); return; }
+  btn.classList.add('yanlis'); btn.disabled = true; bip(false);
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = yan;
+  if (durum.deneme >= 2) { btns[durum.sec.findIndex(s => s[0] === durum.m.dogru)].classList.add('dogru'); bitir(true, 'hata', 'Çözüme birlikte bakalım: ' + durum.m.why); return; }
+  gb.className = 'gb hata'; gb.textContent = 'Henüz değil. Bir daha dene; istersen 💡 ipucu al.';
+}
+
+/* Çoklu seçim: seçenekleri aç/kapa, sonra kontrol et */
+function degistir(i) {
+  if (!durum || durum.kilit || durum.m.tur !== 'coklu') return;
+  const btn = app.querySelectorAll('.sec button')[i]; if (!btn) return;
+  if (durum.secili.has(i)) durum.secili.delete(i); else durum.secili.add(i);
+  btn.setAttribute('aria-pressed', String(durum.secili.has(i)));
+  btn.classList.remove('eksik', 'yanlis');
+}
+function kontrolEt() {
+  if (!durum || durum.kilit || durum.m.tur !== 'coklu') return;
+  const gb = document.getElementById('gb');
+  if (!durum.secili.size) { gb.className = 'gb hata'; gb.textContent = 'Önce en az bir seçenek seç.'; return; }
+  const fazla = [...durum.secili].filter(i => !durum.sec[i][2]), eksik = durum.sec.map((s, i) => i).filter(i => durum.sec[i][2] && !durum.secili.has(i));
+  durum.deneme++;
+  if (!fazla.length && !eksik.length) {
+    app.querySelectorAll('.sec button').forEach((b, i) => { if (durum.sec[i][2]) b.classList.add('dogru'); });
+    bip(true); bitir(false, 'ok', '✅ Doğru! ' + durum.m.why); return;
+  }
+  bip(false);
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = fazla.length ? durum.sec[fazla[0]][1] : durum.m.eksikEtiket;
+  if (durum.deneme >= 2) {
+    app.querySelectorAll('.sec button').forEach((b, i) => { b.classList.remove('eksik'); if (durum.sec[i][2]) b.classList.add('dogru'); else if (durum.secili.has(i)) b.classList.add('yanlis'); });
+    bitir(true, 'hata', 'Çözüme birlikte bakalım: ' + durum.m.why); return;
+  }
+  // Cevabı göstermeden yol göster: kaç fazla, kaç eksik
+  fazla.forEach(i => app.querySelectorAll('.sec button')[i].classList.add('yanlis'));
+  gb.className = 'gb hata';
+  gb.textContent = 'Henüz değil. ' + (fazla.length ? fazla.length + ' seçimin uygun değil (✗ işaretli). ' : '') +
+    (eksik.length ? eksik.length + ' doğru seçenek daha var. ' : '') + 'Düzeltip yeniden "Kontrol et"e bas.';
+}
+
+function bitir(cozumGoruldu, sinif, mesaj) {
+  durum.kilit = true;
+  const ilkDogru = durum.deneme === 1 && !cozumGoruldu;
+  durum.x.ilkDogru = ilkDogru;
+  RaporMotoru.kaydet({ kazanim: OYUN.kazanimlar[0].kod, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
+    ilkDenemeDogru: ilkDogru, deneme: durum.deneme, ipucu: durum.ipucu,
+    cozumGoruldu, sureMs: Date.now() - durum.t0, tekrar: durum.x.tekrar });
+  const gb = document.getElementById('gb'); gb.className = 'gb ' + sinif; gb.textContent = mesaj;
+  app.querySelectorAll('.sec button, #ip, #kontrol').forEach(b => { b.disabled = true; });
+  const dev = document.createElement('button'); dev.className = 'dolu'; dev.id = 'dev';
+  dev.textContent = idx + 1 < sira.length || !tekrarEklendi ? 'Devam →' : 'Karnemi gör';
+  dev.onclick = () => { idx++; soru(); };
+  app.querySelector('.kart').appendChild(dev); dev.focus();
+}
+
+function bitisEkrani() {
+  durum = null;
+  RaporMotoru.ekranCiz(app);
+  const ilk = RaporMotoru.ozet().reduce((t, x) => t + x.dogru, 0), eski = parseInt(depo.oku(DEPO_REKOR), 10) || 0;
+  if (ilk > eski) depo.yaz(DEPO_REKOR, String(ilk));
+  const k = document.createElement('div'); k.className = 'kart';
+  k.innerHTML = '<b>Unutma:</b> Oyun araçları trafiğe kapalı alanlarda kullanılır. Kask, dizlik ve dirsekliğini tak, aracını kontrol et. Yayalara yol ver; kaygan ve karanlık yerde oynama.';
+  app.appendChild(k);
+  const yeniden = document.createElement('button'); yeniden.className = 'dolu'; yeniden.textContent = '↻ Yeniden oyna';
+  yeniden.onclick = baslangic; app.appendChild(yeniden);
+}
+
+document.addEventListener('keydown', e => {
+  if (!durum || durum.kilit || !document.querySelector('.sec')) {
+    if (e.key === 'Enter' && document.activeElement && document.activeElement.id !== 'dev') { const d = document.getElementById('dev'); if (d) { e.preventDefault(); d.click(); } }
+    return;
+  }
+  const n = durum.sec.length;
+  if (e.key >= '1' && e.key <= String(Math.min(9, n))) { const i = +e.key - 1; if (durum.m.tur === 'coklu') degistir(i); else sec_(i); }
+  else if (e.key === 'Enter' && durum.m.tur === 'coklu' && document.activeElement && !document.activeElement.closest('.sec')) { e.preventDefault(); kontrolEt(); }
+});
+baslangic();
+</script>
+</body>
+</html>
