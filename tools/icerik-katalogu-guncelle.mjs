@@ -32,14 +32,19 @@ function baslikOku(yol) {
 
 export function katalogYaz(k) {
   // Her içerik tek satırda: GitHub'ın sayfasından düzenlemesi kolay olsun.
-  const satirlar = k.icerikler.map(x => '    ' + JSON.stringify({yol: x.yol, ad: x.ad, ders: x.ders, eklenme: x.eklenme, gizli: !!x.gizli}));
+  // "degerlendirme": "konu" | "unite" isteğe bağlıdır; portalda Değerlendirmeler sekmesinde hangi başlığa gideceğini seçer.
+  const satirlar = k.icerikler.map(x => {
+    const s = {yol: x.yol, ad: x.ad, ders: x.ders, eklenme: x.eklenme, gizli: !!x.gizli};
+    if (x.degerlendirme === 'konu' || x.degerlendirme === 'unite') s.degerlendirme = x.degerlendirme;
+    return '    ' + JSON.stringify(s);
+  });
   return '{\n' +
     '  "aciklama": ' + JSON.stringify(k.aciklama) + ',\n' +
     '  "siteAdresi": ' + JSON.stringify(k.siteAdresi) + ',\n' +
     '  "icerikler": [\n' + satirlar.join(',\n') + '\n  ]\n}\n';
 }
 
-export const ACIKLAMA = 'Portalda görünen etkinliklerin listesi. Ders klasörüne yeni .html yüklenince GitHub bu listeye kendisi ekler. Adı düzeltmek için "ad" yazısını değiştirin; bir etkinliği öğrencilerden gizlemek için "gizli": true yapın.';
+export const ACIKLAMA = 'Portalda görünen etkinliklerin listesi. Ders klasörüne yeni .html yüklenince GitHub bu listeye kendisi ekler. Adı düzeltmek için "ad" yazısını değiştirin; bir etkinliği öğrencilerden gizlemek için "gizli": true yapın. Değerlendirme sınavlarında "degerlendirme": "konu" veya "unite" yazın; portalda Konu Değerlendirme / Ünite Değerlendirme başlığı buna göre seçilir.';
 
 export function guncelle({yaz = true} = {}) {
   const k = existsSync(DOSYA) ? JSON.parse(readFileSync(DOSYA, 'utf8'))

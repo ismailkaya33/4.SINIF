@@ -1,5 +1,5 @@
 {
-  "aciklama": "Portalda görünen etkinliklerin listesi. Ders klasörüne yeni .html yüklenince GitHub bu listeye kendisi ekler. Adı düzeltmek için \"ad\" yazısını değiştirin; bir etkinliği öğrencilerden gizlemek için \"gizli\": true yapın.",
+  "aciklama": "Portalda görünen etkinliklerin listesi. Ders klasörüne yeni .html yüklenince GitHub bu listeye kendisi ekler. Adı düzeltmek için \"ad\" yazısını değiştirin; bir etkinliği öğrencilerden gizlemek için \"gizli\": true yapın. Değerlendirme sınavlarında \"degerlendirme\": \"konu\" veya \"unite\" yazın; portalda Konu Değerlendirme / Ünite Değerlendirme başlığı buna göre seçilir.",
   "siteAdresi": "https://ismailkaya33.github.io/4.SINIF/",
   "icerikler": [
     {"yol":"Turkce/anafikiranaduygu.html","ad":"Ana Fikir ve Ana Duygu Dedektifi","ders":"Türkçe","eklenme":"2026-10-05","gizli":false},
@@ -20,7 +20,7 @@
     {"yol":"Turkce/pekistirme.html","ad":"Pekiştirme Dedektifi 1","ders":"Türkçe","eklenme":"2026-10-05","gizli":false},
     {"yol":"Turkce/sozavcıları.html","ad":"Atasözleri ve Deyimler","ders":"Türkçe","eklenme":"2026-10-31","gizli":false},
     {"yol":"Matematik/cikarmaislemi.html","ad":"Çıkarma Dedektifleri","ders":"Matematik","eklenme":"2026-10-18","gizli":false},
-    {"yol":"Matematik/dogalsayilardegerlendirme.html","ad":"Sayı Avcıları – Doğal Sayılar Değerlendirme","ders":"Matematik","eklenme":"2026-11-02","gizli":false},
+    {"yol":"Matematik/dogalsayilardegerlendirme.html","ad":"Sayı Avcıları – Doğal Sayılar Değerlendirme","ders":"Matematik","eklenme":"2026-11-02","gizli":false,"degerlendirme":"unite"},
     {"yol":"Matematik/kayipsayilar.html","ad":"Çıkarma İşleminde Verilmeyen Sayılar","ders":"Matematik","eklenme":"2026-10-25","gizli":false},
     {"yol":"Matematik/oruntuler.html","ad":"Sayı Örüntüsü Laboratuvarı","ders":"Matematik","eklenme":"2026-10-05","gizli":true},
     {"yol":"Matematik/sayilar.html","ad":"Sayılar","ders":"Matematik","eklenme":"2026-10-05","gizli":false},
@@ -36,7 +36,7 @@
     {"yol":"Matematik/zihindentoplama.html","ad":"Zihinden Toplama Ustaları","ders":"Matematik","eklenme":"2026-10-18","gizli":false},
     {"yol":"Fen/besinakademisi.html","ad":"Besin Akademisi","ders":"Fen Bilimleri","eklenme":"2026-10-18","gizli":false},
     {"yol":"Fen/besinkasifleri.html","ad":"Besin Kaşifleri: Görev Haritası","ders":"Fen Bilimleri","eklenme":"2026-10-18","gizli":false},
-    {"yol":"Fen/besinlerdegerlendirme.html","ad":"Besinler: Ünite Değerlendirme","ders":"Fen Bilimleri","eklenme":"2026-11-04","gizli":false},
+    {"yol":"Fen/besinlerdegerlendirme.html","ad":"Besinler: Ünite Değerlendirme","ders":"Fen Bilimleri","eklenme":"2026-11-04","gizli":false,"degerlendirme":"unite"},
     {"yol":"Fen/dunyaninhareketleri.html","ad":"Dünya'nın Hareketleri: Dönme ve Dolanma","ders":"Fen Bilimleri","eklenme":"2026-10-05","gizli":true},
     {"yol":"Fen/dunyaninhareketleri2.html","ad":"Dünya'nın Hareketleri 1","ders":"Fen Bilimleri","eklenme":"2026-10-05","gizli":false},
     {"yol":"Fen/dunyaninhareketleri3.html","ad":"Dünya'nın Hareketleri 2","ders":"Fen Bilimleri","eklenme":"2026-10-05","gizli":false},
@@ -45,7 +45,7 @@
     {"yol":"Fen/gecegunduz3d.html","ad":"🌍 Gece, Gündüz ve Saatler (3B Simülasyon)","ders":"Fen Bilimleri","eklenme":"2026-10-07","gizli":false},
     {"yol":"Fen/madenler.html","ad":"Madenler 1","ders":"Fen Bilimleri","eklenme":"2026-10-05","gizli":false},
     {"yol":"Fen/madenler2.html","ad":"Madenler 2","ders":"Fen Bilimleri","eklenme":"2026-10-05","gizli":false},
-    {"yol":"Fen/unitedegerlendirme1.html","ad":"F.4.1 Ünite Değerlendirme Testi","ders":"Fen Bilimleri","eklenme":"2026-10-12","gizli":false},
+    {"yol":"Fen/unitedegerlendirme1.html","ad":"F.4.1 Ünite Değerlendirme Testi","ders":"Fen Bilimleri","eklenme":"2026-10-12","gizli":false,"degerlendirme":"unite"},
     {"yol":"Sosyal/ailetarihi.html","ad":"Aile Tarihi","ders":"Sosyal Bilgiler","eklenme":"2026-10-12","gizli":false},
     {"yol":"Sosyal/ilgiihtiyacyetenek.html","ad":"İlgi, İhtiyaç ve Yeteneklerimiz","ders":"Sosyal Bilgiler","eklenme":"2026-10-05","gizli":false},
     {"yol":"Sosyal/kendinionunyerinekoy.html","ad":"Kendini Onun Yerine Koy","ders":"Sosyal Bilgiler","eklenme":"2026-10-05","gizli":false},
@@ -65,6 +65,6 @@
     {"yol":"Oyunlar/toplamaoyun.html","ad":"Uzaylı Toplama Macerası 2D 🚀","ders":"Oyunlar","eklenme":"2026-10-06","gizli":false},
     {"yol":"Insanhaklari/farkliyasamlar.html","ad":"4. Sınıf İnsan Hakları: Çocuk Yaşantılarını Karşılaştırıyoruz (Y.4.2.3)","ders":"İnsan Hakları","eklenme":"2026-11-08","gizli":false},
     {"yol":"Matematik/cikarmadatahmin.html","ad":"Tahmin Ustası: Çıkarmada Tahmin","ders":"Matematik","eklenme":"2026-11-10","gizli":false},
-    {"yol":"Matematik/mat-toplama-problemleri-sinav.html","ad":"Konu Değerlendirme: Toplama ve Çıkarma Problemleri","ders":"Matematik","eklenme":"2026-11-10","gizli":true}
+    {"yol":"Matematik/mat-toplama-problemleri-sinav.html","ad":"Konu Değerlendirme: Toplama ve Çıkarma Problemleri","ders":"Matematik","eklenme":"2026-11-10","gizli":true,"degerlendirme":"konu"}
   ]
 }
