@@ -210,6 +210,8 @@ body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.portalT
 .courseTabs button[aria-selected="true"]{background:var(--mor);color:#fff;box-shadow:0 3px 10px #6a4fc644}
 .courseSection{padding:0}
 .sectionEmpty{margin:0;padding:28px;border:2px dashed var(--cizgi);border-radius:var(--r-orta);color:var(--soluk);text-align:center}
+.evalGroup+.evalGroup{margin-top:26px}
+.evalGroupTitle{margin:0 0 12px;font-size:22px;font-weight:900;color:var(--murekkep)}
 
 /* Etkinlik listesi: her etkinlik aynı boyda bir kart */
 .courseLinks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:12px;margin:0;padding:0;list-style:none}
@@ -816,6 +818,30 @@ function defterDurumYukle(){
   });
  }).defterNotuDurumum(token);
 }
+/* Değerlendirmeler sekmesi bu derslerde iki başlığa ayrılır: Konu Değerlendirme / Ünite Değerlendirme.
+ * Hangi başlığa gideceği icerik-katalogu.json'daki "degerlendirme": "konu" | "unite" alanından okunur;
+ * alan yoksa adında "ünite" geçen ünite, diğerleri konu değerlendirmesi sayılır. */
+const IKILI_DEGERLENDIRME_DERSLERI_=new Set(["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler"]);
+const DEGERLENDIRME_TURU_={};
+function degerlendirmeTuru_(a){
+ let yol="";try{yol=decodeURIComponent(new URL(a.href).pathname).replace(/^\/4\.SINIF\//,"")}catch(e){}
+ const t=DEGERLENDIRME_TURU_[yol];if(t==="konu"||t==="unite")return t;
+ return /ünite|unite/i.test(a.textContent||"")?"unite":"konu";
+}
+function degerlendirmeleriYerlestir_(panel){
+ if(!panel||!panel.dataset.ikili)return;
+ const gruplar={};panel.querySelectorAll(".evalGroup").forEach(g=>{gruplar[g.dataset.tur]=g;});
+ [...panel.querySelectorAll(".evalGroup .courseLinks>li")].forEach(li=>{
+  const a=li.querySelector("a[href]");if(!a)return;
+  const hedef=gruplar[degerlendirmeTuru_(a)];if(hedef&&li.parentElement!==hedef.querySelector(".courseLinks"))hedef.querySelector(".courseLinks").appendChild(li);
+ });
+ Object.values(gruplar).forEach(g=>{
+  const ul=g.querySelector(".courseLinks"),bos=g.querySelector(".sectionEmpty"),dolu=!!ul.children.length;
+  ul.hidden=!dolu;
+  if(dolu&&bos)bos.remove();
+  if(!dolu&&!bos){const p=document.createElement("p");p.className="sectionEmpty";p.textContent=g.dataset.bos;g.appendChild(p);}
+ });
+}
 dersKartlari.forEach(function(card){
  const summary=card.querySelector("summary");
  const name=summary.querySelector("strong").textContent.trim();
@@ -838,7 +864,18 @@ dersKartlari.forEach(function(card){
  if(!defter.childElementCount){const msg=document.createElement("p");msg.className="sectionEmpty";msg.textContent="Bu dersin defter notları yakında eklenecek.";panels.defter.appendChild(msg);}
  else panels.defter.appendChild(defter);
  const evalLinks=[...panels.etkinlik.querySelectorAll("a")].filter(a=>/değerlendirme|deneme sınavı|testi/i.test(a.textContent));
- if(evalLinks.length){
+ if(IKILI_DEGERLENDIRME_DERSLERI_.has(name)){
+  panels.degerlendirme.dataset.ikili="1";
+  [["konu","📗 Konu Değerlendirme","Bu dersin konu değerlendirmeleri eklendiğinde burada görünecek."],["unite","📘 Ünite Değerlendirme","Bu dersin ünite değerlendirmeleri eklendiğinde burada görünecek."]].forEach(([tur,baslik,bos])=>{
+   const g=document.createElement("div");g.className="evalGroup";g.dataset.tur=tur;g.dataset.bos=bos;
+   const h=document.createElement("h4");h.className="evalGroupTitle";h.textContent=baslik;
+   const ul=document.createElement("ul");ul.className="courseLinks";
+   g.append(h,ul);panels.degerlendirme.appendChild(g);
+  });
+  const ilk=panels.degerlendirme.querySelector('.evalGroup[data-tur="konu"] .courseLinks');
+  evalLinks.forEach(a=>{const eski=a.closest("li");if(eski){ilk.appendChild(eski);}else{const li=document.createElement("li");li.appendChild(a);ilk.appendChild(li);}});
+  degerlendirmeleriYerlestir_(panels.degerlendirme);
+ }else if(evalLinks.length){
   const ul=document.createElement("ul");ul.className="courseLinks";
   evalLinks.forEach(a=>{const eski=a.closest("li");if(eski){ul.appendChild(eski);}else{const li=document.createElement("li");li.appendChild(a);ul.appendChild(li);}});
   panels.degerlendirme.appendChild(ul);
@@ -870,6 +907,7 @@ const KLASOR_DERS_={Turkce:["Türkçe","turkce"],Matematik:["Matematik","matemat
 function siteYolu_(adres){try{const u=new URL(adres,baseNotes);if(u.origin!=="https://ismailkaya33.github.io")return"";return decodeURIComponent(u.pathname).replace(/^\/4\.SINIF\//,"")}catch(e){return""}}
 function icerikKatalogunuUygula_(k){
  if(!k||!Array.isArray(k.icerikler))return;
+ k.icerikler.forEach(function(it){if(it&&typeof it.yol==="string"&&(it.degerlendirme==="konu"||it.degerlendirme==="unite"))DEGERLENDIRME_TURU_[it.yol]=it.degerlendirme;});
  const mevcut=new Set([...document.querySelectorAll("#dersIzgarasi a[href]")].map(a=>siteYolu_(a.href)));
  /* Ders listesinde görünmesi gereken takipli etkinlikler (resultTrackByPath) burada atlanmaz: sayfada sabit
   * bağlantısı yoksa katalogdan eklenir ve aşağıda portal içinde açılacak şekilde bağlanır. */
@@ -880,9 +918,9 @@ function icerikKatalogunuUygula_(k){
   const ders=KLASOR_DERS_[it.yol.split("/")[0]];if(!ders)return;
   const kart=dersKartlari.find(c=>c.querySelector("summary strong")?.textContent.trim()===ders[0]);if(!kart)return;
   const ad=String(it.ad||it.yol).slice(0,120);
-  const degerlendirme=/değerlendirme|deneme sınavı|testi/i.test(ad);
+  const degerlendirme=it.degerlendirme==="konu"||it.degerlendirme==="unite"||/değerlendirme|deneme sınavı|testi/i.test(ad);
   const panel=kart.querySelector('.courseSection[data-panel="'+(degerlendirme?"degerlendirme":"etkinlik")+'"]');if(!panel)return;
-  let ul=panel.querySelector(".courseLinks");
+  let ul=panel.dataset.ikili?panel.querySelector(".evalGroup .courseLinks"):panel.querySelector(".courseLinks");
   if(!ul){panel.querySelector(".sectionEmpty")?.remove();ul=document.createElement("ul");ul.className="courseLinks";panel.appendChild(ul);}
   const li=document.createElement("li"),a=document.createElement("a");
   a.href=baseNotes+it.yol;a.target="_blank";a.rel="noopener noreferrer";a.textContent=ad;
@@ -892,6 +930,7 @@ function icerikKatalogunuUygula_(k){
   if(Number.isFinite(n))sayi.textContent=(n+1)+" etkinlik";
   if(/^\d{4}-\d{2}-\d{2}$/.test(String(it.eklenme||"")))YENI_ICERIK_KATALOGU_.push({id:a.id,addedOn:it.eklenme,type:degerlendirme?"evaluation":"activity",course:ders[1],target:it.yol,title:ad});
  });
+ document.querySelectorAll('.courseSection[data-panel="degerlendirme"][data-ikili]').forEach(degerlendirmeleriYerlestir_);
  if(eklenen){seciliEtkinlikButonlariKur();seciliEtkinlikButonlariYenile();yeniIcerikleriGoster_();}
 }
 try{fetch(ICERIK_KATALOGU_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(icerikKatalogunuUygula_).catch(function(){});}catch(e){}
