@@ -1,0 +1,439 @@
+﻿<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metin Dedektifi: Çıkarım ve Başlık</title>
+<style>
+:root{--bg:#f7f4ee;--kart:#fff;--yazi:#1c2430;--soluk:#5b6470;--cizgi:#c9d1dc;--mavi:#2b5fd9;--mavi-acik:#e7eefc;--ok:#1b7f4b;--hata:#b3261e;--turuncu:#b26a00;--kagit:#fffaf0}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--kart:#1b212a;--yazi:#e8ecf2;--soluk:#a3adbb;--cizgi:#3a4350;--mavi:#7ba2ff;--mavi-acik:#223150;--ok:#6fdc9f;--hata:#ff9a92;--turuncu:#ffc266;--kagit:#22262d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--yazi);font:19px/1.55 system-ui,"Segoe UI",Roboto,Arial,sans-serif}
+#app{max-width:760px;margin:0 auto;padding:16px}
+.kart{background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:18px;margin:12px 0}
+h1{font-size:1.6rem;margin:0 0 6px}
+h2{font-size:1.25rem;margin:0 0 6px}
+.ust{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.95rem;color:var(--soluk);flex-wrap:wrap}
+.asama{display:inline-block;background:var(--mavi-acik);color:var(--mavi);border-radius:999px;padding:2px 12px;font-weight:700}
+.ilerleme{height:10px;background:var(--cizgi);border-radius:6px;overflow:hidden;margin:8px 0 0}
+.ilerleme i{display:block;height:100%;background:var(--mavi)}
+.metin{background:var(--kagit);border:1px solid var(--cizgi);border-left:6px solid var(--turuncu);border-radius:12px;padding:12px 16px;margin:4px 0 14px;font-size:1.1rem;line-height:1.7}
+.metin .cumle{display:inline}
+.metin.kanit{display:flex;flex-direction:column;gap:8px}
+.metin.kanit button{font-size:1.05rem;line-height:1.5;min-height:52px}
+.soru{font-size:1.2rem;font-weight:600;margin:6px 0 14px}
+.sec{display:grid;grid-template-columns:1fr;gap:10px}
+button{font:inherit;min-height:56px;border-radius:14px;border:2px solid var(--mavi);background:var(--kart);color:var(--yazi);cursor:pointer;padding:8px 14px;text-align:left}
+button.dolu{background:var(--mavi);color:#fff;text-align:center}
+button.yanlis{border-color:var(--hata);opacity:.55}
+button.yanlis::after{content:"  ✗"}
+button.dogru{border-color:var(--ok);background:var(--ok);color:#fff}
+button.dogru::after{content:"  ✓"}
+button:disabled{cursor:default}
+button:focus-visible{outline:3px solid var(--turuncu);outline-offset:2px}
+.araclar{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.araclar button{min-height:48px;text-align:center}
+.gb{min-height:2.4em;margin-top:12px;font-weight:600}
+.gb.ok{color:var(--ok)}.gb.hata{color:var(--hata)}.gb.ip{color:var(--turuncu)}
+.not{font-size:.95rem;color:var(--soluk)}
+.kural{background:var(--mavi-acik);border-radius:12px;padding:10px 14px;margin:10px 0}
+.ses{float:right;min-height:40px;font-size:.95rem;padding:4px 10px}
+#dev{margin-top:12px;width:100%}
+@media (prefers-reduced-motion:no-preference){button{transition:background .15s,opacity .15s}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 2;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+})();
+
+</script>
+<script>
+'use strict';
+/* ===================== VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda) =====================
+ * Metinler özgündür (ders kitabından alınmadı). Her metin cümle cümle yazılır.
+ * Maddeler:
+ *   tur 'secim': metin + soru + dogru + yanlislar [[seçenek, yanılgı etiketi], ...]
+ *   tur 'kanit': bir önceki sorunun (bagli) metninde, ipucu olan cümleye dokunulur.
+ *                dogru = cümle sırası (0'dan başlar), yanlislar = {cümle sırası: yanılgı etiketi}
+ *   kaz: kazanım kodu;  ipucu: en fazla 3 kademe;  why: neden doğru
+ * Yanılgı etiketleri:
+ *   metne-aykiri  : metindeki bilgilerle çelişen cevabı seçti
+ *   asiri-cikarim : metindeki ipuçlarının söylemediği kadar ileri bir sonuç çıkardı
+ *   ipucu-gormedi : metinde ipucu olduğu hâlde "anlaşılamaz" dedi ya da ipucunu kaçırdı
+ *   ilgisiz-cumle : çıkarımı desteklemeyen bir cümleyi kanıt sandı
+ *   dar-baslik    : metnin yalnız bir ayrıntısını anlatan başlığı seçti
+ *   genis-baslik  : metinden çok daha geniş, genel bir başlık seçti
+ *   ilgisiz-baslik: metnin konusuyla ilgisi olmayan başlığı seçti
+ *   konu-uyusmaz  : başlığın anlattığı konuyla uyuşmayan metni seçti
+ *   kismi-uyum    : başlığın yalnız bir kısmıyla uyuşan metni seçti
+ */
+const OYUN = {
+  id: 'tur-cikarim-baslik',
+  ad: 'Metin Dedektifi: Çıkarım ve Başlık',
+  kazanimlar: [
+    { kod: 'T.4.3.28', ad: 'Okudukları ile ilgili çıkarımlar yapar' },
+    { kod: 'T.4.3.21', ad: 'Okuduğu metnin içeriğine uygun başlık belirler' }
+  ],
+  asamalar: {
+    1: { ad: 'Çıkarım yap', kural: 'Metin her şeyi açıkça söylemez. İpuçlarını topla ve "Bu ipuçları bana ne anlatıyor?" diye düşün. Ama metnin söylemediği kadar ileri gitme.' },
+    2: { ad: 'Başlık bul', kural: 'İyi bir başlık metnin tamamını kapsar. Yalnız bir ayrıntıyı anlatan başlık çok dardır; metinden çok daha geniş bir konuyu anlatan başlık ise çok geniştir.' }
+  },
+  maddeler: [
+    /* ---- 1. aşama: Çıkarım ---- */
+    { id: 'c1', asama: 1, kaz: 'T.4.3.28', tur: 'secim',
+      metin: ['Elif okuldan eve geldiğinde şemsiyesinden sular damlıyordu.', 'Ayakkabılarını kapının önüne bıraktı.', 'Annesi ona okulda gününün nasıl geçtiğini sordu.'],
+      soru: 'Elif eve gelirken hava nasıldı?', dogru: 'Yağmurluydu.',
+      yanlislar: [['Güneşli ve sıcaktı.', 'metne-aykiri'], ['Metinde hava hakkında hiçbir ipucu yok.', 'ipucu-gormedi'], ['Fırtına yüzünden okullar tatil edilmişti.', 'asiri-cikarim']],
+      ipucu: ['Elif\'in elinde ne vardı?', 'Şemsiyeden neden su damlar?'], why: 'Şemsiyeden sular damlıyorsa dışarıda yağmur yağıyordur. Metin bunu açıkça söylemiyor; ipucundan çıkarıyoruz.' },
+    { id: 'c1k', asama: 1, kaz: 'T.4.3.28', tur: 'kanit', bagli: 'c1',
+      soru: 'Havanın yağmurlu olduğunu hangi cümleden anladın? O cümleye dokun.', dogru: 0,
+      yanlislar: { 1: 'ilgisiz-cumle', 2: 'ilgisiz-cumle' },
+      ipucu: ['Yağmurla ilgili bir eşya hangi cümlede geçiyor?'], why: '"Şemsiyesinden sular damlıyordu" cümlesi yağmurun ipucudur.' },
+    { id: 'c2', asama: 1, kaz: 'T.4.3.28', tur: 'secim',
+      metin: ['Mert sabah kahvaltı etmeden evden çıktı.', 'Teneffüste arkadaşının elindeki simide uzun uzun baktı.', 'Öğle zili çalınca yemekhaneye ilk o koştu.'],
+      soru: 'Mert o gün öğleye kadar nasıl hissetmiş olabilir?', dogru: 'Çok acıkmıştı.',
+      yanlislar: [['Simitten hiç hoşlanmıyordu.', 'metne-aykiri'], ['Arkadaşına çok kızgındı.', 'asiri-cikarim'], ['Metinden Mert\'in nasıl hissettiği anlaşılamaz.', 'ipucu-gormedi']],
+      ipucu: ['Mert sabah ne yapmadı?', 'Kahvaltı etmeyen biri simide neden uzun uzun bakar?'], why: 'Kahvaltı etmemiş, simide uzun uzun bakmış ve yemekhaneye ilk koşmuş. Bu ipuçları Mert\'in çok acıktığını gösterir.' },
+    { id: 'c3', asama: 1, kaz: 'T.4.3.28', tur: 'secim',
+      metin: ['Zeynep\'in dedesi bahçedeki elma ağacının dibine bir merdiven dayadı.', 'Elinde büyük, boş bir sepet vardı.', 'Zeynep de koşarak ona yardıma gitti.'],
+      soru: 'Dede ne yapmaya hazırlanıyor olabilir?', dogru: 'Elma toplamaya.',
+      yanlislar: [['Ağacı kesmeye.', 'asiri-cikarim'], ['Evin çatısını onarmaya.', 'ipucu-gormedi'], ['Zeynep\'i okula götürmeye.', 'metne-aykiri']],
+      ipucu: ['Merdiven nereye dayandı?', 'Boş sepet ne için kullanılır?'], why: 'Merdiven elma ağacına dayanmış, elde boş bir sepet var. İpuçları birlikte elma toplanacağını gösteriyor.' },
+    { id: 'c4', asama: 1, kaz: 'T.4.3.28', tur: 'secim',
+      metin: ['Kerem okul kütüphanesinden yeni bir macera kitabı ödünç aldı.', 'Eve gelince odasına geçti ve masa lambasını yaktı.', 'Akşam yemeğine çağrıldığında "Son iki sayfa kaldı!" diye seslendi.'],
+      soru: 'Kerem odasında ne yapıyordu?', dogru: 'Macera kitabını okuyordu.',
+      yanlislar: [['Uyuyordu.', 'metne-aykiri'], ['Resim yapıyordu.', 'ipucu-gormedi'], ['Kitabı kütüphaneye geri götürmeye hazırlanıyordu.', 'asiri-cikarim']],
+      ipucu: ['Kerem kütüphaneden ne aldı?', '"Son iki sayfa kaldı" diyen biri ne yapıyordur?'], why: 'Yeni bir kitap almış, lambayı yakmış ve "Son iki sayfa kaldı!" demiş. Kerem kitabını okuyordu.' },
+    { id: 'c4k', asama: 1, kaz: 'T.4.3.28', tur: 'kanit', bagli: 'c4',
+      soru: 'Kerem\'in yemeğe hemen gelmemesinin nedenini hangi cümle gösteriyor? O cümleye dokun.', dogru: 2,
+      yanlislar: { 0: 'ilgisiz-cumle', 1: 'ilgisiz-cumle' },
+      ipucu: ['Yemek çağrısı hangi cümlede geçiyor?'], why: '"Son iki sayfa kaldı!" sözü, Kerem\'in kitabı bitirmeden yemeğe gelmek istemediğini gösteriyor.' },
+    { id: 'c5', asama: 1, kaz: 'T.4.3.28', tur: 'secim',
+      metin: ['Resim yarışmasının sonuçları panoya asıldı.', 'Defne listeyi baştan sona iki kez okudu.', 'Sonra başını önüne eğdi ve sessizce sınıfa döndü.'],
+      soru: 'Defne nasıl hissetmiş olabilir?', dogru: 'Üzgün; adını listede görememiş olabilir.',
+      yanlislar: [['Çok sevinçli; yarışmada birinci olmuş.', 'metne-aykiri'], ['Öfkeli; panoyu yırtmak istemiş.', 'asiri-cikarim'], ['Metinden Defne\'nin duygusu anlaşılamaz.', 'ipucu-gormedi']],
+      ipucu: ['Listeyi iki kez okuyan biri ne arıyor olabilir?', 'Başını önüne eğip sessizce dönen biri nasıl hisseder?'], why: 'Listeyi iki kez okuması bir şey aradığını, başını eğip sessizce dönmesi üzüldüğünü gösterir.' },
+    { id: 'c6', asama: 1, kaz: 'T.4.3.28', tur: 'secim',
+      metin: ['Herkes kalın montunu giymiş, eldivenlerini takmıştı.', 'Çocuklar bahçede kardan adam yapıyordu.', 'Kardan adamın burnu için mutfaktan bir havuç getirildi.'],
+      soru: 'Bu olaylar hangi mevsimde geçiyor olabilir?', dogru: 'Kış',
+      yanlislar: [['Yaz', 'metne-aykiri'], ['İlkbahar', 'ipucu-gormedi'], ['Metinde mevsimle ilgili ipucu yok.', 'ipucu-gormedi']],
+      ipucu: ['Kalın mont ve eldiven ne zaman giyilir?', 'Kardan adam yapmak için ne gerekir?'], why: 'Kalın mont, eldiven ve kardan adam kışın ipuçlarıdır.' },
+
+    /* ---- 2. aşama: Başlık ---- */
+    { id: 'b1', asama: 2, kaz: 'T.4.3.21', tur: 'secim',
+      metin: ['Arılar bal yapmak için çiçekten çiçeğe konarak nektar toplar.', 'Bu sırada çiçeklerin tozlarını bir çiçekten ötekine taşırlar.', 'Böylece bitkilerin meyve ve tohum vermesine yardım ederler.', 'Arılar olmasaydı birçok meyveyi yiyemezdik.'],
+      soru: 'Bu metne en uygun başlık hangisidir?', dogru: 'Arıların Doğaya Yardımı',
+      yanlislar: [['Arılar Bal Yapar', 'dar-baslik'], ['Hayvanlar', 'genis-baslik'], ['Meyve Salatası Tarifi', 'ilgisiz-baslik']],
+      ipucu: ['Metin yalnız bal yapmayı mı anlatıyor?', 'Metnin sonunda arıların bize ve bitkilere hangi faydası anlatılıyor?'], why: 'Metin, arıların bal yaparken bitkilere ve bize nasıl yardım ettiğini anlatıyor. "Arılar Bal Yapar" yalnız bir ayrıntı; "Hayvanlar" çok geniş.' },
+    { id: 'b2', asama: 2, kaz: 'T.4.3.21', tur: 'secim',
+      metin: ['Okulumuzun bahçesine geçen hafta küçük bir kitap kulübesi kuruldu.', 'Öğrenciler okudukları kitapları buraya bırakıyor, yerine yenisini alıyor.', 'Teneffüslerde kulübenin önü çok kalabalık oluyor.', 'Artık herkes daha çok kitap okuyor.'],
+      soru: 'Bu metne en uygun başlık hangisidir?', dogru: 'Bahçemizdeki Kitap Kulübesi',
+      yanlislar: [['Kalabalık Teneffüsler', 'dar-baslik'], ['Okullar', 'genis-baslik'], ['Futbol Turnuvası', 'ilgisiz-baslik']],
+      ipucu: ['Metindeki cümlelerin hepsi neyle ilgili?'], why: 'Bütün cümleler bahçedeki kitap kulübesini anlatıyor. Kalabalık teneffüsler yalnız bir ayrıntı.' },
+    { id: 'b3', asama: 2, kaz: 'T.4.3.21', tur: 'secim',
+      metin: ['Su, bütün canlılar için çok değerlidir.', 'Dişlerimizi fırçalarken musluğu kapatarak su biriktirebiliriz.', 'Damlatan muslukları hemen onartmalıyız.', 'Bulaşık makinesini tam dolmadan çalıştırmamalıyız.'],
+      soru: 'Bu metne en uygun başlık hangisidir?', dogru: 'Suyu Nasıl Koruruz?',
+      yanlislar: [['Dişlerimizi Fırçalayalım', 'dar-baslik'], ['Doğa', 'genis-baslik'], ['Bulaşık Makinesinin Bozulması', 'ilgisiz-baslik']],
+      ipucu: ['Metinde kaç farklı öneri var? Hepsinin ortak amacı ne?'], why: 'Musluğu kapatmak, damlatan musluğu onartmak ve makineyi dolu çalıştırmak su tasarrufu içindir. Başlık bunların hepsini kapsamalı.' },
+    { id: 'b4', asama: 2, kaz: 'T.4.3.21', tur: 'secim',
+      metin: ['Can, parkta sahipsiz bir kedi yavrusu buldu.', 'Yavru çok zayıftı ve titriyordu.', 'Can onu eve götürdü, annesiyle birlikte ona ılık süt verdi.', 'Ertesi gün onu veterinere götürdüler.', 'Kedi kısa sürede iyileşti ve Can\'ın en yakın arkadaşı oldu.'],
+      soru: 'Bu hikâyeye en uygun başlık hangisidir?', dogru: 'Can\'ın Yeni Arkadaşı',
+      yanlislar: [['Veteriner Ziyareti', 'dar-baslik'], ['Hayvanlar Âlemi', 'genis-baslik'], ['Parkta Kaybolan Can', 'metne-aykiri']],
+      ipucu: ['Hikâye nasıl başlıyor, nasıl bitiyor?', 'Hikâyenin sonunda kedi Can\'ın neyi oluyor?'], why: 'Hikâye, Can\'ın bulduğu kedi yavrusuyla arkadaş olmasını anlatıyor. Veteriner yalnız bir ayrıntı; kaybolan kişi de Can değil.' },
+    { id: 'b5', asama: 2, kaz: 'T.4.3.21', tur: 'secim', baslikSoru: 'Kışa Hazırlanan Sincap',
+      soru: 'Başlık: "Kışa Hazırlanan Sincap". Bu başlığa en uygun metin hangisidir?',
+      dogru: 'Sincap sonbaharda fındık topladı. Soğuk günlerde yemek için yuvasına sakladı.',
+      yanlislar: [['Sincap ağaçtan ağaca atladı. Arkadaşlarıyla saklambaç oynadı.', 'konu-uyusmaz'], ['Kışın orman karla kaplandı. Kuşlar sıcak ülkelere göç etti.', 'kismi-uyum'], ['Sincabın kuyruğu kabarık ve uzundur. Kuyruğu dengesini korumasına yardım eder.', 'konu-uyusmaz']],
+      ipucu: ['Başlıkta iki şey var: kim ve ne yapıyor?', 'Hem sincap hem de kışa hazırlık olan metni bul.'], why: 'Başlık hem sincabı hem kışa hazırlığı anlatıyor. Yalnız ilk metinde sincap kış için yiyecek biriktiriyor.' }
+  ]
+};
+
+/* ===================== MOTOR ===================== */
+const app = document.getElementById('app');
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const depo = (() => { const mem = {}; return {
+  oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
+  yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } } }; })();
+const DEPO_REKOR = 'rekor-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
+const madde = id => OYUN.maddeler.find(m => m.id === id);
+const metniOf = m => m.metin || (m.bagli ? madde(m.bagli).metin : null);
+
+let sesAcik = depo.oku(DEPO_SES) !== '0', ctx = null;
+function bip(dogru) {
+  if (!sesAcik) return;
+  try {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = dogru ? 660 : 220; o.type = 'sine';
+    g.gain.setValueAtTime(0.08, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.26);
+  } catch (e) { /* ses yok */ }
+}
+function sesDugme() { return '<button class="ses" id="ses" aria-pressed="' + sesAcik + '">' + (sesAcik ? '🔊 Ses açık' : '🔈 Ses kapalı') + '</button>'; }
+function sesBagla() { const b = document.getElementById('ses'); if (b) b.onclick = () => { sesAcik = !sesAcik; depo.yaz(DEPO_SES, sesAcik ? '1' : '0'); b.outerHTML = sesDugme(); sesBagla(); }; }
+
+let sira = [], idx = 0, durum = null, ilkTur = 0, sonAsama = 0, tekrarEklendi = false;
+
+/* Kanıt soruları, bağlı oldukları sorunun hemen arkasından gelir */
+function asamaSirasi(a) {
+  const ana = shuffle(OYUN.maddeler.filter(m => m.asama === a && !m.bagli));
+  return ana.flatMap(m => [m].concat(OYUN.maddeler.filter(k => k.bagli === m.id)));
+}
+
+function baslangic() {
+  const rekor = depo.oku(DEPO_REKOR);
+  app.innerHTML = '<div class="kart">' + sesDugme() + '<h1>🔎 ' + esc(OYUN.ad) + '</h1>' +
+    '<p>İyi bir okur, metnin açıkça söylemediklerini de <b>ipuçlarından</b> anlar ve metne uygun bir <b>başlık</b> bulur.</p>' +
+    '<p>İki aşama var: <b>1) Çıkarım yap</b> · <b>2) Başlık bul</b>. Toplam ' + OYUN.maddeler.length + ' soru. Metinleri dikkatle oku!</p>' +
+    '<p class="not">Yanlış yaparsan ipucu alıp bir kez daha deneyebilirsin. Klavyede 1–4 tuşlarıyla seçebilir, Enter ile devam edebilirsin.</p>' +
+    (rekor ? '<p class="not">Önceki en iyi sonucun: ' + esc(rekor) + ' soru ilk denemede doğru.</p>' : '') +
+    '<p><button class="dolu" id="basla">Başla</button></p></div>';
+  sesBagla();
+  document.getElementById('basla').onclick = () => {
+    RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+    sira = [1, 2].flatMap(asamaSirasi).map(m => ({ m, tekrar: false }));
+    ilkTur = sira.length; idx = 0; sonAsama = 0; tekrarEklendi = false; soru();
+  };
+  document.getElementById('basla').focus();
+}
+
+function asamaGiris(a, sonra) {
+  const s = OYUN.asamalar[a];
+  app.innerHTML = '<div class="kart"><span class="asama">' + a + '. aşama</span><h2 style="margin-top:8px">' + esc(s.ad) + '</h2>' +
+    '<div class="kural">📌 ' + esc(s.kural) + '</div><button class="dolu" id="dev">Hadi başlayalım →</button></div>';
+  const d = document.getElementById('dev'); d.onclick = sonra; d.focus();
+}
+
+function soru() {
+  if (idx >= sira.length) {
+    if (!tekrarEklendi) {
+      tekrarEklendi = true;
+      const zor = sira.slice(0, ilkTur).filter(x => !x.ilkDogru);
+      const ek = [1, 2].flatMap(a => shuffle(zor.filter(x => x.m.asama === a)).slice(0, 3))
+        .concat(shuffle(zor)).filter((x, i, d) => d.indexOf(x) === i).slice(0, 6).map(x => ({ m: x.m, tekrar: true }));
+      if (ek.length) {
+        sira = sira.concat(shuffle(ek));
+        app.innerHTML = '<div class="kart"><h2>🔁 Bir şans daha</h2><p>İlk denemede zorlandığın ' + ek.length + ' soruya yeniden bakalım. Metni yeniden, yavaşça oku!</p>' +
+          '<button class="dolu" id="dev">Devam →</button></div>';
+        const d = document.getElementById('dev'); d.onclick = soru; d.focus();
+        return;
+      }
+    }
+    bitisEkrani(); return;
+  }
+  const x = sira[idx], m = x.m;
+  if (!x.tekrar && m.asama !== sonAsama) { sonAsama = m.asama; asamaGiris(m.asama, soru); return; }
+  durum = { x, m, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+  const yuzde = Math.round(idx * 100 / sira.length), metin = metniOf(m);
+  let govde;
+  if (m.tur === 'kanit') {
+    govde = '<div class="soru">' + esc(m.soru) + '</div><div class="metin kanit" role="group" aria-label="Metnin cümleleri">' +
+      metin.map((c, i) => '<button data-c="' + i + '">' + esc(c) + '</button>').join('') + '</div>';
+  } else {
+    durum.sec = shuffle([[m.dogru, '']].concat(m.yanlislar));
+    govde = (metin ? '<div class="metin">' + metin.map(c => '<span class="cumle">' + esc(c) + '</span>').join(' ') + '</div>' : '') +
+      '<div class="soru">' + esc(m.soru) + '</div><div class="sec">' +
+      durum.sec.map((s, i) => '<button data-i="' + i + '" aria-label="Seçenek ' + (i + 1) + ': ' + esc(s[0]) + '">' + (i + 1) + ') ' + esc(s[0]) + '</button>').join('') + '</div>';
+  }
+  app.innerHTML = '<div class="ust"><span class="asama">' + (x.tekrar ? '🔁 Bir şans daha' : m.asama + '. aşama · ' + esc(OYUN.asamalar[m.asama].ad)) + '</span>' +
+    '<span>Soru ' + (idx + 1) + ' / ' + sira.length + '</span></div><div class="ilerleme" aria-hidden="true"><i style="width:' + yuzde + '%"></i></div>' +
+    '<div class="kart">' + govde + '<div class="araclar"><button id="ip">💡 İpucu</button></div><div class="gb" id="gb" aria-live="polite"></div></div>';
+  app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => sec_(+b.dataset.i); });
+  app.querySelectorAll('.metin.kanit button').forEach(b => { b.onclick = () => kanitSec(+b.dataset.c); });
+  document.getElementById('ip').onclick = ipucuVer;
+}
+
+function ipucuVer() {
+  if (!durum || durum.kilit) return;
+  const ip = durum.m.ipucu;
+  if (durum.ipucu >= ip.length) return;
+  durum.ipucu++;
+  const gb = document.getElementById('gb'); gb.className = 'gb ip';
+  gb.textContent = '💡 ' + ip.slice(0, durum.ipucu).join(' ');
+  if (durum.ipucu >= ip.length) { const b = document.getElementById('ip'); b.disabled = true; b.textContent = '💡 İpuçları bitti'; }
+}
+
+function cevapla(dogruMu, yan, btn, dogruBtn) {
+  const gb = document.getElementById('gb');
+  durum.deneme++;
+  if (dogruMu) { btn.classList.add('dogru'); bip(true); bitir(false, 'ok', '✅ Doğru! ' + durum.m.why); return; }
+  btn.classList.add('yanlis'); btn.disabled = true; bip(false);
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = yan;
+  if (durum.deneme >= 2) { dogruBtn.classList.add('dogru'); bitir(true, 'hata', 'Çözüme birlikte bakalım: ' + durum.m.why); return; }
+  gb.className = 'gb hata'; gb.textContent = 'Henüz değil. Metni bir daha oku; istersen 💡 ipucu al.';
+}
+function sec_(i) {
+  if (!durum || durum.kilit || durum.m.tur === 'kanit') return;
+  const btns = app.querySelectorAll('.sec button'), btn = btns[i];
+  if (!btn || btn.disabled) return;
+  const [metin, yan] = durum.sec[i];
+  cevapla(metin === durum.m.dogru, yan, btn, btns[durum.sec.findIndex(s => s[0] === durum.m.dogru)]);
+}
+function kanitSec(i) {
+  if (!durum || durum.kilit || durum.m.tur !== 'kanit') return;
+  const btns = app.querySelectorAll('.metin.kanit button'), btn = btns[i];
+  if (!btn || btn.disabled) return;
+  cevapla(i === durum.m.dogru, durum.m.yanlislar[i] || 'ilgisiz-cumle', btn, btns[durum.m.dogru]);
+}
+
+function bitir(cozumGoruldu, sinif, mesaj) {
+  durum.kilit = true;
+  const ilkDogru = durum.deneme === 1 && !cozumGoruldu;
+  durum.x.ilkDogru = ilkDogru;
+  RaporMotoru.kaydet({ kazanim: durum.m.kaz, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
+    ilkDenemeDogru: ilkDogru, deneme: durum.deneme, ipucu: durum.ipucu,
+    cozumGoruldu, sureMs: Date.now() - durum.t0, tekrar: durum.x.tekrar });
+  const gb = document.getElementById('gb'); gb.className = 'gb ' + sinif; gb.textContent = mesaj;
+  app.querySelectorAll('.sec button, .metin.kanit button, #ip').forEach(b => { b.disabled = true; });
+  const dev = document.createElement('button'); dev.className = 'dolu'; dev.id = 'dev';
+  dev.textContent = idx + 1 < sira.length || !tekrarEklendi ? 'Devam →' : 'Karnemi gör';
+  dev.onclick = () => { idx++; soru(); };
+  app.querySelector('.kart').appendChild(dev); dev.focus();
+}
+
+function bitisEkrani() {
+  durum = null;
+  RaporMotoru.ekranCiz(app);
+  const ilk = RaporMotoru.ozet().reduce((t, x) => t + x.dogru, 0), eski = parseInt(depo.oku(DEPO_REKOR), 10) || 0;
+  if (ilk > eski) depo.yaz(DEPO_REKOR, String(ilk));
+  const k = document.createElement('div'); k.className = 'kart';
+  k.innerHTML = '<b>Unutma:</b> Çıkarım yaparken ipuçlarına dayan, metnin söylemediğini uydurma. Başlık metnin tamamını kapsamalı; ne çok dar ne çok geniş olmalı.';
+  app.appendChild(k);
+  const yeniden = document.createElement('button'); yeniden.className = 'dolu'; yeniden.textContent = '↻ Yeniden oyna';
+  yeniden.onclick = baslangic; app.appendChild(yeniden);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key >= '1' && e.key <= '4' && durum && !durum.kilit && document.querySelector('.sec')) sec_(+e.key - 1);
+  else if (e.key === 'Enter' && document.activeElement && document.activeElement.id !== 'dev' && !document.activeElement.closest('.metin')) { const d = document.getElementById('dev'); if (d) { e.preventDefault(); d.click(); } }
+});
+baslangic();
+</script>
+</body>
+</html>
