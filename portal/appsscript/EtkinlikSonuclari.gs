@@ -108,7 +108,8 @@ const paths = {
     'tur-ikilemeler':'Turkce/ikilemeler.html',
     'mat-cikarmaislemi':'Matematik/cikarmaislemi.html',
     'fen-besinkasifleri':'Fen/besinkasifleri.html',
-    'sos-oyunzamani':'Sosyal/oyunzamani.html'
+    'sos-oyunzamani':'Sosyal/oyunzamani.html',
+    'insan-farkliyasamlar':'Insanhaklari/farkliyasamlar.html'
   };
 /* KATALOG BITIR: ilerleme-yollari */
   const available = new Set(SECILI_ETKINLIKLER_);
