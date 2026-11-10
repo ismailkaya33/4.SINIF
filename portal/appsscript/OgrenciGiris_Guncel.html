@@ -731,7 +731,8 @@ function seciliEtkinlikButonlariKur(){
  document.querySelectorAll("#dersIzgarasi .courseLinks a").forEach(link=>{
   let pathname;
   try{const url=new URL(link.href);if(url.origin!=="https://ismailkaya33.github.io")return;pathname=decodeURI(url.pathname.replace(/^\/4\.SINIF\//,""));}catch(e){return;}
-  if(!seciliEtkinlikler.has(pathname))return;
+  if(!seciliEtkinlikler.has(pathname)||link.dataset.seciliKurulu)return;
+  link.dataset.seciliKurulu="1";
   const trackedId=resultTrackByPath[pathname];
   if(trackedId)link.addEventListener("click",function(e){e.preventDefault();takipliOyunAc(trackedId);});
   const button=document.createElement("button");button.type="button";
@@ -870,7 +871,9 @@ function siteYolu_(adres){try{const u=new URL(adres,baseNotes);if(u.origin!=="ht
 function icerikKatalogunuUygula_(k){
  if(!k||!Array.isArray(k.icerikler))return;
  const mevcut=new Set([...document.querySelectorAll("#dersIzgarasi a[href]")].map(a=>siteYolu_(a.href)));
- Object.values(takipliOyunlar).forEach(adres=>mevcut.add(siteYolu_(adres)));
+ /* Ders listesinde görünmesi gereken takipli etkinlikler (resultTrackByPath) burada atlanmaz: sayfada sabit
+  * bağlantısı yoksa katalogdan eklenir ve aşağıda portal içinde açılacak şekilde bağlanır. */
+ Object.values(takipliOyunlar).forEach(adres=>{const y=siteYolu_(adres);if(!resultTrackByPath[y])mevcut.add(y);});
  let eklenen=0;
  k.icerikler.forEach(function(it){
   if(!it||it.gizli===true||typeof it.yol!=="string"||!/^[A-Za-z]+\/[^\/<>"]+\.html$/.test(it.yol)||mevcut.has(it.yol))return;
@@ -889,7 +892,7 @@ function icerikKatalogunuUygula_(k){
   if(Number.isFinite(n))sayi.textContent=(n+1)+" etkinlik";
   if(/^\d{4}-\d{2}-\d{2}$/.test(String(it.eklenme||"")))YENI_ICERIK_KATALOGU_.push({id:a.id,addedOn:it.eklenme,type:degerlendirme?"evaluation":"activity",course:ders[1],target:it.yol,title:ad});
  });
- if(eklenen)yeniIcerikleriGoster_();
+ if(eklenen){seciliEtkinlikButonlariKur();seciliEtkinlikButonlariYenile();yeniIcerikleriGoster_();}
 }
 try{fetch(ICERIK_KATALOGU_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(icerikKatalogunuUygula_).catch(function(){});}catch(e){}
 const mevcutToken=sessionStorage.getItem(anahtarAdi);
