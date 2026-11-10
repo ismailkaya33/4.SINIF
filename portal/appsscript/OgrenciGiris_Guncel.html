@@ -631,7 +631,9 @@ function takipliOyunAc(id){
  oyunButonu.disabled=true;oruntulerButonu.disabled=true;
  document.querySelector("#oyunUst strong").textContent=trackedNames[id]||(id==="mat-oruntuler"?"🧩 Matematik • Sayı Örüntüleri":"🎮 Matematik • Kayıp Sayılar");
  oyunDurum.textContent="Oyun açılıyor. Bitirdiğinde sonucun otomatik gönderilecek.";
- oyunCer.src=takipliOyunlar[id];
+ /* Adresin sonuna dakikalık bir ek: tarayıcı eski kopyayı göstermesin, düzeltilen etkinlik hemen gelsin. */
+ const adres=takipliOyunlar[id];
+ oyunCer.src=adres+(adres.indexOf("?")<0?"?":"&")+"v="+Math.floor(Date.now()/60000);
 }
 oyunButonu.addEventListener("click",function(){takipliOyunAc("mat-kayipsayilar")});
 oruntulerButonu.addEventListener("click",function(){takipliOyunAc("mat-oruntuler")});
