@@ -110,7 +110,8 @@ const paths = {
     'fen-besinkasifleri':'Fen/besinkasifleri.html',
     'sos-oyunzamani':'Sosyal/oyunzamani.html',
     'insan-farkliyasamlar':'Insanhaklari/farkliyasamlar.html',
-    'mat-cikarmadatahmin':'Matematik/cikarmadatahmin.html'
+    'mat-cikarmadatahmin':'Matematik/cikarmadatahmin.html',
+    'mat-toplama-problemleri-sinav':'Matematik/mat-toplama-problemleri-sinav.html'
   };
 /* KATALOG BITIR: ilerleme-yollari */
   const available = new Set(SECILI_ETKINLIKLER_);

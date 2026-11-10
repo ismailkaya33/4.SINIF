@@ -15,7 +15,8 @@
     {"id": "fen-besinkasifleri", "yol": "Fen/besinkasifleri.html", "ad": "Fen Bilimleri • Besin Kaşifleri: Görev Haritası", "konu": "Fen Bilimleri", "kazanim": "Besinler — Görev Haritası final testi", "maxTotal": 200, "dersListesinde": true},
     {"id": "sos-oyunzamani", "yol": "Sosyal/oyunzamani.html", "ad": "Sosyal Bilgiler • Geçmişten Günümüze Çocuk Oyunları", "konu": "Sosyal Bilgiler", "kazanim": "SB.4.2.3 Geçmişten günümüze çocuk oyunları", "maxTotal": 200, "dersListesinde": true},
     {"id": "insan-farkliyasamlar", "yol": "Insanhaklari/farkliyasamlar.html", "ad": "İnsan Hakları • Çocuk Yaşantılarını Karşılaştırıyoruz", "konu": "İnsan Hakları, Yurttaşlık ve Demokrasi", "kazanim": "Y.4.2.3 Çocuk yaşantılarını karşılaştırma", "maxTotal": 200, "dersListesinde": true},
-    {"id": "mat-cikarmadatahmin", "yol": "Matematik/cikarmadatahmin.html", "ad": "Matematik • Tahmin Ustası: Çıkarmada Tahmin", "konu": "Matematik", "kazanim": "M.4.1.3.3 Çıkarmada tahmin", "maxTotal": 200, "dersListesinde": true}
+    {"id": "mat-cikarmadatahmin", "yol": "Matematik/cikarmadatahmin.html", "ad": "Matematik • Tahmin Ustası: Çıkarmada Tahmin", "konu": "Matematik", "kazanim": "M.4.1.3.3 Çıkarmada tahmin", "maxTotal": 200, "dersListesinde": true},
+    {"id": "mat-toplama-problemleri-sinav", "yol": "Matematik/mat-toplama-problemleri-sinav.html", "ad": "Matematik • Konu Değerlendirme: Toplama ve Çıkarma Problemleri", "konu": "Matematik", "kazanim": "M.4.1.2.4 / M.4.1.3.4 / M.4.1.2.2 Toplama ve çıkarma problemleri", "maxTotal": 200, "dersListesinde": true}
   ],
   "seciliEtkinlikler": [
     {"yol": "Turkce/ikilemeler.html", "ad": "Türkçe • İkileme Dedektifi"},
@@ -33,6 +34,7 @@
     {"yol": "Insanhaklari/insanolmasorumlulugu.html", "ad": "İnsan Hakları • İnsan Olma Sorumluluğu"},
     {"yol": "Trafik/yayaolaraktrafikkurallarietkinligi.html", "ad": "Trafik Güvenliği • Yaya Olarak Trafik Kuralları"},
     {"yol": "Insanhaklari/farkliyasamlar.html", "ad": "İnsan Hakları • Çocuk Yaşantılarını Karşılaştırıyoruz"},
-    {"yol": "Matematik/cikarmadatahmin.html", "ad": "Matematik • Tahmin Ustası: Çıkarmada Tahmin"}
+    {"yol": "Matematik/cikarmadatahmin.html", "ad": "Matematik • Tahmin Ustası: Çıkarmada Tahmin"},
+    {"yol": "Matematik/mat-toplama-problemleri-sinav.html", "ad": "Matematik • Konu Değerlendirme: Toplama ve Çıkarma Problemleri"}
   ]
 }
