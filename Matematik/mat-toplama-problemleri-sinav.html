@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konu Değerlendirme: Toplama ve Çıkarma Problemleri</title>
+<style>
+:root{--bg:#f4f6fa;--kart:#fff;--yazi:#1c2430;--cizgi:#c9d1dc;--mavi:#2b5fd9;--mavi-acik:#e6edfc;--gri:#5b6470}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--kart:#1b212a;--yazi:#e8ecf2;--cizgi:#3a4350;--mavi:#7ba2ff;--mavi-acik:#22324f;--gri:#aab3c0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--yazi);font:19px/1.5 system-ui,"Segoe UI",Roboto,Arial,sans-serif}
+#app{max-width:760px;margin:0 auto;padding:16px}
+.kart{background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:18px;margin:12px 0}
+h1{font-size:1.45rem;margin:0 0 8px}
+.soru{font-size:1.3rem;font-weight:600;margin:6px 0 16px;line-height:1.5}
+.sec{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.sec{grid-template-columns:1fr}}
+button{font:inherit;min-height:56px;border-radius:14px;border:2px solid var(--mavi);background:var(--kart);color:var(--yazi);cursor:pointer;padding:8px 14px;text-align:left}
+button:focus-visible{outline:3px solid var(--mavi);outline-offset:2px}
+button.secili{background:var(--mavi);color:#fff}
+button.dolu{background:var(--mavi);color:#fff;text-align:center}
+button.ikincil{text-align:center;border-color:var(--cizgi)}
+button:disabled{opacity:.45;cursor:default}
+.ust{display:flex;justify-content:space-between;align-items:center;font-size:.95rem;color:var(--gri);margin-bottom:6px}
+.gezgin{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.gezgin button{min-height:44px;min-width:44px;padding:0;text-align:center;font-size:.95rem;border-width:2px}
+.gezgin button.cevapli{background:var(--mavi-acik)}
+.gezgin button.simdi{border-color:var(--yazi);border-width:3px}
+.alt{display:flex;gap:10px;justify-content:space-between;margin-top:16px;flex-wrap:wrap}
+.alt button{min-width:130px}
+.uyari{background:var(--mavi-acik);border-radius:12px;padding:12px;margin:12px 0}
+@media (prefers-reduced-motion:no-preference){button{transition:background .15s}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 2;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+})();
+
+</script>
+<script>
+'use strict';
+/* ===== VERİ (öğretmen yalnızca burayı düzenler) ===== */
+const OYUN = {
+ "id": "mat-toplama-problemleri-sinav",
+ "ad": "Konu Değerlendirme: Toplama ve Çıkarma Problemleri",
+ "kazanimlar": [
+  {
+   "kod": "M.4.1.2.4",
+   "ad": "Doğal sayılarla toplama işlemini gerektiren problemleri çözer"
+  },
+  {
+   "kod": "M.4.1.3.4",
+   "ad": "Doğal sayılarla toplama ve çıkarma işlemini gerektiren problemleri çözer"
+  },
+  {
+   "kod": "M.4.1.2.2",
+   "ad": "İki doğal sayının toplamını tahmin eder ve tahminini işlem sonucu ile karşılaştırır"
+  }
+ ],
+ "maddeler": [
+  {
+   "id": "a1",
+   "kaz": "M.4.1.2.4",
+   "soru": "Bir kitapçı hafta içi 1 246 kitap, hafta sonu 878 kitap sattı. Kitapçı toplam kaç kitap satmıştır?",
+   "dogru": "2 124",
+   "yanlislar": [
+    [
+     "2 114",
+     "elde-unuttu"
+    ],
+    [
+     "2 024",
+     "elde-unuttu"
+    ],
+    [
+     "2 224",
+     "elde-fazla"
+    ]
+   ],
+   "why": "1 246 + 878 = 2 124. Birler, onlar ve yüzler basamağındaki eldeler eklenir."
+  },
+  {
+   "id": "a2",
+   "kaz": "M.4.1.2.4",
+   "soru": "Bir kütüphaneye ilk ay 1 358 kişi geldi. İkinci ay gelenlerin sayısı ilk aydan 245 fazla oldu. Kütüphaneye iki ayda toplam kaç kişi gelmiştir?",
+   "dogru": "2 961",
+   "yanlislar": [
+    [
+     "1 603",
+     "ara-sonucu-cevap-saydi"
+    ],
+    [
+     "2 471",
+     "fazla-az-karisti"
+    ],
+    [
+     "2 951",
+     "elde-unuttu"
+    ]
+   ],
+   "why": "İkinci ay: 1 358 + 245 = 1 603. İki ay: 1 358 + 1 603 = 2 961."
+  },
+  {
+   "id": "a3",
+   "kaz": "M.4.1.2.4",
+   "soru": "Bir manavda üç gün boyunca elma satıldı: ilk gün 450 kg, ikinci gün 285 kg, üçüncü gün 360 kg. Manav toplam kaç kg elma satmıştır?",
+   "dogru": "1 095",
+   "yanlislar": [
+    [
+     "735",
+     "eksik-terim"
+    ],
+    [
+     "1 085",
+     "islem-hatasi"
+    ],
+    [
+     "1 195",
+     "elde-fazla"
+    ]
+   ],
+   "why": "450 + 285 = 735; 735 + 360 = 1 095. Üç günün hepsi toplanır."
+  },
+  {
+   "id": "a4",
+   "kaz": "M.4.1.2.4",
+   "soru": "Rakamları birbirinden farklı en büyük dört basamaklı doğal sayı ile rakamları birbirinden farklı en küçük dört basamaklı doğal sayının toplamı kaçtır?",
+   "dogru": "10 899",
+   "yanlislar": [
+    [
+     "9 999",
+     "sifirla-baslayan-sayi"
+    ],
+    [
+     "10 876",
+     "rakamlar-ayni-sayi"
+    ],
+    [
+     "11 110",
+     "sifiri-kullanmadi"
+    ]
+   ],
+   "why": "En büyük: 9 876. En küçük: 1 023 (sayı 0 ile başlayamaz). 9 876 + 1 023 = 10 899."
+  },
+  {
+   "id": "a5",
+   "kaz": "M.4.1.2.4",
+   "soru": "Bir otobüs firması yılın ilk yarısında 2 764 yolcu, ikinci yarısında 2 936 yolcu taşıdı. Firma bir yılda kaç yolcu taşımıştır?",
+   "dogru": "5 700",
+   "yanlislar": [
+    [
+     "5 690",
+     "elde-unuttu"
+    ],
+    [
+     "4 700",
+     "elde-unuttu"
+    ],
+    [
+     "6 700",
+     "elde-fazla"
+    ]
+   ],
+   "why": "2 764 + 2 936 = 5 700. Birler, onlar ve yüzler basamağında elde vardır."
+  },
+  {
+   "id": "a6",
+   "kaz": "M.4.1.2.4",
+   "soru": "Bir bahçede 1 120 domates fidesi ve 780 biber fidesi var. Salatalık fidesi sayısı domates fidesinden 340 fazla. Bahçede toplam kaç fide vardır?",
+   "dogru": "3 360",
+   "yanlislar": [
+    [
+     "1 900",
+     "eksik-terim"
+    ],
+    [
+     "2 240",
+     "fark-toplam-karisti"
+    ],
+    [
+     "3 020",
+     "yanlis-referans"
+    ]
+   ],
+   "why": "Salatalık: 1 120 + 340 = 1 460. Toplam: 1 120 + 780 + 1 460 = 3 360."
+  },
+  {
+   "id": "b1",
+   "kaz": "M.4.1.3.4",
+   "soru": "Elif satıcıya 5 000 lira verdi. 1 275 liralık ayakkabı ile 1 489 liralık mont aldı. Elif'e kaç lira para üstü verilir?",
+   "dogru": "2 236",
+   "yanlislar": [
+    [
+     "3 725",
+     "eksik-adim"
+    ],
+    [
+     "7 764",
+     "toplama-yapti"
+    ],
+    [
+     "2 336",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "Harcama: 1 275 + 1 489 = 2 764. Para üstü: 5 000 − 2 764 = 2 236."
+  },
+  {
+   "id": "b2",
+   "kaz": "M.4.1.3.4",
+   "soru": "Bir kamyon en fazla 2 800 kg yük taşıyabilir. Kamyona önce 1 150 kg un, sonra 975 kg şeker yüklendi. Kamyona en fazla kaç kg daha yük yüklenebilir?",
+   "dogru": "675",
+   "yanlislar": [
+    [
+     "2 125",
+     "yuklenen-yuku-cevap-saydi"
+    ],
+    [
+     "1 650",
+     "eksik-adim"
+    ],
+    [
+     "775",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "Yüklenen: 1 150 + 975 = 2 125. Kalan: 2 800 − 2 125 = 675."
+  },
+  {
+   "id": "b3",
+   "kaz": "M.4.1.3.4",
+   "soru": "Babam şimdi 42 yaşındadır. Ablam babamdan 27 yaş küçüktür. Babamın ve ablamın 5 yıl sonraki yaşları toplamı kaçtır?",
+   "dogru": "67",
+   "yanlislar": [
+    [
+     "57",
+     "yil-eklemedi"
+    ],
+    [
+     "62",
+     "bir-kisiye-ekledi"
+    ],
+    [
+     "77",
+     "yil-fazla-ekledi"
+    ]
+   ],
+   "why": "Ablam şimdi 42 − 27 = 15 yaşında. 5 yıl sonra babam 47, ablam 20 olur. 47 + 20 = 67."
+  },
+  {
+   "id": "b4",
+   "kaz": "M.4.1.3.4",
+   "soru": "Bir koleksiyoncunun 2 350 pulu var. Bu pulların 1 475 tanesi yerli, geri kalanı yabancıdır. Koleksiyoncunun kaç yabancı pulu vardır?",
+   "dogru": "875",
+   "yanlislar": [
+    [
+     "3 825",
+     "toplama-yapti"
+    ],
+    [
+     "1 125",
+     "kucuk-buyuk-cikardi"
+    ],
+    [
+     "885",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "Yabancı pul = 2 350 − 1 475 = 875."
+  },
+  {
+   "id": "b5",
+   "kaz": "M.4.1.3.4",
+   "soru": "Bir sayının 1 450 fazlası 3 200 ise bu sayı kaçtır?",
+   "dogru": "1 750",
+   "yanlislar": [
+    [
+     "4 650",
+     "toplama-yapti"
+    ],
+    [
+     "1 850",
+     "islem-hatasi"
+    ],
+    [
+     "1 650",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "Sayıya 1 450 eklenince 3 200 oluyor. Sayı = 3 200 − 1 450 = 1 750."
+  },
+  {
+   "id": "b6",
+   "kaz": "M.4.1.3.4",
+   "soru": "Bir çiftçi ilk yıl 4 250 kg, ikinci yıl 3 875 kg buğday hasat etti. İlk yıl ikinci yıldan kaç kg fazla buğday hasat edilmiştir?",
+   "dogru": "375",
+   "yanlislar": [
+    [
+     "8 125",
+     "toplama-yapti"
+    ],
+    [
+     "1 625",
+     "kucuk-buyuk-cikardi"
+    ],
+    [
+     "475",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "Fark = 4 250 − 3 875 = 375."
+  },
+  {
+   "id": "c1",
+   "kaz": "M.4.1.2.2",
+   "soru": "1 862 + 3 148 toplamını en yakın yüzlüğe yuvarlayarak tahmin edersek sonuç kaç olur?",
+   "dogru": "5 000",
+   "yanlislar": [
+    [
+     "4 900",
+     "hep-asagi"
+    ],
+    [
+     "5 100",
+     "hep-yukari"
+    ],
+    [
+     "5 010",
+     "kesin-sonucu-yazdi"
+    ]
+   ],
+   "why": "1 862 ≈ 1 900, 3 148 ≈ 3 100. 1 900 + 3 100 = 5 000."
+  },
+  {
+   "id": "c2",
+   "kaz": "M.4.1.2.2",
+   "soru": "Bir bakkal 478 liralık ve 396 liralık iki fatura ödedi. Ödediği toplam parayı en yakın onluğa yuvarlayarak tahmin edersek kaç lira olur?",
+   "dogru": "880",
+   "yanlislar": [
+    [
+     "860",
+     "hep-asagi"
+    ],
+    [
+     "874",
+     "kesin-sonucu-yazdi"
+    ],
+    [
+     "900",
+     "yanlis-basamak"
+    ]
+   ],
+   "why": "478 ≈ 480, 396 ≈ 400. 480 + 400 = 880."
+  },
+  {
+   "id": "c3",
+   "kaz": "M.4.1.2.2",
+   "soru": "3 645 + 2 288 işleminde sayılar en yakın yüzlüğe yuvarlanarak yapılan tahmin ile gerçek sonuç arasındaki fark kaçtır?",
+   "dogru": "33",
+   "yanlislar": [
+    [
+     "67",
+     "islem-hatasi"
+    ],
+    [
+     "5 900",
+     "tahmini-cevap-saydi"
+    ],
+    [
+     "133",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "Tahmin: 3 600 + 2 300 = 5 900. Gerçek: 5 933. Fark: 5 933 − 5 900 = 33."
+  },
+  {
+   "id": "c4",
+   "kaz": "M.4.1.2.2",
+   "soru": "Bir okul 3 480 liralık projektör ile 2 615 liralık yazıcı almak istiyor. Okulun 6 000 lirası var. Fiyatlar en yakın yüzlüğe yuvarlanırsa hangisi doğrudur?",
+   "dogru": "Tahmin 6 100 lira, para yetmez",
+   "yanlislar": [
+    [
+     "Tahmin 6 000 lira, para tam yeter",
+     "hep-asagi"
+    ],
+    [
+     "Tahmin 6 200 lira, para yetmez",
+     "hep-yukari"
+    ],
+    [
+     "Tahmin 5 900 lira, para yeter",
+     "yanlis-yuvarlama"
+    ]
+   ],
+   "why": "3 480 ≈ 3 500, 2 615 ≈ 2 600. Toplam yaklaşık 6 100 lira; 6 000 lira yetmez."
+  }
+ ]
+};
+
+/* ===== MOTOR (sınav kipi: ipucu yok, anında doğru/yanlış gösterilmez, istenen soruya dönülür, süre ve deneme sınırı yok) ===== */
+const app = document.getElementById('app');
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const depo = (() => { const mem = {}; return {
+  oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
+  yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } },
+  sil(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) { /* depolama kapalı */ } } }; })();
+const DEVAM = 'sinav-devam-' + OYUN.id;
+
+let S = null;   /* {sira:[madde...], sec:{id:[[metin,yanilgi]...]}, cevap:{id:secilenMetin}, sure:{id:ms}, i:0, t:Date.now()} */
+
+function yeniSinav() {
+  const sira = OYUN.maddeler.slice();   /* soru sırası sabit: kolaydan zora */
+  const sec = {};
+  sira.forEach(m => { sec[m.id] = shuffle([[m.dogru, '']].concat(m.yanlislar)); });
+  S = { sira, sec, cevap: {}, sure: {}, i: 0, t: Date.now() };
+}
+function kaydetDevam() {
+  if (!S) return;
+  depo.yaz(DEVAM, JSON.stringify({ sec: S.sec, cevap: S.cevap, sure: S.sure, i: S.i }));
+}
+function devamYukle() {
+  try {
+    const v = JSON.parse(depo.oku(DEVAM) || 'null');
+    if (!v || !v.sec) return false;
+    const ok = OYUN.maddeler.every(m => Array.isArray(v.sec[m.id]) && v.sec[m.id].length === 4);
+    if (!ok) return false;
+    S = { sira: OYUN.maddeler.slice(), sec: v.sec, cevap: v.cevap || {}, sure: v.sure || {}, i: Math.min(+v.i || 0, OYUN.maddeler.length - 1), t: Date.now() };
+    return true;
+  } catch (e) { return false; }
+}
+function sureTopla() {   /* şu anki sorada geçen süreyi biriktir */
+  const m = S.sira[S.i]; if (!m) return;
+  S.sure[m.id] = (S.sure[m.id] || 0) + (Date.now() - S.t); S.t = Date.now();
+}
+
+function baslangic() {
+  const var_ = (() => { try { const v = JSON.parse(depo.oku(DEVAM) || 'null'); return v && Object.keys(v.cevap || {}).length; } catch (e) { return 0; } })();
+  app.innerHTML = '<div class="kart"><h1>' + esc(OYUN.ad) + '</h1>' +
+    '<p>' + OYUN.maddeler.length + ' soru var. İstediğin soruya dönebilir, cevabını değiştirebilirsin. Acele etme; süre sınırı yok.</p>' +
+    '<p>Sonucunu öğretmenin görecek.</p>' +
+    (var_ ? '<div class="uyari">Yarım kalan bir sınavın var (' + var_ + ' soru cevaplı).</div><p><button class="dolu" id="devam">Kaldığım yerden devam et</button> <button class="ikincil" id="yeni">Baştan başla</button></p>'
+          : '<p><button class="dolu" id="basla">Başla</button></p>') + '</div>';
+  const git = () => { RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar }); soruCiz(); };
+  if (var_) {
+    document.getElementById('devam').onclick = () => { if (devamYukle()) git(); else { yeniSinav(); git(); } };
+    document.getElementById('yeni').onclick = () => { depo.sil(DEVAM); yeniSinav(); git(); };
+  } else document.getElementById('basla').onclick = () => { yeniSinav(); git(); };
+}
+
+function gezginHtml() {
+  return '<div class="gezgin" role="group" aria-label="Soru listesi">' + S.sira.map((m, k) =>
+    '<button data-k="' + k + '" class="' + (S.cevap[m.id] !== undefined ? 'cevapli ' : '') + (k === S.i ? 'simdi' : '') + '" aria-label="Soru ' + (k + 1) + (S.cevap[m.id] !== undefined ? ', cevaplandı' : ', boş') + '"' + (k === S.i ? ' aria-current="true"' : '') + '>' + (k + 1) + '</button>').join('') + '</div>';
+}
+
+function soruCiz() {
+  const m = S.sira[S.i], sec = S.sec[m.id], son = S.i === S.sira.length - 1;
+  S.t = Date.now();
+  app.innerHTML = '<div class="ust"><span>Soru ' + (S.i + 1) + ' / ' + S.sira.length + '</span><span>' + Object.keys(S.cevap).length + ' soru cevaplı</span></div>' +
+    '<div class="kart"><div class="soru" id="soru">' + esc(m.soru) + '</div>' +
+    '<div class="sec" role="radiogroup" aria-labelledby="soru">' + sec.map((s, k) =>
+      '<button role="radio" aria-checked="' + (S.cevap[m.id] === s[0]) + '" data-k="' + k + '" class="' + (S.cevap[m.id] === s[0] ? 'secili' : '') + '">' + String.fromCharCode(65 + k) + ') ' + esc(s[0]) + '</button>').join('') + '</div>' +
+    '<div class="alt"><button class="ikincil" id="onceki"' + (S.i === 0 ? ' disabled' : '') + '>← Önceki</button>' +
+    (son ? '<button class="dolu" id="bitir">Sınavı bitir</button>' : '<button class="dolu" id="sonraki">Sonraki →</button>') + '</div></div>' + gezginHtml();
+  app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => isaretle(+b.dataset.k); });
+  app.querySelectorAll('.gezgin button').forEach(b => { b.onclick = () => git(+b.dataset.k); });
+  const o = document.getElementById('onceki'); if (o) o.onclick = () => git(S.i - 1);
+  const s = document.getElementById('sonraki'); if (s) s.onclick = () => git(S.i + 1);
+  const bt = document.getElementById('bitir'); if (bt) bt.onclick = bitisOnayi;
+}
+function git(k) { if (k < 0 || k >= S.sira.length) return; sureTopla(); S.i = k; kaydetDevam(); soruCiz(); }
+function isaretle(k) {
+  const m = S.sira[S.i]; S.cevap[m.id] = S.sec[m.id][k][0]; kaydetDevam();
+  app.querySelectorAll('.sec button').forEach((b, j) => { const a = j === k; b.classList.toggle('secili', a); b.setAttribute('aria-checked', a); });
+  const g = app.querySelectorAll('.gezgin button')[S.i]; if (g) { g.classList.add('cevapli'); }
+  const ust = app.querySelector('.ust span:last-child'); if (ust) ust.textContent = Object.keys(S.cevap).length + ' soru cevaplı';
+}
+
+function bitisOnayi() {
+  sureTopla();
+  const bos = S.sira.filter(m => S.cevap[m.id] === undefined);
+  app.innerHTML = '<div class="kart"><h1>Sınavı bitirelim mi?</h1>' +
+    (bos.length ? '<div class="uyari">' + bos.length + ' soruyu boş bıraktın: ' + S.sira.map((m, k) => S.cevap[m.id] === undefined ? (k + 1) : null).filter(Boolean).join(', ') + '.</div>'
+                : '<p>Bütün soruları cevapladın.</p>') +
+    '<p>Bitirdikten sonra cevaplarını değiştiremezsin.</p>' +
+    '<div class="alt"><button class="ikincil" id="don">Sorulara dön</button><button class="dolu" id="evet">Evet, bitir</button></div></div>';
+  document.getElementById('don').onclick = () => { S.i = bos.length ? S.sira.indexOf(bos[0]) : S.i; soruCiz(); };
+  document.getElementById('evet').onclick = bitir;
+}
+
+function bitir() {
+  /* Her soru sonuç olarak gönderilir. Doğru: ilk denemede doğru. Yanlış/boş: ilkDenemeDogru=false, deneme=2, cozumGoruldu=true
+     (rapor motorunda "çözemedi" anlamında kullanılır; öğrenciye hiçbir çözüm gösterilmez). */
+  S.sira.forEach(m => {
+    const c = S.cevap[m.id], dogru = c === m.dogru;
+    const yan = c === undefined ? 'bos' : (dogru ? '' : ((m.yanlislar.find(y => y[0] === c) || [0, ''])[1] || 'yanlis'));
+    RaporMotoru.kaydet({ kazanim: m.kaz, madde: m.id, yanilgi: yan, ilkDenemeDogru: dogru, deneme: dogru ? 1 : 2, ipucu: 0,
+      cozumGoruldu: !dogru, sureMs: S.sure[m.id] || 0 });
+  });
+  RaporMotoru.bitir();
+  depo.sil(DEVAM);
+  const portalda = window.parent !== window;
+  app.innerHTML = '<div class="kart"><h1>Sınavı tamamladın</h1>' +
+    '<p>' + (portalda ? 'Cevapların öğretmenine gönderildi. Teşekkürler!' : 'Cevapların öğretmenine gitmesi için sınavı öğrenci portalından aç.') + '</p>' +
+    '<p><button class="ikincil" id="yeniden">Sınavı yeniden çöz</button></p></div>';
+  document.getElementById('yeniden').onclick = () => { S = null; baslangic(); };
+}
+
+document.addEventListener('keydown', e => {
+  if (!S || !document.querySelector('.sec')) return;
+  if (e.key >= '1' && e.key <= '4') isaretle(+e.key - 1);
+  else if (e.key.toLowerCase() >= 'a' && e.key.toLowerCase() <= 'd' && e.key.length === 1) isaretle(e.key.toLowerCase().charCodeAt(0) - 97);
+  else if (e.key === 'ArrowRight') git(S.i + 1);
+  else if (e.key === 'ArrowLeft') git(S.i - 1);
+});
+baslangic();
+</script>
+</body>
+</html>
