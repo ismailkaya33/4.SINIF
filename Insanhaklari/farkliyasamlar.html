@@ -686,6 +686,76 @@
             }
         }
 
+        /* ==========================================
+           4/D PORTAL SONUÇ MESAJI (MIMARI.md)
+           24 madde: 4 saat dilimi + 6 vaka + 8 durum kartı + 6 test sorusu.
+           Dört bölüm bitince (4 rozet) sonuç portala bir kez gider.
+           ========================================== */
+        const ACTIVITY_ID = 'insan-farkliyasamlar';
+        const ITEM_COUNTS = { m1: 4, m2: 6, m3: 8, m4: 6 };
+        let itemState = {};
+        let attemptId = '';
+        let attemptStart = Date.now();
+        let finishSent = false;
+
+        function newAttemptId() {
+            const rnd = (window.crypto && typeof window.crypto.randomUUID === 'function')
+                ? window.crypto.randomUUID().replace(/-/g, '')
+                : Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+            return ('fy_' + rnd).slice(0, 80);
+        }
+
+        function resetItems(prefix) {
+            for (let i = 0; i < ITEM_COUNTS[prefix]; i++) {
+                itemState[prefix + '-' + i] = { done: false, wrong: 0 };
+            }
+        }
+
+        function startAttempt() {
+            attemptId = newAttemptId();
+            attemptStart = Date.now();
+            finishSent = false;
+        }
+
+        function markItemWrong(key) {
+            const it = itemState[key];
+            if (it && !it.done) it.wrong++;
+        }
+
+        function markItemDone(key) {
+            const it = itemState[key];
+            if (it) it.done = true;
+        }
+
+        function tryFinish() {
+            if (finishSent) return;
+            if (!Object.values(earnedBadges).every(Boolean)) return;
+            finishSent = true;
+            const items = Object.values(itemState);
+            const total = items.length;
+            const correct = items.filter(it => it.done).length;
+            const firstTry = items.filter(it => it.done && it.wrong === 0).length;
+            const wrongAttempts = Math.min(10000, items.reduce((s, it) => s + it.wrong, 0));
+            const durationSeconds = Math.min(86400, Math.max(0, Math.floor((Date.now() - attemptStart) / 1000)));
+            try {
+                window.parent.postMessage({
+                    type: '4d:activity-finished',
+                    schemaVersion: 1,
+                    activityId: ACTIVITY_ID,
+                    attemptId,
+                    correct,
+                    wrong: total - correct,
+                    total,
+                    wrongAttempts,
+                    firstTry,
+                    durationSeconds
+                }, '*');
+            } catch (e) { /* portal dışında açıldıysa sorun değil */ }
+        }
+
+        Object.keys(ITEM_COUNTS).forEach(resetItems);
+        startAttempt();
+
         function addScore(points) {
             totalScore += points;
             document.getElementById('scoreDisplay').textContent = totalScore;
@@ -708,6 +778,7 @@
             document.getElementById('certBadgeVal').textContent = `${count} / 4`;
 
             showToast('🏅 ' + title, desc);
+            tryFinish();
         }
 
         function showToast(title, text) {
@@ -914,6 +985,7 @@
 
                 if (!item.solved) {
                     item.solved = true;
+                    markItemDone('m1-' + slotIdx);
                     addScore(20);
                     document.getElementById(`timeCheck${slotIdx}`).classList.remove('hidden');
                     const solvedCount = timelineData.filter(d => d.solved).length;
@@ -927,6 +999,7 @@
                     feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Doğru yanıt! Bu saat dilimini zaten tamamlamıştın.`;
                 }
             } else {
+                markItemWrong('m1-' + slotIdx);
                 playSound('wrong');
                 clickedBtn.className = 'text-left p-3.5 rounded-xl border-2 bg-rose-100 border-rose-400 font-bold text-xs sm:text-sm text-rose-900 flex items-start gap-2.5';
                 feedbackBox.className = 'mt-3 p-3 rounded-xl text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300';
@@ -1161,6 +1234,7 @@
 
                 if (!c.solved) {
                     c.solved = true;
+                    markItemDone('m2-' + currentCaseIndex);
                     addScore(25);
                     const solvedCount = casesData.filter(item => item.solved).length;
                     document.getElementById('m2ProgressText').textContent = `${solvedCount} / 6 Vaka Çözüldü`;
@@ -1176,6 +1250,7 @@
                     fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Doğru! ${c.explanation}`;
                 }
             } else {
+                markItemWrong('m2-' + currentCaseIndex);
                 playSound('wrong');
                 fb.className = 'mt-3 p-3.5 rounded-2xl text-sm font-bold bg-rose-100 text-rose-900 border border-rose-300';
                 let hintMsg = '';
@@ -1309,6 +1384,7 @@
                     showSolutionFollowUp(card);
                 }
             } else {
+                markItemWrong('m3-' + currentBridgeIndex);
                 playSound('wrong');
                 fb.className = 'mt-4 p-3 rounded-xl text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300';
                 fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Dikkat! Bu yaşantının çocuğa olumlu mu yoksa olumsuz mu yansıdığını tekrar düşün.`;
@@ -1332,6 +1408,7 @@
                         addSortedItemToList('cannot', card.statement, sol.text);
                         advanceBridgeCard();
                     } else {
+                        markItemWrong('m3-' + currentBridgeIndex);
                         playSound('wrong');
                         btn.className = 'p-3 rounded-xl bg-rose-100 border-2 border-rose-400 text-left text-xs sm:text-sm font-bold text-rose-900 flex items-center gap-2';
                     }
@@ -1361,6 +1438,7 @@
         }
 
         function advanceBridgeCard() {
+            markItemDone('m3-' + currentBridgeIndex);
             currentBridgeIndex++;
             document.getElementById('m3ProgressText').textContent = `${currentBridgeIndex} / ${bridgeCards.length} Kart Sınıflandırıldı`;
             if (currentBridgeIndex === bridgeCards.length) {
@@ -1457,6 +1535,12 @@
                     </div>
                 `;
                 unlockBadge(4, 'Hak Koruyucusu Rozeti', 'Değerlendirme yarışmasını tamamlayarak Çocuk Hakları Koruyucusu oldun!');
+                if (!Object.values(earnedBadges).every(Boolean)) {
+                    const note = document.createElement('p');
+                    note.className = 'mt-4 text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 rounded-xl p-3';
+                    note.textContent = 'Diğer bölümleri de tamamla; dört rozetin hepsini toplayınca sonucun öğretmenine gider.';
+                    document.querySelector('#quizActiveBody > div').appendChild(note);
+                }
                 return;
             }
 
@@ -1487,12 +1571,14 @@
 
             if (selectedIdx === item.correct) {
                 quizAnswered = true;
+                markItemDone('m4-' + currentQuizIdx);
                 playSound('correct');
                 addScore(20);
                 btnElem.className = 'p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-100 text-left font-bold text-xs sm:text-sm text-emerald-950 flex items-start gap-3';
                 fbArea.className = 'mt-4 p-4 rounded-2xl text-sm font-bold flex flex-col sm:flex-row items-center justify-between gap-3 bg-emerald-100 text-emerald-900 border border-emerald-300';
                 fbMsg.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Doğru! (+20 Puan) ${item.explanation}`;
             } else {
+                markItemWrong('m4-' + currentQuizIdx);
                 playSound('wrong');
                 btnElem.className = 'p-4 rounded-2xl border-2 border-rose-400 bg-rose-100 text-left font-bold text-xs sm:text-sm text-rose-900 flex items-start gap-3';
                 fbArea.className = 'mt-4 p-4 rounded-2xl text-sm font-bold flex flex-col sm:flex-row items-center justify-between gap-3 bg-rose-100 text-rose-900 border border-rose-300';
@@ -1508,6 +1594,10 @@
 
         function resetQuiz() {
             currentQuizIdx = 0;
+            // Yeni deneme: test soruları sıfırlanır, sonuç yeniden (yeni attemptId ile) gönderilebilir.
+            resetItems('m4');
+            earnedBadges[4] = false;
+            startAttempt();
             document.getElementById('quizActiveBody').innerHTML = `
                 <div class="bg-slate-50 p-5 rounded-2xl border-2 border-slate-200 mb-4">
                     <p id="quizQuestionText" class="text-base sm:text-lg font-bold text-slate-800 leading-relaxed"></p>
