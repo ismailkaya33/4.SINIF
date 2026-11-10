@@ -9,6 +9,7 @@ const student=[
  ['portal/appsscript/GirisGuvenligi.gs','GirisGuvenligi'],
  ['portal/appsscript/OgrenciOturum.gs','OgrenciOturum'],
  ['portal/appsscript/OgrenciDuyurulari.gs','OgrenciDuyurulari'],
+ ['portal/appsscript/OgrenciAnketleri.gs','OgrenciAnketleri'],
  ['portal/appsscript/EtkinlikKayitDefteri.gs','EtkinlikKayitDefteri'],
  ['portal/appsscript/EtkinlikSonuclari.gs','EtkinlikSonuclari'],
  ['portal/appsscript/OgrenciCalismaDurumu.gs','OgrenciCalismaDurumu'],
@@ -17,6 +18,7 @@ const student=[
 const teacher=[
  ['portal/ogretmen-rapor/OgretmenRapor.gs','Kod'],
  ['portal/ogretmen-rapor/OgretmenDuyuruTaslak.gs','OgretmenDuyuruTaslak'],
+ ['portal/ogretmen-rapor/OgretmenAnket.gs','OgretmenAnket'],
  ['portal/ogretmen-rapor/OgretmenRapor.html','OgretmenRapor']
 ];
 const mapping=target==='student'?student:teacher;

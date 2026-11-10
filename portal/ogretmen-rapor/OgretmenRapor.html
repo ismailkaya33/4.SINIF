@@ -75,6 +75,15 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 .annArchive .announcement{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:8px 14px;padding:10px 14px;background:#fff}
 .annArchive .announcement strong{flex:1 1 220px;color:var(--muted)}
 .annArchive .announcement button{min-height:36px;padding:6px 12px;font-size:14px}
+.surveyQ{margin:14px 0 6px;font-size:15.5px;color:var(--brand-d)}
+.surveyBars{display:grid;gap:6px;margin:0 0 6px}
+.surveyBar{display:grid;grid-template-columns:minmax(150px,1.3fr) minmax(80px,2fr) 44px;align-items:center;gap:10px;font-size:14.5px}
+.surveyBar .progress{height:12px}
+.surveyBar b{text-align:right;font-variant-numeric:tabular-nums}
+.surveyNames{grid-column:1/-1;margin:-2px 0 4px;color:var(--muted);font-size:13px}
+.surveyGroup{margin:8px 0 2px;color:var(--muted);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.surveyTop{margin:10px 0;padding:10px 14px;border-radius:10px;background:var(--warn-bg);color:#6b4308;font-weight:700}
+@media(max-width:650px){.surveyBar{grid-template-columns:1fr 44px}.surveyBar .progress{grid-column:1/-1;grid-row:2}}
 @media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){
  body{padding:12px 12px 36px}
@@ -91,7 +100,7 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 }
 </style></head><body>
 <header class="reportHeader"><div><p class="eyebrow">4/D · öğretmen paneli</p><h1>Öğretmen Raporu</h1><p id="status" role="status">Yükleniyor...</p></div><span class="reportPrivacy">🔒 Öğretmene özel</span></header>
-<nav class="reportNav" aria-label="Rapor bölümleri"><a href="#recentPanel">🆕 Son 7 gün</a><a href="#difficultyPanel">Zorlanılanlar</a><a href="#outcomePanel">Kazanımlar</a><a href="#catalogPanel">Ders içerikleri</a><a href="#activityPanel">Etkinlikler</a><a href="#declarationPanel">Tamamlama</a><a href="#notebookPanel">Defter notları</a><a href="#studentPanel">Öğrenciler</a><a href="#announcementPanel">Duyurular</a></nav>
+<nav class="reportNav" aria-label="Rapor bölümleri"><a href="#recentPanel">🆕 Son 7 gün</a><a href="#difficultyPanel">Zorlanılanlar</a><a href="#outcomePanel">Kazanımlar</a><a href="#catalogPanel">Ders içerikleri</a><a href="#activityPanel">Etkinlikler</a><a href="#declarationPanel">Tamamlama</a><a href="#notebookPanel">Defter notları</a><a href="#studentPanel">Öğrenciler</a><a href="#announcementPanel">Duyurular</a><a href="#surveyPanel">📝 Anketler</a></nav>
 <div class="stats"><p>Öğrenci <strong id="count">—</strong></p><p>Geçerli sonuç <strong id="results">—</strong></p><p>Sonucu gelen etkinlik <strong id="activeActivities">—</strong></p><p>Henüz kaydı olmayan öğrenci <strong id="noRecordStudents">—</strong></p></div>
 <section id='recentPanel' class='reportSection'><h2>🆕 Son 7 günde yüklenen etkinlikler ve değerlendirmeler</h2><p id="recentRange" class="muted">Siteye son bir haftada eklenen içerikler. Sonuç gönderenlerde başarı, ilk denemede doğru ve desteğe ihtiyacı olabilecek öğrenciler; “Tamamladım” bildirimi alınanlarda bildirim durumu gösterilir.</p><div id="recentSections"><p class="empty">İçerik listesi okunuyor...</p></div></section>
 <section id='difficultyPanel' class='reportSection'><h2>🎯 Zorlanılan etkinlikler</h2><p class="muted">En üstteki etkinlik, öğrencilerin ilk denemede en az doğru yaptığı etkinliktir. Tekrar ya da sınıf içi pekiştirme için ipucu verir; not yerine geçmez.</p><table><thead><tr><th>Etkinlik</th><th>Katılan öğrenci</th><th>Deneme</th><th>İlk denemede doğru</th><th>Deneme başına yanlış</th></tr></thead><tbody id="difficulty"></tbody></table></section>
@@ -106,6 +115,9 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 <label for="duyuruMetin">Duyuru metni</label><p class="muted" style="margin:2px 0 0;font-size:13.5px">İpucu: Maddeleri ayrı satırlara “1. …”, “2. …” ya da “- …” diye yaz; öğrenci ekranında her madde ayrı kutuda görünür.</p><textarea id="duyuruMetin" maxlength="1500" rows="4"></textarea>
 <button id="duyuruKaydet" type="button">Taslak olarak kaydet</button> <span id="duyuruMesaj" role="status"></span>
 <h3>Mevcut duyurular</h3><p id="duyuruListeMesaj" role="status"></p><div id="duyuruListe"></div><button id="duyuruYenile" class="secondary" type="button">Duyuruları yenile</button></section>
+<section id='surveyPanel' class='reportSection'><h2>📝 Anketler</h2><p class="muted">Hazır anketi ekleyince TASLAK olur; öğrenciler siz “Yayımla” diyene kadar görmez. Her öğrenci bir kez cevaplar. Misafir (TEST) cevapları sayılmaz.</p>
+<h3>Hazır anketler</h3><div id="hazirAnketler"><p class="empty">Hazır anketler okunuyor...</p></div><span id="anketMesaj" role="status"></span>
+<h3>Anketlerim ve sonuçlar</h3><p id="anketListeMesaj" role="status"></p><div id="anketListe"></div><button id="anketYenile" class="secondary" type="button">Anketleri yenile</button></section>
 <script>
 "use strict";
 /* Görünüm yardımcıları: hücreye metin ya da hazır öğe (rozet, çubuk) konabilir. */
@@ -295,6 +307,88 @@ function duyuruListele(){
 }
 document.getElementById('duyuruYenile').addEventListener('click',duyuruListele);
 duyuruListele();
+/* ---------- Anketler ---------- */
+function hazirAnketleriGoster(){
+ const el=document.getElementById('hazirAnketler'),msg=document.getElementById('anketMesaj');
+ google.script.run.withSuccessHandler(function(list){
+  el.replaceChildren();
+  (list||[]).forEach(function(s){
+   const box=document.createElement('div'),t=document.createElement('strong'),p=document.createElement('p'),b=document.createElement('button');
+   box.className='announcement';t.textContent=s.baslik;p.textContent=s.aciklama;b.type='button';b.textContent='Taslak olarak ekle';
+   b.addEventListener('click',function(){
+    b.disabled=true;msg.textContent='Ekleniyor...';
+    google.script.run.withSuccessHandler(function(){b.disabled=false;msg.textContent='“'+s.baslik+'” taslak olarak eklendi (henüz yayımlanmadı).';anketListele();})
+     .withFailureHandler(function(e){b.disabled=false;msg.textContent='Hata: '+(e&&e.message||'Eklenemedi');}).ogretmenHazirAnketEkle(s.id);
+   });
+   box.append(t,p,b);el.appendChild(box);
+  });
+  if(!el.children.length)el.innerHTML='<p class="empty">Hazır anket yok.</p>';
+ }).withFailureHandler(function(e){el.innerHTML='';msg.textContent='Hazır anketler alınamadı: '+(e&&e.message||'Bilinmiyor');}).ogretmenHazirAnketleri();
+}
+function anketSonucunuCiz(a,ogrenciSayisi,dersler){
+ const wrap=document.createElement('div'),dersAdi={};(dersler||[]).forEach(function(d){dersAdi[d.id]=d.simge+' '+d.ad;});
+ const kp=document.createElement('p');kp.textContent='Cevaplayan: '+a.cevapSayisi+' / '+ogrenciSayisi+' öğrenci';wrap.appendChild(kp);
+ // En dikkat çekici bilgi: en çok seçilen zorlanılan konu
+ const konuSorusu=a.sorular.filter(function(s){return s.bagli})[0];
+ if(konuSorusu){
+  const enCok=konuSorusu.secenekler.slice().sort(function(x,y){return y.sayi-x.sayi})[0];
+  if(enCok&&enCok.sayi>0){const t=document.createElement('p');t.className='surveyTop';t.textContent='⚠️ En çok zorlanılan konu: '+enCok.ad+' ('+(dersAdi[enCok.grup]||enCok.grup)+') — '+enCok.sayi+' öğrenci';wrap.appendChild(t);}
+ }
+ a.sorular.forEach(function(s,i){
+  const q=document.createElement('h4');q.className='surveyQ';q.textContent=(i+1)+'. '+s.metin;wrap.appendChild(q);
+  const bars=document.createElement('div');bars.className='surveyBars';
+  let secenekler=s.secenekler;
+  if(s.bagli){
+   // Ders ders grupla: en çok cevap alan ders üstte, ders içinde en çok seçilen konu üstte.
+   const grupToplam={};secenekler.forEach(function(x){grupToplam[x.grup]=(grupToplam[x.grup]||0)+x.sayi;});
+   secenekler=secenekler.filter(function(x){return x.sayi>0}).sort(function(x,y){return grupToplam[y.grup]-grupToplam[x.grup]||(x.grup<y.grup?-1:x.grup>y.grup?1:0)||y.sayi-x.sayi});
+  }
+  if(!secenekler.length){const e=document.createElement('p');e.className='note';e.style.margin='0';e.textContent='Henüz cevap yok.';wrap.appendChild(e);return;}
+  const tavan=Math.max(1,s.cevapSayisi);let sonGrup='';
+  secenekler.forEach(function(x){
+   if(s.bagli&&x.grup!==sonGrup){sonGrup=x.grup;const g=document.createElement('div');g.className='surveyGroup';g.textContent=dersAdi[x.grup]||x.grup;bars.appendChild(g);}
+   const row=document.createElement('div'),ad=document.createElement('span'),pr=document.createElement('span'),fill=document.createElement('span'),n=document.createElement('b');
+   row.className='surveyBar';ad.textContent=(x.simge?x.simge+' ':'')+x.ad;pr.className='progress';fill.style.width=(100*x.sayi/tavan).toFixed(0)+'%';pr.appendChild(fill);n.textContent=x.sayi;
+   row.append(ad,pr,n);
+   if(x.kimler&&x.kimler.length){const k=document.createElement('span');k.className='surveyNames';k.textContent=x.kimler.join(', ');row.appendChild(k);}
+   bars.appendChild(row);
+  });
+  wrap.appendChild(bars);
+ });
+ if(a.bekleyenler&&a.bekleyenler.length){const d=document.createElement('details'),sm=document.createElement('summary'),p=document.createElement('p');sm.className='plain';sm.textContent='◻ Henüz cevaplamayanlar ('+a.bekleyenler.length+')';p.className='note';p.textContent=a.bekleyenler.join(', ');d.append(sm,p);wrap.appendChild(d);}
+ return wrap;
+}
+function anketListele(){
+ const el=document.getElementById('anketListe'),msg=document.getElementById('anketListeMesaj');
+ msg.textContent='Anketler okunuyor...';
+ google.script.run.withSuccessHandler(function(r){
+  el.replaceChildren();const list=r&&Array.isArray(r.anketler)?r.anketler:[];
+  msg.textContent=list.length?'':'Henüz anket yok. Yukarıdan hazır bir anketi taslak olarak ekleyebilirsiniz.';
+  list.forEach(function(a){
+   const box=document.createElement('details'),sum=document.createElement('summary'),body=document.createElement('div'),durumAd={YAYINDA:'Yayında',TASLAK:'Taslak',ARSIV:'Arşiv'}[a.durum]||a.durum;
+   box.open=a.durum==='YAYINDA';sum.className='plain';sum.textContent=a.baslik+' — '+durumAd+' · '+a.cevapSayisi+'/'+r.ogrenciSayisi+' cevap';
+   body.style.padding='0 16px 14px';
+   function btn(next,label,cls){
+    const b=document.createElement('button');b.type='button';b.textContent=label;if(cls)b.className=cls;b.style.marginRight='8px';
+    b.addEventListener('click',function(){
+     const ne={YAYINDA:'öğrencilere yayımlamak',ARSIV:'arşive kaldırmak (öğrenciler artık görmez)',TASLAK:'taslağa geri almak'}[next];
+     if(!confirm('“'+a.baslik+'” anketini '+ne+' istiyor musun?'))return;
+     b.disabled=true;
+     google.script.run.withSuccessHandler(anketListele).withFailureHandler(function(e){b.disabled=false;msg.textContent='İşlem hatası: '+(e&&e.message||'Bilinmiyor');}).ogretmenAnketDurumDegistir(a.kimlik,next);
+    });
+    return b;
+   }
+   const bar=document.createElement('p');
+   if(a.durum==='YAYINDA')bar.append(btn('ARSIV','Anketi kapat (arşive kaldır)','secondary'));
+   else if(a.durum==='TASLAK')bar.append(btn('YAYINDA','Yayımla'),btn('ARSIV','Arşive kaldır','secondary'));
+   else bar.append(btn('YAYINDA','Yeniden yayımla','secondary'));
+   body.append(bar,anketSonucunuCiz(a,r.ogrenciSayisi,r.dersler));
+   box.append(sum,body);el.appendChild(box);
+  });
+ }).withFailureHandler(function(e){msg.textContent='Anket listesi alınamadı: '+(e&&e.message||'Bilinmiyor');}).ogretmenAnketListesi();
+}
+document.getElementById('anketYenile').addEventListener('click',anketListele);
+hazirAnketleriGoster();anketListele();
 google.script.run.withSuccessHandler(function(r){
  const saat=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
  document.getElementById('status').textContent='Rapor güncel ('+saat+' itibarıyla). MİSAFİR kayıtları hariç.';
