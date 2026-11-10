@@ -111,7 +111,8 @@ const paths = {
     'sos-oyunzamani':'Sosyal/oyunzamani.html',
     'insan-farkliyasamlar':'Insanhaklari/farkliyasamlar.html',
     'mat-cikarmadatahmin':'Matematik/cikarmadatahmin.html',
-    'mat-toplama-problemleri-sinav':'Matematik/mat-toplama-problemleri-sinav.html'
+    'mat-toplama-problemleri-sinav':'Matematik/mat-toplama-problemleri-sinav.html',
+    'sos-konum':'Sosyal/konumkasifi.html'
   };
 /* KATALOG BITIR: ilerleme-yollari */
   const available = new Set(SECILI_ETKINLIKLER_);
