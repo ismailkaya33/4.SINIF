@@ -26,6 +26,8 @@ kazanımlarına bak ve portal içerik adlarıyla, defter notu dosya adlarıyla a
 - Türkçe'de kazanımlar her hafta tekrar eder; o haftanın **metin adına** ve yeni gelen dil bilgisi kazanımına
   (eş sesli, noktalama, hikâye unsurları vb.) odaklan, "konuşma stratejilerini uygular" gibi genel olanları sayma.
 - Ünite sonu yaklaşıyorsa (sıradaki haftada yeni ünite başlıyorsa) değerlendirme testi olup olmadığına bak.
+- Oyunlar bölümü bu karşılaştırmaya girmez: oyunlar için defter notu ve değerlendirme gerekmez (öğretmenin kararı).
+  Oyunlar klasöründeki bir oyun bir dersin etkinliği yerine sayılmaz.
 - Müzik, Görsel Sanatlar, Beden Eğitimi: portalda klasörleri yok; yalnız bir satırla konuyu söyle.
 - Eşleştirmeden emin değilsen "emin değilim, kontrol eder misiniz?" yaz; uydurma.
 

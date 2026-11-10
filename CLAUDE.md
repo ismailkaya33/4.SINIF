@@ -27,7 +27,7 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
   (`4d:activity-finished`, gerekirse `4d:item-result`) gönderir → portal oturumla `ETKINLIK_SONUCLARI` sayfasına yazar.
   Etkinlik doğrudan sunucuya POST etmez; öğrenci kodu etkinlik sayfasına taşınmaz.
 - **Takipli etkinlik listesi:** `portal/etkinlik-kayitlari.json` (portal dalı) → `node tools/katalog-esitle.mjs`.
-- **Oyunlar** klasörü için sonuç kaydı yapılmaz (öğretmenin kararı).
+- **Oyunlar** klasörü için sonuç kaydı yapılmaz; defter notu ve değerlendirme de hazırlanmaz/önerilmez (öğretmenin kararı).
 
 ## Kurallar
 - Göndermeden (push) önce ne yayınlanacağını söyle ve onay al; portal dalında iki kez dikkat et.

@@ -60,6 +60,8 @@ Büyük işlerde planı gösterip onay al (prototip → onay → devam).
 - Oyun başında `RaporMotoru.init({oyunId, oyunAdi, kazanimlar})`, her maddeden sonra `RaporMotoru.kaydet({kazanim, madde, yanilgi, ilkDenemeDogru, deneme, ipucu, cozumGoruldu, sureMs, tekrar})`, sonda `RaporMotoru.ekranCiz(el)` (öğrenciye "Kazanım Karnem" + sonucu portala gönderir; oyun başına bir kez).
 - `oyunId` = portal kayıt listesindeki kimlik (ör. `tur-ikilemeler`). Yeni kimlik için `4d-etkinlik-takibe-al` skill'ine göre `portal/etkinlik-kayitlari.json` dosyasına eklenir (portal dalı; canlıya çıkmadan önce öğretmenin onayı).
 - **Oyunlar klasörü için sonuç kaydı gerekmez** (öğretmenin kararı); rapor motoru eklenmeyebilir.
+- **Oyunlar bölümüne defter notu ve değerlendirme (test) yapılmaz, önerilmez, eksik sayılmaz** (öğretmenin kararı).
+  Oyunlar yalnız oyundur; `Oyunlar/DefterNotlari/` klasörü açılmaz.
 - Seviye kuralı: ilk denemede doğru ≥%85 ve ipucu ≤%25 → Ustalaştı; ≥%60 → Gelişiyor; altı → Destek gerekli; <3 madde → Veri az; `tekrar` maddeleri seviyeye katılmaz.
 - Madde bazlı mesaj (`4d:item-result`) motor tarafından gönderilir; portalın bunu kaydetmesi ayrı bir geliştirmedir (kurulmadıysa kurulmuş gibi söyleme).
 
