@@ -10,7 +10,8 @@ Bu skill, sohbetten gelen iki belgenin birleşimidir:
 - **Bağlayıcı kalite kuralları:** `references/egitim-icerik-standartlari.md` (her işte uygulanır; istekle çelişirse o iş için istek geçerlidir).
 - **Etkileşimli etkinlik yöntemi:** aşağıdaki bölümler + `references/ornek-analizi.md`, `references/portal-bulgulari.md`.
 
-Öncelik sırası: **kazanım doğruluğu > öğrenmeyi gerçekten sağlayan mekanik > çalışan, test edilmiş kod > sadelik ve hız > görsel cila.**
+Öncelik sırası: **kazanım doğruluğu > öğrenmeyi gerçekten sağlayan mekanik > çalışan, test edilmiş kod > görsel zenginlik ve eğlence > hız.**
+Görsel zenginlik "varsa iyi olur" değil, **zorunludur** (bkz. bölüm 4.1). Düz, süssüz, eğlencesiz etkinlik teslim edilmez.
 
 ## 0. Başlamadan önce (eksik olanı tek mesajda sor, en fazla 3 soru)
 - Ders, ünite, **kazanım kodu ve metni** (kodu uydurma; emin değilsen "doğrulanmalı" diye işaretle ve sor)
@@ -54,6 +55,34 @@ Büyük işlerde planı gösterip onay al (prototip → onay → devam).
 - Erişilebilirlik: renk + simge + metin; kontrast; `prefers-reduced-motion`; `lang="tr"`, UTF-8.
 - `alert/confirm/prompt` kullanma (portal penceresinde engellenebilir).
 
+## 4.1 Görsel zenginlik ve eğlence (zorunlu)
+Öğretmenin kararı (2026-11-10): etkinlikler görsel olarak **zengin, renkli ve eğlenceli** olur. Beyaz zemin + düz metin +
+gri düğmeden oluşan "sade" ekran kabul edilmez. Görsel, öğrenmeyi destekler; süs de serbesttir ama soruyu gölgelemez.
+- **Tema ve hikâye:** Her etkinliğin konuyla bağlantılı bir teması olur (kesirler → pizzacı, besinler → aşçı mutfağı,
+  trafik → şehir haritası, noktalama → dedektif). Başlık ekranında büyük tema çizimi + bir-iki cümlelik hikâye/görev.
+- **Rehber karakter:** SVG ile çizilmiş, konuya uygun sevimli bir karakter. Doğruda sevinir, yanlışta "bir daha dene"
+  der; ipucunu konuşma balonuyla verir. Karakter her etkinlikte farklı olabilir.
+- **Her soruda görsel:** Soru kartında konuyu canlandıran bir çizim veya simge bulunur (SVG, CSS çizimi, emoji).
+  Matematikte nesne grupları, model, sayı doğrusu, kesir şekli; Fen'de organ/besin/devre çizimi; Türkçe'de olay sahnesi;
+  Sosyal'de mekân/zaman çizelgesi. Görsel cevabı sızdırmaz.
+- **Renk ve zemin:** Derse ve temaya özgü canlı palet (CSS değişkenleri), desenli veya geçişli (gradyan) arka plan,
+  gölgeli yuvarlak köşeli kartlar, renkli büyük düğmeler, büyük ve dost görünümlü başlık yazısı. Kontrast korunur.
+- **Hareket ve kutlama:** Doğruda konfeti/yıldız patlaması, puanın sayarak artması, kartın zıplaması; yanlışta hafif
+  sallanma; bölüm geçişinde kısa animasyon. Her efekt ≤1 sn, oyunu bekletmez, `prefers-reduced-motion` açıksa kapanır.
+- **Ödül ve ilerleme:** Toplanan yıldız/rozet/nesne, görsel ilerleme çubuğu veya ilerlenen yol haritası,
+  bölüm sonunda rozet ekranı. Bitiş ekranı bir kutlama ekranıdır (karakter + rozetler + "Kazanım Karnem").
+- **Ses:** Web Audio ile kısa doğru/yanlış/kutlama sesleri; varsayılan açık, köşede görünür ses kapatma düğmesi.
+- **Teknik sınır (değişmez):** Her şey dosyaya gömülü: satır içi SVG, CSS, emoji, Canvas. Dış görsel, font, kütüphane yok.
+  Gerçek fotoğraf/harita yalnız öğretmenin verdiği dosyalardan. Düşük donanımlı tablette akıcı kalır (büyük resim yerine
+  SVG; aynı anda en fazla ~60 konfeti parçası).
+- **Ölçü:** Soru metni ve seçenekler ekranın en görünür öğesidir; okuma alanının arkası sakin kalır; sürekli yanıp sönen
+  veya döngüde dönen dikkat dağıtıcı öğe yok.
+- **Görsel kontrol:** Teslimden önce Edge headless ile başlık, soru, doğru geri bildirim ve bitiş ekranının görüntüsü
+  alınır; "Bir 4. sınıf öğrencisi bunu açınca heyecanlanır mı?" sorusuna dürüstçe bakılır, cevap hayırsa zenginleştirilir.
+  Görüntüler öğretmene gösterilir.
+- Bu bölüm **baskı materyaline uygulanmaz** (defter notu, çalışma kâğıdı, ev ödevi az mürekkepli kalır; ama küçük
+  siyah-beyaz çizim ve simge eklenebilir).
+
 ## 5. Öğretmene sonuç (portal bağlantısı)
 Öğrenciler 6 haneli kodla portala girer; etkinlik portalın içinde açılınca sonuç öğretmen paneline kendiliğinden gider. **EKR1 kodu, öğrencinin kod kopyalaması ve ayrı öğretmen paneli YOKTUR.**
 - `assets/rapor_motoru.js` (v2) etkinliğe gömülür: `python -I scripts/birlestir.py kaynak.html cikti.html`.
@@ -77,6 +106,10 @@ Büyük işlerde planı gösterip onay al (prototip → onay → devam).
 ## 7. Çalışma akışı ve dosyanın yeri
 1. Kazanımı 2–3 satırda özetle, türü ve mekaniği bir cümleyle gerekçelendir, kazanım planını yaz.
 2. Etkinliği `assets/oyun-iskeleti.html` kalıbından başlat (karıştırma, ipucu, ikinci şans, çözüm, rapor çağrıları hazır), içeriği `OYUN` nesnesine yaz, motoru `birlestir.py` ile göm.
+   Kalıpta görsel donanım hazırdır: `OYUN.tema` (renkler, hikâye, karakter adı, ödül simgesi), `sahneSVG()` başlık çizimi,
+   `karakterSVG()` rehber karakter (mutlu/düşün/üzgün), her maddede `gorsel` (`bloklar`, `sayiDogrusu`, `emoji`, `svg`),
+   konfeti, ses, yol haritası, rozetli bitiş ekranı. **Tema, sahne ve karakter her etkinlikte konuya göre değiştirilir**
+   (örnekteki "Hazine Adası/baykuş" her etkinliğe kopyalanmaz); konuya özgü yeni görsel türü gerekiyorsa `CIZ` içine eklenir.
 3. Kontrol: `python -I scripts/html_kontrol.py dosya.html` + sayısal cevapları kodla doğrula + tarayıcıda (Edge headless olur) en az iki profille oyna (hepsi doğru / yanılgılı). Sınanmayan şeyi "çalışıyor" deme.
 4. Dosya adı: ASCII, küçük harf, boşluksuz (ör. `cumhuriyet.html`). Dosyayı depoda (`C:\Users\ismai\Projeler\4.SINIF`, **main** dalı) ilgili ders klasörüne koy: `Turkce`, `Matematik`, `Fen`, `Sosyal`, `Insanhaklari`, `Trafik`, `Oyunlar`.
 5. GitHub'a göndermeden önce öğretmene ne yayınlanacağını söyle ve onay al. Gönderince GitHub `icerik-katalogu.json`'a kendisi ekler; 2–3 dk sonra portalda "YENİ" etiketiyle görünür.
@@ -90,5 +123,6 @@ Büyük işlerde planı gösterip onay al (prototip → onay → devam).
 - [ ] Dokunma, fare, klavye ayrı ayrı denendi; telefon ve tahta görünümünde taşma yok
 - [ ] İnternetsiz açılıyor; `localStorage` kapalıyken çalışıyor
 - [ ] (Takipli etkinlikte) `oyunId` gerçek kimlik; oyun sonunda tek `4d:activity-finished` mesajı gidiyor
+- [ ] Görsel zenginlik (4.1): tema + rehber karakter + her soruda görsel + kutlama efekti + ödül/ilerleme + ses düğmesi var; ekran görüntüleri alındı
 - [ ] Türkçe karakter ve yazım doğru; süre hedefe uygun; final bölümü kısa
 - [ ] Sınanmayan/kurulmayan özellik için iddia yok

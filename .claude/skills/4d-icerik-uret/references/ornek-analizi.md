@@ -45,7 +45,7 @@ Eksikler:
 - Altı mod aynı çoktan seçmeli soruyu farklı görünümle sunuyor. Bilişsel eylem değişmiyor, çeşitlilik görsel.
 - Yanlışta doğru cevap kısa süre kayan metin olarak görünüp geçiyor. Neden yanlış olduğu, strateji (örn. 7×8 için 5-6-7-8 örüntüsü, 9'lar için parmak yöntemi) yok.
 - Canvas `devicePixelRatio`'suz, yüksek çözünürlüklü ekranda bulanık olabilir. Sekme gizlenince otomatik duraklatma bulunmadı (aramada çıkmadı).
-- Karakter/robot çizimi ve zırh rengi atölyesi gibi cila, öğrenme içeriğine göre ağır. Kullanıcının sade/hızlı tercihiyle çelişebilir.
+- Karakter/robot çizimi ve zırh rengi atölyesi gibi görsel zenginlik öğretmenin istediği yöndedir (SKILL.md 4.1); yalnız bu cila, eksik öğrenme içeriğinin yerini tutmamalı.
 - Dosyanın sahne çizimi bölümünün tamamı okunmadı, orada bir hata olabilir.
 
 ## 3. Dünya'nın Hareketleri (gündüz-gece 3B)
