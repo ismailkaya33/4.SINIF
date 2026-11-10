@@ -19,7 +19,8 @@ const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({
   'insan-farkliyasamlar': Object.freeze({konu:'İnsan Hakları, Yurttaşlık ve Demokrasi',kazanim:'Y.4.2.3 Çocuk yaşantılarını karşılaştırma',maxTotal:200}),
   'mat-cikarmadatahmin': Object.freeze({konu:'Matematik',kazanim:'M.4.1.3.3 Çıkarmada tahmin',maxTotal:200}),
   'mat-toplama-problemleri-sinav': Object.freeze({konu:'Matematik',kazanim:'M.4.1.2.4 / M.4.1.3.4 / M.4.1.2.2 Toplama ve çıkarma problemleri',maxTotal:200}),
-  'sos-konum': Object.freeze({konu:'Sosyal Bilgiler',kazanim:'SB.4.3.1 Konum ile ilgili çıkarımlar',maxTotal:200})
+  'sos-konum': Object.freeze({konu:'Sosyal Bilgiler',kazanim:'SB.4.3.1 Konum ile ilgili çıkarımlar',maxTotal:200}),
+  'tur-atasozu-deyim-sinav': Object.freeze({konu:'Türkçe',kazanim:'T.4.3.11 Deyim ve atasözleri',maxTotal:200})
 });
 /* KATALOG BITIR: sunucu-izin-listesi */
 function etkinlikTanimi_(id) {

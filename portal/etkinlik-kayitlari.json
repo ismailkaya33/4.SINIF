@@ -17,7 +17,8 @@
     {"id": "insan-farkliyasamlar", "yol": "Insanhaklari/farkliyasamlar.html", "ad": "İnsan Hakları • Çocuk Yaşantılarını Karşılaştırıyoruz", "konu": "İnsan Hakları, Yurttaşlık ve Demokrasi", "kazanim": "Y.4.2.3 Çocuk yaşantılarını karşılaştırma", "maxTotal": 200, "dersListesinde": true},
     {"id": "mat-cikarmadatahmin", "yol": "Matematik/cikarmadatahmin.html", "ad": "Matematik • Tahmin Ustası: Çıkarmada Tahmin", "konu": "Matematik", "kazanim": "M.4.1.3.3 Çıkarmada tahmin", "maxTotal": 200, "dersListesinde": true},
     {"id": "mat-toplama-problemleri-sinav", "yol": "Matematik/mat-toplama-problemleri-sinav.html", "ad": "Matematik • Konu Değerlendirme: Toplama ve Çıkarma Problemleri", "konu": "Matematik", "kazanim": "M.4.1.2.4 / M.4.1.3.4 / M.4.1.2.2 Toplama ve çıkarma problemleri", "maxTotal": 200, "dersListesinde": true},
-    {"id": "sos-konum", "yol": "Sosyal/konumkasifi.html", "ad": "Sosyal Bilgiler • Konum Kâşifi: Yönler ve Yer Tarifi", "konu": "Sosyal Bilgiler", "kazanim": "SB.4.3.1 Konum ile ilgili çıkarımlar", "maxTotal": 200, "dersListesinde": true}
+    {"id": "sos-konum", "yol": "Sosyal/konumkasifi.html", "ad": "Sosyal Bilgiler • Konum Kâşifi: Yönler ve Yer Tarifi", "konu": "Sosyal Bilgiler", "kazanim": "SB.4.3.1 Konum ile ilgili çıkarımlar", "maxTotal": 200, "dersListesinde": true},
+    {"id": "tur-atasozu-deyim-sinav", "yol": "Turkce/tur-atasozu-deyim-sinav.html", "ad": "Türkçe • Konu Değerlendirme: Atasözleri ve Deyimler", "konu": "Türkçe", "kazanim": "T.4.3.11 Deyim ve atasözleri", "maxTotal": 200, "dersListesinde": true}
   ],
   "seciliEtkinlikler": [
     {"yol": "Turkce/ikilemeler.html", "ad": "Türkçe • İkileme Dedektifi"},
@@ -37,6 +38,7 @@
     {"yol": "Insanhaklari/farkliyasamlar.html", "ad": "İnsan Hakları • Çocuk Yaşantılarını Karşılaştırıyoruz"},
     {"yol": "Matematik/cikarmadatahmin.html", "ad": "Matematik • Tahmin Ustası: Çıkarmada Tahmin"},
     {"yol": "Matematik/mat-toplama-problemleri-sinav.html", "ad": "Matematik • Konu Değerlendirme: Toplama ve Çıkarma Problemleri"},
-    {"yol": "Sosyal/konumkasifi.html", "ad": "Sosyal • Konum Kâşifi: Yönler ve Yer Tarifi"}
+    {"yol": "Sosyal/konumkasifi.html", "ad": "Sosyal • Konum Kâşifi: Yönler ve Yer Tarifi"},
+    {"yol": "Turkce/tur-atasozu-deyim-sinav.html", "ad": "Türkçe • Konu Değerlendirme: Atasözleri ve Deyimler"}
   ]
 }
