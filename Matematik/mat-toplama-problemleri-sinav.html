@@ -184,340 +184,319 @@ const OYUN = {
  ],
  "maddeler": [
   {
-   "id": "a1",
-   "kaz": "M.4.1.2.4",
-   "soru": "Bir kitapçı hafta içi 1 246 kitap, hafta sonu 878 kitap sattı. Kitapçı toplam kaç kitap satmıştır?",
-   "dogru": "2 124",
+   "id": "t1",
+   "kaz": "M.4.1.3.4",
+   "soru": "Mağazadaki fiyatlar: buzdolabı 4 586 TL, bilgisayar 2 899 TL, çamaşır makinesi 2 379 TL, halı 365 TL. Buzdolabı ile bilgisayar alan babam satıcıya 8 000 lira verdiğinde kaç lira para üstü alır?",
+   "dogru": "515",
    "yanlislar": [
     [
-     "2 114",
-     "elde-unuttu"
+     "455",
+     "islem-hatasi"
     ],
     [
-     "2 024",
-     "elde-unuttu"
+     "500",
+     "islem-hatasi"
     ],
     [
-     "2 224",
-     "elde-fazla"
+     "525",
+     "cikarmada-elde-hatasi"
     ]
    ],
-   "why": "1 246 + 878 = 2 124. Birler, onlar ve yüzler basamağındaki eldeler eklenir."
+   "why": "4 586 + 2 899 = 7 485; 8 000 − 7 485 = 515."
   },
   {
-   "id": "a2",
-   "kaz": "M.4.1.2.4",
-   "soru": "Bir kütüphaneye ilk ay 1 358 kişi geldi. İkinci ay gelenlerin sayısı ilk aydan 245 fazla oldu. Kütüphaneye iki ayda toplam kaç kişi gelmiştir?",
-   "dogru": "2 961",
+   "id": "t2",
+   "kaz": "M.4.1.3.4",
+   "soru": "Mağazadaki fiyatlar: buzdolabı 4 586 TL, bilgisayar 2 899 TL, çamaşır makinesi 2 379 TL, halı 365 TL. Annem satıcıdan çamaşır makinesi ve halı aldı. Satıcıya 3 000 lira verirse kaç lira para üstü alır?",
+   "dogru": "256",
    "yanlislar": [
     [
-     "1 603",
-     "ara-sonucu-cevap-saydi"
+     "250",
+     "islem-hatasi"
     ],
     [
-     "2 471",
+     "260",
+     "islem-hatasi"
+    ],
+    [
+     "266",
+     "cikarmada-elde-hatasi"
+    ]
+   ],
+   "why": "2 379 + 365 = 2 744; 3 000 − 2 744 = 256."
+  },
+  {
+   "id": "t3",
+   "kaz": "M.4.1.3.4",
+   "soru": "Mağazadaki fiyatlar: buzdolabı 4 586 TL, bilgisayar 2 899 TL, çamaşır makinesi 2 379 TL, halı 365 TL. Buzdolabı, bilgisayar ile halının toplamından kaç lira fazladır?",
+   "dogru": "1 322",
+   "yanlislar": [
+    [
+     "1 022",
+     "islem-hatasi"
+    ],
+    [
+     "1 520",
+     "islem-hatasi"
+    ],
+    [
+     "1 362",
+     "cikarmada-elde-hatasi"
+    ]
+   ],
+   "why": "2 899 + 365 = 3 264; 4 586 − 3 264 = 1 322."
+  },
+  {
+   "id": "t4",
+   "kaz": "M.4.1.2.4",
+   "soru": "Mağazadaki fiyatlar: buzdolabı 4 586 TL, bilgisayar 2 899 TL, çamaşır makinesi 2 379 TL, halı 365 TL. Babam buzdolabı, çamaşır makinesi ve bilgisayar aldığında satıcıya kaç lira öder?",
+   "dogru": "9 864",
+   "yanlislar": [
+    [
+     "6 965",
+     "eksik-terim"
+    ],
+    [
+     "7 330",
+     "islem-hatasi"
+    ],
+    [
+     "8 060",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "4 586 + 2 379 + 2 899 = 9 864."
+  },
+  {
+   "id": "t5",
+   "kaz": "M.4.1.2.4",
+   "soru": "TEMA Vakfı için 3. sınıflar 1 098 fidan, 4. sınıflar ise 3. sınıflardan 289 eksik fidan dikmiştir. TEMA Vakfı için toplam kaç fidan dikilmiştir?",
+   "dogru": "1 907",
+   "yanlislar": [
+    [
+     "2 079",
+     "islem-hatasi"
+    ],
+    [
+     "2 907",
      "fazla-az-karisti"
     ],
     [
-     "2 951",
-     "elde-unuttu"
+     "2 900",
+     "islem-hatasi"
     ]
    ],
-   "why": "İkinci ay: 1 358 + 245 = 1 603. İki ay: 1 358 + 1 603 = 2 961."
+   "why": "4. sınıflar: 1 098 − 289 = 809. Toplam: 1 098 + 809 = 1 907."
   },
   {
-   "id": "a3",
+   "id": "t6",
    "kaz": "M.4.1.2.4",
-   "soru": "Bir manavda üç gün boyunca elma satıldı: ilk gün 450 kg, ikinci gün 285 kg, üçüncü gün 360 kg. Manav toplam kaç kg elma satmıştır?",
-   "dogru": "1 095",
+   "soru": "Bir fırıncı her gün bir önceki günden 25 fazla ekmek satmıştır. İlk gün 179 ekmek sattığına göre 3 günde toplam kaç ekmek satmıştır?",
+   "dogru": "612",
    "yanlislar": [
     [
-     "735",
-     "eksik-terim"
-    ],
-    [
-     "1 085",
+     "592",
      "islem-hatasi"
     ],
     [
-     "1 195",
+     "600",
+     "islem-hatasi"
+    ],
+    [
+     "622",
      "elde-fazla"
     ]
    ],
-   "why": "450 + 285 = 735; 735 + 360 = 1 095. Üç günün hepsi toplanır."
+   "why": "179 + 204 + 229 = 612."
   },
   {
-   "id": "a4",
+   "id": "t7",
    "kaz": "M.4.1.2.4",
-   "soru": "Rakamları birbirinden farklı en büyük dört basamaklı doğal sayı ile rakamları birbirinden farklı en küçük dört basamaklı doğal sayının toplamı kaçtır?",
-   "dogru": "10 899",
+   "soru": "Bir bisikletli ilk gün 475 metre, ikinci gün ilk gününden 198 metre daha az uzunlukta yol gitmiştir. Bisikletli iki günde toplam kaç metre yol gitmiştir?",
+   "dogru": "752",
    "yanlislar": [
-    [
-     "9 999",
-     "sifirla-baslayan-sayi"
-    ],
-    [
-     "10 876",
-     "rakamlar-ayni-sayi"
-    ],
-    [
-     "11 110",
-     "sifiri-kullanmadi"
-    ]
-   ],
-   "why": "En büyük: 9 876. En küçük: 1 023 (sayı 0 ile başlayamaz). 9 876 + 1 023 = 10 899."
-  },
-  {
-   "id": "a5",
-   "kaz": "M.4.1.2.4",
-   "soru": "Bir otobüs firması yılın ilk yarısında 2 764 yolcu, ikinci yarısında 2 936 yolcu taşıdı. Firma bir yılda kaç yolcu taşımıştır?",
-   "dogru": "5 700",
-   "yanlislar": [
-    [
-     "5 690",
-     "elde-unuttu"
-    ],
-    [
-     "4 700",
-     "elde-unuttu"
-    ],
-    [
-     "6 700",
-     "elde-fazla"
-    ]
-   ],
-   "why": "2 764 + 2 936 = 5 700. Birler, onlar ve yüzler basamağında elde vardır."
-  },
-  {
-   "id": "a6",
-   "kaz": "M.4.1.2.4",
-   "soru": "Bir bahçede 1 120 domates fidesi ve 780 biber fidesi var. Salatalık fidesi sayısı domates fidesinden 340 fazla. Bahçede toplam kaç fide vardır?",
-   "dogru": "3 360",
-   "yanlislar": [
-    [
-     "1 900",
-     "eksik-terim"
-    ],
-    [
-     "2 240",
-     "fark-toplam-karisti"
-    ],
-    [
-     "3 020",
-     "yanlis-referans"
-    ]
-   ],
-   "why": "Salatalık: 1 120 + 340 = 1 460. Toplam: 1 120 + 780 + 1 460 = 3 360."
-  },
-  {
-   "id": "b1",
-   "kaz": "M.4.1.3.4",
-   "soru": "Elif satıcıya 5 000 lira verdi. 1 275 liralık ayakkabı ile 1 489 liralık mont aldı. Elif'e kaç lira para üstü verilir?",
-   "dogru": "2 236",
-   "yanlislar": [
-    [
-     "3 725",
-     "eksik-adim"
-    ],
-    [
-     "7 764",
-     "toplama-yapti"
-    ],
-    [
-     "2 336",
-     "islem-hatasi"
-    ]
-   ],
-   "why": "Harcama: 1 275 + 1 489 = 2 764. Para üstü: 5 000 − 2 764 = 2 236."
-  },
-  {
-   "id": "b2",
-   "kaz": "M.4.1.3.4",
-   "soru": "Bir kamyon en fazla 2 800 kg yük taşıyabilir. Kamyona önce 1 150 kg un, sonra 975 kg şeker yüklendi. Kamyona en fazla kaç kg daha yük yüklenebilir?",
-   "dogru": "675",
-   "yanlislar": [
-    [
-     "2 125",
-     "yuklenen-yuku-cevap-saydi"
-    ],
-    [
-     "1 650",
-     "eksik-adim"
-    ],
-    [
-     "775",
-     "islem-hatasi"
-    ]
-   ],
-   "why": "Yüklenen: 1 150 + 975 = 2 125. Kalan: 2 800 − 2 125 = 675."
-  },
-  {
-   "id": "b3",
-   "kaz": "M.4.1.3.4",
-   "soru": "Babam şimdi 42 yaşındadır. Ablam babamdan 27 yaş küçüktür. Babamın ve ablamın 5 yıl sonraki yaşları toplamı kaçtır?",
-   "dogru": "67",
-   "yanlislar": [
-    [
-     "57",
-     "yil-eklemedi"
-    ],
-    [
-     "62",
-     "bir-kisiye-ekledi"
-    ],
-    [
-     "77",
-     "yil-fazla-ekledi"
-    ]
-   ],
-   "why": "Ablam şimdi 42 − 27 = 15 yaşında. 5 yıl sonra babam 47, ablam 20 olur. 47 + 20 = 67."
-  },
-  {
-   "id": "b4",
-   "kaz": "M.4.1.3.4",
-   "soru": "Bir koleksiyoncunun 2 350 pulu var. Bu pulların 1 475 tanesi yerli, geri kalanı yabancıdır. Koleksiyoncunun kaç yabancı pulu vardır?",
-   "dogru": "875",
-   "yanlislar": [
-    [
-     "3 825",
-     "toplama-yapti"
-    ],
-    [
-     "1 125",
-     "kucuk-buyuk-cikardi"
-    ],
-    [
-     "885",
-     "islem-hatasi"
-    ]
-   ],
-   "why": "Yabancı pul = 2 350 − 1 475 = 875."
-  },
-  {
-   "id": "b5",
-   "kaz": "M.4.1.3.4",
-   "soru": "Bir sayının 1 450 fazlası 3 200 ise bu sayı kaçtır?",
-   "dogru": "1 750",
-   "yanlislar": [
-    [
-     "4 650",
-     "toplama-yapti"
-    ],
-    [
-     "1 850",
-     "islem-hatasi"
-    ],
-    [
-     "1 650",
-     "islem-hatasi"
-    ]
-   ],
-   "why": "Sayıya 1 450 eklenince 3 200 oluyor. Sayı = 3 200 − 1 450 = 1 750."
-  },
-  {
-   "id": "b6",
-   "kaz": "M.4.1.3.4",
-   "soru": "Bir çiftçi ilk yıl 4 250 kg, ikinci yıl 3 875 kg buğday hasat etti. İlk yıl ikinci yıldan kaç kg fazla buğday hasat edilmiştir?",
-   "dogru": "375",
-   "yanlislar": [
-    [
-     "8 125",
-     "toplama-yapti"
-    ],
-    [
-     "1 625",
-     "kucuk-buyuk-cikardi"
-    ],
     [
      "475",
-     "islem-hatasi"
-    ]
-   ],
-   "why": "Fark = 4 250 − 3 875 = 375."
-  },
-  {
-   "id": "c1",
-   "kaz": "M.4.1.2.2",
-   "soru": "1 862 + 3 148 toplamını en yakın yüzlüğe yuvarlayarak tahmin edersek sonuç kaç olur?",
-   "dogru": "5 000",
-   "yanlislar": [
-    [
-     "4 900",
-     "hep-asagi"
+     "ilk-gunu-cevap-saydi"
     ],
     [
-     "5 100",
-     "hep-yukari"
-    ],
-    [
-     "5 010",
-     "kesin-sonucu-yazdi"
-    ]
-   ],
-   "why": "1 862 ≈ 1 900, 3 148 ≈ 3 100. 1 900 + 3 100 = 5 000."
-  },
-  {
-   "id": "c2",
-   "kaz": "M.4.1.2.2",
-   "soru": "Bir bakkal 478 liralık ve 396 liralık iki fatura ödedi. Ödediği toplam parayı en yakın onluğa yuvarlayarak tahmin edersek kaç lira olur?",
-   "dogru": "880",
-   "yanlislar": [
-    [
-     "860",
-     "hep-asagi"
-    ],
-    [
-     "874",
-     "kesin-sonucu-yazdi"
-    ],
-    [
-     "900",
-     "yanlis-basamak"
-    ]
-   ],
-   "why": "478 ≈ 480, 396 ≈ 400. 480 + 400 = 880."
-  },
-  {
-   "id": "c3",
-   "kaz": "M.4.1.2.2",
-   "soru": "3 645 + 2 288 işleminde sayılar en yakın yüzlüğe yuvarlanarak yapılan tahmin ile gerçek sonuç arasındaki fark kaçtır?",
-   "dogru": "33",
-   "yanlislar": [
-    [
-     "67",
+     "702",
      "islem-hatasi"
     ],
     [
-     "5 900",
-     "tahmini-cevap-saydi"
+     "277",
+     "ara-sonucu-cevap-saydi"
+    ]
+   ],
+   "why": "İkinci gün: 475 − 198 = 277. Toplam: 475 + 277 = 752."
+  },
+  {
+   "id": "t8",
+   "kaz": "M.4.1.3.4",
+   "soru": "Dört basamaklı, rakamları birbirinden farklı en küçük sayı 4 000'den kaç eksiktir?",
+   "dogru": "2 977",
+   "yanlislar": [
+    [
+     "2 766",
+     "islem-hatasi"
     ],
     [
-     "133",
+     "2 970",
+     "islem-hatasi"
+    ],
+    [
+     "2 870",
      "islem-hatasi"
     ]
    ],
-   "why": "Tahmin: 3 600 + 2 300 = 5 900. Gerçek: 5 933. Fark: 5 933 − 5 900 = 33."
+   "why": "Rakamları farklı en küçük dört basamaklı sayı 1 023. 4 000 − 1 023 = 2 977."
   },
   {
-   "id": "c4",
-   "kaz": "M.4.1.2.2",
-   "soru": "Bir okul 3 480 liralık projektör ile 2 615 liralık yazıcı almak istiyor. Okulun 6 000 lirası var. Fiyatlar en yakın yüzlüğe yuvarlanırsa hangisi doğrudur?",
-   "dogru": "Tahmin 6 100 lira, para yetmez",
+   "id": "t9",
+   "kaz": "M.4.1.2.4",
+   "soru": "Bir esnaf 3 847 lira olan televizyonu 1 089 lira zamlı satmıştır. Esnaf televizyonu kaç liraya satmıştır?",
+   "dogru": "4 936",
    "yanlislar": [
     [
-     "Tahmin 6 000 lira, para tam yeter",
-     "hep-asagi"
+     "3 824",
+     "islem-hatasi"
     ],
     [
-     "Tahmin 6 200 lira, para yetmez",
-     "hep-yukari"
+     "2 842",
+     "islem-hatasi"
     ],
     [
-     "Tahmin 5 900 lira, para yeter",
-     "yanlis-yuvarlama"
+     "2 758",
+     "toplama-yerine-cikarma"
     ]
    ],
-   "why": "3 480 ≈ 3 500, 2 615 ≈ 2 600. Toplam yaklaşık 6 100 lira; 6 000 lira yetmez."
+   "why": "3 847 + 1 089 = 4 936."
+  },
+  {
+   "id": "t10",
+   "kaz": "M.4.1.3.4",
+   "soru": "★■▲● − 905 = 587 işleminde semboller rakamları ifade etmektedir. Buna göre ★ + ■ + ▲ + ● sonucu kaçtır?",
+   "dogru": "16",
+   "yanlislar": [
+    [
+     "10",
+     "islem-hatasi"
+    ],
+    [
+     "12",
+     "islem-hatasi"
+    ],
+    [
+     "14",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "Eksilen = 587 + 905 = 1 492. 1 + 4 + 9 + 2 = 16."
+  },
+  {
+   "id": "t11",
+   "kaz": "M.4.1.2.4",
+   "soru": "Annem şimdi 39 yaşındadır. Teyzem, annemden 5 yaş büyüktür. İkisinin 7 yıl sonraki yaşları toplamı kaçtır?",
+   "dogru": "97",
+   "yanlislar": [
+    [
+     "51",
+     "islem-hatasi"
+    ],
+    [
+     "87",
+     "islem-hatasi"
+    ],
+    [
+     "107",
+     "fazla-az-karisti"
+    ]
+   ],
+   "why": "Teyze 44 yaşında. 7 yıl sonra: 46 + 51 = 97."
+  },
+  {
+   "id": "t12",
+   "kaz": "M.4.1.2.4",
+   "soru": "Bir fabrikada 819 bayan işçi, bayan işçilerden 308 fazla erkek işçi çalışmaktadır. İş yerinde çalışan toplam kaç işçi vardır?",
+   "dogru": "1 946",
+   "yanlislar": [
+    [
+     "1 127",
+     "ara-sonucu-cevap-saydi"
+    ],
+    [
+     "2 046",
+     "elde-fazla"
+    ],
+    [
+     "2 144",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "Erkek: 819 + 308 = 1 127. Toplam: 819 + 1 127 = 1 946."
+  },
+  {
+   "id": "t13",
+   "kaz": "M.4.1.2.4",
+   "soru": "Bir tiyatro oyununu birinci gün 708 kişi, ikinci gün birinci günden 172 az kişi izlemiştir. Tiyatroyu iki günde toplam kaç kişi izlemiştir?",
+   "dogru": "1 244",
+   "yanlislar": [
+    [
+     "1 240",
+     "islem-hatasi"
+    ],
+    [
+     "1 120",
+     "islem-hatasi"
+    ],
+    [
+     "1 010",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "İkinci gün: 708 − 172 = 536. Toplam: 708 + 536 = 1 244."
+  },
+  {
+   "id": "t14",
+   "kaz": "M.4.1.2.2",
+   "soru": "Babam 1 874 liraya fırın, 2 675 liraya bulaşık makinesi alacak. İkisinin en yakın onluğa yuvarlanarak elde edilen tahminî toplam fiyatı ile gerçek fiyatı arasındaki fark kaç liradır?",
+   "dogru": "1",
+   "yanlislar": [
+    [
+     "3",
+     "islem-hatasi"
+    ],
+    [
+     "5",
+     "islem-hatasi"
+    ],
+    [
+     "7",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "Tahmin: 1 870 + 2 680 = 4 550. Gerçek: 1 874 + 2 675 = 4 549. Fark: 1."
+  },
+  {
+   "id": "t15",
+   "kaz": "M.4.1.2.2",
+   "soru": "Bir mağazada koltuk 2 416 TL, dolap 2 184 TL, şifonyer 1 125 TL'dir. Sevim Hanım bu üç ürünü almak istiyor. Satıcı, her ürünün fiyatını en yakın yüzlüğe yuvarlayıp bulduğu sonuçtan 400 lira çıkarmıştır. Buna göre satıcının Sevim Hanım'a teklif ettiği fiyat kaç TL'dir?",
+   "dogru": "5 300",
+   "yanlislar": [
+    [
+     "5 700",
+     "son-adimi-unuttu"
+    ],
+    [
+     "5 900",
+     "islem-hatasi"
+    ],
+    [
+     "6 000",
+     "islem-hatasi"
+    ]
+   ],
+   "why": "2 400 + 2 200 + 1 100 = 5 700; 5 700 − 400 = 5 300."
   }
  ]
 };
