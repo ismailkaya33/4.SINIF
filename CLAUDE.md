@@ -45,3 +45,13 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
 `VELI_RAPORLARI` sayfasına yapıştırılır (en alttaki boş satıra; başlık satırı zararsız). Portal `VeliRaporu.gs` ile
 öğrenciye yalnız kendi adındaki `YAYINDA` satırları gösterir. Ad eşleşmesi için öğretmen Apps Script'te
 `veliRaporuEslesmeKontrolu` çalıştırır. Claude ClassDojo'ya giriş yapmaz.
+
+**Ayın Yıldızları:** aynı araç `yildizlar-yapistir.tsv` de üretir (ilk üç = net puan olumlu−geliştirme; "GELİŞEN" =
+önceki aya göre olumlu yüzdesi en çok artan, ilk üç hariç). Öğretmen `AYIN_YILDIZLARI` sayfasına yapıştırır; portal
+`AyinYildizlari.gs` ile gösterir (ad "AD S." biçiminde; kayıt adı yalnız "Bu sensin" için, tarayıcıya gitmez).
+Ödül: istediği yemeği ısmarlama hakkı. Eşitlikte öğretmen karar verir.
+
+**ClassDojo beceri düzeni (2026-11-11):** olumlu 8 davranış (+1/+2) + 5 değerlendirme düzeyi (85–100 +5, 70–84 +4,
+55–69 +3, 45–54 +2, tamamladı +1; e-Okul aralıkları); geliştirmesi gerek 6 (−1, kötü davranış −2). İngilizce adlı
+beceriler İngilizce öğretmeninindir, dokunulmaz. Silinen/yeniden adlandırılan becerilerin geçmiş puanları raporda
+eski adıyla kalır.

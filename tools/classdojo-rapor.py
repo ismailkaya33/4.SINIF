@@ -118,6 +118,64 @@ def main():
         f.write("\n".join(satirlar) + "\n")
     print(f"Tamam: {ay} | {len(kayitlar)} öğrenci | klasör: {hedef}" + (" | öğrenci PDF'leri bölündü" if bol else ""))
     print(f"Tabloya yapıştırılacak dosya: {tsv}")
+    yildizlari_hazirla(ay, [k for _, k in kayitlar], hedef)
+
+
+def kisa_ad(ad):
+    """'AYŞE ERVA UYSAL' -> 'AYŞE ERVA U.' (soyadın yalnız baş harfi)."""
+    parcalar = ad.split()
+    return ad if len(parcalar) < 2 else " ".join(parcalar[:-1]) + " " + parcalar[-1][0] + "."
+
+
+def onceki_ay_yuzdeleri(ay):
+    """VeliRaporlari altındaki bir önceki ayın tablosundan {ad: yüzde} okur; yoksa boş döner."""
+    if not os.path.isdir("VeliRaporlari"):
+        return None, {}
+    onceki = sorted(d for d in os.listdir("VeliRaporlari") if d < ay and re.match(r"\d{4}-\d{2} ", d))
+    if not onceki:
+        return None, {}
+    dosya = os.path.join("VeliRaporlari", onceki[-1], "tabloya-yapistir.tsv")
+    if not os.path.exists(dosya):
+        return None, {}
+    sonuc = {}
+    with open(dosya, encoding="utf-8") as f:
+        for satir in f.read().splitlines()[1:]:
+            s = satir.split("\t")
+            if len(s) > 7 and s[7].strip().isdigit():
+                sonuc[s[2]] = int(s[7])
+    return onceki[-1], sonuc
+
+
+def yildizlari_hazirla(ay, kayitlar, hedef):
+    """Ayın ilk üçü (net puan = olumlu − geliştirme) ve ayın en çok geliştireni (olumlu yüzdesi artışı)."""
+    sirali = sorted(kayitlar, key=lambda k: (-(k["olumlu"][1] - k["gelistirme"][1]), -(k["yuzde"] or 0), k["ad"]))
+    net = lambda k: k["olumlu"][1] - k["gelistirme"][1]
+    satirlar = ["\t".join(["Ay", "Ödül", "Öğrenci", "Not", "Kayıt adı", "Durum"])]
+    print(f"\nAYIN YILDIZLARI ({ay}) — net puan = olumlu − geliştirme")
+    for i, k in enumerate(sirali[:5], 1):
+        print(f"  {i}. {k['ad']}: net {net(k)} (olumlu {k['olumlu'][1]}, geliştirme {k['gelistirme'][1]}, %{k['yuzde']})")
+    if net(sirali[2]) == net(sirali[3]):
+        print("  UYARI: 3. ve 4. sırada eşitlik var; öğretmen karar vermeli.")
+    for i, k in enumerate(sirali[:3], 1):
+        satirlar.append("\t".join([ay, str(i), kisa_ad(k["ad"]), "", k["ad"], "YAYINDA"]))
+    onceki_ad, onceki = onceki_ay_yuzdeleri(ay)
+    ilk_uc = {k["ad"] for k in sirali[:3]}
+    adaylar = [(k["yuzde"] - onceki[k["ad"]], k) for k in kayitlar
+               if k["ad"] in onceki and k["ad"] not in ilk_uc and isinstance(k["yuzde"], int)]
+    if adaylar:
+        adaylar.sort(key=lambda x: (-x[0], x[1]["ad"]))
+        print(f"EN ÇOK GELİŞEN ({onceki_ad} → {ay}, olumlu yüzdesi artışı):")
+        for fark, k in adaylar[:3]:
+            print(f"  {k['ad']}: %{onceki[k['ad']]} → %{k['yuzde']} ({fark:+d})")
+        fark, k = adaylar[0]
+        if fark > 0:
+            satirlar.append("\t".join([ay, "GELİŞEN", kisa_ad(k["ad"]), f"%{onceki[k['ad']]} → %{k['yuzde']}", k["ad"], "YAYINDA"]))
+    else:
+        print("EN ÇOK GELİŞEN: önceki ayın tablosu yok, bu ay hesaplanamadı.")
+    dosya = os.path.join(hedef, "yildizlar-yapistir.tsv")
+    with open(dosya, "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(satirlar) + "\n")
+    print(f"Ayın Yıldızları dosyası: {dosya}")
 
 
 if __name__ == "__main__":
