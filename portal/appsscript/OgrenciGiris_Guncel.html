@@ -140,6 +140,29 @@ body.loginView .kutu{min-height:min(640px,calc(100vh - 48px));display:flex;flex-
 .progressCompactChevron{color:var(--soluk);font-size:24px;line-height:1;transition:transform .2s}
 .progressCompact[open] .progressCompactChevron{transform:rotate(180deg)}
 .progressCompactBody{padding:0 18px 16px;border-top:1px solid var(--cizgi)}
+/* ---------- Ayın Yıldızları ---------- */
+.starsCard{margin:0 0 16px;padding:16px 20px 18px;border:1px solid #f3dca4;border-radius:var(--r-orta);background:linear-gradient(120deg,#fff8e1,#fff2f6 55%,#f1ecff)}
+.starsHead{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 4px}
+.starsHead h3{flex:1 1 220px;margin:0;font-size:26px;font-weight:900}
+.starsHint{margin:0 0 12px;color:var(--soluk);font-size:16px;font-weight:700}
+.starsMonths{display:flex;flex-wrap:wrap;gap:8px}
+.starsMonths button{min-height:40px;padding:6px 14px;border-color:#ecd9a8;background:#fff;color:var(--murekkep);font-size:15px}
+.starsMonths button[aria-pressed="true"]{border-color:var(--turuncu-koyu);background:var(--turuncu);color:#fff}
+.starsMonths button:hover:not(:disabled){background:var(--sari-acik);color:var(--murekkep)}
+.starsMonths button[aria-pressed="true"]:hover{background:var(--turuncu);color:#fff}
+.starsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.starItem{position:relative;display:grid;justify-items:center;gap:4px;padding:16px 12px 14px;border:2px solid transparent;border-radius:var(--r-orta);background:#fff;text-align:center;box-shadow:var(--golge)}
+.starItem.s1{border-color:#f2c14e;background:linear-gradient(180deg,#fff6d8,#fff)}
+.starItem.s2{border-color:#c3ccd8;background:linear-gradient(180deg,#f1f4f8,#fff)}
+.starItem.s3{border-color:#e0a77a;background:linear-gradient(180deg,#fdeee2,#fff)}
+.starItem.s4{border-color:#b8a6ef;background:linear-gradient(180deg,#f1ecff,#fff)}
+.starMedal{font-size:40px;line-height:1}
+.starTitle{color:var(--soluk);font-size:14px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.starName{font-size:21px;font-weight:900;overflow-wrap:anywhere}
+.starNote{color:var(--soluk);font-size:15px;font-weight:700}
+.starItem.ben{border-color:var(--yesil);box-shadow:0 0 0 4px #1d7d5a33,var(--golge)}
+.starBen{position:absolute;top:-12px;padding:3px 12px;border-radius:99px;background:var(--yesil);color:#fff;font-size:14px;font-weight:900;white-space:nowrap}
+@media(max-width:480px){.starsCard{padding:14px}.starsHead h3{font-size:22px}.starsGrid{grid-template-columns:1fr 1fr}.starName{font-size:18px}.starMedal{font-size:34px}}
 /* ---------- Aylık davranış raporu (ClassDojo) ---------- */
 .monthlyReport{background:linear-gradient(105deg,#eefaf4,#fff8ea)}
 .monthlyReportBadge{margin-left:auto;padding:4px 12px;border-radius:99px;background:var(--yesil);color:#fff;font-size:17px;font-weight:900;white-space:nowrap}
@@ -226,7 +249,7 @@ body.lessonView #dersIzgarasi{display:block}
 body.lessonView #dersIzgarasi>.course{display:none}
 body.lessonView #dersIzgarasi>.course.activeLesson{display:block;border:0;background:transparent;box-shadow:none;transform:none}
 body.lessonView #dersIzgarasi>.course.activeLesson>summary{display:none}
-body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.portalTopStrip,.examHome){display:none!important}
+body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.starsCard,.portalTopStrip,.examHome){display:none!important}
 .lessonBackRow{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin:4px 0 12px}
 #dersGeri{min-height:52px;border-color:var(--cizgi);background:var(--yuzey-mavi);color:var(--murekkep)}
 #dersGeri:hover:not(:disabled){background:#e3edfb}
@@ -322,7 +345,8 @@ body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.portalT
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 </div>
 <details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactLabel">Tamamlanan çalışma</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran" aria-label="Çalışma tamamlama oranı">–</span><span class="progressCompactChevron" aria-hidden="true">▾</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor. Bu bir not değildir; yalnızca kaydedilen çalışmaları gösterir.</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Tamamlanan etkinlik</small></div><div><strong id="ilerlemeDefter">–</strong><small>Yazılan defter notu</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru yanıt</small></div></div></div></details>
-<details id="veliRaporPanel" class="progressCompact monthlyReport" hidden><summary><span class="progressCompactName">🌟 Aylık Davranış Raporum</span><span class="progressCompactLabel" id="veliRaporEtiket"></span><span class="monthlyReportBadge" id="veliRaporRozet"></span><span class="progressCompactChevron" aria-hidden="true">▾</span></summary><div class="progressCompactBody"><div id="veliRaporAylar" class="monthlyReportMonths" role="group" aria-label="Rapor ayı"></div><div id="veliRaporIcerik"></div></div></details>
+<section id="yildizPanel" class="starsCard" aria-labelledby="yildiz-baslik" hidden><div class="starsHead"><h3 id="yildiz-baslik">🏆 Ayın Yıldızları</h3><div id="yildizAylar" class="starsMonths" role="group" aria-label="Ay seç"></div></div><p class="starsHint">Her ayın ilk üçü ve en çok gelişeni, istediği yemeği ısmarlama hakkı kazanır 🍽️</p><div id="yildizIcerik" class="starsGrid"></div></section>
+<details id="veliRaporPanel"class="progressCompact monthlyReport" hidden><summary><span class="progressCompactName">🌟 Aylık Davranış Raporum</span><span class="progressCompactLabel" id="veliRaporEtiket"></span><span class="monthlyReportBadge" id="veliRaporRozet"></span><span class="progressCompactChevron" aria-hidden="true">▾</span></summary><div class="progressCompactBody"><div id="veliRaporAylar" class="monthlyReportMonths" role="group" aria-label="Rapor ayı"></div><div id="veliRaporIcerik"></div></div></details>
 <section id="newContentPanel" class="newContentPanel" hidden>
  <button id="newContentOpen" class="newContentSummary" type="button" aria-haspopup="dialog">✨ Yeni İçerikler <span>İçerikleri gör →</span></button>
 </section>
@@ -501,6 +525,43 @@ function ilerlemeYukle(){
   if(sessionStorage.getItem(anahtarAdi)===token&&istek===ilerlemeIstekSirasi)status.textContent="İlerleme bilgileri şu anda alınamadı.";
  }).ogrenciIlerlemeOzeti(token);
 }
+/* ---------- Ayın Yıldızları ---------- */
+let yildizIstekSirasi=0,yildizAylari=[];
+const YILDIZ_ODUL={1:{madalya:"🥇",baslik:"Ayın birincisi"},2:{madalya:"🥈",baslik:"Ayın ikincisi"},3:{madalya:"🥉",baslik:"Ayın üçüncüsü"},4:{madalya:"🚀",baslik:"En çok gelişen"}};
+function ayKisaAd_(ay){return String(ay||"").replace(/^\d{4}-\d{1,2}\s*/,"")||String(ay||"")}
+function yildizTemizle_(){
+ yildizIstekSirasi++;yildizAylari=[];
+ document.getElementById("yildizPanel").hidden=true;
+ document.getElementById("yildizAylar").replaceChildren();document.getElementById("yildizIcerik").replaceChildren();
+}
+function yildizGoster_(i){
+ const ay=yildizAylari[i];if(!ay)return;
+ document.querySelectorAll("#yildizAylar button").forEach(function(b,j){b.setAttribute("aria-pressed",String(j===i))});
+ document.getElementById("yildiz-baslik").textContent="🏆 "+ayKisaAd_(ay.ay)+" Ayının Yıldızları";
+ const kartlar=(ay.yildizlar||[]).map(function(y){
+  const o=YILDIZ_ODUL[y.sira]||YILDIZ_ODUL[4],kart=document.createElement("article"),m=document.createElement("span"),t=document.createElement("span"),ad=document.createElement("strong");
+  kart.className="starItem s"+y.sira+(y.ben?" ben":"");m.className="starMedal";m.setAttribute("aria-hidden","true");m.textContent=o.madalya;
+  t.className="starTitle";t.textContent=o.baslik;ad.className="starName";ad.textContent=String(y.ad||"");
+  kart.append(m,t,ad);
+  if(y.not){const n=document.createElement("span");n.className="starNote";n.textContent=String(y.not);kart.appendChild(n)}
+  if(y.ben){const b=document.createElement("span");b.className="starBen";b.textContent="Bu sensin! 🎉";kart.appendChild(b)}
+  return kart;
+ });
+ document.getElementById("yildizIcerik").replaceChildren.apply(document.getElementById("yildizIcerik"),kartlar);
+}
+function yildizlariYukle(){
+ const istek=++yildizIstekSirasi,token=sessionStorage.getItem(anahtarAdi);
+ if(!token)return;
+ google.script.run.withSuccessHandler(function(cevap){
+  if(sessionStorage.getItem(anahtarAdi)!==token||istek!==yildizIstekSirasi)return;
+  yildizAylari=cevap&&cevap.basarili===true&&Array.isArray(cevap.aylar)?cevap.aylar.filter(function(a){return a&&Array.isArray(a.yildizlar)&&a.yildizlar.length}):[];
+  const panel=document.getElementById("yildizPanel"),aylar=document.getElementById("yildizAylar");
+  aylar.replaceChildren();
+  if(!yildizAylari.length){panel.hidden=true;return}
+  if(yildizAylari.length>1)yildizAylari.forEach(function(a,i){const b=document.createElement("button");b.type="button";b.textContent=ayKisaAd_(a.ay);b.setAttribute("aria-pressed","false");b.addEventListener("click",function(){yildizGoster_(i)});aylar.appendChild(b)});
+  yildizGoster_(0);panel.hidden=false;
+ }).withFailureHandler(function(){if(istek===yildizIstekSirasi)document.getElementById("yildizPanel").hidden=true}).ogrenciAyinYildizlari(token);
+}
 /* ---------- Aylık davranış raporu (ClassDojo) ---------- */
 let veliRaporIstekSirasi=0,veliRaporlar=[];
 function veliRaporTemizle_(){
@@ -661,7 +722,7 @@ function anketleriYukle(){
   alan.hidden=anketler.length===0;
  }).withFailureHandler(function(){}).ogrenciAnketleri(token);
 }
-function tokenTemizle(){menuyeDon();veliRaporTemizle_();anketIstekSirasi++;document.getElementById("anketAlani").replaceChildren();document.getElementById("anketAlani").hidden=true;yazilanNotlar.clear();bitirilenEtkinlikler.clear();kaydedilenEtkinlikler.clear();baslatilanEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
+function tokenTemizle(){menuyeDon();veliRaporTemizle_();yildizTemizle_();anketIstekSirasi++;document.getElementById("anketAlani").replaceChildren();document.getElementById("anketAlani").hidden=true;yazilanNotlar.clear();bitirilenEtkinlikler.clear();kaydedilenEtkinlikler.clear();baslatilanEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
 function girisYap(){
  if(buton.disabled)return;
  const kod=kodAlani.value.trim().toUpperCase();
@@ -672,7 +733,7 @@ function girisYap(){
   if(istekNesli!==oturumNesli)return;
   buton.disabled=false;
   if(cevap&&cevap.basarili===true&&typeof cevap.token==="string"&&tokenFormat.test(cevap.token)){
-   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();anketleriYukle();ilerlemeYukle();veliRaporuYukle();defterDurumYukle();seciliEtkinlikDurumYukle();
+   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();anketleriYukle();ilerlemeYukle();veliRaporuYukle();yildizlariYukle();defterDurumYukle();seciliEtkinlikDurumYukle();
    sonuc.textContent="";
   }else{sonuc.textContent=cevap&&cevap.mesaj?cevap.mesaj:"Giriş doğrulanamadı."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Giriş sırasında hata oluştu. Tekrar dene."}).ogrenciGirisiYap(kod);
@@ -1020,7 +1081,7 @@ if(mevcutToken){
  google.script.run.withSuccessHandler(function(cevap){
   if(istekNesli!==oturumNesli||sessionStorage.getItem(anahtarAdi)!==mevcutToken)return;
   buton.disabled=false;
-  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();anketleriYukle();ilerlemeYukle();veliRaporuYukle();defterDurumYukle();seciliEtkinlikDurumYukle();sonuc.textContent=""}
+  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();anketleriYukle();ilerlemeYukle();veliRaporuYukle();yildizlariYukle();defterDurumYukle();seciliEtkinlikDurumYukle();sonuc.textContent=""}
   else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
 }
