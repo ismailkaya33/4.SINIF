@@ -13,6 +13,7 @@ const student=[
  ['portal/appsscript/EtkinlikKayitDefteri.gs','EtkinlikKayitDefteri'],
  ['portal/appsscript/EtkinlikSonuclari.gs','EtkinlikSonuclari'],
  ['portal/appsscript/OgrenciCalismaDurumu.gs','OgrenciCalismaDurumu'],
+ ['portal/appsscript/VeliRaporu.gs','VeliRaporu'],
  ['portal/appsscript/OgrenciGiris_Guncel.html','OgrenciGiris']
 ];
 const teacher=[
