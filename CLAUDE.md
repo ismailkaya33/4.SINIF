@@ -37,6 +37,9 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
 - Test etmediğin şeyi "çalışıyor" deme. Önizleme: Edge headless + sahte veri.
 - Kazanım kodunu uydurma; emin değilsen "doğrulanmalı" yaz ve sor.
 - Bekleyenler: KVKK aydınlatma metni.
+- **Token tasarrufu:** tarayıcıda ekran görüntüsü yerine önce metin okuma (`get_page_text`/`read_page`/`find`) kullan;
+  görüntü gerekirse küçük ölçek (`scale` 0.5) ya da `zoom`. `portal/appsscript/OgrenciGiris_Guncel.html` (~100 KB)
+  bütün okunmaz: önce `Grep` ile yeri bul, sadece o aralığı oku. Aynı dosyayı tekrar tekrar okuma.
 
 ## Aylık ClassDojo raporu
 Öğretmen ClassDojo PDF'ini klasöre bırakır → `python -I tools/classdojo-rapor.py "<pdf>"` → `VeliRaporlari/<ay>/tabloya-yapistir.tsv`
