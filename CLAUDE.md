@@ -36,4 +36,11 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
 - TEST40 öğretmen raporunda bilerek görünmez; Claude canlı Google sitesine kod girmez, girişi öğretmen yapar.
 - Test etmediğin şeyi "çalışıyor" deme. Önizleme: Edge headless + sahte veri.
 - Kazanım kodunu uydurma; emin değilsen "doğrulanmalı" yaz ve sor.
-- Bekleyenler: KVKK aydınlatma metni, aylık veli raporu (sonraya bırakıldı).
+- Bekleyenler: KVKK aydınlatma metni.
+
+## Aylık ClassDojo raporu
+Öğretmen ClassDojo PDF'ini klasöre bırakır → `python -I tools/classdojo-rapor.py "<pdf>"` → `VeliRaporlari/<ay>/`
+(öğrenci başına PDF + `tabloya-yapistir.tsv`; klasör ve PDF `.gitignore`'da, GitHub'a gitmez). TSV, portal tablosundaki
+`VELI_RAPORLARI` sayfasına yapıştırılır (en alttaki boş satıra; başlık satırı zararsız). Portal `VeliRaporu.gs` ile
+öğrenciye yalnız kendi adındaki `YAYINDA` satırları gösterir. Ad eşleşmesi için öğretmen Apps Script'te
+`veliRaporuEslesmeKontrolu` çalıştırır. Claude ClassDojo'ya giriş yapmaz.
