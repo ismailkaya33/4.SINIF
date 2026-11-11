@@ -39,8 +39,9 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
 - Bekleyenler: KVKK aydınlatma metni.
 
 ## Aylık ClassDojo raporu
-Öğretmen ClassDojo PDF'ini klasöre bırakır → `python -I tools/classdojo-rapor.py "<pdf>"` → `VeliRaporlari/<ay>/`
-(öğrenci başına PDF + `tabloya-yapistir.tsv`; klasör ve PDF `.gitignore`'da, GitHub'a gitmez). TSV, portal tablosundaki
+Öğretmen ClassDojo PDF'ini klasöre bırakır → `python -I tools/classdojo-rapor.py "<pdf>"` → `VeliRaporlari/<ay>/tabloya-yapistir.tsv`
+(klasör ve PDF `.gitignore`'da, GitHub'a gitmez). Rapor portalda olduğu için WhatsApp'a öğrenci başına PDF bölünmez
+(öğretmenin kararı; istenirse `--bol`). TSV'yi Claude panoya kopyalar (`Set-Clipboard`), öğretmen portal tablosundaki
 `VELI_RAPORLARI` sayfasına yapıştırılır (en alttaki boş satıra; başlık satırı zararsız). Portal `VeliRaporu.gs` ile
 öğrenciye yalnız kendi adındaki `YAYINDA` satırları gösterir. Ad eşleşmesi için öğretmen Apps Script'te
 `veliRaporuEslesmeKontrolu` çalıştırır. Claude ClassDojo'ya giriş yapmaz.

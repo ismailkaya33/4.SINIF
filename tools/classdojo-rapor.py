@@ -1,11 +1,12 @@
-"""ClassDojo aylık raporunu öğrencilere böler ve portal tablosu için satır hazırlar.
+"""ClassDojo aylık raporundan portal tablosu için satır hazırlar.
 
 Kullanım (proje klasöründe):
     python -I tools/classdojo-rapor.py "ClassDojo Reports for ....pdf"
+    python -I tools/classdojo-rapor.py "ClassDojo Reports for ....pdf" --bol   (isteğe bağlı: öğrenci başına PDF)
 
 Çıktılar (hepsi VeliRaporlari/ altında, GitHub'a GİTMEZ):
-    VeliRaporlari/<yyyy-aa Ay>/<ÖĞRENCİ ADI>.pdf   -> WhatsApp için tek sayfalık raporlar
     VeliRaporlari/<yyyy-aa Ay>/tabloya-yapistir.tsv -> portal tablosundaki VELI_RAPORLARI sayfasına yapıştırılır
+    VeliRaporlari/<yyyy-aa Ay>/<ÖĞRENCİ ADI>.pdf   -> yalnız --bol verilirse (öğretmen artık istemiyor; rapor portalda)
 
 Gerekli: pip install pypdf
 """
@@ -77,10 +78,12 @@ def guvenli_dosya_adi(ad):
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
-    if len(sys.argv) != 2:
+    argumanlar = [a for a in sys.argv[1:] if a != "--bol"]
+    bol = "--bol" in sys.argv[1:]
+    if len(argumanlar) != 1:
         print(__doc__)
         sys.exit(2)
-    okuyucu = PdfReader(sys.argv[1])
+    okuyucu = PdfReader(argumanlar[0])
     kayitlar = []
     for i, sayfa in enumerate(okuyucu.pages, 1):
         try:
@@ -101,10 +104,11 @@ def main():
     os.makedirs(hedef, exist_ok=True)
     satirlar = ["\t".join(BASLIK)]
     for sayfa, k in kayitlar:
-        yazici = PdfWriter()
-        yazici.add_page(sayfa)
-        with open(os.path.join(hedef, guvenli_dosya_adi(k["ad"]) + ".pdf"), "wb") as f:
-            yazici.write(f)
+        if bol:
+            yazici = PdfWriter()
+            yazici.add_page(sayfa)
+            with open(os.path.join(hedef, guvenli_dosya_adi(k["ad"]) + ".pdf"), "wb") as f:
+                yazici.write(f)
         o, g = k["olumlu"], k["gelistirme"]
         satirlar.append("\t".join(str(x) for x in [
             ay, f"{k['baslangic']} – {k['bitis']}", k["ad"], o[0], o[1], g[0], -g[1] if g[1] else 0,
@@ -112,7 +116,7 @@ def main():
     tsv = os.path.join(hedef, "tabloya-yapistir.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(satirlar) + "\n")
-    print(f"Tamam: {ay} | {len(kayitlar)} öğrenci | klasör: {hedef}")
+    print(f"Tamam: {ay} | {len(kayitlar)} öğrenci | klasör: {hedef}" + (" | öğrenci PDF'leri bölündü" if bol else ""))
     print(f"Tabloya yapıştırılacak dosya: {tsv}")
 
 
