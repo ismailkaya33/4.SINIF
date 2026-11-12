@@ -127,6 +127,14 @@ def kisa_ad(ad):
     return ad if len(parcalar) < 2 else " ".join(parcalar[:-1]) + " " + parcalar[-1][0] + "."
 
 
+TR_ALFABE = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ"
+
+
+def tr_sirala(ad):
+    """Türkçe alfabe sırası için anahtar (Ç, Ş, Ö... Z'den sonraya düşmesin)."""
+    return [TR_ALFABE.find(h) if h in TR_ALFABE else 100 + ord(h) for h in ad.upper()]
+
+
 def onceki_ay_yuzdeleri(ay):
     """VeliRaporlari altındaki bir önceki ayın tablosundan {ad: yüzde} okur; yoksa boş döner."""
     if not os.path.isdir("VeliRaporlari"):
@@ -158,6 +166,16 @@ def yildizlari_hazirla(ay, kayitlar, hedef):
         print("  UYARI: 3. ve 4. sırada eşitlik var; öğretmen karar vermeli.")
     for i, k in enumerate(sirali[:3], 1):
         satirlar.append("\t".join([ay, str(i), kisa_ad(k["ad"]), "", k["ad"], "YAYINDA"]))
+    # Onur Listesi: 4.–10. sıra, SIRASIZ ve PUANSIZ (alfabetik). 10. ile eşit puanlılar da girer.
+    if len(sirali) > 3:
+        sinir = net(sirali[min(9, len(sirali) - 1)])
+        onur = [k for i, k in enumerate(sirali[3:], 3) if i < 10 or net(k) == sinir]
+        onur.sort(key=lambda k: tr_sirala(k["ad"]))
+        print(f"ONUR LİSTESİ (4.–10. sıra, alfabetik, puansız): {len(onur)} öğrenci"
+              + (" — 10. sırada eşitlik olduğu için 7'den fazla" if len(onur) > 7 else ""))
+        for k in onur:
+            print(f"  {k['ad']}")
+            satirlar.append("\t".join([ay, "ONUR", kisa_ad(k["ad"]), "", k["ad"], "YAYINDA"]))
     onceki_ad, onceki = onceki_ay_yuzdeleri(ay)
     ilk_uc = {k["ad"] for k in sirali[:3]}
     adaylar = [(k["yuzde"] - onceki[k["ad"]], k) for k in kayitlar
