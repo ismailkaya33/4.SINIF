@@ -1,0 +1,14 @@
+{
+  "aciklama": "Öğrenci portalı ana sayfasındaki 'Bu Haftanın Etkinlikleri' şeridi. Her hafta yalnız bu dosya değişir (portal dalına dokunmaya gerek yok). 'bitis' tarihinden sonra şerit kendiliğinden gizlenir. 'etkinlikler' = sitedeki dosya yolları, en çok 12.",
+  "baslik": "9–10. hafta • 2–27 Kasım",
+  "bitis": "2026-11-27",
+  "etkinlikler": [
+    "Turkce/kantindedektifi.html",
+    "Turkce/cikarimbaslik.html",
+    "Matematik/cikarmadatahmin.html",
+    "Fen/besinkasifleri.html",
+    "Sosyal/konumkasifi.html",
+    "Insanhaklari/farkliyasamlar.html",
+    "Trafik/oyunaraclari.html"
+  ]
+}
