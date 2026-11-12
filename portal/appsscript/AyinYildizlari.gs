@@ -3,7 +3,7 @@
  * Tablo sayfası: AYIN_YILDIZLARI (öğretmen her ay yapıştırır; GitHub'a yazılmaz).
  * Sütunlar (1. satır başlık):
  *  A Ay       "2026-10 Ekim"
- *  B Ödül     1 / 2 / 3 / GELİŞEN
+ *  B Ödül     1 / 2 / 3 / GELİŞEN / ONUR (Onur Listesi: 4.–10. sıra, portalda sırasız ve alfabetik)
  *  C Öğrenci  Portalda görünecek ad (ör. "RENAS A.")
  *  D Not      İsteğe bağlı kısa açıklama (boş bırakılabilir)
  *  E Kayıt adı Portal kaydındaki tam ad (yalnız "bu sensin" işareti için; tarayıcıya GÖNDERİLMEZ)
@@ -11,7 +11,7 @@
  * Not: veliRaporAdNormal_ VeliRaporu.gs içindedir.
  */
 const YILDIZ_SAYFASI_ = 'AYIN_YILDIZLARI';
-const YILDIZ_ODULLER_ = {'1': 1, '2': 2, '3': 3, 'GELISEN': 4};
+const YILDIZ_ODULLER_ = {'1': 1, '2': 2, '3': 3, 'GELISEN': 4, 'ONUR': 5};
 
 function ogrenciAyinYildizlari(token) {
   const oturum = oturumKaydi_(token);
@@ -35,6 +35,6 @@ function ogrenciAyinYildizlari(token) {
     });
   });
   const liste = Object.keys(aylar).sort((a, b) => b.localeCompare(a)).slice(0, 12)
-    .map(ay => ({ay: ay.slice(0, 40), yildizlar: aylar[ay].sort((a, b) => a.sira - b.sira).slice(0, 8)}));
+    .map(ay => ({ay: ay.slice(0, 40), yildizlar: aylar[ay].sort((a, b) => a.sira - b.sira || a.ad.localeCompare(b.ad, 'tr')).slice(0, 20)}));
   return {basarili: true, aylar: liste};
 }

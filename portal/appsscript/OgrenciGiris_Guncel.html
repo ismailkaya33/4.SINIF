@@ -160,6 +160,12 @@ body.loginView .kutu{min-height:min(640px,calc(100vh - 48px));display:flex;flex-
 .starTitle{color:var(--soluk);font-size:14px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
 .starName{font-size:21px;font-weight:900;overflow-wrap:anywhere}
 .starNote{color:var(--soluk);font-size:15px;font-weight:700}
+.starHonor{grid-column:1/-1;padding:12px 16px 14px;border:2px solid #f2d27a;border-radius:var(--r-orta);background:#fff;box-shadow:var(--golge)}
+.starHonor h4{margin:0;font-size:20px;font-weight:900}
+.starHonor p{margin:2px 0 10px;color:var(--soluk);font-size:15px;font-weight:700}
+.starHonor ul{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.starHonor li{padding:6px 14px;border:1px solid #f3dca4;border-radius:99px;background:#fff8e1;font-size:17px;font-weight:900}
+.starHonor li.ben{border-color:var(--yesil);background:#e7f5ee;box-shadow:0 0 0 3px #1d7d5a33}
 .starItem.ben{border-color:var(--yesil);box-shadow:0 0 0 4px #1d7d5a33,var(--golge)}
 .starBen{position:absolute;top:-12px;padding:3px 12px;border-radius:99px;background:var(--yesil);color:#fff;font-size:14px;font-weight:900;white-space:nowrap}
 @media(max-width:480px){.starsCard{padding:14px}.starsHead h3{font-size:22px}.starsGrid{grid-template-columns:1fr 1fr}.starName{font-size:18px}.starMedal{font-size:34px}}
@@ -605,7 +611,8 @@ function yildizGoster_(i){
  const ay=yildizAylari[i];if(!ay)return;
  document.querySelectorAll("#yildizAylar button").forEach(function(b,j){b.setAttribute("aria-pressed",String(j===i))});
  document.getElementById("yildiz-baslik").textContent="🏆 "+ayKisaAd_(ay.ay)+" Ayının Yıldızları";
- const kartlar=(ay.yildizlar||[]).map(function(y){
+ const tumu=ay.yildizlar||[],onur=tumu.filter(function(y){return y.sira===5});
+ const kartlar=tumu.filter(function(y){return y.sira!==5}).map(function(y){
   const o=YILDIZ_ODUL[y.sira]||YILDIZ_ODUL[4],kart=document.createElement("article"),m=document.createElement("span"),t=document.createElement("span"),ad=document.createElement("strong");
   kart.className="starItem s"+y.sira+(y.ben?" ben":"");m.className="starMedal";m.setAttribute("aria-hidden","true");m.textContent=o.madalya;
   t.className="starTitle";t.textContent=o.baslik;ad.className="starName";ad.textContent=String(y.ad||"");
@@ -614,6 +621,13 @@ function yildizGoster_(i){
   if(y.ben){const b=document.createElement("span");b.className="starBen";b.textContent="Bu sensin! 🎉";kart.appendChild(b)}
   return kart;
  });
+ if(onur.length){
+  const blok=document.createElement("section"),h=document.createElement("h4"),p=document.createElement("p"),ul=document.createElement("ul");
+  blok.className="starHonor";blok.setAttribute("aria-label","Onur Listesi");h.textContent="⭐ Onur Listesi";
+  p.textContent="Bu ay ilk 10'a girenler. Sıra yok, isimler alfabetik.";
+  onur.forEach(function(y){const li=document.createElement("li");li.textContent=String(y.ad||"");if(y.ben){li.className="ben";const b=document.createElement("span");b.textContent=" · Bu sensin! 🎉";li.appendChild(b)}ul.appendChild(li)});
+  blok.append(h,p,ul);kartlar.push(blok);
+ }
  document.getElementById("yildizIcerik").replaceChildren.apply(document.getElementById("yildizIcerik"),kartlar);
 }
 function yildizlariYukle(){
