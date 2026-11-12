@@ -334,6 +334,64 @@ body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.starsCa
  .courseTabs{grid-template-columns:1fr}
  .courseTabs button{justify-content:flex-start;padding:8px 14px;font-size:17px}
 }
+
+/* ===== Yeni ana sayfa (V3) ===== */
+.ders-TR{--renk:#3563c9}.ders-MAT{--renk:#14846a}.ders-FEN{--renk:#6a4fc6}.ders-SOS{--renk:#c4601a}.ders-HAK{--renk:#b83a62}.ders-TRF{--renk:#9a6a00}.ders-OYN{--renk:#4a58b8}
+.anaUst{margin:14px 0 4px}
+.anaKisayollar{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 8px;scrollbar-width:none}
+.anaKisayollar::-webkit-scrollbar{display:none}
+.anaKisayollar button{flex:none;display:flex;align-items:center;gap:6px;min-height:48px;padding:8px 16px;border:2px solid var(--cizgi);border-radius:999px;background:var(--yuzey);color:var(--murekkep);font-weight:800;font-size:16px;white-space:nowrap;cursor:pointer;box-shadow:none}
+.anaKisayollar button:hover{border-color:var(--mor)}
+.anaArama{position:relative;margin:8px 0 10px}
+.anaArama input{width:100%;min-height:58px;margin:0;border:3px solid var(--cizgi);border-radius:999px;padding:0 54px 0 56px;font-size:19px;font-weight:700;background:var(--yuzey);color:var(--murekkep);box-shadow:var(--golge);text-align:left;letter-spacing:0;text-transform:none}
+.anaArama input:focus{border-color:var(--mor);outline:none}
+.anaBuyutec{position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:22px;pointer-events:none}
+.anaTemizle{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:44px;height:44px;min-height:0;padding:0;border:0;border-radius:50%;background:var(--zemin);color:var(--murekkep);font-size:22px;box-shadow:none}
+.anaFiltreler{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.anaFiltreler::-webkit-scrollbar{display:none}
+.anaFiltreler button{flex:none;min-height:48px;padding:0 18px;border:2px solid var(--cizgi);border-radius:999px;background:var(--yuzey);color:var(--murekkep);font-weight:800;font-size:16px;white-space:nowrap;box-shadow:none}
+.anaFiltreler button[aria-pressed="true"]{background:var(--renk,var(--mor));border-color:var(--renk,var(--mor));color:#fff}
+.anaBolumBas{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;margin:18px 0 10px}
+.anaBolumBas h3{margin:0;font-size:clamp(21px,2.2vw,27px);font-weight:900}
+.anaBolumBas small{color:var(--soluk);font-weight:700;font-size:15px}
+.anaSerit{display:grid;grid-auto-flow:column;grid-auto-columns:82%;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 14px}
+.anaKart{scroll-snap-align:start;display:flex;flex-direction:column;gap:8px;padding:14px 16px 16px;border-top:8px solid var(--renk);border-radius:18px;background:var(--yuzey);box-shadow:var(--golge)}
+.anaKartDers{display:flex;align-items:center;gap:8px;color:var(--renk);font-weight:800;font-size:15px}
+.anaKartDers svg{width:30px;height:30px}
+.anaKart h4{margin:0;font-size:20px;font-weight:900;line-height:1.2}
+.anaEtiketler{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.anaEtiket{border-radius:999px;padding:2px 10px;background:var(--zemin);color:var(--soluk);font-size:13px;font-weight:800}
+.anaEtiket.takip{background:var(--sari-acik);color:#8a5a00}
+.anaEtiket.yeni{background:#ffe3e3;color:#a8364c}
+.anaEtiket.bitti{background:var(--yesil-acik);color:var(--yesil)}
+.anaBasla{margin-top:auto;min-height:52px;border:0;border-radius:14px;background:var(--renk);color:#fff;font-weight:900;font-size:18px;box-shadow:0 3px 0 #0002}
+.anaKart.tamam .anaBasla{background:var(--yuzey);color:var(--yesil);border:2px solid var(--yesil);box-shadow:none}
+.anaListe{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.anaSatir{display:flex;align-items:center;gap:12px;min-height:68px;padding:10px 12px;border-left:7px solid var(--renk);border-radius:16px;background:var(--yuzey);box-shadow:var(--golge)}
+.anaSatir svg{width:38px;height:38px;flex:none}
+.anaSatirMetin{flex:1;min-width:0}
+.anaSatirAd{font-weight:900;font-size:18px;line-height:1.2;overflow-wrap:anywhere}
+.anaSatirDers{color:var(--renk);font-size:14px;font-weight:800}
+.anaSatir>button{flex:none;min-height:48px;min-width:84px;border:0;border-radius:12px;background:var(--renk);color:#fff;font-weight:900;font-size:17px}
+.anaBos{padding:22px;border-radius:18px;background:var(--yuzey);color:var(--soluk);font-weight:700;text-align:center}
+.anaGeri{min-height:44px;padding:8px 0;border:0;background:none;color:var(--mor-koyu);font-weight:900;font-size:17px;box-shadow:none}
+.anaKose{margin-top:26px}
+.anaKoseBaslik{margin:0 0 10px;font-size:clamp(21px,2.2vw,27px);font-weight:900}
+.anaKose>*+*{margin-top:12px}
+.anaVurgu{outline:4px solid var(--turuncu);outline-offset:4px;border-radius:12px;transition:outline-color .4s}
+#dersIzgarasi{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#dersIzgarasi>.course{border-bottom:6px solid var(--renk,var(--cizgi))}
+#dersIzgarasi>.course>summary{grid-template-columns:minmax(0,1fr);grid-template-areas:"ikon" "ad" "sayi";justify-items:start;row-gap:4px;min-height:140px;padding:14px}
+#dersIzgarasi>.course>summary::after{display:none}
+#dersIzgarasi>.course>summary>.subjectIcon{width:58px;height:58px}
+#dersIzgarasi>.course>summary>strong{align-self:start;font-size:20px;line-height:1.15}
+#dersIzgarasi>.course>summary>.newLight{grid-area:ikon;justify-self:end;align-self:start}
+body.anaAramada :is(#anaHafta,.dashboardTitle,#oturumAlani>.hint,#dersIzgarasi,#dersGeriSatiri,#anaKose){display:none!important}
+body.lessonView :is(#anaUst,#anaKose){display:none!important}
+@media(min-width:620px){.anaSerit{grid-auto-columns:minmax(260px,42%)}#dersIzgarasi{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(min-width:1000px){.anaSerit{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible}}
+@media(min-width:1200px){#dersIzgarasi{grid-template-columns:repeat(7,minmax(0,1fr))}#dersIzgarasi>.course>summary{justify-items:center;text-align:center}}
+@media(min-width:1500px){.anaKart h4{font-size:24px}.anaSatirAd{font-size:21px}#dersIzgarasi>.course>summary>strong{font-size:23px}}
 </style></head><body class="loginView"><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
@@ -344,22 +402,19 @@ body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.starsCa
 <div id="anketAlani" hidden></div>
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 </div>
-<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactLabel">Tamamlanan çalışma</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran" aria-label="Çalışma tamamlama oranı">–</span><span class="progressCompactChevron" aria-hidden="true">▾</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor. Bu bir not değildir; yalnızca kaydedilen çalışmaları gösterir.</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Tamamlanan etkinlik</small></div><div><strong id="ilerlemeDefter">–</strong><small>Yazılan defter notu</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru yanıt</small></div></div></div></details>
-<section id="yildizPanel" class="starsCard" aria-labelledby="yildiz-baslik" hidden><div class="starsHead"><h3 id="yildiz-baslik">🏆 Ayın Yıldızları</h3><div id="yildizAylar" class="starsMonths" role="group" aria-label="Ay seç"></div></div><p class="starsHint">Her ayın ilk üçü ve en çok gelişeni, istediği yemeği ısmarlama hakkı kazanır 🍽️</p><div id="yildizIcerik" class="starsGrid"></div></section>
-<details id="veliRaporPanel"class="progressCompact monthlyReport" hidden><summary><span class="progressCompactName">🌟 Aylık Davranış Raporum</span><span class="progressCompactLabel" id="veliRaporEtiket"></span><span class="monthlyReportBadge" id="veliRaporRozet"></span><span class="progressCompactChevron" aria-hidden="true">▾</span></summary><div class="progressCompactBody"><div id="veliRaporAylar" class="monthlyReportMonths" role="group" aria-label="Rapor ayı"></div><div id="veliRaporIcerik"></div></div></details>
-<section id="newContentPanel" class="newContentPanel" hidden>
- <button id="newContentOpen" class="newContentSummary" type="button" aria-haspopup="dialog">✨ Yeni İçerikler <span>İçerikleri gör →</span></button>
-</section>
 <dialog id="newContentDialog" class="newContentDialog" aria-labelledby="newContentHeading">
  <div class="newContentDialogHead"><h3 id="newContentHeading">✨ Yeni İçerikler</h3><button id="newContentClose" class="newContentClose" type="button" aria-label="Kapat">×</button></div>
  <div id="newContentDialogBody" class="newContentDialogBody"><div id="newContentAlerts" class="newContentAlerts" aria-live="polite"></div></div>
 </dialog>
-<h3 class="dashboardTitle">Dersler ve Etkinlikler</h3>
-<p class="hint">Bir derse dokun; etkinlikler, defter notları ve değerlendirmeler orada.</p>
-<section class="examHome" aria-label="Deneme Sınavları">
- <button id="denemeSinavlariBtn" type="button" aria-expanded="false" aria-controls="denemeSinavlariBilgi"><span>📝 Deneme Sınavları</span><span aria-hidden="true">→</span></button>
- <p id="denemeSinavlariBilgi" class="examHint" hidden>Deneme sınavları yüklendiğinde burada yer alacak.</p>
+<section id="anaUst" class="anaUst" aria-label="Ana sayfa">
+ <nav id="anaKisayollar" class="anaKisayollar" aria-label="Kısayollar"></nav>
+ <div class="anaArama" role="search"><span class="anaBuyutec" aria-hidden="true">🔎</span><input id="anaAra" type="search" placeholder="Etkinlik ara…" aria-label="Etkinlik ara" autocomplete="off" enterkeyhint="search"><button id="anaTemizle" class="anaTemizle" type="button" aria-label="Aramayı temizle" hidden>×</button></div>
+ <div id="anaFiltreler" class="anaFiltreler" role="group" aria-label="Derse göre süz"></div>
+ <section id="anaHafta" class="anaHafta" aria-labelledby="anaHaftaBaslik" hidden><div class="anaBolumBas"><h3 id="anaHaftaBaslik">⭐ Bu Haftanın Etkinlikleri</h3><small id="anaHaftaYazi"></small></div><div id="anaHaftaSerit" class="anaSerit"></div></section>
+ <section id="anaSonuc" class="anaSonuc" aria-live="polite" hidden><button id="anaGeri" class="anaGeri" type="button">← Ana sayfaya dön</button><div class="anaBolumBas"><h3 id="anaSonucBaslik">Sonuçlar</h3><small id="anaSonucSay"></small></div><ul id="anaSonucListe" class="anaListe"></ul></section>
 </section>
+<h3 class="dashboardTitle">Derslerim</h3>
+<p class="hint">Bir derse dokun; etkinlikler, defter notları ve değerlendirmeler orada.</p>
 
 <div id="dersGeriSatiri" class="lessonBackRow" hidden><button id="dersGeri" type="button">← Ders listesine dön</button><strong id="dersSayfaBaslik"></strong></div>
 <div id="dersIzgarasi" class="cards seven"><details class="course"><summary><span class="subjectIcon subject-TR" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M10 14q12-5 22 3v35q-10-8-22-4z" fill="#7EA9FF" stroke="#345AA5" stroke-width="2.8"/><path d="M54 14q-12-5-22 3v35q10-8 22-4z" fill="#FFD58D" stroke="#B9772C" stroke-width="2.8"/><path d="M17 23h9m-9 7h9m12-7h9m-9 7h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M32 17v35" stroke="#4763AA" stroke-width="2.6"/></svg></span> <strong>Türkçe</strong> <small>17 etkinlik</small></summary><p class="hint linkReturnHint">Bağlantı açılınca çalışmanı yap. Bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Turkce/anafikiranaduygu.html" target="_blank" rel="noopener noreferrer">Ana Fikir ve Ana Duygu Dedektifi</a></li>
@@ -412,6 +467,18 @@ body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.starsCa
 <details class="course"><summary><span class="subjectIcon subject-TRF" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="21" y="6" width="22" height="51" rx="9" fill="#29385E"/><circle cx="32" cy="18" r="7" fill="#FF6975"/><circle cx="32" cy="32" r="7" fill="#FFD266"/><circle cx="32" cy="46" r="7" fill="#60D698"/><path d="M15 11v43m34-43v43" stroke="#88A5D0" stroke-width="3" stroke-linecap="round"/></svg></span> <strong>Trafik Güvenliği</strong> <small>2 etkinlik</small></summary><p class="hint linkReturnHint">Bağlantı açılınca çalışmanı yap. Bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Trafik/temelkavramlar.html" target="_blank" rel="noopener noreferrer">Temel Kavramlar</a></li><li><a id="recent-activity-trafik-yaya" href="https://ismailkaya33.github.io/4.SINIF/Trafik/yayaolaraktrafikkurallarietkinligi.html" target="_blank" rel="noopener noreferrer">Yaya Olarak Trafik Kurallarına Uyarım</a></li></ul></details>
 <details class="course"><summary><span class="subjectIcon subject-OYN" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M17 24h30q8 0 11 13l2 11q1 8-7 8-4 0-9-7H20q-5 7-9 7-8 0-7-8l2-11q3-13 11-13z" fill="#AD92EF" stroke="#6453AD" stroke-width="3"/><path d="M16 37h14m-7-7v14" stroke="#F5F6FF" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="35" r="3.5" fill="#FFE9A1"/><circle cx="51" cy="42" r="3.5" fill="#74DBCA"/></svg></span> <strong>Oyunlar</strong> <small>4 etkinlik</small></summary><p class="hint linkReturnHint">Bağlantı açılınca çalışmanı yap. Bitirince bu sekmeye dön.</p><ul class="courseLinks"><li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/toplamaoyun.html" target="_blank" rel="noopener noreferrer">Uzaylı Toplama Macerası 2D 🚀</a></li>
 <li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/madenkasifi.html" target="_blank" rel="noopener noreferrer">Maden Kâşifi 💎</a></li><li><a href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/carpmakahramanlari.html" target="_blank" rel="noopener noreferrer">Çarpma Kahramanları</a></li><li><a id="recent-activity-carpmaordekvurma" href="https://ismailkaya33.github.io/4.SINIF/Oyunlar/carpmaordekvurma.html" target="_blank" rel="noopener noreferrer">Ördek Avcısı – Çarpım Tablosu Macerası 🦆</a></li></ul></details></div>
+<section id="anaKose" class="anaKose" aria-labelledby="anaKoseBaslik"><h3 id="anaKoseBaslik" class="anaKoseBaslik">🧭 Benim Köşem</h3>
+<details id="ilerlemePanel" class="progressCompact"><summary><span class="progressCompactName">📈 Benim İlerlemem</span><span class="progressCompactLabel">Tamamlanan çalışma</span><span class="progressCompactTrack" aria-hidden="true"><span id="ilerlemeBar" style="width:0%"></span></span><span class="progressCompactScore" id="ilerlemeOran" aria-label="Çalışma tamamlama oranı">–</span><span class="progressCompactChevron" aria-hidden="true">▾</span></summary><div class="progressCompactBody"><p id="ilerlemeDurum" role="status">İlerleme bilgileri yükleniyor. Bu bir not değildir; yalnızca kaydedilen çalışmaları gösterir.</p><div class="progressStats"><div><strong id="ilerlemeEtkinlik">–</strong><small>Tamamlanan etkinlik</small></div><div><strong id="ilerlemeDefter">–</strong><small>Yazılan defter notu</small></div><div><strong id="ilerlemeDeneme">–</strong><small>Tamamlanan deneme</small></div><div><strong id="ilerlemeDogru">–</strong><small>Doğru yanıt</small></div></div></div></details>
+<section id="yildizPanel" class="starsCard" aria-labelledby="yildiz-baslik" hidden><div class="starsHead"><h3 id="yildiz-baslik">🏆 Ayın Yıldızları</h3><div id="yildizAylar" class="starsMonths" role="group" aria-label="Ay seç"></div></div><p class="starsHint">Her ayın ilk üçü ve en çok gelişeni, istediği yemeği ısmarlama hakkı kazanır 🍽️</p><div id="yildizIcerik" class="starsGrid"></div></section>
+<details id="veliRaporPanel"class="progressCompact monthlyReport" hidden><summary><span class="progressCompactName">🌟 Aylık Davranış Raporum</span><span class="progressCompactLabel" id="veliRaporEtiket"></span><span class="monthlyReportBadge" id="veliRaporRozet"></span><span class="progressCompactChevron" aria-hidden="true">▾</span></summary><div class="progressCompactBody"><div id="veliRaporAylar" class="monthlyReportMonths" role="group" aria-label="Rapor ayı"></div><div id="veliRaporIcerik"></div></div></details>
+<section id="newContentPanel" class="newContentPanel" hidden>
+ <button id="newContentOpen" class="newContentSummary" type="button" aria-haspopup="dialog">✨ Yeni İçerikler <span>İçerikleri gör →</span></button>
+</section>
+<section class="examHome" aria-label="Deneme Sınavları">
+ <button id="denemeSinavlariBtn" type="button" aria-expanded="false" aria-controls="denemeSinavlariBilgi"><span>📝 Deneme Sınavları</span><span aria-hidden="true">→</span></button>
+ <p id="denemeSinavlariBilgi" class="examHint" hidden>Deneme sınavları yüklendiğinde burada yer alacak.</p>
+</section>
+</section>
 
 </div>
 <div id="oyunPanel" hidden><div id="oyunUst"><strong>🎮 Matematik • Kayıp Sayılar</strong><button id="oyundanDon" type="button">Portala Dön</button></div><iframe id="oyunCer" title="Matematik oyunu" referrerpolicy="no-referrer"></iframe><p id="oyunDurum" role="status"></p></div>
@@ -840,6 +907,7 @@ function etkinlikDurumlariniYenile(){
   badge.textContent=saved?"Sonuç kaydedildi":reported?"İşaretlendi — öğrenci bildirimi":opened?"Açıldı — henüz bildirilmedi":"Henüz kayıt yok";
   badge.setAttribute("aria-label",badge.textContent);
  });
+ anaYenile_();
  [["mat-kayipsayilar","oyunuAc"],["mat-oruntuler","oruntulerAc"]].forEach(([id,buttonId])=>{
   const button=document.getElementById(buttonId);if(!button)return;
   let badge=button.parentElement.querySelector(".activityStatus");
@@ -1072,6 +1140,7 @@ function icerikKatalogunuUygula_(k){
  });
  document.querySelectorAll('.courseSection[data-panel="degerlendirme"][data-ikili]').forEach(degerlendirmeleriYerlestir_);
  if(eklenen){seciliEtkinlikButonlariKur();seciliEtkinlikButonlariYenile();yeniIcerikleriGoster_();}
+ anaYenile_();
 }
 try{fetch(ICERIK_KATALOGU_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(icerikKatalogunuUygula_).catch(function(){});}catch(e){}
 const mevcutToken=sessionStorage.getItem(anahtarAdi);
@@ -1085,4 +1154,134 @@ if(mevcutToken){
   else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
 }
+
+/* ===== Yeni ana sayfa (V3): kısayollar, arama, ders süzgeci, "Bu Haftanın Etkinlikleri" =====
+ * Mevcut ders sayfalarını ve bağlantıları değiştirmez; onları bulup aynı düğmeye basar. Böylece takipli etkinlik
+ * yine portal içinde açılır, sonuç ve "bitirdim" bildirimi eskisi gibi çalışır.
+ * Haftanın listesi sitedeki bu-hafta.json dosyasından gelir (portal dalına dokunmadan haftalık değişir). */
+var anaHazir_=false,anaBuHafta_=null,anaSecili_="Tümü";
+const ANA_DERSLER_=[["Türkçe","TR"],["Matematik","MAT"],["Fen Bilimleri","FEN"],["Sosyal Bilgiler","SOS"],["İnsan Hakları","HAK"],["Trafik Güvenliği","TRF"],["Oyunlar","OYN"]];
+const BU_HAFTA_ADRESI_="https://ismailkaya33.github.io/4.SINIF/bu-hafta.json";
+function anaKisa_(ders){const d=ANA_DERSLER_.find(x=>x[0]===ders);return d?d[1]:"OYN"}
+function anaKucuk_(s){return String(s||"").toLocaleLowerCase("tr").replace(/ı/g,"i").normalize("NFD").replace(/[̀-ͯ]/g,"")}
+function anaAd_(el){const c=el.cloneNode(true);c.querySelectorAll(".newLight,.activityStatus").forEach(x=>x.remove());return c.textContent.replace(/\s+/g," ").trim()}
+function anaEl_(etiket,sinif,metin){const e=document.createElement(etiket);if(sinif)e.className=sinif;if(metin!=null)e.textContent=metin;return e}
+function anaIkon_(card){const svg=card&&card.querySelector("summary .subjectIcon svg");return svg?svg.cloneNode(true):anaEl_("span")}
+const ANA_SABIT_YOL_={oyunuAc:"test/kayipsayilar.html",oruntulerAc:"test/oruntuler.html"};
+const ANA_SABIT_KIMLIK_={oyunuAc:"mat-kayipsayilar",oruntulerAc:"mat-oruntuler"};
+function anaOgeler_(){
+ const out=[],gorulen=new Set();
+ dersKartlari.forEach(card=>{
+  const ders=card.querySelector("summary strong").textContent.trim();
+  card.querySelectorAll(".courseSection .courseLinks a[href], .courseSection .trackedLessonLink").forEach(el=>{
+   const yol=el.matches("a[href]")?siteYolu_(el.href):(ANA_SABIT_YOL_[el.id]||"");
+   const anahtar=yol||el.id;if(!anahtar||gorulen.has(anahtar))return;gorulen.add(anahtar);
+   const panel=el.closest(".courseSection"),tab=panel?panel.dataset.panel:"etkinlik";
+   const kimlik=resultTrackByPath[yol]||ANA_SABIT_KIMLIK_[el.id]||"";
+   out.push({el,card,ders,yol,tab,kimlik,ad:anaAd_(el),yeni:!!el.querySelector(".newLight"),degerlendirme:tab==="degerlendirme",
+    bitti:(!!kimlik&&kaydedilenEtkinlikler.has(kimlik))||bitirilenEtkinlikler.has(yol)});
+  });
+ });
+ return out;
+}
+function anaAc_(o){
+ if(o.kimlik){o.el.click();return}                 /* takipli: portal içinde açılır, sonuç öğretmene gider */
+ dersKartlari.forEach(c=>{if(c!==o.card){c.removeAttribute("open");c.classList.remove("activeLesson")}});
+ o.card.dataset.requestedTab=o.tab;
+ if(o.card.open)tabSec(o.card,o.tab);else o.card.open=true;   /* ders sayfası açılır; dönünce "bitirdim" düğmesi orada */
+ anaAramayiKapat_();
+ o.el.click();
+ setTimeout(function(){const li=o.el.closest("li");if(!li)return;li.scrollIntoView({block:"center"});li.classList.add("anaVurgu");setTimeout(function(){li.classList.remove("anaVurgu")},2500)},150);
+}
+function anaEtiketler_(o){
+ const k=anaEl_("div","anaEtiketler");
+ if(o.bitti)k.append(anaEl_("span","anaEtiket bitti","✓ Bitirdin"));
+ if(o.kimlik&&o.ders!=="Oyunlar")k.append(anaEl_("span","anaEtiket takip","⭐ Öğretmenim görür"));
+ if(o.yeni)k.append(anaEl_("span","anaEtiket yeni","Yeni"));
+ if(o.degerlendirme)k.append(anaEl_("span","anaEtiket","📝 Değerlendirme"));
+ return k;
+}
+function anaKart_(o){
+ const k=anaEl_("article","anaKart ders-"+anaKisa_(o.ders)+(o.bitti?" tamam":""));
+ const d=anaEl_("div","anaKartDers");d.append(anaIkon_(o.card),anaEl_("span","",o.ders));
+ const b=anaEl_("button","anaBasla",o.bitti?"Tekrar aç":"Başla →");b.type="button";b.setAttribute("aria-label",o.ad+" etkinliğini aç");
+ b.addEventListener("click",function(){anaAc_(o)});
+ k.append(d,anaEl_("h4","",o.ad),anaEtiketler_(o),b);
+ return k;
+}
+function anaHaftaCiz_(){
+ const kutu=document.getElementById("anaHafta"),h=anaBuHafta_;
+ if(!h||!Array.isArray(h.etkinlikler)){kutu.hidden=true;return}
+ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(h.bitis||""));
+ if(m&&Date.now()>new Date(+m[1],+m[2]-1,+m[3],23,59,59).getTime()){kutu.hidden=true;return}
+ const ogeler=anaOgeler_();
+ const secim=h.etkinlikler.slice(0,12).map(y=>ogeler.find(o=>o.yol===y)).filter(Boolean);
+ if(!secim.length){kutu.hidden=true;return}
+ document.getElementById("anaHaftaYazi").textContent=String(h.baslik||"").slice(0,60);
+ document.getElementById("anaHaftaSerit").replaceChildren(...secim.map(anaKart_));
+ kutu.hidden=false;
+}
+function anaFiltreleriCiz_(){
+ const kutu=document.getElementById("anaFiltreler");
+ kutu.replaceChildren(...[["Tümü",""]].concat(ANA_DERSLER_).map(([ad,kisa])=>{
+  const b=anaEl_("button",kisa?"ders-"+kisa:"",ad);b.type="button";b.dataset.ders=ad;b.setAttribute("aria-pressed",String(anaSecili_===ad));
+  b.addEventListener("click",function(){anaSecili_=ad;anaGuncelle_();});return b;
+ }));
+}
+function anaGuncelle_(){
+ const ara=document.getElementById("anaAra"),q=anaKucuk_(ara.value.trim());
+ document.getElementById("anaTemizle").hidden=!q;
+ document.querySelectorAll("#anaFiltreler button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.ders===anaSecili_)));
+ const liste=!!q||anaSecili_!=="Tümü";
+ document.body.classList.toggle("anaAramada",liste);
+ document.getElementById("anaSonuc").hidden=!liste;
+ if(!liste)return;
+ const sonuc=anaOgeler_().filter(o=>(anaSecili_==="Tümü"||o.ders===anaSecili_)&&(!q||anaKucuk_(o.ad+" "+o.ders).includes(q)));
+ document.getElementById("anaSonucBaslik").textContent=q?"“"+ara.value.trim().slice(0,40)+"” için sonuçlar":anaSecili_;
+ document.getElementById("anaSonucSay").textContent=sonuc.length+" etkinlik";
+ const ul=document.getElementById("anaSonucListe");
+ if(!sonuc.length){ul.replaceChildren(anaEl_("li","anaBos","Bu aramayla etkinlik bulamadım. 🙂 Başka bir kelime dene ya da “Tümü”ne dokun."));return}
+ ul.replaceChildren(...sonuc.map(o=>{
+  const li=anaEl_("li","anaSatir ders-"+anaKisa_(o.ders)),m=anaEl_("div","anaSatirMetin"),alt=anaEtiketler_(o);
+  alt.prepend(anaEl_("span","anaSatirDers",o.ders));m.append(anaEl_("div","anaSatirAd",o.ad),alt);
+  const b=anaEl_("button","","Aç");b.type="button";b.setAttribute("aria-label",o.ad+" etkinliğini aç");b.addEventListener("click",function(){anaAc_(o)});
+  li.append(anaIkon_(o.card),m,b);return li;
+ }));
+}
+function anaAramayiKapat_(){document.getElementById("anaAra").value="";anaSecili_="Tümü";anaGuncelle_();}
+/* Kısayollar: derslerin altına taşınan bölümlere götürür; o bölüm o an yoksa (ör. yıldız yüklenmediyse) düğme görünmez. */
+const ANA_KISAYOLLAR_=[
+ ["✨ Yeni İçerikler","newContentPanel",function(){document.getElementById("newContentDialog").showModal()}],
+ ["📈 İlerlemem","ilerlemePanel",function(e){e.open=true;return e}],
+ ["🏆 Ayın Yıldızları","yildizPanel",function(e){return e}],
+ ["📝 Deneme Sınavları","denemeSinavlariBtn",function(e){if(e.getAttribute("aria-expanded")!=="true")e.click();return e.closest("section")}],
+ ["🌟 Aylık Raporum","veliRaporPanel",function(e){e.open=true;return e}]
+];
+function anaKisayollariCiz_(){
+ const nav=document.getElementById("anaKisayollar");
+ nav.replaceChildren(...ANA_KISAYOLLAR_.map(([ad,id,git])=>{
+  const hedef=document.getElementById(id);if(!hedef||hedef.hidden||hedef.closest("[hidden]"))return null;
+  const b=anaEl_("button","",ad);b.type="button";
+  b.addEventListener("click",function(){anaAramayiKapat_();const yer=git(hedef);if(yer){yer.scrollIntoView({behavior:"smooth",block:"start"});yer.classList.add("anaVurgu");setTimeout(function(){yer.classList.remove("anaVurgu")},2000)}});
+  return b;
+ }).filter(Boolean));
+ nav.hidden=!nav.childElementCount;
+}
+function anaYenile_(){
+ if(!anaHazir_)return;
+ try{anaHaftaCiz_();if(document.body.classList.contains("anaAramada"))anaGuncelle_();}catch(e){}
+}
+(function anaKur_(){
+ try{
+  dersKartlari.forEach(card=>{const ad=card.querySelector("summary strong").textContent.trim();card.classList.add("ders-"+anaKisa_(ad));});
+  anaFiltreleriCiz_();anaKisayollariCiz_();
+  const izle=new MutationObserver(anaKisayollariCiz_);
+  ANA_KISAYOLLAR_.forEach(([,id])=>{const e=document.getElementById(id);if(e)izle.observe(e,{attributes:true,attributeFilter:["hidden"]});});
+  document.getElementById("anaAra").addEventListener("input",anaGuncelle_);
+  document.getElementById("anaTemizle").addEventListener("click",function(){anaAramayiKapat_();document.getElementById("anaAra").focus();});
+  document.getElementById("anaGeri").addEventListener("click",anaAramayiKapat_);
+  anaHazir_=true;
+  fetch(BU_HAFTA_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(function(j){anaBuHafta_=j;anaYenile_();}).catch(function(){});
+ }catch(e){/* ana sayfa kurulamazsa portal eskisi gibi çalışır */}
+})();
 </script></body></html>
