@@ -128,6 +128,11 @@ Tarayıcı yolu:
    düğmesi" der). Claude `İndirilenler`'deki en yeni resmi açıp doğrular, `Baski/<Ders>/` klasörüne ASCII adla
    kopyalar (`<konu>-boyama.png`). Ön izleme resmi (~700 px) baskı için yetersizdir, kullanılmaz.
 5. Claude resmi A4 HTML'e yerleştirir (gerekirse Ad/Tarih şeridi) ve Edge ile PDF basar. Teslim: PNG + PDF.
+- **Hazır istemler:** `Baski/istemler/boyama-posterleri.md` (Sosyal + Fen, yıl boyu, ORTAK BAŞ + konu İÇERİK) ve
+  `Baski/istemler/defter-notlari-*.md` (renkli defter notu stili). Yeni istem yazınca buraya eklenir.
+- Chrome'da ChatGPT'ye yazarken: yeni sohbet aç, kutuya **tıkla** (arka sekmede odak gelmez), tek paragraf yaz, Enter.
+  Birkaç istek ayrı sekmelerde aynı anda gönderilebilir. Sonucu görmek için resmi JS ile tam ekran kaplamaya koyup
+  `zoom` ile iki yarıda oku, sonra kaplamayı kaldır.
 - **ChatGPT** (`chatgpt.com`, öğretmenin Plus hesabı Chrome'da açık): aynı akış. 2026-11-12 karşılaştırmasında
   öğretmen ChatGPT çizimini daha iyi buldu → **önce ChatGPT**, Gemini yedek. İstem tek paragraf yazılır (Enter gönderir).
   ChatGPT resmi 1024×1536 verir (A4'te ~125 dpi, çizgi için yeterli).
