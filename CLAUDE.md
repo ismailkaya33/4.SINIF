@@ -17,6 +17,7 @@ Ayrı bir sohbet projesi kullanılmaz. Kurallar burada ve `.claude/skills/` alt�
 **Görsel üretimi** (boyama, poster, resimli not): Claude in Chrome ile öğretmenin ChatGPT Plus (yedek: Gemini Pro) hesabında çizdirilir,
 tam boyutlu resmi öğretmen indirir, Claude A4 PDF yapar (`node tools/gorsel-uret.mjs --pdf-yap`). API anahtarı
 (`GEMİNİ_API_KEY`) kurulu ama faturalandırma yok → araçla doğrudan çizim kapalı. Ayrıntı: `4d-icerik-uret` 4.2.
+Tarz: boyama sayfası gibi değil, olgun görünüm; konuya göre **el yazısı defter** ya da **sketchnote** (Claude seçer).
 
 Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yillik-plan-oku.mjs` → `YillikPlan/yillik-plan.json`.
 

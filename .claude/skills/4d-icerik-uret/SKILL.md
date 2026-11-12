@@ -97,7 +97,26 @@ node tools/gorsel-uret.mjs --istem <istem.txt> --cikti Baski/<Ders>/<konu>-boyam
 İstem dosyası scratchpad'e yazılır. Örnek resim verilirse (öğretmenin attığı örnek ya da düzeltilecek önceki çıktı)
 `--ornek` ile eklenir; düzeltmede istem "bu resimde yalnız şunu değiştir: …" diye yazılır. Model hatasında
 `--modeller` ile güncel görsel modeli bulunur, `--model` ile verilir. Yedek: `--saglayici openai` (`OPENAI_API_KEY`).
-Çıktı resmi Claude açıp (Read) bölüm 3'teki gibi kontrol eder. Tarayıcı yolu:
+Çıktı resmi Claude açıp (Read) bölüm 3'teki gibi kontrol eder.
+
+**Görsel tarz (öğretmenin kararı, 2026-11-12):** Resimli defter notu, poster ve resimli çalışma kâğıdı **boyama sayfası
+gibi olmaz**: kalın siyah dış çizgi, büyük sevimli çizgi film karakteri ve aşırı süs yok. Konu 4. sınıf düzeyinde kalır
+ama görünüm olgun ve düzenlidir (10–13 yaş). İki tarzdan biri kullanılır; hangisi olacağına konuya göre Claude karar
+verir ve öğretmene hangisini seçtiğini bir cümleyle söyler:
+- **El yazısı defter** (işlem, kural, adım adım çözüm ağırlıklı konular: Matematik işlemleri, yazım/noktalama, dil
+  bilgisi). İstemin tarz kısmı: "kareli defter sayfası üzerine öğrencinin kendi el yazısıyla tuttuğu düzenli ders notu
+  (bullet journal), koyu mavi tükenmez kalem yazısı, önemli kelimelerin altında sarı ve pembe fosforlu kalem vurgusu,
+  başlığın üstünde yarı saydam yeşil washi bant, kenarlarda küçük el çizimi oklar ve kesik çizgili not kutusu; karakter
+  yok, temiz illüstrasyon."
+- **Sketchnote** (kavram, süreç, ilişki ağırlıklı konular: Fen, Sosyal, İnsan Hakları, Trafik, metin türleri, kavram
+  haritası). İstemin tarz kısmı: "sketchnote (görsel not) tarzı, beyaz zemin üzerinde ince siyah kalem çizgileri, yalnız
+  sarı ve mavi iki vurgu rengi, el çizimi düzensiz çerçeveler ve konuşma bulutları, kıvrımlı oklar, küçük fikir çizimleri
+  (ampul, büyüteç, konuyla ilgili nesne), el yazısı görünümlü ama okunaklı yazı; sevimli karakter yok."
+- Her istemde ayrıca: "Hedef kitle 10–13 yaş: görünüm olgun, düzenli ve okunaklı olsun; boyama sayfası gibi kalın siyah
+  dış çizgiler, büyük sevimli çizgi film karakterleri ve aşırı süs olmasın."
+- Öğretmen açıkça **boyama sayfası** isterse yalnız o iş için aşağıdaki boyama tarifi kullanılır.
+
+Tarayıcı yolu:
 1. **Claude in Chrome** ile yeni sekmede `gemini.google.com/app` açılır (öğretmenin hesabı Chrome'da açık; Claude
    giriş yapmaz, şifre girmez). Giriş yoksa öğretmenden girmesini iste.
 2. İstem Claude tarafından Türkçe ve ayrıntılı yazılır: "Bir görsel oluştur:" + sınıf düzeyi + biçim (A4 dikey;
