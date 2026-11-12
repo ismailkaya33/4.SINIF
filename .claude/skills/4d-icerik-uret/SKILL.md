@@ -83,6 +83,40 @@ gri düğmeden oluşan "sade" ekran kabul edilmez. Görsel, öğrenmeyi destekle
 - Bu bölüm **baskı materyaline uygulanmaz** (defter notu, çalışma kâğıdı, ev ödevi az mürekkepli kalır; ama küçük
   siyah-beyaz çizim ve simge eklenebilir).
 
+## 4.2 Resimli materyal: Gemini ile çizim (öğretmenin kararı, 2026-11-12)
+Claude kodla (SVG) ancak basit çizim yapar. **Boyama sayfası, poster, resimli defter notu gibi illüstrasyon kalitesi
+gereken işlerde resmi yapay zekâ çizer**; Claude istemi yazar, kontrol eder, sayfaya yerleştirir.
+**Varsayılan yol: Chrome'daki Gemini (aşağıda 1–5).** Öğretmenin kararı (2026-11-12): API ücretsiz katmanında resim
+modelleri kapalı (limit 0), faturalandırma açılmadı; tam boyutlu resmi öğretmen kendisi indirir ve `İndirilenler`
+klasörüne düşer — Claude oradan `Baski/<Ders>/` klasörüne ASCII adla kopyalar, PDF'i `--pdf-yap` ile basar:
+`node tools/gorsel-uret.mjs --pdf-yap Baski/<Ders>/<konu>-boyama.png --adtarih`.
+**Araç yolu (yalnız faturalandırma açılırsa):** `GEMINI_API_KEY` (Türkçe klavyede `GEMİNİ_API_KEY` de olur) ile:
+```
+node tools/gorsel-uret.mjs --istem <istem.txt> --cikti Baski/<Ders>/<konu>-boyama.png --pdf [--adtarih] [--ornek ornek.png]
+```
+İstem dosyası scratchpad'e yazılır. Örnek resim verilirse (öğretmenin attığı örnek ya da düzeltilecek önceki çıktı)
+`--ornek` ile eklenir; düzeltmede istem "bu resimde yalnız şunu değiştir: …" diye yazılır. Model hatasında
+`--modeller` ile güncel görsel modeli bulunur, `--model` ile verilir. Yedek: `--saglayici openai` (`OPENAI_API_KEY`).
+Çıktı resmi Claude açıp (Read) bölüm 3'teki gibi kontrol eder. Tarayıcı yolu:
+1. **Claude in Chrome** ile yeni sekmede `gemini.google.com/app` açılır (öğretmenin hesabı Chrome'da açık; Claude
+   giriş yapmaz, şifre girmez). Giriş yoksa öğretmenden girmesini iste.
+2. İstem Claude tarafından Türkçe ve ayrıntılı yazılır: "Bir görsel oluştur:" + sınıf düzeyi + biçim (A4 dikey;
+   boyama ise "yalnız kalın siyah dış çizgi, beyaz zemin, renk/gri/gölge yok, büyük boyama alanları") + başlık ve her
+   kartın adı/sahnesi + "tüm yazılar doğru Türkçe karakterlerle". Kazanıma bağlı içerik planı istemden önce yapılır.
+3. Sonuç ekranda kontrol edilir: Türkçe yazım (İ/ı, ş, ğ), eksik/yanlış kart, korkutucu veya uygunsuz öğe. Hata
+   varsa aynı sohbette düzeltme istenir (en fazla 2–3 tur), sonra öğretmene gösterilir.
+4. Tam boyutlu resmi **öğretmen indirir** (Claude indirme düğmesine basmaz; öğretmene "resmin üstündeki indirme
+   düğmesi" der). Claude `İndirilenler`'deki en yeni resmi açıp doğrular, `Baski/<Ders>/` klasörüne ASCII adla
+   kopyalar (`<konu>-boyama.png`). Ön izleme resmi (~700 px) baskı için yetersizdir, kullanılmaz.
+5. Claude resmi A4 HTML'e yerleştirir (gerekirse Ad/Tarih şeridi) ve Edge ile PDF basar. Teslim: PNG + PDF.
+- **ChatGPT** (`chatgpt.com`, öğretmenin Plus hesabı Chrome'da açık): aynı akış. 2026-11-12 karşılaştırmasında
+  öğretmen ChatGPT çizimini daha iyi buldu → **önce ChatGPT**, Gemini yedek. İstem tek paragraf yazılır (Enter gönderir).
+  ChatGPT resmi 1024×1536 verir (A4'te ~125 dpi, çizgi için yeterli).
+- Gerçek kişi, marka, çizgi film karakteri veya kitap sayfası taklidi istenmez; Atatürk/tarihî kişi resmi çizdirilmez
+  (öğretmenin verdiği görsel kullanılır).
+- Etkileşimli HTML etkinliklerde görseller yine dosyaya gömülü olur; Gemini resmi gömülecekse küçültülüp
+  (WebP/PNG, birkaç yüz KB) `data:` olarak eklenir.
+
 ## 5. Öğretmene sonuç (portal bağlantısı)
 Öğrenciler 6 haneli kodla portala girer; etkinlik portalın içinde açılınca sonuç öğretmen paneline kendiliğinden gider. **EKR1 kodu, öğrencinin kod kopyalaması ve ayrı öğretmen paneli YOKTUR.**
 - `assets/rapor_motoru.js` (v2) etkinliğe gömülür: `python -I scripts/birlestir.py kaynak.html cikti.html`.
