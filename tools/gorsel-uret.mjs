@@ -13,6 +13,8 @@
 //   --pdf                       ayrıca aynı adla A4 PDF basar (Edge ile)
 //   --adtarih                   PDF'in üstüne "Ad / Tarih" şeridi ekler
 //   --modeller                  bu anahtarla kullanılabilen görsel modellerini listeler
+//   --pdf-yap resim.png [--adtarih]   hazır resimden A4 PDF (anahtar gerekmez)
+//   --ikili yarim.png                 yarım sayfa resmi A4'e alt alta 2 kopya + makaslı kesik çizgi (yapıştırmalık)
 //
 // Anahtar: Windows ortam değişkeni GEMINI_API_KEY (ya da OPENAI_API_KEY). Anahtar depoya YAZILMAZ,
 // ekrana basılmaz. Uygulama yeniden başlatılmadıysa kullanıcı kaydından (HKCU\Environment) okunur.
@@ -134,10 +136,30 @@ export function a4Pdf(resim, pdf, adTarih) {
   } finally { fs.rmSync(gecici, { force: true }); }
 }
 
+// Yapıştırmalık: yarım sayfalık (yatay) resmi A4 dikeye alt alta 2 kopya dizer, araya makaslı kesik çizgi.
+export function a4Ikili(resim, pdf) {
+  const src = pathToFileURL(path.resolve(resim)).href;
+  const kutu = `<div class="k"><img src="${src}"></div>`;
+  const html = `<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><style>
+@page{size:A4 portrait;margin:6mm}html,body{margin:0}
+.s{width:198mm;height:285mm;display:flex;flex-direction:column}
+.k{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}.k img{max-width:100%;max-height:100%;object-fit:contain}
+.c{height:7mm;display:flex;align-items:center;gap:2mm;font-size:13pt}.c i{flex:1;border-top:1.2px dashed #555}
+</style></head><body><div class="s">${kutu}<div class="c">✂<i></i></div>${kutu}</div></body></html>`;
+  const gecici = path.resolve(pdf).replace(/\.pdf$/i, '') + '.tmp.html';
+  fs.writeFileSync(gecici, html);
+  try {
+    execFileSync(edgeYolu(), ['--headless', '--disable-gpu', '--no-pdf-header-footer', '--print-to-pdf=' + path.resolve(pdf), pathToFileURL(gecici).href], { stdio: 'ignore' });
+  } finally { fs.rmSync(gecici, { force: true }); }
+}
+
 // ---------------- Ana akış ----------------
 async function ana() {
   const saglayici = (arg('saglayici') || 'gemini').toLowerCase();
   if (bayrak('modeller')) return saglayici === 'gemini' ? geminiModeller() : dur('--modeller yalnız Gemini için.');
+
+  const ikili = arg('ikili');                   // yarım sayfa resmi A4'e 2 kopya: --ikili yarim.png → yarim-ikili.pdf
+  if (ikili) { const p = ikili.replace(/(-yarim)?\.[a-z]+$/i, '') + '-ikili.pdf'; a4Ikili(ikili, p); return console.log('PDF: ' + p); }
 
   const pdfTek = arg('pdf-yap');                // yalnız var olan resimden PDF: --pdf-yap resim.png
   if (pdfTek) { const p = pdfTek.replace(/\.[a-z]+$/i, '.pdf'); a4Pdf(pdfTek, p, bayrak('adtarih')); return console.log('PDF: ' + p); }

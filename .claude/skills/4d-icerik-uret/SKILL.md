@@ -155,6 +155,28 @@ Tarayıcı yolu:
 ## 6. Diğer çıktılar
 - **Defter notu / çalışma kâğıdı / ev ödevi / ölçme / sunum:** `references/egitim-icerik-standartlari.md` bölüm 4–6'ya uy (A4, az mürekkep; cevap anahtarı ayrı; kazanım–soru eşleşme tablosu; slaytta tek kavram).
 - Defter notu görselleri `<Ders>/DefterNotlari/` altına gider; portal defter listesi ayrıca güncellenir (portal dalı).
+
+### 6.1 Defter notu tasarımı — İKİ PARÇA (öğretmenin kuralı, 2026-11-12)
+Örnekler: `Baski/ornekler/defter-notu-stili/` (yalnız bu bilgisayarda; başka öğretmenin işi, depoya/yayına konmaz,
+filigranı ve metni kopyalanmaz — yalnız düzen ve tarz örneğidir). Her defter notu iki parçadan oluşur:
+1. **Not sayfası (renkli, A4 dikey, portala gider):** spiral telli defter sayfası (çizgili ya da kareli zemin, solda kırmızı
+   kenar çizgisi); üstte renkli balon/şerit içinde büyük kırmızı başlık; tanım cümlesi kırmızı madde imiyle, anahtar kelime
+   kırmızı-kalın; pembe hap etiketli ara başlıklar ("… Özellikleri:", "Örnekler:"); maddeler mavi yazı; altta kesik pembe
+   çerçeveli **örnek ızgarası** (genelde 2×3 kart: başlık hapı + sevimli renkli çizim + "Anlamı:"/"Cümle:" ya da konuya
+   uygun etiketler) veya kocaman renkli bir özet sahnesi (konuşma balonlu çocuklar, simge kartları).
+   **Yazı tipi:** çocuk el yazısına benzeyen, yuvarlak, dik, bitişik olmayan, çok okunaklı okul yazısı; başlıklar kalın
+   ve büyük. Renkler: başlık kırmızı, metin lacivert/mavi, etiketler sarı-yeşil-pembe pastel haplar.
+2. **Yapıştırmalık sayfa (A4, çıktı alınır, deftere yapıştırılır; portala gitmez):** not sayfasının görsel bölümü
+   (örnek ızgarası ya da özet sahnesi) **yarım A4 yatay** olarak çizilir ve A4'e **alt alta 2 kopya** yerleşir, araya
+   makas simgeli kesik çizgi. Varsayılan **siyah-beyaz boyama** sürümü (aynı çizim, yalnız kalın dış çizgi, içi beyaz;
+   yazılar aynen); istenirse renkli sürüm de. Yarım sayfa resmi Claude A4'e 2'li dizer:
+   `node tools/gorsel-uret.mjs --ikili Baski/<Ders>/<ad>-yarim.png` (çıktı: `<ad>-ikili.pdf`).
+- Üretim: ChatGPT (Chrome). Önce not sayfası; **aynı sohbette** "görsel bölümünü yarım A4 yatay, siyah-beyaz boyama
+  olarak yeniden çiz" denir ki çizimler birebir aynı kalsın. Stil için `Baski/ornekler/defter-notu-stili/01-deyimler-not.jpg`
+  istemle birlikte yüklenebilir ("yalnız düzen ve tarz örneği; yazı, filigran ve kişi kopyalanmaz").
+- Filigran, kullanıcı adı, sosyal medya etiketi, logo **eklenmez**. Gerçek kurum logosu (Yeşilay vb.) çizdirilmez; adı yazıyla geçer.
+- Hazır istem: `Baski/istemler/defter-notu-iki-parca.md`. Eski tek sayfalık defter notu tarzı (`defter-notlari-10-hafta.md`)
+  bu kuraldan önce yapıldı; yeni notlar bu kurala göre yapılır.
 - **Çıktı alınacak materyal (ev ödevi, sınıf içi etkinlik kâğıdı, çalışma kâğıdı, ölçme kâğıdı) siteye/portala gönderilmez
   ve gönderilsin mi diye sorulmaz** (öğretmenin kararı: PDF'i basıp dağıtıyor). Öğretmen açıkça isterse gönderilir.
   Bu dosyalar ders klasörüne değil `Baski/<Ders>/` klasörüne konur (yalnızca bu bilgisayarda; `.git/info/exclude` ile
