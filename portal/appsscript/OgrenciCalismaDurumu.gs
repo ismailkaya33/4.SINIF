@@ -1,6 +1,6 @@
 /** 4/D - Defter notu tamamlandi bildirimi; kullanicinin kimligi oturumdan gelir. */
 const DEFTER_NOTLARI_ = Object.freeze({
- 'Turkce':['atasozleri.png','deyimler.png','gercekmecaz.png','ikilemeler.jpeg','metninbolumleri.png','pekistirme.JPG'],
+ 'Turkce':['atasozleri.png','deyimler.png','gercekmecaz.png','ikilemeler.jpeg','metninbolumleri.png','pekistirme.JPG','ozdeyisler.png'],
  'Matematik':['cikarmadaverilmeyen.png','cikarmadefternotu.png','toplama.png','toplamacikarmaproblemleri.png','zihindencikarma.png','zihindentoplama.png'],
  'Fen':['besinler1.png','besinler2.png','besinler3.png','besinlerintazeligi.png','besinlerisaklama.png','hareketliyasam.png','dengelibeslenme.png'],
  'Sosyal':['ailemcocuk.jpg','ailetarihi.png','cocukoyun.png','farkliliklarimizvesaygi.png','mersinkultur.png','millikultur.png','millimucadele1.png','millimucadele2.png','millimucadele3.png','millimucadele4.png','millimucadele5.png','millimucadele6.png','millimucadele7.png']
