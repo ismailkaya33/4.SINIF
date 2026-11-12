@@ -69,6 +69,8 @@
     {"yol":"Sosyal/konumkasifi.html","ad":"Konum Kâşifi: Yönler ve Yer Tarifi","ders":"Sosyal Bilgiler","eklenme":"2026-11-10","gizli":false},
     {"yol":"Turkce/tur-atasozu-deyim-sinav.html","ad":"Konu Değerlendirme: Atasözleri ve Deyimler","ders":"Türkçe","eklenme":"2026-11-10","gizli":false,"degerlendirme":"konu"},
     {"yol":"Turkce/cikarimbaslik.html","ad":"Metin Dedektifi: Çıkarım ve Başlık","ders":"Türkçe","eklenme":"2026-11-10","gizli":false},
-    {"yol":"Trafik/oyunaraclari.html","ad":"Güvenli Sürüş: Oyun Araçları","ders":"Trafik Güvenliği","eklenme":"2026-11-10","gizli":false}
+    {"yol":"Trafik/oyunaraclari.html","ad":"Güvenli Sürüş: Oyun Araçları","ders":"Trafik Güvenliği","eklenme":"2026-11-10","gizli":false},
+    {"yol":"Sosyal/sos-gecmistebiz-sinav.html","ad":"Ünite Değerlendirme: Geçmişte Biz","ders":"Sosyal Bilgiler","eklenme":"2026-11-12","gizli":true,"degerlendirme":"unite"},
+    {"yol":"Turkce/kantindedektifi.html","ad":"Kantin Dedektifi: Tablo, Grafik ve Çizelge Okuma","ders":"Türkçe","eklenme":"2026-11-12","gizli":false}
   ]
 }
