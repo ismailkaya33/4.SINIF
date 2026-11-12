@@ -1,6 +1,6 @@
 ---
 name: 4d-haftalik-hatirlatma
-description: 4/D sınıfı için yıllık plana göre bu hafta ve sıradaki hafta hangi konuların işleneceğini çıkarıp portalda (etkinlik, defter notu) neyin eksik olduğunu hatırlatmak için kullan. "Bu hafta ne hazırlayalım?", "sıradaki konu ne?", "haftalık hatırlatma", "eksik etkinlik/defter notu var mı?" gibi isteklerde ve haftalık zamanlanmış görevde çalışır.
+description: 4/D sınıfı için yıllık plana göre bu hafta ve sıradaki hafta hangi konuların işleneceğini çıkarıp portalda (etkinlik, defter notu) neyin eksik olduğunu hatırlatmak ve portal ana sayfasındaki "Bu Haftanın Etkinlikleri" listesini (bu-hafta.json) güncellemek için kullan. "Bu hafta ne hazırlayalım?", "sıradaki konu ne?", "haftalık hatırlatma", "eksik etkinlik/defter notu var mı?" gibi isteklerde ve haftalık zamanlanmış görevde çalışır.
 ---
 
 # 4/D — Haftalık hatırlatma
@@ -45,6 +45,16 @@ Hazır olanlar: kısaca tek satırda.
 Sonunda tek soru: "Hangisini hazırlayayım?" Öğretmen seçerse `4d-icerik-uret` skill'iyle üret.
 Baskı materyali (ev ödevi, çalışma kâğıdı) önerme/sorma; yalnız etkinlik ve defter notu.
 
-## 4. Zamanlanmış görevde
+## 4. "Bu Haftanın Etkinlikleri" şeridini güncelle (`bu-hafta.json`)
+Öğrenci portalı ana sayfasındaki şerit, `main` dalındaki `bu-hafta.json` dosyasından okunur (portal dalına dokunmaz).
+1. Dosyayı oku. `bitis` tarihi geçtiyse ya da bu/sıradaki hafta değiştiyse güncelleme öner.
+2. Yeni liste: 2. adımda ✅/🟡 çıkan, **portalda var olan** etkinliklerin site yolları (`icerik-katalogu.json`'daki `yol`,
+   `gizli: true` olanlar hariç), ders başına 1–2, toplam en çok 12. Oyunlar klasörü girmez. Etkinliği olmayan dersi atla.
+3. `baslik`: "10. hafta • 23–27 Kasım" biçimi (iki hafta birlikteyse "9–10. hafta • 2–27 Kasım").
+   `bitis`: o haftanın son okul günü (YYYY-AA-GG); bu tarihten sonra şerit kendiliğinden gizlenir.
+4. Öğretmene listeyi ad olarak göster ("Türkçe – Kantin Dedektifi" …), onay alınca `main`'e gönder.
+   GitHub Pages birkaç dakikada yayınlar; portalı yeniden yayınlamak gerekmez.
+
+## 5. Zamanlanmış görevde
 Görev kendiliğinden çalıştıysa hiçbir şey üretme, gönderme (push) yapma; yalnız listeyi hazırla ve bildirim gönder.
-Ana dalda (`main`) kal, dosya değiştirme.
+`bu-hafta.json` için önerilen yeni listeyi bildirime ekle ama dosyayı değiştirme. Ana dalda (`main`) kal, dosya değiştirme.
