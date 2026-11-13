@@ -11,7 +11,7 @@
 html,body{min-height:100%}
 body{margin:0;color:var(--yazi);font:18px/1.45 system-ui,"Segoe UI",Roboto,Arial,sans-serif;
   background:linear-gradient(180deg,var(--gok1) 0%,var(--gok2) 70%) fixed;background-color:var(--gok2);overflow-x:hidden}
-#app{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:12px 16px 110px}
+#app{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:12px 16px 110px}
 .dekor{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .dekor .bulut{position:absolute;opacity:.85}
 .dekor .dalga{position:absolute;left:0;bottom:0;width:100%;height:90px}
@@ -33,21 +33,26 @@ button:focus-visible{outline:4px solid #ffd166;outline-offset:3px}
 .puan.pop{animation:pop .4s}
 .ses{background:#fff;border:0;border-radius:50%;width:48px;height:48px;font-size:1.3rem;box-shadow:0 3px 0 rgba(0,0,0,.1)}
 .yol{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:10px 0 0;padding:8px 12px;background:#fff9;border-radius:18px}
-.durak{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:.85rem;font-weight:800;background:#fff;color:var(--soluk);border:3px dashed #b9c3d6}
+.durak{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:800;background:#fff;color:var(--soluk);border:3px dashed #b9c3d6}
 .durak.simdi{border:3px solid var(--ana);color:var(--ana);transform:scale(1.18)}
-.durak.yildiz,.durak.yarim,.durak.ogrendi{border:3px solid transparent;font-size:1.05rem}
+.durak.yildiz,.durak.yarim,.durak.ogrendi{border:3px solid transparent;font-size:.95rem}
 .durak.yildiz{background:#fff3c4}.durak.yarim{background:#e2f7f4}.durak.ogrendi{background:#e8ecff}
-.cizgi{flex:1 1 6px;min-width:6px;max-width:22px;height:4px;border-radius:2px;background:#b9c3d6}
-.durak.son{width:42px;height:42px;font-size:1.4rem;border:3px solid #ffd166;background:#fff8e1}
+.durak.tkr{border-color:#7b5cff}
+.cizgi{flex:1 1 4px;min-width:4px;max-width:18px;height:4px;border-radius:2px;background:#b9c3d6}
+.cizgi.dosya{background:var(--ana);height:6px}
+.durak.son{width:40px;height:40px;font-size:1.3rem;border:3px solid #ffd166;background:#fff8e1}
 /* Soru kartı */
 .etiket{display:inline-block;background:var(--ikinci);color:#fff;font-weight:800;border-radius:999px;padding:2px 12px;font-size:.9rem}
-.gorsel{display:flex;justify-content:center;margin:10px 0 2px}
-.emoji-gorsel{font-size:clamp(2rem,7vw,3rem);line-height:1.2;text-align:center}
-.soru{font-size:clamp(1.35rem,4vw,1.75rem);font-weight:800;margin:10px 0 14px;text-align:center}
+.etiket.dosya{background:#3d405b;margin-left:6px}
+.etiket.tkr{background:#7b5cff}
+.gorsel{display:flex;justify-content:center;margin:12px 0 2px}
+.soru{font-size:clamp(1.25rem,3.6vw,1.6rem);font-weight:800;margin:12px 0 14px;text-align:center}
 .sec{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sec.uzun{grid-template-columns:1fr}
+.sec.uzun button{font-size:1.1rem;min-height:56px}
 @media (max-width:460px){.sec{grid-template-columns:1fr}}
 .sec button{position:relative;min-height:64px;border-radius:18px;border:3px solid var(--c);background:var(--z);font-size:1.3rem;font-weight:800;
-  padding:8px 12px 8px 52px;text-align:left;box-shadow:0 5px 0 var(--c)}
+  padding:8px 44px 8px 52px;text-align:left;box-shadow:0 5px 0 var(--c)}
 .sec button:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--c)}
 .sec button:nth-child(1){--c:#ff8a5c;--z:#fff0e9}.sec button:nth-child(2){--c:#2ec4b6;--z:#e4f8f6}
 .sec button:nth-child(3){--c:#f4a300;--z:#fff6dc}.sec button:nth-child(4){--c:#7b5cff;--z:#efeaff}
@@ -72,25 +77,45 @@ button:focus-visible{outline:4px solid #ffd166;outline-offset:3px}
 .balon::before{content:"";position:absolute;left:-14px;bottom:16px;border:9px solid transparent;border-right:14px solid #fff;border-left:0}
 .balon.mutlu{border-color:#bfead2}.balon.uzgun{border-color:#ffd3cc}.balon.dusun{border-color:#ffe7a3}
 .devam-yer{text-align:center}
+/* Başlık ekranı dosya listesi */
+.dosyalar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:12px 0}
+.dosyalar div{background:#fff7ef;border:2px dashed #f0c9a8;border-radius:14px;padding:8px;text-align:center;font-weight:700;font-size:.95rem}
+.dosyalar b{display:block;font-size:1.6rem}
 /* Bitiş */
 .bitis{text-align:center}
 .rozet{width:130px;height:auto}
 .rozet-ad{font-weight:800;font-size:1.25rem;margin-top:-4px}
-.yildizlar{font-size:1.8rem;letter-spacing:4px;margin:6px 0}
+.yildizlar{font-size:1.6rem;letter-spacing:3px;margin:6px 0}
 #karne .rm{padding:4px 0;text-align:left}
 #karne .rm h2{font-family:"Trebuchet MS",system-ui,sans-serif;text-align:center}
 #karne .rm-k{border:0;background:#f5f8ff;border-radius:16px}
 #karne .rm-bar{height:18px;border-radius:10px}
-.gizli-yazi{position:absolute;left:-9999px}
 /* Tablo / çizelge görselleri */
-.vt{width:100%;max-width:520px}
-.vt caption{font-weight:800;font-size:1.05rem;margin-bottom:6px}
+.vt{width:100%;max-width:640px;overflow-x:auto}
 .vt table{width:100%;border-collapse:separate;border-spacing:0;border-radius:16px;overflow:hidden;box-shadow:0 4px 0 rgba(31,42,68,.12)}
-.vt th,.vt td{padding:8px 10px;text-align:center;font-size:1.1rem;border-bottom:2px solid #f1e3d3}
-.vt th{background:var(--ikinci);color:#fff}
-.vt tr:nth-child(even) td{background:#fff7ef}.vt tr:nth-child(odd) td{background:#fff}
-.vt td:first-child{font-weight:800;text-align:left}
-.vt .birim{font-size:.95rem;color:var(--soluk);margin-top:6px;text-align:center;font-weight:700}
+.vt caption{font-weight:800;font-size:1.05rem;margin-bottom:6px}
+.vt th,.vt td{padding:8px 10px;text-align:center;font-size:1.08rem;border-bottom:2px solid #f1e3d3}
+.vt thead th{background:var(--ikinci);color:#fff}
+.vt tbody tr:nth-child(even) td,.vt tbody tr:nth-child(even) th{background:#fff7ef}
+.vt tbody tr:nth-child(odd) td,.vt tbody tr:nth-child(odd) th{background:#fff}
+.vt tbody th{font-weight:800;text-align:left;color:var(--yazi)}
+.vt .not{font-size:.95rem;color:var(--soluk);margin-top:6px;text-align:center;font-weight:700}
+.sinif{display:inline-block;min-width:3em;border-radius:999px;padding:2px 8px;font-weight:800;color:#fff}
+.vt small{display:block;font-weight:600;color:var(--soluk);font-size:.8rem}
+.vt .kisa{display:none}
+@media (max-width:520px){.vt th,.vt td{padding:6px 3px;font-size:.92rem}.sinif{min-width:0;padding:1px 4px;font-size:.85rem}
+  .vt .kisa{display:inline}.vt .uzunad{display:none}}
+/* Fiyat tahtası */
+.fiyat{width:100%;max-width:380px;background:#2f5d50;border:10px solid #b07a4f;border-radius:16px;padding:12px 18px;color:#f8f4e3;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.fiyat-bas{text-align:center;font-weight:800;font-size:1.2rem;margin-bottom:6px;font-family:"Trebuchet MS",sans-serif}
+.fiyat-s{display:flex;align-items:baseline;gap:6px;font-size:1.15rem;font-weight:700;padding:3px 0}
+.fiyat-s i{flex:1;border-bottom:3px dotted #f8f4e3aa;transform:translateY(-4px)}
+/* Grafik seç */
+.gsec{width:100%;max-width:640px}
+.gsec .izgara{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.gsec .mini{background:#fff;border:3px solid #eadfd3;border-radius:14px;padding:4px}
+.gsec .mini b{display:block;text-align:center;font-size:1.2rem}
+.gsec .mini svg{width:100%;height:auto;display:block}
 /* Hareketler (her biri 1 saniyeden kısa; az hareket tercihinde kapanır) */
 @media (prefers-reduced-motion:no-preference){
   .krk.zipla svg{animation:zipla .6s}
@@ -109,7 +134,7 @@ button:focus-visible{outline:4px solid #ffd166;outline-offset:3px}
 <div class="dekor" aria-hidden="true">
   <svg class="bulut" style="top:4%;left:-2%;width:170px" viewBox="0 0 170 60"><g fill="#fff"><ellipse cx="50" cy="38" rx="45" ry="20"/><ellipse cx="90" cy="28" rx="40" ry="26"/><ellipse cx="128" cy="40" rx="38" ry="18"/></g></svg>
   <svg class="bulut" style="top:12%;right:-3%;width:140px" viewBox="0 0 170 60"><g fill="#fff"><ellipse cx="50" cy="38" rx="45" ry="20"/><ellipse cx="90" cy="28" rx="40" ry="26"/><ellipse cx="128" cy="40" rx="38" ry="18"/></g></svg>
-  <svg class="dalga" viewBox="0 0 1200 90" preserveAspectRatio="none"><path d="M0 40 Q150 10 300 40 T600 40 T900 40 T1200 40 V90 H0Z" fill="#4cc9f0" opacity=".35"/><path d="M0 60 Q150 35 300 60 T600 60 T900 60 T1200 60 V90 H0Z" fill="#4cc9f0" opacity=".45"/></svg>
+  <svg class="dalga" viewBox="0 0 1200 90" preserveAspectRatio="none"><path d="M0 40 Q150 10 300 40 T600 40 T900 40 T1200 40 V90 H0Z" fill="#f4a261" opacity=".30"/><path d="M0 60 Q150 35 300 60 T600 60 T900 60 T1200 60 V90 H0Z" fill="#e76f51" opacity=".30"/></svg>
 </div>
 <canvas id="konfeti" aria-hidden="true"></canvas>
 <div id="app"></div>
@@ -245,99 +270,154 @@ const RaporMotoru = (() => {
 'use strict';
 /* ===== VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda) ===== */
 const OYUN = {
-  /* id: portal kayıt listesindeki (portal/etkinlik-kayitlari.json) kimlikle aynı olmalı, ör. "mat-yuvarlama" */
+  /* id: portal kayıt listesindeki (portal/etkinlik-kayitlari.json) kimlikle aynı olmalı — DEĞİŞTİRME */
   id: 'tur-tablo-grafik', ad: 'Kantin Dedektifi: Tablo, Grafik ve Çizelge',
   tema: {
     ad: 'Kantin Dedektifi', karakterAdi: 'Dedektif Pati',
-    hikaye: 'Okul kantininde bilgiler karıştı! İpuçları tabloların, grafiklerin ve çizelgelerin içinde saklı. Her doğru cevap sana bir büyüteç kazandırır. Davayı birlikte çözelim mi?',
-    odulSimge: '🔍', odulAd: 'büyüteç', sonSimge: '🏅',
-    bitisBaslik: 'Dava çözüldü!',
+    hikaye: 'Kantin müdürü yıl sonu raporunu hazırlıyor ama beş dosyanın içi karışık! Tablolarda, grafiklerde ve çizelgelerde saklı bilgileri okuyup hesaplaman, yorumlaman gerekiyor. Gerçek dedektifler önce başlığa ve birime bakar. Hazır mısın?',
+    odulSimge: '🔍', odulAd: 'puan', sonSimge: '🏅',
+    bitisBaslik: 'Bütün dosyalar çözüldü!',
     renkAna: '#e76f51', renkIkinci: '#2a9d8f', karakterRenk: '#f4a261', gok1: '#ffd6a5', gok2: '#fff4e6'
   },
   /* Kazanım kodu yıllık plandan (9. hafta). */
   kazanimlar: [
     { kod: 'T.4.3.34', ad: 'Grafik, tablo ve çizelgelerle ilgili soruları cevaplar.' }
   ],
-  /* gorsel (her soruda bir tane): { tur:'bloklar', sayilar:[47,36] } | { tur:'sayiDogrusu', sayi:47, bas:40, son:50 }
-     | { tur:'emoji', metin:'🍎🍎🍎' } | { tur:'svg', kod:'<svg ...>...</svg>' }. Görsel cevabı söylememeli. */
-  /* Görsel türleri: tablo | sutun (sütun grafiği) | resim (resim grafiği) | cizelge.
-     Aynı veri birden çok soruda kullanılabilir; sorular farklı okuma becerisi ister. */
+  dosyalar: {
+    1: ['📋', 'Satış Tablosu'], 2: ['📊', 'Anket Grafiği'], 3: ['📚', 'Resim Grafiği'],
+    4: ['🕒', 'Çizelge ve Fiyat Listesi'], 5: ['🧠', 'Usta Dedektif']
+  },
+  /* Sorular dosya dosya, kolaydan zora sıralıdır (karışmaz); seçenekler her seferinde karışır.
+     ipucu: en fazla 3 kademe (dizi). yanlislar: [seçenek, yanılgı etiketi]. */
   maddeler: [
-    /* --- 1. İpucu: Kantin satış tablosu --- */
-    { id: 't1', kaz: 'T.4.3.34', soru: 'Pazartesi kantinde en çok hangi yiyecek satılmış?', dogru: 'Simit', gorsel: { tur: 'tablo', veri: 'satis' },
-      yanlislar: [['Meyve', 'en-az-ile-karistirdi'], ['Ayran', 'ikinci-en-cok'], ['Tost', 'tabloya-bakmadi']],
-      ipucu: '"Satılan adet" sütunundaki sayıları karşılaştır. Hangisi en büyük?', why: 'Sayılar 18, 12, 15 ve 9. En büyüğü 18, o da Simit\'in satırında.' },
-    { id: 't2', kaz: 'T.4.3.34', soru: 'Pazartesi kaç ayran satılmış?', dogru: '15', gorsel: { tur: 'tablo', veri: 'satis' },
-      yanlislar: [['12', 'satir-kaydi'], ['9', 'satir-kaydi'], ['18', 'ilk-satiri-okudu']],
-      ipucu: 'Önce "Ayran" satırını bul, sonra parmağınla sağa doğru git.', why: 'Ayran satırında sağdaki sütunda 15 yazıyor.' },
-    { id: 't3', kaz: 'T.4.3.34', soru: 'Simit, tosttan kaç tane fazla satılmış?', dogru: '6', gorsel: { tur: 'tablo', veri: 'satis' },
-      yanlislar: [['30', 'fark-yerine-toplam'], ['18', 'tek-degeri-okudu'], ['4', 'islem-hatasi']],
-      ipucu: '"Kaç fazla" diye soruyor. Büyük sayıdan küçük sayıyı çıkar.', why: 'Simit 18, tost 12. 18 − 12 = 6.' },
-    /* --- 2. İpucu: Sınıfın en sevdiği oyunlar sütun grafiği (çizgiler 2'şer artıyor) --- */
-    { id: 'g1', kaz: 'T.4.3.34', soru: 'Grafiğe göre kaç öğrenci körebeyi seçmiş?', dogru: '10', gorsel: { tur: 'sutun', veri: 'oyun' },
-      yanlislar: [['5', 'olcegi-okumadi'], ['8', 'komsu-sutun'], ['9', 'olcegi-okumadi']],
-      ipucu: 'Sütunun tepesinden sola doğru bak. Soldaki sayılar 2\'şer 2\'şer artıyor.', why: 'Körebe sütunu 10 çizgisine kadar uzanıyor. Yani 10 öğrenci seçmiş.' },
-    { id: 'g2', kaz: 'T.4.3.34', soru: 'En az seçilen oyun hangisi?', dogru: 'Seksek', gorsel: { tur: 'sutun', veri: 'oyun' },
-      yanlislar: [['Körebe', 'en-cok-ile-karistirdi'], ['İp atlama', 'ikinci-en-az'], ['Saklambaç', 'grafige-bakmadi']],
-      ipucu: 'En kısa sütunu bul.', why: 'En kısa sütun Seksek\'in. Yalnız 4 öğrenci seçmiş.' },
-    { id: 'g3', kaz: 'T.4.3.34', soru: 'Saklambacı ve ip atlamayı seçenler toplam kaç kişi?', dogru: '14', gorsel: { tur: 'sutun', veri: 'oyun' },
-      yanlislar: [['2', 'toplam-yerine-fark'], ['8', 'tek-degeri-okudu'], ['7', 'olcegi-okumadi']],
-      ipucu: 'İki sütunun değerini ayrı ayrı bul, sonra topla.', why: 'Saklambaç 8, ip atlama 6. 8 + 6 = 14.' },
-    /* --- 3. İpucu: Kitap kulübü resim grafiği (her kitap simgesi 2 kitap) --- */
-    { id: 'r1', kaz: 'T.4.3.34', soru: 'Resim grafiğine göre Elif kaç kitap okumuş?', dogru: '10', gorsel: { tur: 'resim', veri: 'kitap' },
-      yanlislar: [['5', 'simge-degerini-unuttu'], ['7', 'islem-hatasi'], ['12', 'komsu-satir']],
-      ipucu: 'Grafiğin altına bak: bir kitap simgesi kaç kitap demek?', why: 'Elif\'in satırında 5 simge var. Her simge 2 kitap: 5 × 2 = 10.' },
-    { id: 'r2', kaz: 'T.4.3.34', soru: 'Zeynep, Can\'dan kaç kitap fazla okumuş?', dogru: '4', gorsel: { tur: 'resim', veri: 'kitap' },
-      yanlislar: [['2', 'simge-degerini-unuttu'], ['12', 'fark-yerine-toplam'], ['8', 'tek-degeri-okudu']],
-      ipucu: 'Önce ikisinin kitap sayısını bul. Unutma: bir simge 2 kitap.', why: 'Zeynep 4 simge = 8 kitap, Can 2 simge = 4 kitap. 8 − 4 = 4.' },
-    /* --- 4. İpucu: Sınıf görev çizelgesi --- */
-    { id: 'c1', kaz: 'T.4.3.34', soru: 'Çizelgeye göre çarşamba günü çiçekleri kim sulayacak?', dogru: 'Kerem', gorsel: { tur: 'cizelge', veri: 'gorev' },
-      yanlislar: [['Zeynep', 'satir-sutun-karisti'], ['Emre', 'satir-kaydi'], ['Can', 'satir-kaydi']],
-      ipucu: 'Önce "Çarşamba" satırını, sonra "Çiçek sulama" sütununu bul. Kesiştikleri kutuya bak.', why: 'Çarşamba satırı ile Çiçek sulama sütununun kesiştiği kutuda Kerem yazıyor.' },
-    { id: 'c2', kaz: 'T.4.3.34', soru: 'Ece hangi gün görevli?', dogru: 'Pazartesi', gorsel: { tur: 'cizelge', veri: 'gorev' },
-      yanlislar: [['Salı', 'satir-kaydi'], ['Cuma', 'tabloya-bakmadi'], ['Perşembe', 'satir-kaydi']],
-      ipucu: 'Çizelgede "Ece" adını ara. Bulduğun kutunun satırının başında hangi gün yazıyor?', why: 'Ece, Pazartesi satırında, Tahta sütununda.' },
-    { id: 'c3', kaz: 'T.4.3.34', soru: 'Cuma günü çiçekleri kim sulayacak?', dogru: 'Ali', gorsel: { tur: 'cizelge', veri: 'gorev' },
-      yanlislar: [['Defne', 'satir-sutun-karisti'], ['Can', 'satir-kaydi'], ['Mert', 'ilk-satiri-okudu']],
-      ipucu: '"Cuma" satırında sağa git, "Çiçek sulama" sütununda dur.', why: 'Cuma satırı ile Çiçek sulama sütununun kesiştiği kutuda Ali yazıyor.' }
+    /* --- DOSYA 1: Çok sütunlu haftalık satış tablosu --- */
+    { id: 's1', dosya: 1, kaz: 'T.4.3.34', soru: 'Perşembe günü EN AZ satılan ürün hangisidir?', dogru: 'Tost', gorsel: { tur: 'tablo', veri: 'satis' },
+      yanlislar: [['Meyve', 'sutuna-bakti-satira-degil'], ['Ayran', 'ikinci-en-az'], ['Simit', 'en-cok-ile-karistirdi']],
+      ipucu: ['Önce "Perşembe" satırını bul.', 'Perşembe satırında sağa doğru git: 36, 24, 28, 26. En küçüğü hangisi?'],
+      why: 'Perşembe satırındaki sayılar 36, 24, 28 ve 26. En küçüğü 24, o da Tost sütununda.' },
+    { id: 's2', dosya: 1, kaz: 'T.4.3.34', soru: 'Meyve en çok hangi gün satılmış?', dogru: 'Perşembe', gorsel: { tur: 'tablo', veri: 'satis' },
+      yanlislar: [['Cuma', 'toplam-en-cok-gun'], ['Salı', 'ikinci-en-cok'], ['Pazartesi', 'en-az-ile-karistirdi']],
+      ipucu: ['Bu kez bir satıra değil, bir SÜTUNA bakacaksın.', '"Meyve" sütununda yukarıdan aşağı in: 16, 24, 20, 26, 18.'],
+      why: 'Meyve sütunundaki en büyük sayı 26. Bu sayı Perşembe satırında.' },
+    { id: 's3', dosya: 1, kaz: 'T.4.3.34', soru: 'Cuma günü satılan simit, aynı gün satılan tosttan kaç tane fazladır?', dogru: '16', gorsel: { tur: 'tablo', veri: 'satis' },
+      yanlislar: [['84', 'fark-yerine-toplam'], ['26', 'satir-kaydi'], ['6', 'sutun-kaydi']],
+      ipucu: ['"Kaç fazla" sorusu çıkarma ister.', 'Cuma satırında simit ve tost sayılarını bul.', 'Cuma: simit 50, tost 34. Büyükten küçüğü çıkar.'],
+      why: 'Cuma günü simit 50, tost 34. 50 − 34 = 16.' },
+    { id: 's4', dosya: 1, kaz: 'T.4.3.34', soru: 'Hafta boyunca toplam kaç ayran satılmıştır?', dogru: '177', gorsel: { tur: 'tablo', veri: 'satis' },
+      yanlislar: [['167', 'elde-unuttu'], ['44', 'tek-degeri-okudu'], ['211', 'sutun-kaydi']],
+      ipucu: ['Ayran sütunundaki BEŞ sayının hepsini toplayacaksın.', '35 + 30 + 40 + 28 + 44', 'Önce 35 + 30 + 40 = 105, sonra 28 + 44 = 72. Şimdi 105 + 72.'],
+      why: '35 + 30 + 40 + 28 + 44 = 177.' },
+
+    /* --- DOSYA 2: Sütun grafiği (çizgiler 10'ar artıyor, bazı değerler iki çizginin ortasında) --- */
+    { id: 'g1', dosya: 2, kaz: 'T.4.3.34', soru: 'Grafiğe göre elmayı kaç öğrenci seçmiştir?', dogru: '45', gorsel: { tur: 'sutun', veri: 'anket' },
+      yanlislar: [['40', 'ara-degeri-okuyamadi'], ['50', 'ara-degeri-okuyamadi'], ['35', 'olcek-hatasi']],
+      ipucu: ['Soldaki sayılar 10\'ar 10\'ar artıyor.', 'Elma sütununun tepesi 40 ile 50 çizgisinin tam ortasında. 40 ile 50\'nin ortası kaç?'],
+      why: 'Elma sütunu 40 ile 50 çizgilerinin tam ortasında bitiyor. 40 ile 50\'nin ortası 45.' },
+    { id: 'g2', dosya: 2, kaz: 'T.4.3.34', soru: 'Fındığı seçenler, havucu seçenlerden kaç kişi fazladır?', dogru: '35', gorsel: { tur: 'sutun', veri: 'anket' },
+      yanlislar: [['85', 'fark-yerine-toplam'], ['30', 'ara-degeri-okuyamadi'], ['40', 'ara-degeri-okuyamadi']],
+      ipucu: ['Önce iki sütunun değerini ayrı ayrı bul.', 'Havuç sütunu 20 ile 30 çizgisinin ortasında.', 'Fındık 60, havuç 25. Şimdi çıkar.'],
+      why: 'Fındık 60, havuç 25. 60 − 25 = 35.' },
+    { id: 'g3', dosya: 2, kaz: 'T.4.3.34', soru: 'Ankete toplam kaç öğrenci katılmıştır?', dogru: '210', gorsel: { tur: 'sutun', veri: 'anket' },
+      yanlislar: [['200', 'ara-degeri-okuyamadi'], ['160', 'sutun-unuttu'], ['60', 'en-buyuk-degeri-okudu']],
+      ipucu: ['Her öğrenci bir seçim yaptı. Bütün sütunları toplamalısın.', 'Beş sütun var: elma, ceviz, fındık, havuç, yoğurt.', '45 + 30 + 60 + 25 + 50'],
+      why: '45 + 30 + 60 + 25 + 50 = 210 öğrenci.' },
+    { id: 'g4', dosya: 2, kaz: 'T.4.3.34', soru: 'Grafiğe göre aşağıdakilerden hangisi DOĞRUDUR?', dogru: 'Yoğurdu seçenler, cevizi seçenlerden 20 kişi fazladır.', gorsel: { tur: 'sutun', veri: 'anket' },
+      yanlislar: [['En az seçilen atıştırmalık cevizdir.', 'en-az-yanlis'], ['Elmayı seçenler, fındığı seçenlerden fazladır.', 'karsilastirma-ters'],
+        ['Fındığı seçenler, havucu seçenlerin tam iki katıdır.', 'ara-degeri-okuyamadi']],
+      ipucu: ['Her cümleyi grafikle tek tek karşılaştır.', 'En kısa sütun hangisi? Havuç 25 mi 30 mu?', 'Yoğurt 50, ceviz 30.'],
+      why: 'Yoğurt 50, ceviz 30: 50 − 30 = 20. En az seçilen havuçtur (25). Havucun iki katı 50 eder, fındık 60.' },
+
+    /* --- DOSYA 3: Resim grafiği (1 simge = 4 kitap, yarım simge = 2 kitap) --- */
+    { id: 'r1', dosya: 3, kaz: 'T.4.3.34', soru: 'Grafiğe göre 4/B sınıfı kaç kitap okumuştur?', dogru: '18', gorsel: { tur: 'resim', veri: 'kitap' },
+      yanlislar: [['16', 'yarim-simgeyi-atladi'], ['20', 'yarim-simgeyi-tam-saydi'], ['4', 'simge-degerini-unuttu']],
+      ipucu: ['Grafiğin altındaki anahtara bak: bir kitap simgesi kaç kitap?', 'Yarım simge, tam simgenin yarısı demektir: 2 kitap.', '4/B: 4 tam simge + 1 yarım simge.'],
+      why: '4 tam simge = 4 × 4 = 16 kitap, yarım simge = 2 kitap. 16 + 2 = 18.' },
+    { id: 'r2', dosya: 3, kaz: 'T.4.3.34', soru: '4/C sınıfı, 4/D sınıfından kaç kitap fazla okumuştur?', dogru: '6', gorsel: { tur: 'resim', veri: 'kitap' },
+      yanlislar: [['8', 'yarim-simgeyi-atladi'], ['4', 'yarim-simgeyi-tam-saydi'], ['50', 'fark-yerine-toplam']],
+      ipucu: ['Önce iki sınıfın kitap sayısını ayrı ayrı bul.', '4/C: 7 tam simge. 4/D: 5 tam + 1 yarım simge.', '4/C 28 kitap, 4/D 22 kitap.'],
+      why: '4/C: 7 × 4 = 28. 4/D: 5 × 4 + 2 = 22. 28 − 22 = 6.' },
+
+    /* --- DOSYA 4: Saatli çizelge + fiyat listesi --- */
+    { id: 'c1', dosya: 4, kaz: 'T.4.3.34', soru: 'Çarşamba günü öğle arasında kantine önce hangi sınıf gidecek?', dogru: '4/A', gorsel: { tur: 'cizelge', veri: 'sira' },
+      yanlislar: [['4/B', 'satir-karisti'], ['4/C', 'satir-karisti'], ['4/D', 'sutun-karisti']],
+      ipucu: ['Satırlar teneffüsleri, sütunlar günleri gösteriyor.', '"Öğle arası" satırı ile "Çarşamba" sütununun kesiştiği kutuya bak.'],
+      why: 'Öğle arası satırı ile Çarşamba sütununun kesiştiği kutuda 4/A yazıyor.' },
+    { id: 'c2', dosya: 4, kaz: 'T.4.3.34', soru: 'Hafta boyunca kantine EN AZ sayıda önce giden sınıf hangisidir?', dogru: '4/D', gorsel: { tur: 'cizelge', veri: 'sira' },
+      yanlislar: [['4/A', 'sayma-hatasi'], ['4/B', 'sayma-hatasi'], ['4/C', 'sayma-hatasi']],
+      ipucu: ['Her sınıfın adını çizelgede kaç kez gördüğünü say.', 'Sınıflar farklı renklerde; renkleri saymak işini kolaylaştırır.', '4/A, 4/B ve 4/C dörder kez var. 4/D kaç kez?'],
+      why: '4/A, 4/B ve 4/C çizelgede dörder kez, 4/D ise yalnız 3 kez geçiyor.' },
+    { id: 'c3', dosya: 4, kaz: 'T.4.3.34', soru: 'Çizelgeye göre öğle arası kaç dakika sürüyor?', dogru: '40', gorsel: { tur: 'cizelge', veri: 'sira' },
+      yanlislar: [['80', 'saat-cikarma-hatasi'], ['50', 'saat-cikarma-hatasi'], ['30', 'tahmin-etti']],
+      ipucu: ['Öğle arası 11.50\'de başlıyor, 12.30\'da bitiyor.', 'Saatleri sayı gibi çıkarma! 1 saat 60 dakikadır.', '11.50\'den 12.00\'ye 10 dakika, 12.00\'den 12.30\'a 30 dakika.'],
+      why: '11.50 → 12.00 arası 10 dakika, 12.00 → 12.30 arası 30 dakika. 10 + 30 = 40 dakika.' },
+    { id: 'f1', dosya: 4, kaz: 'T.4.3.34', soru: 'Deniz\'in 50 lirası var. Bir tost ve bir ayran alırsa kaç lirası kalır?', dogru: '3', gorsel: { tur: 'fiyat', veri: 'fiyat' },
+      yanlislar: [['47', 'harcanani-yazdi'], ['15', 'tek-urun'], ['38', 'tek-urun']],
+      ipucu: ['Önce iki ürünün fiyatını listeden bul.', 'Tost 35 lira, ayran 12 lira. Toplam ne kadar harcar?', '50 liradan harcadığını çıkar.'],
+      why: 'Tost 35 + ayran 12 = 47 lira harcar. 50 − 47 = 3 lirası kalır.' },
+    { id: 'f2', dosya: 4, kaz: 'T.4.3.34', soru: 'Elif\'in 30 lirası var. Aşağıdakilerden hangisini alabilir?', dogru: 'Bir simit ve bir ayran', gorsel: { tur: 'fiyat', veri: 'fiyat' },
+      yanlislar: [['Bir tost', 'fiyata-bakmadi'], ['İki simit ve bir su', 'toplami-kontrol-etmedi'], ['Bir simit, bir ayran ve bir su', 'toplami-kontrol-etmedi']],
+      ipucu: ['Her seçeneğin toplam fiyatını hesapla.', '30 liradan fazla tutan seçenek alınamaz.', 'Simit 15 + ayran 12 = ?'],
+      why: 'Simit 15 + ayran 12 = 27 lira; 30 liraya yeter. Tost 35, iki simit ve su 38, simit-ayran-su 35 lira tutar.' },
+
+    /* --- DOSYA 5: Yorumlama — tabloyu grafikle eşleştirme, tabloda olmayan bilgi, başlık bulma --- */
+    { id: 'u1', dosya: 5, kaz: 'T.4.3.34', soru: 'Tablodaki bilgileri DOĞRU gösteren grafik hangisidir?', dogru: 'C grafiği', gorsel: { tur: 'grafikSec', veri: 'su' },
+      yanlislar: [['A grafiği', 'gunleri-karistirdi'], ['B grafiği', 'gunleri-karistirdi'], ['D grafiği', 'olcek-hatasi']],
+      ipucu: ['Tablodaki her günün sayısını grafikteki sütunla tek tek karşılaştır.', 'Salı günü 35: sütun 30 ile 40\'ın ortasında olmalı.', 'Çarşamba en kısa sütun olmalı (15).'],
+      why: 'C grafiğinde Pazartesi 20, Salı 35, Çarşamba 15, Perşembe 30; tabloyla aynı. A\'da ilk iki gün yer değiştirmiş, B\'de son iki gün, D\'de Salı 25 çizilmiş.' },
+    { id: 'u2', dosya: 5, kaz: 'T.4.3.34', soru: 'Aşağıdaki soruların hangisinin cevabı bu tabloda YOKTUR?', dogru: 'Bir simit kaç liradır?', gorsel: { tur: 'tablo', veri: 'satis' },
+      yanlislar: [['Cuma günü kaç simit satıldı?', 'tabloda-var'], ['Salı günü en çok hangi ürün satıldı?', 'tabloda-var'], ['Hangi gün en az ayran satıldı?', 'tabloda-var']],
+      ipucu: ['Tablonun başlığını ve birimini oku: Bu tablo neyi gösteriyor?', 'Tabloda yalnız "kaç tane satıldı" bilgisi var.'],
+      why: 'Tablo yalnız satış adetlerini gösteriyor. Fiyat bilgisi tabloda yok.' },
+    { id: 'u3', dosya: 5, kaz: 'T.4.3.34', soru: 'Başlığı silinmiş bu grafiğe en uygun başlık hangisidir?', dogru: '4/D Sınıfının Teneffüste Oynadığı Oyunlar', gorsel: { tur: 'sutun', veri: 'oyun', basliksiz: true },
+      yanlislar: [['4/D Sınıfının En Sevdiği Top Oyunları', 'genelleme-hatasi'], ['Teneffüste Oynanan Oyunların Süreleri', 'birimi-okumadi'],
+        ['4/D Sınıfının En Sevdiği Dersler', 'konu-ilgisiz']],
+      ipucu: ['Alttaki adlara bak: Bunlar ne?', 'Soldaki eksen ne ölçüyor: dakika mı, öğrenci sayısı mı?', 'Saklambaç ve ip atlama top oyunu mu?'],
+      why: 'Altta oyun adları, solda öğrenci sayısı var. Saklambaç ve ip atlama top oyunu değil; süre de gösterilmiyor.' }
   ]
 };
 
 /* ===== VERİ SETLERİ (görsellerde kullanılır) ===== */
 const VERI = {
-  satis: { baslik: 'Pazartesi Kantin Satışları', sutunlar: ['Yiyecek', 'Satılan adet'],
-    satirlar: [['🥯 Simit', 18], ['🥪 Tost', 12], ['🥛 Ayran', 15], ['🍎 Meyve', 9]] },
-  oyun: { baslik: '4/D Sınıfının En Sevdiği Oyunlar', eksen: 'Öğrenci sayısı', adim: 2, ust: 12,
-    degerler: [['Saklambaç', 8], ['İp atlama', 6], ['Körebe', 10], ['Seksek', 4]] },
-  kitap: { baslik: 'Kitap Kulübü: Bu Ay Okunan Kitaplar', simge: '📚', simgeDeger: 2,
-    satirlar: [['Ali', 3], ['Elif', 5], ['Can', 2], ['Zeynep', 4]] },
-  gorev: { baslik: 'Sınıf Görev Çizelgesi', sutunlar: ['Gün', 'Tahta', 'Çiçek sulama'],
-    satirlar: [['Pazartesi', 'Ece', 'Mert'], ['Salı', 'Ayşe', 'Emre'], ['Çarşamba', 'Zeynep', 'Kerem'], ['Perşembe', 'Elif', 'Can'], ['Cuma', 'Defne', 'Ali']] }
+  satis: { baslik: 'Kantin Haftalık Satış Tablosu', not: 'Sayılar satılan ürün adedini gösterir.',
+    sutunlar: ['Gün', '🥯 Simit', '🥪 Tost', '🥛 Ayran', '🍎 Meyve'],
+    satirlar: [['Pazartesi', 42, 28, 35, 16], ['Salı', 38, 32, 30, 24], ['Çarşamba', 45, 25, 40, 20], ['Perşembe', 36, 24, 28, 26], ['Cuma', 50, 34, 44, 18]] },
+  anket: { baslik: 'Okul Anketi: En Sevilen Sağlıklı Atıştırmalık', eksen: 'Öğrenci sayısı', adim: 10, ust: 70,
+    degerler: [['🍎 Elma', 45], ['🌰 Ceviz', 30], ['🥜 Fındık', 60], ['🥕 Havuç', 25], ['🥣 Yoğurt', 50]] },
+  oyun: { baslik: '4/D Sınıfının Teneffüste Oynadığı Oyunlar', eksen: 'Öğrenci sayısı', adim: 2, ust: 14,
+    degerler: [['⚽ Futbol', 12], ['🪢 İp atlama', 8], ['🙈 Saklambaç', 10], ['🏐 Voleybol', 6]] },
+  kitap: { baslik: 'Sınıf Kütüphanesi: Ekim Ayında Okunan Kitaplar', simgeDeger: 4,
+    satirlar: [['4/A', 6], ['4/B', 4.5], ['4/C', 7], ['4/D', 5.5]] },
+  sira: { baslik: 'Kantin Sıra Çizelgesi', not: 'Kutudaki sınıf, o teneffüste kantine ilk giden sınıftır.',
+    sutunlar: ['Teneffüs', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'],
+    satirlar: [['1. teneffüs|09.30–09.40', '4/A', '4/C', '4/B', '4/D', '4/A'],
+      ['Öğle arası|11.50–12.30', '4/D', '4/B', '4/A', '4/C', '4/B'],
+      ['Son teneffüs|14.10–14.20', '4/B', '4/D', '4/C', '4/A', '4/C']] },
+  fiyat: { baslik: '🏷️ Kantin Fiyat Listesi', urunler: [['🥯 Simit', 15], ['🥪 Tost', 35], ['🥛 Ayran', 12], ['💧 Su', 8], ['🍎 Elma', 10]] },
+  su: { baslik: 'Kantinde Satılan Su (şişe)', gunler: ['Pzt', 'Salı', 'Çar', 'Per'], tamGun: ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe'],
+    dogru: [20, 35, 15, 30],
+    grafikler: { A: [35, 20, 15, 30], B: [20, 35, 30, 15], C: [20, 35, 15, 30], D: [20, 25, 15, 30] } }
 };
+const SINIF_RENK = { '4/A': '#e76f51', '4/B': '#2a9d8f', '4/C': '#7b5cff', '4/D': '#d4900a' };
 
-/* ===== TEMA ÇİZİMLERİ (konuya göre yeniden çizilir: başlık sahnesi + rehber karakter) ===== */
+/* ===== TEMA ÇİZİMLERİ (başlık sahnesi + rehber karakter) ===== */
 const T = OYUN.tema;
-function sahneSVG() {   // başlık ekranı: okul kantini tezgâhı, tabela, ürünler, dev büyüteç
+function sahneSVG() {   // başlık ekranı: okul kantini tezgâhı, tabela, ürünler, rapor panosu, dev büyüteç
   return '<svg viewBox="0 0 400 180" style="width:100%;max-width:520px" aria-hidden="true">' +
     '<rect x="20" y="20" width="360" height="150" rx="14" fill="#fff" opacity=".55"/>' +
     '<path d="M30 52 L370 52 L356 24 L44 24Z" fill="' + T.renkAna + '"/>' +
     [0, 1, 2, 3, 4, 5, 6, 7].map(i => '<path d="M' + (30 + i * 42.5) + ' 52 q21 18 42.5 0" fill="' + (i % 2 ? '#fff' : T.renkIkinci) + '"/>').join('') +
     '<text x="200" y="45" text-anchor="middle" font-size="18" font-weight="800" fill="#fff" font-family="Trebuchet MS,sans-serif">OKUL KANTİNİ</text>' +
     '<rect x="40" y="110" width="320" height="58" rx="8" fill="#c97b4a"/><rect x="40" y="106" width="320" height="10" rx="5" fill="#e09f6e"/>' +
-    // simitler
-    '<g fill="none" stroke="#c8792e" stroke-width="9"><circle cx="78" cy="90" r="13"/><circle cx="104" cy="94" r="13"/></g>' +
-    '<g fill="#fff6dd"><circle cx="72" cy="84" r="1.6"/><circle cx="84" cy="82" r="1.6"/><circle cx="98" cy="86" r="1.6"/><circle cx="110" cy="88" r="1.6"/></g>' +
-    // ayran şişeleri
-    '<g><rect x="138" y="72" width="16" height="34" rx="5" fill="#f1faff" stroke="#9ad1e8" stroke-width="2"/><rect x="141" y="66" width="10" height="8" rx="2" fill="#4cc9f0"/>' +
-    '<rect x="160" y="72" width="16" height="34" rx="5" fill="#f1faff" stroke="#9ad1e8" stroke-width="2"/><rect x="163" y="66" width="10" height="8" rx="2" fill="#4cc9f0"/></g>' +
-    // elma
-    '<circle cx="204" cy="94" r="12" fill="#e63946"/><path d="M204 82 q2 -8 8 -9" stroke="#6b3e1f" stroke-width="2.5" fill="none"/><path d="M206 80 q8 -6 12 0 q-6 4 -12 0Z" fill="#3bb273"/>' +
-    // küçük sütun grafiği tabelası
-    '<g transform="translate(250 64)"><rect width="74" height="44" rx="6" fill="#fff" stroke="' + T.renkIkinci + '" stroke-width="3"/>' +
-    '<rect x="10" y="22" width="10" height="16" fill="' + T.renkAna + '"/><rect x="26" y="12" width="10" height="26" fill="' + T.renkIkinci + '"/>' +
-    '<rect x="42" y="18" width="10" height="20" fill="#f4a261"/><rect x="58" y="28" width="10" height="10" fill="#7b5cff"/></g>' +
-    // dev büyüteç
-    '<g transform="translate(300 118) rotate(-30)"><circle r="26" fill="#d8f3ff" fill-opacity=".7" stroke="#3d405b" stroke-width="7"/>' +
+    '<g fill="none" stroke="#c8792e" stroke-width="9"><circle cx="70" cy="90" r="13"/><circle cx="96" cy="94" r="13"/></g>' +
+    '<g><rect x="124" y="72" width="16" height="34" rx="5" fill="#f1faff" stroke="#9ad1e8" stroke-width="2"/><rect x="127" y="66" width="10" height="8" rx="2" fill="#4cc9f0"/></g>' +
+    '<circle cx="160" cy="94" r="12" fill="#e63946"/><path d="M160 82 q2 -8 8 -9" stroke="#6b3e1f" stroke-width="2.5" fill="none"/>' +
+    // rapor panosu: tablo + çizgi grafik + pasta
+    '<g transform="translate(184 60)"><rect width="104" height="48" rx="6" fill="#fff" stroke="#3d405b" stroke-width="3"/>' +
+    '<g stroke="#c9b8a6" stroke-width="1.5"><line x1="6" y1="14" x2="44" y2="14"/><line x1="6" y1="24" x2="44" y2="24"/><line x1="6" y1="34" x2="44" y2="34"/><line x1="20" y1="6" x2="20" y2="42"/></g>' +
+    '<rect x="52" y="26" width="8" height="16" fill="' + T.renkAna + '"/><rect x="63" y="14" width="8" height="28" fill="' + T.renkIkinci + '"/><rect x="74" y="20" width="8" height="22" fill="#f4a261"/><rect x="85" y="32" width="8" height="10" fill="#7b5cff"/></g>' +
+    // klasör yığını
+    '<g transform="translate(70 116)"><rect width="56" height="10" rx="2" fill="#ffd166"/><rect x="4" y="-8" width="56" height="10" rx="2" fill="#f4a261"/><rect x="-2" y="-16" width="56" height="10" rx="2" fill="#2a9d8f"/></g>' +
+    '<g transform="translate(318 118) rotate(-30)"><circle r="26" fill="#d8f3ff" fill-opacity=".7" stroke="#3d405b" stroke-width="7"/>' +
     '<rect x="-5" y="26" width="10" height="34" rx="4" fill="#3d405b"/><path d="M-12 -12 q8 -8 18 -6" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></g>' +
     '</svg>';
 }
@@ -349,7 +429,6 @@ function karakterSVG() { // dedektif kedi Pati (şapka + büyüteç); ruh hâli 
     '<path d="M28 44 L30 14 L52 32Z" fill="' + r + '"/><path d="M92 44 L90 14 L68 32Z" fill="' + r + '"/>' +
     '<path d="M33 38 L34 22 L46 32Z" fill="#ffc8a8"/><path d="M87 38 L86 22 L74 32Z" fill="#ffc8a8"/>' +
     '<ellipse cx="60" cy="56" rx="36" ry="30" fill="' + r + '"/>' +
-    // dedektif şapkası
     '<path d="M28 34 Q60 4 92 34 Q60 26 28 34Z" fill="#8d6e63"/><path d="M24 36 Q60 24 96 36 Q60 32 24 36Z" fill="#6d4c41"/>' +
     '<circle cx="46" cy="56" r="11" fill="#fff"/><circle cx="74" cy="56" r="11" fill="#fff"/>' +
     '<g class="goz-acik"><circle cx="47" cy="57" r="5.5" fill="#1f2a44"/><circle cx="75" cy="57" r="5.5" fill="#1f2a44"/>' +
@@ -359,76 +438,90 @@ function karakterSVG() { // dedektif kedi Pati (şapka + büyüteç); ruh hâli 
     '<path d="M56 66 L64 66 L60 71Z" fill="#e76f51"/><path d="M60 71 q-5 6 -10 2 M60 71 q5 6 10 2" stroke="#1f2a44" stroke-width="2" fill="none" stroke-linecap="round"/>' +
     '<path d="M24 66 L40 68 M24 74 L40 72 M96 66 L80 68 M96 74 L80 72" stroke="#7a4a2a" stroke-width="1.6"/>' +
     '<circle cx="34" cy="68" r="4" fill="#ff8fab" opacity=".55"/><circle cx="86" cy="68" r="4" fill="#ff8fab" opacity=".55"/>' +
-    // büyüteç tutan pati
     '<g transform="translate(24 96) rotate(-25)"><rect x="-3" y="10" width="6" height="18" rx="3" fill="#3d405b"/>' +
     '<circle r="11" fill="#d8f3ff" stroke="#3d405b" stroke-width="4"/></g><circle cx="30" cy="112" r="7" fill="' + r + '"/>' +
     '<ellipse cx="48" cy="123" rx="10" ry="5" fill="' + r + '"/><ellipse cx="72" cy="123" rx="10" ry="5" fill="' + r + '"/></svg>';
 }
 
-/* ===== SORU GÖRSELLERİ (OYUN.maddeler[].gorsel bunlardan birini seçer) ===== */
+/* ===== SORU GÖRSELLERİ (OYUN.maddeler[].gorsel.tur bunlardan birini seçer) ===== */
+function cubukSVG(o) {   // ortak sütun grafiği çizici: o = {degerler, adim, ust, eksen, baslik|null, W, H, yazi}
+  const L = o.L || 46, B = o.H - 30, H = o.H - 30 - (o.baslik === undefined ? 14 : 34), W = o.W - L - 10, s = H / o.ust;
+  const renk = [T.renkAna, T.renkIkinci, '#f4a261', '#7b5cff', '#3a86ff'];
+  let P = '';
+  if (o.baslik) P += '<text x="' + (L + W / 2) + '" y="18" text-anchor="middle" font-size="15" font-weight="800" fill="#1f2a44">' + esc(o.baslik) + '</text>';
+  else if (o.baslik === null) P += '<rect x="' + (L + W / 2 - 110) + '" y="2" width="220" height="24" rx="8" fill="#fff8e1" stroke="#e0b100" stroke-width="2" stroke-dasharray="6 4"/>' +
+    '<text x="' + (L + W / 2) + '" y="19" text-anchor="middle" font-size="14" font-weight="800" fill="#8a6d00">Başlık: ? ? ?</text>';
+  for (let y = 0; y <= o.ust; y += o.adim) {
+    P += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + (B - y * s) + '" y2="' + (B - y * s) + '" stroke="#d9cbbb" stroke-width="' + (y ? 1 : 2.5) + '"' + (y ? ' stroke-dasharray="4 4"' : '') + '/>' +
+      '<text x="' + (L - 6) + '" y="' + (B - y * s + 4) + '" text-anchor="end" font-size="' + (o.yazi || 13) + '" font-weight="700" fill="#1f2a44">' + y + '</text>';
+  }
+  const bw = W / o.degerler.length;
+  o.degerler.forEach(([ad, d], i) => {
+    const x = L + i * bw + bw * 0.18, w = bw * 0.64;
+    P += '<rect x="' + x + '" y="' + (B - d * s) + '" width="' + w + '" height="' + (d * s) + '" rx="4" fill="' + renk[i % renk.length] + '"/>' +
+      '<text x="' + (x + w / 2) + '" y="' + (B + 18) + '" text-anchor="middle" font-size="' + (o.yazi || 13) + '" font-weight="700" fill="#1f2a44">' + esc(ad) + '</text>';
+  });
+  if (o.eksen) P += '<text x="12" y="' + (B - H / 2) + '" font-size="12" fill="#5b6782" font-weight="700" transform="rotate(-90 12 ' + (B - H / 2) + ')" text-anchor="middle">' + esc(o.eksen) + '</text>';
+  return P;
+}
 const CIZ = {
-  bloklar(g) {        // onluk çubuk + birlik küp modeli
-    const P = [], E = []; let x = 6;
-    g.sayilar.forEach((n, si) => {
-      if (si > 0) { P.push('<text x="' + (x + 12) + '" y="66" font-size="38" font-weight="800" text-anchor="middle" fill="#1f2a44">+</text>'); x += 30; }
-      const sx = x, o = Math.floor(n / 10), b = n % 10, renk = si % 2 ? T.renkIkinci : T.renkAna;
-      for (let i = 0; i < o; i++) {
-        let c = ''; for (let k = 1; k < 10; k++) c += '<line x1="' + x + '" x2="' + (x + 12) + '" y1="' + (5 + k * 10) + '" y2="' + (5 + k * 10) + '" stroke="#fff" stroke-opacity=".6"/>';
-        P.push('<rect x="' + x + '" y="5" width="12" height="100" rx="3" fill="' + renk + '"/>' + c); x += 16;
-      }
-      if (o) x += 4;
-      for (let i = 0; i < b; i++) P.push('<rect x="' + (x + Math.floor(i / 5) * 13) + '" y="' + (94 - (i % 5) * 13) + '" width="11" height="11" rx="2" fill="' + renk + '" opacity=".85"/>');
-      if (b) x += (b > 5 ? 2 : 1) * 13;
-      E.push('<text x="' + ((sx + x) / 2) + '" y="127" font-size="18" font-weight="800" text-anchor="middle" fill="#1f2a44">' + n + '</text>');
-      x += 8;
+  tablo(g) {          // çok sütunlu veri tablosu; ilk sütun satır başlığı
+    const v = VERI[g.veri];
+    return '<div class="vt"><table><caption>📋 ' + esc(v.baslik) + '</caption><thead><tr>' + v.sutunlar.map(s => '<th scope="col">' + esc(s) + '</th>').join('') + '</tr></thead><tbody>' +
+      v.satirlar.map(r => '<tr>' + r.map((c, i) => i ? '<td>' + esc(c) + '</td>' : '<th scope="row">' + esc(c) + '</th>').join('') + '</tr>').join('') +
+      '</tbody></table>' + (v.not ? '<div class="not">ℹ️ ' + esc(v.not) + '</div>' : '') + '</div>';
+  },
+  cizelge(g) {        // teneffüs × gün çizelgesi; sınıflar renkli etiketle
+    const v = VERI[g.veri];
+    const KISA = { Pazartesi: 'Pzt', 'Çarşamba': 'Çar', 'Perşembe': 'Per', Teneffüs: '' };
+    return '<div class="vt"><table><caption>🕒 ' + esc(v.baslik) + '</caption><thead><tr>' + v.sutunlar.map(s => '<th scope="col">' +
+      (s in KISA ? '<span class="uzunad">' + esc(s) + '</span><span class="kisa" aria-hidden="true">' + KISA[s] + '</span>' : esc(s)) + '</th>').join('') + '</tr></thead><tbody>' +
+      v.satirlar.map(r => '<tr>' + r.map((c, i) => {
+        if (!i) { const [ad, saat] = c.split('|'); return '<th scope="row">' + esc(ad) + '<small>' + esc(saat) + '</small></th>'; }
+        return '<td><span class="sinif" style="background:' + SINIF_RENK[c] + '">' + esc(c) + '</span></td>';
+      }).join('') + '</tr>').join('') + '</tbody></table>' + (v.not ? '<div class="not">ℹ️ ' + esc(v.not) + '</div>' : '') + '</div>';
+  },
+  sutun(g) {          // sütun grafiği; basliksiz:true → başlık yerine "? ? ?"
+    const v = VERI[g.veri];
+    return '<svg viewBox="0 0 380 250" style="width:100%;max-width:560px;background:#fff;border-radius:16px" role="img" aria-label="' +
+      (g.basliksiz ? 'Başlığı olmayan sütun grafiği' : esc(v.baslik) + ' sütun grafiği') + '">' +
+      cubukSVG({ degerler: v.degerler, adim: v.adim, ust: v.ust, eksen: v.eksen, baslik: g.basliksiz ? null : v.baslik, W: 380, H: 250 }) + '</svg>';
+  },
+  resim(g) {          // resim grafiği; tam ve yarım kitap simgeleri
+    const v = VERI[g.veri], renk = ['#e76f51', '#2a9d8f', '#7b5cff', '#d4900a'], satirH = 42, ust = 34, L = 66;
+    const kitap = (x, y, c, yarim) => '<g transform="translate(' + x + ' ' + y + ')"><g' + (yarim ? ' clip-path="url(#yarimKes)"' : '') + '>' +
+      '<rect width="24" height="30" rx="3" fill="' + c + '"/><rect x="0" y="0" width="5" height="30" rx="2" fill="#0003"/>' +
+      '<rect x="8" y="6" width="12" height="3" rx="1" fill="#fff" opacity=".85"/><rect x="8" y="12" width="9" height="2.5" rx="1" fill="#fff" opacity=".6"/></g></g>';
+    let P = '<defs><clipPath id="yarimKes"><rect x="0" y="0" width="12" height="30"/></clipPath></defs>' +
+      '<text x="190" y="20" text-anchor="middle" font-size="15" font-weight="800" fill="#1f2a44">📚 ' + esc(v.baslik) + '</text>';
+    v.satirlar.forEach(([ad, n], i) => {
+      const y = ust + i * satirH;
+      P += '<rect x="6" y="' + (y + 2) + '" width="368" height="' + (satirH - 4) + '" rx="8" fill="' + (i % 2 ? '#fff7ef' : '#fff') + '"/>' +
+        '<text x="' + (L - 12) + '" y="' + (y + 27) + '" text-anchor="end" font-size="17" font-weight="800" fill="#1f2a44">' + esc(ad) + '</text>' +
+        '<line x1="' + (L - 4) + '" x2="' + (L - 4) + '" y1="' + (y + 4) + '" y2="' + (y + satirH - 4) + '" stroke="#d9cbbb" stroke-width="2"/>';
+      for (let k = 0; k < Math.ceil(n); k++) P += kitap(L + 6 + k * 32, y + 6, renk[i], k + 1 > n);
     });
-    return '<svg viewBox="0 0 ' + x + ' 134" style="width:100%;max-width:' + Math.round(x * 1.7) + 'px" role="img" aria-label="Onluk çubuk ve birlik küplerle ' + g.sayilar.join(' artı ') + '">' + P.join('') + E.join('') + '</svg>';
+    const ky = ust + v.satirlar.length * satirH + 10;
+    P += '<rect x="40" y="' + ky + '" width="300" height="40" rx="10" fill="#fff8e1" stroke="#ffd166" stroke-width="2"/>' +
+      '<text x="58" y="' + (ky + 25) + '" font-size="14" font-weight="800" fill="#1f2a44">Anahtar:</text>' + kitap(130, ky + 5, '#5b6782', false) +
+      '<text x="160" y="' + (ky + 25) + '" font-size="14" font-weight="800" fill="#1f2a44">= ' + v.simgeDeger + ' kitap</text>' + kitap(240, ky + 5, '#5b6782', true) +
+      '<text x="258" y="' + (ky + 25) + '" font-size="14" font-weight="800" fill="#1f2a44">= ' + (v.simgeDeger / 2) + ' kitap</text>';
+    return '<svg viewBox="0 0 380 ' + (ky + 50) + '" style="width:100%;max-width:560px;background:#fff;border-radius:16px" role="img" aria-label="' + esc(v.baslik) + ' resim grafiği">' + P + '</svg>';
   },
-  sayiDogrusu(g) {    // bas–son arası sayı doğrusu, sayı işaretli; orta nokta yazılı
-    const L = 24, R = 316, s = (R - L) / (g.son - g.bas), X = v => L + (v - g.bas) * s;
-    let P = '<line x1="' + (L - 12) + '" x2="' + (R + 12) + '" y1="80" y2="80" stroke="#1f2a44" stroke-width="3" stroke-linecap="round"/>';
-    for (let v = g.bas; v <= g.son; v++) {
-      const uc = v === g.bas || v === g.son, orta = (v - g.bas) * 2 === g.son - g.bas;
-      P += '<line x1="' + X(v) + '" x2="' + X(v) + '" y1="' + (uc ? 66 : orta ? 70 : 74) + '" y2="' + (uc ? 94 : orta ? 90 : 86) + '" stroke="#1f2a44" stroke-width="' + (uc ? 3 : 2) + '"/>';
-      if (uc || orta) P += '<text x="' + X(v) + '" y="114" text-anchor="middle" font-size="' + (uc ? 18 : 14) + '" font-weight="800" fill="' + (uc ? '#1f2a44' : '#5b6782') + '">' + v + '</text>';
-    }
-    P += '<line x1="' + X(g.sayi) + '" x2="' + X(g.sayi) + '" y1="46" y2="78" stroke="' + T.renkAna + '" stroke-width="3"/>' +
-      '<circle cx="' + X(g.sayi) + '" cy="30" r="19" fill="' + T.renkAna + '"/><text x="' + X(g.sayi) + '" y="36" text-anchor="middle" font-size="17" font-weight="800" fill="#fff">' + g.sayi + '</text>';
-    return '<svg viewBox="0 0 340 122" style="width:100%;max-width:520px" role="img" aria-label="Sayı doğrusunda ' + g.sayi + ', ' + g.bas + ' ile ' + g.son + ' arasında">' + P + '</svg>';
-  },
-  emoji(g) { return '<div class="emoji-gorsel" aria-hidden="true">' + esc(g.metin) + '</div>'; },
-  svg(g) { return g.kod; },  // öğretmenin/Claude'un hazırladığı gömülü çizim
-  tablo(g) {          // iki sütunlu veri tablosu
+  fiyat(g) {          // kantin fiyat tahtası
     const v = VERI[g.veri];
-    return '<div class="vt"><table><caption>' + esc(v.baslik) + '</caption><tr>' + v.sutunlar.map(s => '<th scope="col">' + esc(s) + '</th>').join('') + '</tr>' +
-      v.satirlar.map(r => '<tr>' + r.map((c, i) => i ? '<td>' + esc(c) + '</td>' : '<th scope="row" style="background:inherit;color:inherit;text-align:left">' + esc(c) + '</th>').join('') + '</tr>').join('') + '</table></div>';
+    return '<div class="fiyat" role="table" aria-label="' + esc(v.baslik) + '"><div class="fiyat-bas">' + esc(v.baslik) + '</div>' +
+      v.urunler.map(([ad, f]) => '<div class="fiyat-s" role="row"><span role="cell">' + esc(ad) + '</span><i></i><span role="cell">' + f + ' TL</span></div>').join('') + '</div>';
   },
-  cizelge(g) {        // gün × görev çizelgesi
+  grafikSec(g) {      // tablo + dört küçük grafik (A–D)
     const v = VERI[g.veri];
-    return '<div class="vt"><table><caption>📋 ' + esc(v.baslik) + '</caption><tr>' + v.sutunlar.map(s => '<th scope="col">' + esc(s) + '</th>').join('') + '</tr>' +
-      v.satirlar.map(r => '<tr>' + r.map((c, i) => i ? '<td>' + esc(c) + '</td>' : '<td>' + esc(c) + '</td>').join('') + '</tr>').join('') + '</table></div>';
-  },
-  sutun(g) {          // sütun grafiği; dikey eksen v.adim'er artar
-    const v = VERI[g.veri], L = 46, B = 196, H = 160, W = 300, s = H / v.ust, renk = [T.renkAna, T.renkIkinci, '#f4a261', '#7b5cff'];
-    let P = '<text x="' + (L + W / 2) + '" y="16" text-anchor="middle" font-size="15" font-weight="800" fill="#1f2a44">' + esc(v.baslik) + '</text>';
-    for (let y = 0; y <= v.ust; y += v.adim) {
-      P += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + (B - y * s) + '" y2="' + (B - y * s) + '" stroke="#d9cbbb" stroke-width="' + (y ? 1 : 2.5) + '"' + (y ? ' stroke-dasharray="4 4"' : '') + '/>' +
-        '<text x="' + (L - 8) + '" y="' + (B - y * s + 5) + '" text-anchor="end" font-size="13" font-weight="700" fill="#1f2a44">' + y + '</text>';
-    }
-    const bw = W / v.degerler.length;
-    v.degerler.forEach(([ad, d], i) => {
-      const x = L + i * bw + bw * 0.2, w = bw * 0.6;
-      P += '<rect x="' + x + '" y="' + (B - d * s) + '" width="' + w + '" height="' + (d * s) + '" rx="5" fill="' + renk[i % 4] + '"/>' +
-        '<text x="' + (x + w / 2) + '" y="' + (B + 18) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2a44">' + esc(ad) + '</text>';
+    let h = '<div class="gsec"><div class="vt"><table><caption>💧 ' + esc(v.baslik) + '</caption><thead><tr>' + v.tamGun.map(d => '<th scope="col">' + esc(d) + '</th>').join('') +
+      '</tr></thead><tbody><tr>' + v.dogru.map(d => '<td><b>' + d + '</b></td>').join('') + '</tr></tbody></table></div><div class="izgara">';
+    Object.keys(v.grafikler).forEach(harf => {
+      h += '<div class="mini"><b>' + harf + '</b><svg viewBox="0 0 200 150" role="img" aria-label="' + harf + ' grafiği">' +
+        cubukSVG({ degerler: v.gunler.map((d, i) => [d, v.grafikler[harf][i]]), adim: 10, ust: 40, W: 200, H: 150, L: 30, yazi: 12 }) + '</svg></div>';
     });
-    P += '<text x="12" y="' + (B - H / 2) + '" font-size="12" fill="#5b6782" font-weight="700" transform="rotate(-90 12 ' + (B - H / 2) + ')" text-anchor="middle">' + esc(v.eksen) + '</text>';
-    return '<svg viewBox="0 0 360 222" style="width:100%;max-width:520px;background:#fff;border-radius:16px" role="img" aria-label="' + esc(v.baslik) + ' sütun grafiği">' + P + '</svg>';
-  },
-  resim(g) {          // resim grafiği; her simge v.simgeDeger kadar
-    const v = VERI[g.veri];
-    return '<div class="vt"><table><caption>' + esc(v.baslik) + '</caption>' +
-      v.satirlar.map(([ad, n]) => '<tr><td>' + esc(ad) + '</td><td style="text-align:left;font-size:1.5rem;letter-spacing:2px">' + v.simge.repeat(n) + '</td></tr>').join('') +
-      '</table><div class="birim">Anahtar: ' + v.simge + ' = ' + v.simgeDeger + ' kitap</div></div>';
+    return h + '</div></div>';
   }
 };
 const gorselCiz = g => (g && CIZ[g.tur]) ? '<div class="gorsel">' + CIZ[g.tur](g) + '</div>' : '';
@@ -438,12 +531,13 @@ const app = document.getElementById('app');
 const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
 const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 const rastgele = a => a[Math.floor(Math.random() * a.length)];
-let sira = [], idx = 0, durum = null, sonuclar = [], puan = 0;
+let sira = [], idx = 0, durum = null, sonuclar = [], puan = 0, tekrarYapildi = false;
+const ANA_SAYI = OYUN.maddeler.length;
 /* Güvenli depolama: kapalıysa bellekte çalışır, oyun bozulmaz */
 const depo = (() => { const mem = {}; return {
   oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
   yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } } }; })();
-const DEPO_REKOR = 'rekor-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
+const DEPO_REKOR = 'rekor2-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
 [['--ana', T.renkAna], ['--ikinci', T.renkIkinci], ['--gok1', T.gok1], ['--gok2', T.gok2]].forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
 const azHareket = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
 
@@ -504,8 +598,10 @@ function puanEkle(n) {
 }
 function yolCiz() {
   const s = { yildiz: '⭐', yarim: '✨', ogrendi: '📘' };
-  return '<div class="yol" role="img" aria-label="' + sonuclar.filter(Boolean).length + ' / ' + sira.length + ' soru tamamlandı">' + sira.map((m, i) => {
-    const d = sonuclar[i]; return (i ? '<span class="cizgi"></span>' : '') + '<span class="durak ' + (d || (i === idx ? 'simdi' : '')) + '">' + (d ? s[d] : (i + 1)) + '</span>';
+  return '<div class="yol" role="img" aria-label="' + sonuclar.filter(Boolean).length + ' / ' + sira.length + ' soru tamamlandı">' + sira.map((x, i) => {
+    const d = sonuclar[i], yeniDosya = i && !x.tekrar && sira[i - 1].m.dosya !== x.m.dosya;
+    return (i ? '<span class="cizgi' + (yeniDosya ? ' dosya' : '') + '"></span>' : '') +
+      '<span class="durak ' + (d || (i === idx ? 'simdi' : '')) + (x.tekrar ? ' tkr' : '') + '">' + (d ? s[d] : (x.tekrar ? '↻' : (i + 1))) + '</span>';
   }).join('') + '<span class="cizgi"></span><span class="durak son">' + esc(T.sonSimge) + '</span></div>';
 }
 function ustCiz() {
@@ -515,32 +611,56 @@ function ustCiz() {
 
 function baslangic() {
   const rekor = depo.oku(DEPO_REKOR);
+  const dosyaSay = {}; OYUN.maddeler.forEach(m => { dosyaSay[m.dosya] = (dosyaSay[m.dosya] || 0) + 1; });
   app.innerHTML = '<div class="ust"><span></span><span class="sag">' + sesDugmesi() + '</span></div>' +
     '<div class="kart gir">' + sahneSVG() + '<h1>' + esc(OYUN.ad) + '</h1>' +
     '<div class="karakter-satir"><div id="krk" class="krk mutlu">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Merhaba! Ben ' +
     esc(T.karakterAdi) + '. ' + esc(T.hikaye) + '</div></div>' +
-    '<p style="text-align:center;margin:4px 0">📝 ' + OYUN.maddeler.length + ' soru &nbsp;·&nbsp; 💡 ipucu alabilirsin &nbsp;·&nbsp; ⭐ ilk denemede doğruya yıldız</p>' +
+    '<div class="dosyalar">' + Object.keys(OYUN.dosyalar).map(k => '<div><b>' + OYUN.dosyalar[k][0] + '</b>Dosya ' + k + '<br>' + esc(OYUN.dosyalar[k][1]) +
+      '<br><small>' + (dosyaSay[k] || 0) + ' soru</small></div>').join('') + '</div>' +
+    '<p style="text-align:center;margin:4px 0">📝 ' + ANA_SAYI + ' soru &nbsp;·&nbsp; 💡 her soruda 3 kademeli ipucu &nbsp;·&nbsp; ⭐ ilk denemede doğruya yıldız &nbsp;·&nbsp; 🔁 zorlandığın sorulara sonda bir şans daha</p>' +
     (rekor ? '<p style="text-align:center;margin:4px 0;color:var(--soluk)">🏆 Önceki en iyi sonucun: ' + esc(rekor) + ' yıldız</p>' : '') +
-    '<button class="buyuk" id="basla">Davaya başla 🔍</button></div>';
+    '<button class="buyuk" id="basla">Dosyaları aç 🔍</button></div>';
   sesBagla();
   document.getElementById('basla').onclick = () => {
     cal('tik');
     RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
-    sira = shuffle(OYUN.maddeler); idx = 0; sonuclar = []; puan = 0; soru();
+    sira = OYUN.maddeler.map(m => ({ m, tekrar: false })); idx = 0; sonuclar = []; puan = 0; tekrarYapildi = false; soru();
   };
 }
 
+function sansEkrani(n) {
+  app.innerHTML = ustCiz() + '<div class="kart gir" style="text-align:center"><h1>🔁 Bir şans daha!</h1>' +
+    '<div class="karakter-satir"><div id="krk" class="krk mutlu">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Dedektifler pes etmez! Zorlandığın ' + n +
+    ' soruya bir kez daha bakalım. Bu sefer çözümü hatırlayarak dene.</div></div><button class="buyuk" id="dev">Hadi bakalım →</button></div>';
+  sesBagla(); cal('tik');
+  const d = document.getElementById('dev'); d.onclick = () => { soru(); window.scrollTo(0, 0); }; d.focus({ preventScroll: true });
+}
+
 function soru() {
-  if (idx >= sira.length) { bitisEkrani(); return; }
-  const m = sira[idx];
+  if (idx >= sira.length) {
+    if (!tekrarYapildi) {
+      tekrarYapildi = true;
+      const zor = sira.filter((x, i) => !x.tekrar && sonuclar[i] === 'ogrendi');
+      if (zor.length) { sira = sira.concat(zor.map(x => ({ m: x.m, tekrar: true }))); sansEkrani(zor.length); return; }
+    }
+    bitisEkrani(); return;
+  }
+  const { m, tekrar } = sira[idx];
   const sec = shuffle([[m.dogru, '']].concat(m.yanlislar));          // seçenekler HER SORUDA karışır
-  durum = { m, sec, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
-  app.innerHTML = ustCiz() + '<div class="kart gir"><span class="etiket">Soru ' + (idx + 1) + ' / ' + sira.length + '</span>' + gorselCiz(m.gorsel) +
-    '<div class="soru">' + esc(m.soru) + '</div><div class="sec">' +
+  durum = { m, sec, tekrar, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+  const dz = OYUN.dosyalar[m.dosya], uzun = sec.some(s => s[0].length > 22);
+  const ilkDosyaSorusu = !tekrar && (idx === 0 || sira[idx - 1].m.dosya !== m.dosya);
+  app.innerHTML = ustCiz() + '<div class="kart gir">' +
+    (tekrar ? '<span class="etiket tkr">🔁 Bir şans daha</span>' : '<span class="etiket">Soru ' + (idx + 1) + ' / ' + ANA_SAYI + '</span>') +
+    '<span class="etiket dosya">' + dz[0] + ' Dosya ' + m.dosya + ': ' + esc(dz[1]) + '</span>' + gorselCiz(m.gorsel) +
+    '<div class="soru">' + esc(m.soru) + '</div><div class="sec' + (uzun ? ' uzun' : '') + '">' +
     sec.map((s, i) => '<button data-i="' + i + '" aria-label="Seçenek ' + (i + 1) + ': ' + esc(s[0]) + '"><span class="no">' + (i + 1) + '</span>' + esc(s[0]) + '</button>').join('') +
-    '</div><div class="alt"><button class="ipucu-btn" id="ip">💡 İpucu</button></div></div>' +
+    '</div><div class="alt"><button class="ipucu-btn" id="ip">💡 İpucu (' + m.ipucu.length + ')</button></div></div>' +
     '<div class="karakter-satir"><div id="krk" class="krk kucuk">' + karakterSVG() + '</div><div id="balon" class="balon" aria-live="polite">' +
-    rastgele(['Önce başlığı oku, sonra soruyu.', 'Parmağınla satırı takip et.', 'Dedektifler acele etmez, dikkatle bakar.', 'Cevap tablonun içinde saklı!']) + '</div></div><div class="devam-yer" id="devamYer"></div>';
+    (ilkDosyaSorusu ? '📂 Yeni dosya açıldı: ' + esc(dz[1]) + '. Önce başlığı ve birimi oku!' :
+      rastgele(['Önce başlığı oku, sonra soruyu.', 'Soru "kaç fazla" mı, "toplam" mı? Dikkat!', 'Dedektifler acele etmez, dikkatle bakar.', 'Satırı ve sütunu parmağınla takip et.', 'Hesapladıktan sonra cevabını bir daha kontrol et.'])) +
+    '</div></div><div class="devam-yer" id="devamYer"></div>';
   sesBagla();
   app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => sec_(+b.dataset.i); });
   document.getElementById('ip').onclick = ipucuVer;
@@ -548,20 +668,25 @@ function soru() {
 
 function ipucuVer() {
   if (!durum || durum.kilit) return;
-  durum.ipucu = Math.min(1, durum.ipucu + 1);                    // bu örnekte tek kademe; gerçek oyunda ≤3
-  cal('tik'); ruh('dusun', null, '💡 ' + durum.m.ipucu);
+  const liste = durum.m.ipucu;
+  if (durum.ipucu >= liste.length) return;
+  durum.ipucu++;                                                       // ≤3 kademe
+  cal('tik'); ruh('dusun', null, '💡 ' + durum.ipucu + '/' + liste.length + ': ' + liste[durum.ipucu - 1]);
+  const b = document.getElementById('ip');
+  if (b) { const kalan = liste.length - durum.ipucu; b.textContent = kalan ? '💡 Bir ipucu daha (' + kalan + ')' : '💡 İpucu bitti'; if (!kalan) b.disabled = true; }
 }
 
 function sec_(i) {
   if (!durum || durum.kilit) return;                              // çift tıklama kilidi
   const [metin, yan] = durum.sec[i], btn = app.querySelectorAll('.sec button')[i];
+  if (!btn || btn.disabled) return;
   durum.deneme++;
   if (metin === durum.m.dogru) {
     btn.classList.add('dogru'); const r = btn.getBoundingClientRect();
     const ilk = durum.deneme === 1;
-    cal('dogru'); konfeti(ilk ? 45 : 22, r.left + r.width / 2, r.top + r.height / 2); puanEkle(ilk ? 10 : 5);
+    cal('dogru'); konfeti(ilk ? 45 : 22, r.left + r.width / 2, r.top + r.height / 2); puanEkle(durum.tekrar ? 5 : (ilk ? 10 : 5));
     sonuclar[idx] = ilk ? 'yildiz' : 'yarim';
-    bitir(false, 'mutlu', 'zipla', (ilk ? '⭐ ' + rastgele(['Harika!', 'Süpersin!', 'Tam isabet!']) : '✨ Buldun!') + ' ' + durum.m.why); return;
+    bitir(false, 'mutlu', 'zipla', (ilk ? '⭐ ' + rastgele(['Harika!', 'Süpersin!', 'Tam isabet!', 'Dedektif gözü!']) : '✨ Buldun!') + ' ' + durum.m.why); return;
   }
   btn.classList.add('yanlis', 'salla'); btn.disabled = true;
   if (!durum.ilkYanilgi) durum.ilkYanilgi = yan;
@@ -577,11 +702,12 @@ function bitir(cozumGoruldu, mod, hareket, mesaj) {
   durum.kilit = true;
   RaporMotoru.kaydet({ kazanim: durum.m.kaz, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
     ilkDenemeDogru: durum.deneme === 1 && !cozumGoruldu, deneme: durum.deneme, ipucu: durum.ipucu,
-    cozumGoruldu, sureMs: Date.now() - durum.t0 });
+    cozumGoruldu, sureMs: Date.now() - durum.t0, tekrar: durum.tekrar });
   ruh(mod, hareket, mesaj);
   app.querySelectorAll('.sec button, #ip').forEach(b => { b.disabled = true; });
   const yol = app.querySelector('.yol'); if (yol) yol.outerHTML = yolCiz();
-  const dev = document.createElement('button'); dev.className = 'buyuk'; dev.textContent = idx + 1 < sira.length ? 'Devam →' : T.sonSimge + ' Davayı kapat!';
+  const sonMu = idx + 1 >= sira.length && (tekrarYapildi || !sira.some((x, i) => !x.tekrar && sonuclar[i] === 'ogrendi'));
+  const dev = document.createElement('button'); dev.className = 'buyuk'; dev.textContent = sonMu ? T.sonSimge + ' Raporu teslim et!' : 'Devam →';
   dev.id = 'dev'; dev.onclick = () => { idx++; soru(); window.scrollTo(0, 0); };
   document.getElementById('devamYer').appendChild(dev); dev.focus({ preventScroll: true });
 }
@@ -589,16 +715,20 @@ function bitir(cozumGoruldu, mod, hareket, mesaj) {
 function yildizYol(cx0, cy0, R, r) { let d = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, u = i % 2 ? r : R;
   d += (i ? 'L' : 'M') + (cx0 + Math.cos(a) * u).toFixed(1) + ' ' + (cy0 + Math.sin(a) * u).toFixed(1); } return d + 'Z'; }
 function bitisEkrani() {
-  const yildiz = sonuclar.filter(x => x === 'yildiz').length, oran = yildiz / sira.length;
+  durum = null;
+  const ana = sonuclar.slice(0, ANA_SAYI);
+  const yildiz = ana.filter(x => x === 'yildiz').length, oran = yildiz / ANA_SAYI;
+  const tekrarDogru = sonuclar.slice(ANA_SAYI).filter(x => x === 'yildiz' || x === 'yarim').length, tekrarSayi = sira.length - ANA_SAYI;
   const [rozetAd, rozetRenk] = oran >= 0.85 ? ['Baş Dedektif', '#f4b400'] : oran >= 0.6 ? ['Usta Dedektif', '#9aa5b1'] : ['Çırak Dedektif', '#cd7f32'];
   app.innerHTML = ustCiz() + '<div class="kart gir bitis"><h1>🎉 ' + esc(T.bitisBaslik) + '</h1>' +
     '<svg viewBox="0 0 120 150" class="rozet" role="img" aria-label="' + rozetAd + ' rozeti">' +
     '<path d="M40 92 L26 146 L45 137 L56 150 L60 98Z" fill="#ef476f"/><path d="M80 92 L94 146 L75 137 L64 150 L60 98Z" fill="#118ab2"/>' +
     '<circle cx="60" cy="60" r="46" fill="' + rozetRenk + '"/><circle cx="60" cy="60" r="36" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="4"/>' +
     '<path d="' + yildizYol(60, 60, 24, 10) + '" fill="#fff"/></svg><div class="rozet-ad">' + rozetAd + '</div>' +
-    '<div class="yildizlar" aria-label="' + yildiz + ' yıldız">' + (sonuclar.map(x => x === 'yildiz' ? '⭐' : x === 'yarim' ? '✨' : '📘').join('')) + '</div>' +
-    '<div class="karakter-satir"><div id="krk" class="krk kucuk">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Tebrikler! ' + yildiz +
-    ' yıldız ve ' + puan + ' ' + esc(T.odulAd) + ' topladın. Aşağıda hangi konuda ne kadar güçlü olduğunu görebilirsin.</div></div>' +
+    '<div class="yildizlar" aria-label="' + yildiz + ' yıldız">' + ana.map(x => x === 'yildiz' ? '⭐' : x === 'yarim' ? '✨' : '📘').join('') + '</div>' +
+    '<div class="karakter-satir"><div id="krk" class="krk kucuk">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Tebrikler! ' + ANA_SAYI + ' sorudan ' + yildiz +
+    ' tanesini ilk denemede çözdün' + (tekrarSayi ? ', bir şans daha turunda ' + tekrarSayi + ' sorudan ' + tekrarDogru + ' tanesini buldun' : '') +
+    '. Aşağıda Kazanım Karnen var.</div></div>' +
     '<div id="karne"></div><button class="buyuk" id="yeniden">↻ Yeniden oyna</button></div>';
   sesBagla();
   RaporMotoru.ekranCiz(document.getElementById('karne'));            // karne + sonucu portala gönderir (oyun başına bir kez)
