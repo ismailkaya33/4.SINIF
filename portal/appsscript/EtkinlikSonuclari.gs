@@ -116,7 +116,8 @@ const paths = {
     'tur-atasozu-deyim-sinav':'Turkce/tur-atasozu-deyim-sinav.html',
     'tur-cikarim-baslik':'Turkce/cikarimbaslik.html',
     'trafik-oyunaraclari':'Trafik/oyunaraclari.html',
-    'tur-tablo-grafik':'Turkce/kantindedektifi.html'
+    'tur-tablo-grafik':'Turkce/kantindedektifi.html',
+    'tur-ozdeyisler':'Turkce/ozdeyisler.html'
   };
 /* KATALOG BITIR: ilerleme-yollari */
   const available = new Set(SECILI_ETKINLIKLER_);

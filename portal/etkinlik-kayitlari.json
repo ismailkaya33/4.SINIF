@@ -21,7 +21,8 @@
     {"id": "tur-atasozu-deyim-sinav", "yol": "Turkce/tur-atasozu-deyim-sinav.html", "ad": "Türkçe • Konu Değerlendirme: Atasözleri ve Deyimler", "konu": "Türkçe", "kazanim": "T.4.3.11 Deyim ve atasözleri", "maxTotal": 200, "dersListesinde": true},
     {"id": "tur-cikarim-baslik", "yol": "Turkce/cikarimbaslik.html", "ad": "Türkçe • Metin Dedektifi: Çıkarım ve Başlık", "konu": "Türkçe", "kazanim": "T.4.3.28 Çıkarım / T.4.3.21 Başlık belirleme", "maxTotal": 200, "dersListesinde": true},
     {"id": "trafik-oyunaraclari", "yol": "Trafik/oyunaraclari.html", "ad": "Trafik Güvenliği • Güvenli Sürüş: Oyun Araçları", "konu": "Trafik Güvenliği", "kazanim": "TG.4.1.6 Oyun araçlarını güvenli kullanma", "maxTotal": 200, "dersListesinde": true},
-    {"id": "tur-tablo-grafik", "yol": "Turkce/kantindedektifi.html", "ad": "Türkçe • Kantin Dedektifi: Tablo, Grafik ve Çizelge", "konu": "Türkçe", "kazanim": "T.4.3.34 Tablo, grafik ve çizelge okuma", "maxTotal": 200, "dersListesinde": true}
+    {"id": "tur-tablo-grafik", "yol": "Turkce/kantindedektifi.html", "ad": "Türkçe • Kantin Dedektifi: Tablo, Grafik ve Çizelge", "konu": "Türkçe", "kazanim": "T.4.3.34 Tablo, grafik ve çizelge okuma", "maxTotal": 200, "dersListesinde": true},
+    {"id": "tur-ozdeyisler", "yol": "Turkce/ozdeyisler.html", "ad": "Türkçe • Sözler Müzesi: Özdeyişler", "konu": "Türkçe", "kazanim": "Özdeyişler (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true}
   ],
   "seciliEtkinlikler": [
     {"yol": "Turkce/ikilemeler.html", "ad": "Türkçe • İkileme Dedektifi"},
@@ -45,6 +46,7 @@
     {"yol": "Turkce/tur-atasozu-deyim-sinav.html", "ad": "Türkçe • Konu Değerlendirme: Atasözleri ve Deyimler"},
     {"yol": "Turkce/cikarimbaslik.html", "ad": "Türkçe • Metin Dedektifi: Çıkarım ve Başlık"},
     {"yol": "Trafik/oyunaraclari.html", "ad": "Trafik Güvenliği • Güvenli Sürüş: Oyun Araçları"},
-    {"yol": "Turkce/kantindedektifi.html", "ad": "Türkçe • Kantin Dedektifi: Tablo, Grafik ve Çizelge"}
+    {"yol": "Turkce/kantindedektifi.html", "ad": "Türkçe • Kantin Dedektifi: Tablo, Grafik ve Çizelge"},
+    {"yol": "Turkce/ozdeyisler.html", "ad": "Türkçe • Sözler Müzesi: Özdeyişler"}
   ]
 }
