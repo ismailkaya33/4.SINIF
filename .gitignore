@@ -4,3 +4,7 @@ YillikPlan/
 VeliRaporlari/
 ClassDojo*.pdf
 desktop.ini
+# Google Drive eşitleme ve Python geçici dosyaları
+.tmp.drivedownload/
+.tmp.driveupload/
+__pycache__/

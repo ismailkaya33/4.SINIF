@@ -14,6 +14,9 @@ Ayrı bir sohbet projesi kullanılmaz. Kurallar burada ve `.claude/skills/` alt�
 | `4d-canli-kontrol` | Gönderilen değişikliğin canlıda çalıştığını kontrol etmek |
 | `4d-haftalik-hatirlatma` | Yıllık plana göre bu/sıradaki haftanın konuları ve portalda eksik etkinlik/defter notu |
 
+Ajan: `pedagojik-denetci` (`.claude/agents/`) — yeni/yenilenen etkinlik veya değerlendirmeyi **yayın onayı istenmeden önce**
+salt okunur denetler (kazanım, cevap doğruluğu, dil, erişilebilirlik, sonuç mesajı). Dosya değiştirmez; son karar öğretmenin.
+
 **Görsel üretimi** (boyama, poster, resimli not): Claude in Chrome ile öğretmenin ChatGPT Plus (yedek: Gemini Pro) hesabında çizdirilir,
 tam boyutlu resmi öğretmen indirir, Claude A4 PDF yapar (`node tools/gorsel-uret.mjs --pdf-yap`). API anahtarı
 (`GEMİNİ_API_KEY`) kurulu ama faturalandırma yok → araçla doğrudan çizim kapalı. Ayrıntı: `4d-icerik-uret` 4.2.
