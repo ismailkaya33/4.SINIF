@@ -7,7 +7,7 @@
 //   node tools/sketchnote-yap.mjs tools/sketchnote/notlar/fen-besin-icerikleri.js --png Baski/Fen/besin-icerikleri.png --pdf Baski/Fen/besin-icerikleri.pdf
 //
 // --html  internetsiz açılan tek dosya (yazı tipi ve çizim kütüphanesi gömülü, ~130 KB)
-// --png   1240×1754 × ölçek piksel resim (varsayılan ölçek 1.6 → 1984×2806; portal/defter notu için)
+// --png   1240×1754 × ölçek piksel resim (varsayılan ölçek 1.6 → 1984×2806; çok sayfalı notta ad-1.png, ad-2.png …)
 // --pdf   A4 dikey, vektör (baskıda her boyutta keskin)
 // --kes   (yalnız defter notu) kes-yapıştır sayfası PDF: 8 görsel hücresi (2 görselli notta 4 öğrenci), 8,5 × 6 cm
 // --kes-png  aynı sayfanın resmi (kontrol için)   --renkli  kes-yapıştır sayfası renkli (varsayılan siyah-beyaz boyama)
@@ -70,22 +70,32 @@ const calistir = (ek, mod) => execFileSync(TAR, [...ortak, ...ek, mod ? url + '#
 // 3) Kontrol: çizim bitti mi, taşma var mı?  4) Bas
 function kontrol(mod) {
   const dom = calistir(['--dump-dom'], mod);
+  const say = dom.match(/data-(?:kes-)?sayfa="(\d+)"/);
   if (!/data-hazir="1"/.test(dom)) dur('Sayfa çizilemedi (not dosyasında yazım hatası olabilir). HTML\'i tarayıcıda açıp F12 ile bakın: ' + hedefHtml);
   const tasma = dom.match(/data-tasma="([^"]*)"/);
   if (tasma) dur('Yazı sığmıyor: ' + tasma[1] + ' → metni kısaltın ya da bölün. Basılmadı.');
+  return say ? Number(say[1]) : 1;
 }
 const hazirla = (c) => fs.mkdirSync(path.dirname(path.resolve(c)), { recursive: true });
-const png = (c, mod) => { hazirla(c); calistir(['--screenshot=' + path.resolve(c), '--window-size=1240,1754', '--force-device-scale-factor=' + olcek], mod); console.log('PNG:', c, `(${Math.round(1240 * olcek)}×${Math.round(1754 * olcek)})`); };
-const pdf = (c, mod) => { hazirla(c); calistir(['--print-to-pdf=' + path.resolve(c), '--no-pdf-header-footer'], mod); console.log('PDF:', c, '(A4)'); };
+// Çok sayfalıysa her sayfa ayrı resim: ad-1.png, ad-2.png …
+const png = (c, mod, n) => {
+  hazirla(c);
+  for (let i = 1; i <= n; i++) {
+    const hedef = n > 1 ? c.replace(/\.png$/i, `-${i}.png`) : c;
+    calistir(['--screenshot=' + path.resolve(hedef), '--window-size=1240,1754', '--force-device-scale-factor=' + olcek], n > 1 ? `${mod || 'not'}&s=${i}` : mod);
+    console.log('PNG:', hedef, `(${Math.round(1240 * olcek)}×${Math.round(1754 * olcek)})`);
+  }
+};
+const pdf = (c, mod, n) => { hazirla(c); calistir(['--print-to-pdf=' + path.resolve(c), '--no-pdf-header-footer'], mod); console.log('PDF:', c, `(A4, ${n} sayfa)`); };
 if (pngCikti || pdfCikti) {
-  kontrol();
-  if (pngCikti) png(pngCikti);
-  if (pdfCikti) pdf(pdfCikti);
+  const n = kontrol();
+  if (pngCikti) png(pngCikti, undefined, n);
+  if (pdfCikti) pdf(pdfCikti, undefined, n);
 }
 if (kesCikti || kesPng) {
   if (!fs.readFileSync(notYolu, 'utf8').includes('Sketchnote.defterNotu(')) dur('--kes yalnız defter notu (Sketchnote.defterNotu) için kullanılır.');
-  kontrol(kesMod);
-  if (kesPng) png(kesPng, kesMod);
-  if (kesCikti) pdf(kesCikti, kesMod);
+  const n = kontrol(kesMod);
+  if (kesPng) png(kesPng, kesMod, n);
+  if (kesCikti) pdf(kesCikti, kesMod, n);
 }
 if (!htmlCikti) fs.rmSync(hedefHtml, { force: true });

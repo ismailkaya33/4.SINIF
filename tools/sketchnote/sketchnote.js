@@ -130,7 +130,7 @@
 
   // Yazı tipleri yüklendikten sonra çizer (ölçüm doğru olsun diye); bitince body[data-hazir="1"].
   async function ciz(fn) {
-    await Promise.all(['400 32px Kalam', '700 40px Kalam'].map(f => document.fonts.load(f, 'İğşıÇÖÜ')));
+    await Promise.all(['400 32px Kalam', '700 40px Kalam'].map(f => document.fonts.load(f, 'İğşıÇÖÜ0123456789')));
     const svg = document.getElementById('s');
     const S = araclar(svg);
     await fn(S);

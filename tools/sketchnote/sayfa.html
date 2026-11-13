@@ -11,8 +11,10 @@ html, body { margin: 0; background: #fff; }
 .sayfa { width: 100vw; max-width: 1240px; aspect-ratio: 210 / 297; margin: 0 auto; background: #fff; }
 svg { width: 100%; height: 100%; display: block; }
 @media screen and (min-width: 1300px) { body { background: #e9e9e9; padding: 16px 0; } .sayfa { box-shadow: 0 2px 12px #0003; } }
-@media print { .sayfa { width: 210mm; height: 297mm; max-width: none; } }
-text { font-family: 'Kalam', cursive; fill: #1f1f1f; }
+@media print { .sayfa { width: 210mm; height: 297mm; max-width: none; break-after: page; overflow: hidden; } .sayfa:last-of-type { break-after: auto; } }
+@media screen { .sayfa + .sayfa { margin-top: 16px; } }
+svg { fill: #1f1f1f; }
+text { font-family: 'Kalam', cursive; }
 .kalin { font-weight: 700; }
 </style>
 </head>

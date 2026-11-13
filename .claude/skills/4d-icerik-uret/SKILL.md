@@ -194,17 +194,26 @@ Defter notu kodla üretilir (`Sketchnote.defterNotu`, bkz. 4.3); her not iki ç�
 1. **Not sayfası** (renkli, A4, spiral defter görünümü; portala gider): ara başlık hapları, renkli madde imleri,
    `**anahtar kelime**` kırmızı-kalın. Not için gereken görseller (genelde **2**) ilgili yazının yanında
    **"✂ Görsel N — buraya yapıştır"** kesik çizgili kutuyla gösterilir; öğrenci yeri buradan görür.
-2. **Kes-yapıştır sayfası** (A4, çıktı alınır, portala gitmez): 2 sütun × 4 satır = 8 görsel. 2 görselli notta her
-   satır bir öğrencinin takımıdır (**1 sayfa = 4 öğrenci**), 1 görselli notta 8 öğrenci. Varsayılan siyah-beyaz,
+2. **Kes-yapıştır sayfaları** (A4, çıktı alınır, portala gitmez): görseller ikişerli gruplanır (1+2, 3+4 …); her grup
+   bir A4: 2 sütun × 4 satır, her satır bir öğrencinin takımı (**1 sayfa = 4 öğrenci**); tek kalan görselde 8 öğrenci. Varsayılan siyah-beyaz,
    boyanabilir (`--renkli` ile renkli). Görseller iki sayfada da aynı boyuttadır: **8,5 × 6 cm** (deftere sığar),
    köşede görsel numarası, çevresinde kesme çizgisi.
-- Not dosyası: `tools/sketchnote/notlar/<ders>-<konu>.js` (örnekler: `mat-carpma`, `fen-kuvvetin-etkileri`,
-  `sos-yonler`, `tr-cumle-bilgisi`). Bloklar: `ara`, `madde`, `ornek`, `gorsel` (sağda görsel, solda maddeler),
-  `gorseller` (yan yana), `dikkat`. Görsel çizimi 510 × 360 birimlik alanda; `S.r(renk)` / `S.m(renk)` siyah-beyazda
+- **Kapsam ve seviye (öğretmenin geri bildirimi, 2026-11-13):** konu bütün alt konularıyla ve 4. sınıf düzeyinde
+  işlenir (örn. çarpma: anlam/terimler, eldeli, iki basamaklıyla, 10-100-1000 ve katları, 5-25-50, üç sayı, tahmin,
+  problem). Not **1–3 sayfa** olabilir; araç sığmayanı sonraki sayfaya taşır, "1 / 3" diye numaralar. Konuları ve alt
+  konuları Claude tahmin etmez, **öğretmene sorar** (alt konu önerip onay alır).
+- **Görseller:** konuya göre ikişer ikişer, ilgili bölümün sonunda yan yana (`gorseller: [1, 2]`); kes-yapıştırda da
+  aynı ikililer bir A4 olur. Görselde olan bilgi yazıda tekrarlanmaz. Şema/işlem/tablo kodla çizilir; nesne/sahne
+  gösteren görseller (ör. Fen) kodla basit kalır → ChatGPT ile olgun tarzda çizdirilir (öğretmenin bilgisayarında,
+  Claude in Chrome; 4.2). Her görsel "kavram haritası" biçiminde olmaz.
+- Not dosyası: `tools/sketchnote/notlar/<ders>-<konu>.js` (tam örnek: `mat-carpma`). Bloklar: `konu` (alt konu
+  başlığı), `ara`, `madde`, `adim` (numaralı), `ornek`, `gorsel` (sağda görsel, solda maddeler), `gorseller` (yan yana),
+  `dikkat`, `sayfa` (zorunlu sayfa sonu); `birlikte: true` bir bloğu sonrakiyle aynı sayfada tutar. Alt alta işlem
+  görseli için `Sketchnote.dikey(...)` (basamaklar hizalı, elde, soluk sıfır). Görsel çizimi 510 × 360 birimlik alanda; `S.r(renk)` / `S.m(renk)` siyah-beyazda
   dolguyu kaldırır / yazıyı siyah yapar (ayrıntı `tools/sketchnote/defter.js` başı).
 - Basmak: `node tools/sketchnote-yap.mjs tools/sketchnote/notlar/<ad>.js --png <Ders>/DefterNotlari/<ad>.png
   --pdf Baski/<Ders>/<ad>-defter-notu.pdf --kes Baski/<Ders>/<ad>-kes-yapistir.pdf [--renkli]`.
-  "Yazı sığmıyor" uyarısında metin kısaltılır ya da bölüm çıkarılır.
+  Çok sayfalı notta PNG'ler `<ad>-1.png, <ad>-2.png …` olur. "Yazı sığmıyor" uyarısında metin kısaltılır.
 - Görseller bilgi taşır (tablo, şema, işlem, yön gülü…); süs değildir. İçerik ve her işlem Claude tarafından doğrulanır;
   kazanım kodu sayfaya yazılmaz, not dosyasının başına "doğrulanmalı" diye not edilir.
 - Sahne/illüstrasyon gereken notlarda aşağıdaki ChatGPT yolu (6.1) kullanılabilir.
