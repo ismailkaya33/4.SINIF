@@ -1,7 +1,10 @@
-/** Pilot giriş sınırlaması. IP veya kullanıcı bazlı güvenilir kimlik tespiti değildir. */
+/** Pilot giriş sınırlaması. IP veya kullanıcı bazlı güvenilir kimlik tespiti değildir.
+ *  Yalnız BAŞARISIZ denemeler sayılır: aynı yanlış kod 5 kez → o kod 5 dk durur;
+ *  tüm portalda 5 dk içinde 60 yanlış deneme → kod tahmini yapılıyor sayılır, giriş 5 dk durur.
+ *  Başarılı girişler sayaca eklenmez (sınıfça art arda giriş kilitlenmeye yol açmaz). */
 const SINIR_PENCERE_MS = 5 * 60 * 1000;
 const KOD_MAX_HATA = 5;
-const TOPLAM_MAX_DENEME = 80;
+const TOPLAM_MAX_HATA = 60;
 
 function sayacBilgisi_(key, now) {
   const raw = PropertiesService.getScriptProperties().getProperty(key);
@@ -23,17 +26,17 @@ function girisKontrol_(kod, now) {
   const tumKey = 'g_total';
   const kodSayac = sayacBilgisi_(kodKey, now);
   const toplam = sayacBilgisi_(tumKey, now);
-  if (kodSayac.n >= KOD_MAX_HATA || toplam.n >= TOPLAM_MAX_DENEME) {
+  if (kodSayac.n >= KOD_MAX_HATA || toplam.n >= TOPLAM_MAX_HATA) {
     return {izin: false};
   }
-  toplam.n++;
-  saya_(tumKey, toplam);
-  return {izin: true, kodKey, kodSayac};
+  return {izin: true, kodKey, kodSayac, tumKey, toplam};
 }
 
 function hataliGirisiKaydet_(kontrol) {
   kontrol.kodSayac.n++;
   saya_(kontrol.kodKey, kontrol.kodSayac);
+  kontrol.toplam.n++;
+  saya_(kontrol.tumKey, kontrol.toplam);
 }
 
 function basariliGirisTemizle_(kontrol) {
