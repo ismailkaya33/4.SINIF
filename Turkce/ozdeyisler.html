@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sözler Müzesi: Özdeyişler</title>
+<title>Sözler Müzesi: Dünyadan Özdeyişler</title>
 <style>
 /* Renkler JS ile OYUN.tema'dan gelir (--ana, --ikinci, --gok1, --gok2). Buradakiler yedek değerdir. */
 :root{--ana:#ff7a45;--ikinci:#2ec4b6;--gok1:#7fd8ff;--gok2:#e6f9ff;--kart:#fff;--yazi:#1f2a44;--soluk:#5b6782;--ok:#1f9d5c;--hata:#c0392b}
@@ -247,95 +247,112 @@ const RaporMotoru = (() => {
 /* ===== VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda) ===== */
 const OYUN = {
   /* id: portal kayıt listesindeki (portal/etkinlik-kayitlari.json) kimlikle aynı olmalı */
-  id: 'tur-ozdeyisler', ad: 'Sözler Müzesi: Özdeyişler',
+  id: 'tur-ozdeyisler', ad: 'Sözler Müzesi: Dünyadan Özdeyişler',
   tema: {
     ad: 'Sözler Müzesi', karakterAdi: 'Mürekkep',
-    hikaye: 'Sözler Müzesi\'nin vitrinleri karıştı! Hangi söz özdeyiş, hangisi atasözü? Her doğru cevapla bir parşömeni yerine koyuyoruz. Vitrinleri birlikte dolduralım mı?',
+    hikaye: 'Sözler Müzesi\'ne dünyanın dört bir yanından özdeyişler geldi: Çin\'den, Yunanistan\'dan, İngiltere\'den, Anadolu\'dan... Ama vitrinler karıştı! Her sözün ne anlattığını ve hangi konuyla ilgili olduğunu bulursak parşömenleri yerine koyabiliriz.',
     odulSimge: '📜', odulAd: 'parşömen', sonSimge: '🏛️',
     bitisBaslik: 'Müzenin bütün vitrinleri doldu!',
     renkAna: '#e5486f', renkIkinci: '#7b5cff', karakterRenk: '#3d5bd9', gok1: '#ffe3f1', gok2: '#fff8e7'
   },
   /* Yıllık planda "özdeyiş" için ayrı kazanım kodu bulunamadı → kodlar geçicidir, öğretmen doğrulayınca değiştirilir. */
   kazanimlar: [
-    { kod: 'OZD.1', ad: 'Özdeyişi tanır, özelliklerini bilir (kod doğrulanmalı)' },
-    { kod: 'OZD.2', ad: 'Özdeyişi atasözünden ayırır (kod doğrulanmalı)' },
+    { kod: 'OZD.1', ad: 'Özdeyişi tanır, atasözünden ayırır (kod doğrulanmalı)' },
+    { kod: 'OZD.2', ad: 'Özdeyişin hangi konuyla ilgili olduğunu belirler (kod doğrulanmalı)' },
     { kod: 'OZD.3', ad: 'Özdeyişin anlattığı düşünceyi kavrar (kod doğrulanmalı)' }
   ],
-  /* gorsel: { tur:'parsomen', metin:'...', kim:'...' } (kim boş olabilir) | { tur:'emoji', metin:'📜❓' } */
+  /* Yalnız söyleyeni kesin bilinen sözler kullanılır (yanlış kişiye söz atfetme yok).
+     gorsel: { tur:'parsomen', metin:'...', kim:'...' } (kim boş olabilir) | { tur:'emoji', metin:'📜❓' } */
   maddeler: [
-    /* --- OZD.1: Özdeyişi tanıma --- */
+    /* --- OZD.1: Özdeyişi tanıma ve atasözünden ayırma --- */
     { id: 'a1', kaz: 'OZD.1', soru: 'Bir düşünceyi kısa ve kesin anlatan, söyleyeni belli olan sözlere ne denir?', dogru: 'Özdeyiş',
       gorsel: { tur: 'emoji', metin: '💭 ✍️ 📜' },
       yanlislar: [['Atasözü', 'atasozu-ile-karistirdi'], ['Deyim', 'deyim-ile-karistirdi'], ['Bilmece', 'tur-bilmiyor']],
       ipucu: 'Söyleyeni belli olan sözü düşün. Atasözünün söyleyeni bilinir mi?',
       why: 'Söyleyeni belli olan, kısa ve özlü sözlere özdeyiş denir. Atasözünün söyleyeni bilinmez.' },
-    { id: 'a2', kaz: 'OZD.1', soru: 'Hangisi özdeyişin bir özelliği DEĞİLDİR?', dogru: 'Söyleyeni bilinmez.',
-      gorsel: { tur: 'emoji', metin: '🔍 📜 ❌' },
-      yanlislar: [['Kısa ve özlüdür.', 'ozellik-bilmiyor'], ['Bir yargı bildirir.', 'ozellik-bilmiyor'], ['Söyleyeni bellidir.', 'ozellik-ters']],
-      ipucu: 'Soru, özdeyişte OLMAYAN özelliği soruyor. Özdeyişin sonunda kimin adı yazar?',
-      why: 'Özdeyişin söyleyeni bellidir. "Söyleyeni bilinmez" atasözünün özelliğidir.' },
-    { id: 'a3', kaz: 'OZD.1', soru: 'Hangisi bir özdeyiştir?', dogru: '"Bütün ümidim gençliktedir." (Mustafa Kemal Atatürk)',
+    { id: 'a2', kaz: 'OZD.1', soru: 'Hangisi bir özdeyiştir?',
+      dogru: '"Bir çocuk, bir öğretmen, bir kitap ve bir kalem dünyayı değiştirebilir." (Malala Yusufzay)',
       gorsel: { tur: 'emoji', metin: '🏛️ 📜 📜 📜' },
       yanlislar: [['"Bugün hava çok güzel." (Ayşe)', 'her-soz-ozdeyis-sandi'], ['"Ağaç yaşken eğilir."', 'atasozu-ile-karistirdi'],
         ['"Göz kulak olmak."', 'deyim-ile-karistirdi']],
       ipucu: 'Söyleyeni belli olmak yetmez; söz önemli bir düşünceyi kısa ve özlü anlatmalı.',
-      why: 'Atatürk\'ün bu sözü önemli bir düşünceyi kısa ve özlü anlatır, söyleyeni de bellidir. "Bugün hava çok güzel" ise sıradan bir cümledir; her söz özdeyiş değildir.' },
-    { id: 'a4', kaz: 'OZD.1', soru: 'Bir özdeyişi yazarken sözün sonuna ne yazarız?', dogru: 'Söyleyenin adını',
-      gorsel: { tur: 'parsomen', metin: 'Gelin tanış olalım, işi kolay kılalım.', kim: '— ?' },
-      yanlislar: [['Yazıldığı tarihi', 'ad-yerine-tarih'], ['Bir soru işareti', 'noktalama-sandi'], ['Hiçbir şey yazmayız', 'ad-yazilmaz-sandi']],
-      ipucu: 'Parşömenin altındaki soru işaretinin yerine ne gelmeli?',
-      why: 'Özdeyiş yazarken sözün sonuna söyleyenin adını yazarız. Bu söz Yunus Emre\'nindir.' },
-
-    /* --- OZD.2: Özdeyiş mi, atasözü mü? --- */
-    { id: 'b1', kaz: 'OZD.2', soru: 'Parşömendeki söz özdeyiş mi, atasözü mü?', dogru: 'Atasözü, çünkü söyleyeni bilinmez.',
+      why: 'Malala Yusufzay, kız çocuklarının okuma hakkını savunan Pakistanlı bir gençtir; Nobel Barış Ödülü almıştır. Sözü önemli bir düşünceyi anlatır ve söyleyeni bellidir. "Bugün hava çok güzel" ise sıradan bir cümledir.' },
+    { id: 'a3', kaz: 'OZD.1', soru: 'Parşömendeki söz özdeyiş mi, atasözü mü?', dogru: 'Atasözü, çünkü söyleyeni bilinmez.',
       gorsel: { tur: 'parsomen', metin: 'Damlaya damlaya göl olur.', kim: '' },
       yanlislar: [['Özdeyiş, çünkü söyleyeni bellidir.', 'atasozu-ozdeyis-karisti'], ['Özdeyiş, çünkü kısa bir sözdür.', 'kisalik-yeter-sandi'],
         ['Atasözü, çünkü içinde su geçer.', 'yuzeysel-ipucu']],
       ipucu: 'Bu sözü kimin söylediğini biliyor muyuz?',
       why: '"Damlaya damlaya göl olur." halkın ortak sözüdür, söyleyeni bilinmez. Bu yüzden atasözüdür.' },
-    { id: 'b2', kaz: 'OZD.2', soru: 'Parşömendeki söz özdeyiş mi, atasözü mü?', dogru: 'Özdeyiş, çünkü söyleyeni bellidir.',
-      gorsel: { tur: 'parsomen', metin: 'İlim ilim bilmektir, ilim kendin bilmektir.', kim: '— Yunus Emre' },
-      yanlislar: [['Atasözü, çünkü herkes bu sözü bilir.', 'bilinen-soz-atasozu-sandi'], ['Atasözü, çünkü öğüt verir.', 'ogut-atasozu-sandi'],
-        ['Deyim, çünkü iki kelimeden oluşur.', 'deyim-ile-karistirdi']],
-      ipucu: 'Parşömenin altına bak: sözü kim söylemiş?',
-      why: 'Sözü Yunus Emre söylemiştir; söyleyeni belli olduğu için özdeyiştir.' },
-    { id: 'b3', kaz: 'OZD.2', soru: 'Hangisi atasözüdür?', dogru: '"Birlikten kuvvet doğar."',
-      gorsel: { tur: 'emoji', metin: '🧓 👨‍👩‍👧 🗣️ ❓' },
-      yanlislar: [['"Ne mutlu Türküm diyene!" (Mustafa Kemal Atatürk)', 'ozdeyis-atasozu-sandi'],
-        ['"Sevelim, sevilelim; bu dünya kimseye kalmaz." (Yunus Emre)', 'ozdeyis-atasozu-sandi'], ['"Kulak asmamak."', 'deyim-ile-karistirdi']],
-      ipucu: 'Söyleyeni yazılı olanlar özdeyiştir. Söyleyeni olmayan, cümle hâlindeki öğütleyici söz hangisi?',
-      why: '"Birlikten kuvvet doğar." halkın ortak sözüdür, söyleyeni bilinmez: atasözüdür. Diğer ikisinin söyleyeni bellidir; "kulak asmamak" ise bir deyimdir.' },
-    { id: 'b4', kaz: 'OZD.2', soru: 'Özdeyiş ile atasözü arasındaki en önemli fark nedir?', dogru: 'Özdeyişin söyleyeni bellidir, atasözününki bilinmez.',
+    { id: 'a4', kaz: 'OZD.1', soru: 'Özdeyiş ile atasözü arasındaki en önemli fark nedir?', dogru: 'Özdeyişin söyleyeni bellidir, atasözününki bilinmez.',
       gorsel: { tur: 'emoji', metin: '📜 ⚖️ 📜' },
       yanlislar: [['Atasözünün söyleyeni bellidir, özdeyişinki bilinmez.', 'ters-hatirladi'],
         ['Özdeyiş uzundur, atasözü kısadır.', 'uzunluk-fark-sandi'], ['Atasözü bir düşünce bildirir, özdeyiş bildirmez.', 'ozdeyis-yargisiz-sandi']],
       ipucu: 'Defterindeki "Özdeyiş mi, atasözü mü?" kutusunu hatırla: farkı "söyleyen" kelimesinde.',
       why: 'İkisi de kısa ve özlüdür, ikisi de bir düşünce bildirir. Fark şudur: özdeyişin söyleyeni bellidir, atasözünün söyleyeni bilinmez.' },
 
-    /* --- OZD.3: Özdeyişin anlamı --- */
-    { id: 'c1', kaz: 'OZD.3', soru: 'Bu özdeyişte anlatılmak istenen nedir?', dogru: 'Hayatta bize en doğru yolu bilim gösterir.',
+    /* --- OZD.2: Özdeyiş hangi konuyla ilgili? --- */
+    { id: 'k1', kaz: 'OZD.2', soru: 'Bu özdeyiş hangi konuyla ilgilidir?', dogru: 'Eğitim',
+      gorsel: { tur: 'parsomen', metin: 'Eğitimin kökleri acı, meyveleri tatlıdır.', kim: '— Aristoteles (Antik Yunan düşünürü)' },
+      yanlislar: [['Bahçe ve meyveler', 'gercek-anlam-tuzagi'], ['Spor', 'konu-karisti'], ['Barış', 'konu-karisti']],
+      ipucu: '"Kök" ve "meyve" burada mecaz: çalışmanın başı ve sonunda kazandığımız şey.',
+      why: 'Aristoteles, eğitimin başta zor ve yorucu olduğunu ama sonunda güzel kazançlar getirdiğini anlatır. Konusu eğitimdir. Aristoteles 2300 yıldan fazla önce yaşamış bir düşünürdür.' },
+    { id: 'k2', kaz: 'OZD.2', soru: 'Bu özdeyiş hangi konuyla ilgilidir?', dogru: 'Okuma',
+      gorsel: { tur: 'parsomen', metin: 'Egzersiz beden için ne ise, okumak da zihin için odur.', kim: '— Joseph Addison (İngiliz gazeteci)' },
+      yanlislar: [['Spor', 'gercek-anlam-tuzagi'], ['Bilim', 'konu-karisti'], ['Barış', 'konu-karisti']],
+      ipucu: 'Söz egzersizi bir örnek olarak kullanıyor. Asıl anlatmak istediği şey hangisi?',
+      why: 'Spor bedenimizi nasıl güçlendirirse, okumak da zihnimizi öyle güçlendirir. Asıl konu okumadır.' },
+    { id: 'k3', kaz: 'OZD.2', soru: 'Bu özdeyiş hangi konuyla ilgilidir?', dogru: 'Çalışkanlık',
+      gorsel: { tur: 'parsomen', metin: 'Dâhilik yüzde bir ilham, yüzde doksan dokuz alın teridir.', kim: '— Thomas Edison (Amerikalı mucit)' },
+      yanlislar: [['Sağlık', 'gercek-anlam-tuzagi'], ['Matematik', 'sayi-tuzagi'], ['Okuma', 'konu-karisti']],
+      ipucu: '"Alın teri" emek vermek, çok çalışmak demektir.',
+      why: 'Edison, büyük başarıların çoğunun çok çalışmakla geldiğini anlatır. Edison elektrik ampulünü geliştiren mucitlerden biridir; sonuca ulaşana kadar binlerce deneme yapmıştır.' },
+    { id: 'k4', kaz: 'OZD.2', soru: 'Bu özdeyiş hangi konuyla ilgilidir?', dogru: 'Felsefe (düşünmek)',
+      gorsel: { tur: 'parsomen', metin: 'Düşünüyorum, öyleyse varım.', kim: '— René Descartes (Fransız matematikçi)' },
+      yanlislar: [['Sağlık', 'konu-karisti'], ['Trafik', 'konu-karisti'], ['Doğa', 'konu-karisti']],
+      ipucu: 'Felsefe; insanın düşünmesi, var olması ve bilmesi üzerine kafa yormaktır.',
+      why: 'Descartes, düşünebildiği için var olduğundan emin olduğunu söyler. Bu, düşünme ve varlık üzerine bir sözdür; konusu felsefedir. Descartes hem matematikçi hem filozoftur.' },
+    { id: 'k5', kaz: 'OZD.2', soru: 'Bu özdeyiş hangi konuyla ilgilidir?', dogru: 'Bilim',
       gorsel: { tur: 'parsomen', metin: 'Hayatta en hakiki mürşit ilimdir.', kim: '— Mustafa Kemal Atatürk' },
-      yanlislar: [['Hayatta en zengin kişiler bilim insanlarıdır.', 'yanlis-cikarim'], ['Okulda yalnızca fen dersi önemlidir.', 'asiri-daraltma'],
-        ['Bilim insanları her şeyi bilir.', 'asiri-genelleme']],
-      ipucu: '"Mürşit" yol gösteren demektir. "İlim" ise bilim demektir.',
-      why: 'Mürşit "yol gösteren", ilim "bilim" demektir. Atatürk, hayatta bize en doğru yolu bilimin gösterdiğini anlatır.' },
-    { id: 'c2', kaz: 'OZD.3', soru: 'Bu özdeyiş ne anlatır?', dogru: 'Ülkemizde de dünyada da barış olmalı.',
-      gorsel: { tur: 'parsomen', metin: 'Yurtta sulh, cihanda sulh.', kim: '— Mustafa Kemal Atatürk' },
-      yanlislar: [['Yalnız kendi ülkemizde barış olması yeter.', 'yarim-anlam'], ['Ülkeler her zaman birbiriyle yarışmalı.', 'zit-anlam'],
-        ['Herkes yurt dışına gezmeye gitmeli.', 'kelime-anlami-bilmiyor']],
-      ipucu: '"Sulh" barış, "cihan" dünya demektir.',
-      why: 'Sulh "barış", cihan "dünya" demektir: hem yurdumuzda hem bütün dünyada barış olsun.' },
-    { id: 'c3', kaz: 'OZD.3', soru: 'Bu özdeyiş en çok hangi değeri öne çıkarır?', dogru: 'Dostluk ve yardımlaşma',
-      gorsel: { tur: 'parsomen', metin: 'Gelin tanış olalım, işi kolay kılalım.', kim: '— Yunus Emre' },
-      yanlislar: [['Tutumluluk', 'deger-karisti'], ['Dürüstlük', 'deger-karisti'], ['Temizlik', 'deger-karisti']],
-      ipucu: 'İnsanlar tanışıp birlikte olunca işler nasıl olur?',
-      why: 'Yunus Emre, insanlar tanışıp dost olunca ve birbirine yardım edince işlerin kolaylaşacağını anlatır.' },
-    { id: 'c4', kaz: 'OZD.3', soru: 'Bu sözle anlatılmak istenen nedir?', dogru: 'Gençlerin yetişmesinde öğretmenler çok önemlidir.',
-      gorsel: { tur: 'parsomen', metin: 'Öğretmenler! Yeni nesil sizin eseriniz olacaktır.', kim: '— Mustafa Kemal Atatürk' },
-      yanlislar: [['Öğretmenler çok kitap yazmalıdır.', 'eser-gercek-anlam'], ['Yeni yetişen herkes öğretmen olmalıdır.', 'yanlis-cikarim'],
-        ['Öğretmenler yalnızca okulda çalışır.', 'ilgisiz']],
-      ipucu: '"Yeni nesil" yeni yetişen çocuklar ve gençlerdir. Onları kim yetiştirir?',
-      why: 'Yeni nesil, yani yetişen çocuklar ve gençler, öğretmenlerin emeğiyle yetişir. Atatürk öğretmenlerin bu önemini anlatır.' }
+      yanlislar: [['Okuma', 'konu-karisti'], ['Barış', 'konu-karisti'], ['Spor', 'konu-karisti']],
+      ipucu: '"İlim" kelimesinin anlamını düşün.',
+      why: '"İlim" bilim, "mürşit" yol gösteren demektir. Atatürk, hayatta bize en doğru yolu bilimin gösterdiğini anlatır. Konusu bilimdir.' },
+    { id: 'k6', kaz: 'OZD.2', soru: 'Bu özdeyiş hangi konuyla ilgilidir?', dogru: 'Davranış (söz ve iş)',
+      gorsel: { tur: 'parsomen', metin: 'Âyinesi iştir kişinin, lâfa bakılmaz.', kim: '— Ziya Paşa (Osmanlı şairi)' },
+      yanlislar: [['Ayna ve cam', 'gercek-anlam-tuzagi'], ['Bilim', 'konu-karisti'], ['Doğa', 'konu-karisti']],
+      ipucu: '"Âyine" ayna demektir. Bir insanı gösteren ayna onun neyidir?',
+      why: 'Bir insanın nasıl biri olduğu söylediklerinden değil, yaptığı işlerden anlaşılır. Söz, davranışlarımızla ilgilidir.' },
+
+    /* --- OZD.3: Özdeyiş ne anlatıyor, bize ne öğretiyor? --- */
+    { id: 'm1', kaz: 'OZD.3', soru: 'Bu özdeyişte anlatılmak istenen nedir?', dogru: 'Kendisinden önceki bilim insanlarının bilgilerinden yararlandı.',
+      gorsel: { tur: 'parsomen', metin: 'Daha uzağı görebildiysem, devlerin omuzlarında durduğum içindir.', kim: '— Isaac Newton (İngiliz bilim insanı)' },
+      yanlislar: [['Uzun boylu insanların omuzlarına çıkarak etrafa baktı.', 'gercek-anlam-tuzagi'], ['Dürbünle çok uzakları görebiliyordu.', 'gercek-anlam-tuzagi'],
+        ['Her şeyi kimseden yardım almadan kendisi buldu.', 'zit-anlam']],
+      ipucu: 'Buradaki "devler", Newton\'dan önce yaşamış büyük bilim insanlarıdır.',
+      why: 'Newton, yerçekimini açıklayan bilim insanıdır. Başarısını, kendisinden önceki bilim insanlarının çalışmalarına borçlu olduğunu söyler: bilim, birikerek ilerler.' },
+    { id: 'm2', kaz: 'OZD.3', soru: 'Bu özdeyiş bize ne öğütler?', dogru: 'Büyük işler küçük bir başlangıçla başlar.',
+      gorsel: { tur: 'parsomen', metin: 'Bin fersahlık yolculuk tek bir adımla başlar.', kim: '— Lao Tzu (Çinli düşünür)' },
+      yanlislar: [['Uzun yolculuklara yürüyerek gitmeliyiz.', 'gercek-anlam-tuzagi'], ['Tek bir adım atmak her işi bitirir.', 'yanlis-cikarim'],
+        ['Uzun yollara hiç çıkmamalıyız.', 'zit-anlam']],
+      ipucu: '"Fersah" eskiden kullanılan bir uzunluk ölçüsüdür. Çok uzun bir yol bile nasıl başlar?',
+      why: 'En büyük iş bile ilk küçük adımla başlar. Bir işi gözümüzde büyütmeden başlamalıyız. Lao Tzu, yaklaşık 2500 yıl önce Çin\'de yaşamış bir düşünürdür.' },
+    { id: 'm3', kaz: 'OZD.3', soru: 'Bu özdeyişte anlatılmak istenen nedir?', dogru: 'Hem öğrenmeli hem de öğrendiklerimiz üzerine düşünmeliyiz.',
+      gorsel: { tur: 'parsomen', metin: 'Öğrenip de düşünmemek boşa emektir; düşünüp de öğrenmemek tehlikelidir.', kim: '— Konfüçyüs (Çinli düşünür ve öğretmen)' },
+      yanlislar: [['Bilgileri ezberlemek yeterlidir.', 'yarim-anlam'], ['Düşünmek her zaman tehlikelidir.', 'yanlis-cikarim'],
+        ['Öğrenmeye gerek yoktur, düşünmek yeter.', 'yarim-anlam']],
+      ipucu: 'Sözün iki parçası var. İkisi birlikte ne söylüyor?',
+      why: 'Konfüçyüs, öğrenmenin ve düşünmenin birlikte olması gerektiğini anlatır: öğrendiğimizi düşünerek anlarız. Konfüçyüs, Çin\'in en ünlü öğretmenlerinden biridir.' },
+    { id: 'm4', kaz: 'OZD.3', soru: 'Bu özdeyişte anlatılmak istenen nedir?', dogru: 'Yeni şeyler bulmak için hayal kurmak da çok önemlidir.',
+      gorsel: { tur: 'parsomen', metin: 'Hayal gücü bilgiden daha önemlidir.', kim: '— Albert Einstein (bilim insanı)' },
+      yanlislar: [['Bilgi öğrenmeye hiç gerek yoktur.', 'asiri-genelleme'], ['Bilgi her zaman hayal gücünden önemlidir.', 'ters-anlam'],
+        ['Hayal kuranlar ders çalışmaz.', 'yanlis-cikarim']],
+      ipucu: 'Bilim insanları yeni bir şey bulmadan önce neyi hayal eder?',
+      why: 'Einstein, bilginin yanında hayal gücünün de çok önemli olduğunu anlatır; yeni buluşlar önce hayalde başlar. Bu söz "bilgi gereksizdir" demez. Einstein ışık ve zaman üzerine çalışmış ünlü bir bilim insanıdır.' },
+    { id: 'm5', kaz: 'OZD.3', soru: 'Bu özdeyiş bize ne öğretir?', dogru: 'Bilge insan, öğrenecek daha çok şeyi olduğunu bilir.',
+      gorsel: { tur: 'parsomen', metin: 'Bildiğim tek şey, hiçbir şey bilmediğimdir.', kim: '— Sokrates (Antik Yunan düşünürü)' },
+      yanlislar: [['Sokrates hiçbir şey bilmeyen biriydi.', 'gercek-anlam-tuzagi'], ['Öğrenmeye çalışmak boşunadır.', 'yanlis-cikarim'],
+        ['Her şeyi bildiğimizi düşünmeliyiz.', 'zit-anlam']],
+      ipucu: 'Çok bilgili bir düşünür neden böyle söylemiş olabilir?',
+      why: 'Sokrates çok bilgili bir düşünürdü. Bu sözle alçak gönüllü olmayı ve öğrenmeye her zaman açık kalmayı öğütler.' }
   ]
 };
 
@@ -352,7 +369,7 @@ function sahneSVG() {   // başlık ekranı: müze salonu, vitrinler, büyük pa
     '<rect x="6" y="16" width="68" height="5" rx="2" fill="#c9a26a"/><rect x="6" y="28" width="56" height="5" rx="2" fill="#c9a26a"/>' +
     '<rect x="6" y="40" width="62" height="5" rx="2" fill="#c9a26a"/><rect x="30" y="54" width="40" height="5" rx="2" fill="#e5486f"/></g>' +
     '<g transform="translate(270 70) rotate(18)"><path d="M0 0 Q-22 26 -6 70 L0 74 L6 70 Q22 26 0 0Z" fill="#2ec4b6"/><path d="M0 6 L0 80" stroke="#1f2a44" stroke-width="2"/></g>' +
-    '<g font-size="20"><text x="96" y="104">📘</text><text x="294" y="134">⭐</text><text x="100" y="138">📗</text></g></svg>';
+    '<g font-size="20"><text x="92" y="104">🌍</text><text x="294" y="134">⭐</text><text x="100" y="138">📗</text></g></svg>';
 }
 function karakterSVG() { // mürekkep şişesi "Mürekkep"; ruh hâli CSS sınıfıyla değişir (mutlu / dusun / uzgun)
   const r = T.karakterRenk;
