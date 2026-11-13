@@ -69,6 +69,8 @@ def sayfa_oku(metin):
 
 def ay_etiketi(baslangic):
     gun, ay, yil = baslangic.split()
+    if ay not in AYLAR:
+        raise ValueError(f"Ay adı tanınmadı: '{ay}'. ClassDojo raporu Türkçe dilde indirilmeli.")
     return f"{yil}-{AYLAR.index(ay) + 1:02d} {ay}"
 
 
@@ -91,7 +93,11 @@ def main():
         except ValueError as hata:
             print(f"HATA: {i}. sayfa okunamadı: {hata}")
             sys.exit(1)
-    aylar = {ay_etiketi(k["baslangic"]) for _, k in kayitlar}
+    try:
+        aylar = {ay_etiketi(k["baslangic"]) for _, k in kayitlar}
+    except ValueError as hata:
+        print(f"HATA: {hata}")
+        sys.exit(1)
     if len(aylar) != 1:
         print("HATA: PDF'te birden fazla dönem var:", aylar)
         sys.exit(1)
@@ -154,16 +160,29 @@ def onceki_ay_yuzdeleri(ay):
     return onceki[-1], sonuc
 
 
+def net(k):
+    return k["olumlu"][1] - k["gelistirme"][1]
+
+
+def esitlik_uyarilari(sirali):
+    """İlk dörtte yan yana eşit net puanlar için öğretmene uyarı metinleri (hesap değişmez)."""
+    uyarilar = []
+    for i in range(min(3, len(sirali) - 1)):
+        if net(sirali[i]) == net(sirali[i + 1]):
+            neden = "ödül sınırı" if i == 2 else "sıralama"
+            uyarilar.append(f"{i + 1}. ve {i + 2}. sırada eşit net puan ({net(sirali[i])}) — {neden}; öğretmen karar vermeli.")
+    return uyarilar
+
+
 def yildizlari_hazirla(ay, kayitlar, hedef):
     """Ayın ilk üçü (net puan = olumlu − geliştirme) ve ayın en çok geliştireni (olumlu yüzdesi artışı)."""
-    sirali = sorted(kayitlar, key=lambda k: (-(k["olumlu"][1] - k["gelistirme"][1]), -(k["yuzde"] or 0), k["ad"]))
-    net = lambda k: k["olumlu"][1] - k["gelistirme"][1]
+    sirali = sorted(kayitlar, key=lambda k: (-net(k), -(k["yuzde"] or 0), tr_sirala(k["ad"])))
+    uyarilar = []
     satirlar = ["\t".join(["Ay", "Ödül", "Öğrenci", "Not", "Kayıt adı", "Durum"])]
     print(f"\nAYIN YILDIZLARI ({ay}) — net puan = olumlu − geliştirme")
     for i, k in enumerate(sirali[:5], 1):
         print(f"  {i}. {k['ad']}: net {net(k)} (olumlu {k['olumlu'][1]}, geliştirme {k['gelistirme'][1]}, %{k['yuzde']})")
-    if net(sirali[2]) == net(sirali[3]):
-        print("  UYARI: 3. ve 4. sırada eşitlik var; öğretmen karar vermeli.")
+    uyarilar += esitlik_uyarilari(sirali)
     for i, k in enumerate(sirali[:3], 1):
         satirlar.append("\t".join([ay, str(i), kisa_ad(k["ad"]), "", k["ad"], "YAYINDA"]))
     # Onur Listesi: 4.–10. sıra, SIRASIZ ve PUANSIZ (alfabetik). 10. ile eşit puanlılar da girer.
@@ -177,23 +196,48 @@ def yildizlari_hazirla(ay, kayitlar, hedef):
             print(f"  {k['ad']}")
             satirlar.append("\t".join([ay, "ONUR", kisa_ad(k["ad"]), "", k["ad"], "YAYINDA"]))
     onceki_ad, onceki = onceki_ay_yuzdeleri(ay)
-    ilk_uc = {k["ad"] for k in sirali[:3]}
-    adaylar = [(k["yuzde"] - onceki[k["ad"]], k) for k in kayitlar
-               if k["ad"] in onceki and k["ad"] not in ilk_uc and isinstance(k["yuzde"], int)]
-    if adaylar:
-        adaylar.sort(key=lambda x: (-x[0], x[1]["ad"]))
+    secilen, gelisen_uyarilari = gelisen_sec(kayitlar, sirali[:3], onceki)
+    uyarilar += gelisen_uyarilari
+    if secilen:
+        fark, k = secilen[0]
         print(f"EN ÇOK GELİŞEN ({onceki_ad} → {ay}, olumlu yüzdesi artışı):")
-        for fark, k in adaylar[:3]:
-            print(f"  {k['ad']}: %{onceki[k['ad']]} → %{k['yuzde']} ({fark:+d})")
-        fark, k = adaylar[0]
+        for f_, k_ in secilen[:3]:
+            print(f"  {k_['ad']}: %{onceki[k_['ad']]} → %{k_['yuzde']} ({f_:+d})")
         if fark > 0:
             satirlar.append("\t".join([ay, "GELİŞEN", kisa_ad(k["ad"]), f"%{onceki[k['ad']]} → %{k['yuzde']}", k["ad"], "YAYINDA"]))
-    else:
+    elif not onceki:
         print("EN ÇOK GELİŞEN: önceki ayın tablosu yok, bu ay hesaplanamadı.")
     dosya = os.path.join(hedef, "yildizlar-yapistir.tsv")
     with open(dosya, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(satirlar) + "\n")
     print(f"Ayın Yıldızları dosyası: {dosya}")
+    if uyarilar:
+        print("\nÖĞRETMEN KONTROLÜ GEREKİYOR:")
+        for u in uyarilar:
+            print(f"  UYARI: {u}")
+    return uyarilar
+
+
+def gelisen_sec(kayitlar, ilk_uc_kayit, onceki):
+    """GELİŞEN adaylarını (artışa göre sıralı) ve öğretmen uyarılarını döndürür. Ödül mantığı değişmez:
+    ilk üç hariç, olumlu yüzdesi en çok artan; yalnız artış > 0 ise TSV'ye yazılır."""
+    uyarilar = []
+    if not onceki:
+        return [], uyarilar
+    ilk_uc = {k["ad"] for k in ilk_uc_kayit}
+    bu_ay = {k["ad"] for k in kayitlar}
+    eslesmeyen = sorted(bu_ay - set(onceki), key=tr_sirala)
+    if eslesmeyen:
+        uyarilar.append(f"Önceki ayın tablosunda bulunmayan {len(eslesmeyen)} ad var (yeni öğrenci ya da ad yazımı değişmiş "
+                        f"olabilir); GELİŞEN hesabına katılmadılar: {', '.join(eslesmeyen)}")
+    adaylar = [(k["yuzde"] - onceki[k["ad"]], k) for k in kayitlar
+               if k["ad"] in onceki and k["ad"] not in ilk_uc and isinstance(k["yuzde"], int)]
+    adaylar.sort(key=lambda x: (-x[0], tr_sirala(x[1]["ad"])))
+    if len(adaylar) > 1 and adaylar[0][0] > 0 and adaylar[0][0] == adaylar[1][0]:
+        esit = [k["ad"] for f, k in adaylar if f == adaylar[0][0]]
+        uyarilar.append(f"GELİŞEN için eşitlik (+{adaylar[0][0]} puan): {', '.join(esit)}. Dosyaya alfabetik ilk yazıldı; "
+                        "öğretmen karar vermeli, gerekirse tablodaki adı değiştirin.")
+    return adaylar, uyarilar
 
 
 if __name__ == "__main__":
