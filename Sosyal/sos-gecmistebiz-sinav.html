@@ -5,34 +5,108 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ünite Değerlendirme: Geçmişte Biz</title>
 <style>
-:root{--bg:#f4f6fa;--kart:#fff;--yazi:#1c2430;--cizgi:#c9d1dc;--mavi:#2b5fd9;--mavi-acik:#e6edfc;--gri:#5b6470}
-@media (prefers-color-scheme:dark){:root{--bg:#12161c;--kart:#1b212a;--yazi:#e8ecf2;--cizgi:#3a4350;--mavi:#7ba2ff;--mavi-acik:#22324f;--gri:#aab3c0}}
+:root{--bg1:#fff1d6;--bg2:#e2efff;--kart:#fffdf8;--yazi:#2a2118;--cizgi:#e6d5b8;--ana:#b5562b;--ana-koyu:#8a3f1d;--ana-acik:#fde6d6;--gri:#6b5e50}
+@media (prefers-color-scheme:dark){:root{--bg1:#1d1812;--bg2:#141c27;--kart:#231d17;--yazi:#f3ece2;--cizgi:#4a3d2e;--ana:#e0844c;--ana-koyu:#f3b386;--ana-acik:#3d2a1d;--gri:#c7b8a5}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--yazi);font:19px/1.5 system-ui,"Segoe UI",Roboto,Arial,sans-serif}
-#app{max-width:760px;margin:0 auto;padding:16px}
-.kart{background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:18px;margin:12px 0}
-h1{font-size:1.45rem;margin:0 0 8px}
-.soru{font-size:1.3rem;font-weight:600;margin:6px 0 16px;line-height:1.5;white-space:pre-line}
+body{margin:0;min-height:100vh;color:var(--yazi);font:19px/1.5 system-ui,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;background-image:radial-gradient(circle at 1px 1px,rgba(140,90,40,.22) 1px,transparent 0);background-size:22px 22px}
+#app{position:relative;max-width:860px;margin:0 auto;padding:16px}
+.kart{background:var(--kart);border:2px solid var(--cizgi);border-radius:22px;padding:20px;margin:12px 0;box-shadow:0 6px 18px rgba(90,60,20,.12)}
+h1{font-size:1.7rem;line-height:1.25;margin:0 0 6px;color:var(--ana-koyu)}
+.soru{font-size:1.28rem;font-weight:650;margin:16px 0;line-height:1.5;white-space:pre-line}
 .sec{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:480px){.sec{grid-template-columns:1fr}}
-button{font:inherit;min-height:56px;border-radius:14px;border:2px solid var(--mavi);background:var(--kart);color:var(--yazi);cursor:pointer;padding:8px 14px;text-align:left}
-button:focus-visible{outline:3px solid var(--mavi);outline-offset:2px}
-button.secili{background:var(--mavi);color:#fff}
-button.dolu{background:var(--mavi);color:#fff;text-align:center}
-button.ikincil{text-align:center;border-color:var(--cizgi)}
+@media (max-width:560px){.sec{grid-template-columns:1fr}}
+button{font:inherit;min-height:56px;border-radius:16px;border:2px solid var(--cizgi);background:var(--kart);color:var(--yazi);cursor:pointer;padding:8px 14px;text-align:left}
+.sec button{display:flex;gap:10px;align-items:center;border-width:3px;box-shadow:0 3px 0 var(--cizgi)}
+.sec button .h{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--ana-acik);color:var(--ana-koyu);font-weight:800}
+.sec button.secili{background:var(--ana);border-color:var(--ana-koyu);color:#fff;box-shadow:0 3px 0 var(--ana-koyu)}
+.sec button.secili .h{background:#fff;color:#8a3f1d}
+button:focus-visible{outline:3px solid var(--ana);outline-offset:3px}
+button.dolu{background:var(--ana);border-color:var(--ana-koyu);color:#fff;text-align:center;font-weight:700;box-shadow:0 4px 0 var(--ana-koyu)}
+button.ikincil{text-align:center}
 button:disabled{opacity:.45;cursor:default}
-.ust{display:flex;justify-content:space-between;align-items:center;font-size:.95rem;color:var(--gri);margin-bottom:6px}
+.ust{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.95rem;color:var(--gri);padding-right:52px}
+.chip{display:inline-flex;gap:6px;align-items:center;padding:4px 12px;border-radius:999px;color:#fff;font-weight:700}
+.ilerle{height:14px;border-radius:8px;background:var(--cizgi);overflow:hidden;margin:10px 0 4px}
+.ilerle i{display:block;height:100%;background:linear-gradient(90deg,#f2c14e,var(--ana));border-radius:8px}
 .gezgin{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.gezgin button{min-height:44px;min-width:44px;padding:0;text-align:center;font-size:.95rem;border-width:2px}
-.gezgin button.cevapli{background:var(--mavi-acik)}
-.gezgin button.simdi{border-color:var(--yazi);border-width:3px}
+.gezgin button{min-height:44px;min-width:44px;padding:0;text-align:center;font-size:.95rem;border-width:3px;font-weight:700}
+.gezgin button.cevapli{background:var(--ana-acik)}
+.gezgin button.simdi{outline:3px solid var(--yazi);outline-offset:1px}
 .alt{display:flex;gap:10px;justify-content:space-between;margin-top:16px;flex-wrap:wrap}
 .alt button{min-width:130px}
-.uyari{background:var(--mavi-acik);border-radius:12px;padding:12px;margin:12px 0}
-@media (prefers-reduced-motion:no-preference){button{transition:background .15s}}
+.uyari{background:var(--ana-acik);border-radius:14px;padding:12px;margin:12px 0}
+.bolumler{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}
+.bolumler div{border-radius:16px;padding:10px 12px;color:#fff;font-weight:700;line-height:1.3}
+.bolumler span{display:block;font-size:1.8rem}
+.sahne svg{display:block;width:100%;max-height:190px}
+.tiktak{display:flex;gap:10px;align-items:flex-end;margin-top:14px}
+.tiktak svg{width:54px;flex:none}
+.tiktak.buyuk svg{width:90px}
+.balon{background:var(--ana-acik);border-radius:16px 16px 16px 4px;padding:8px 12px;font-size:.98rem}
+#sesbtn{position:fixed;top:12px;right:12px;z-index:5;min-height:46px;width:46px;border-radius:50%;padding:0;text-align:center;font-size:1.3rem;box-shadow:0 3px 8px rgba(0,0,0,.15)}
+.rozet{display:flex;justify-content:center;margin:6px 0}
+.rozet svg{width:150px}
+/* ---- soru görselleri (her temada açık "kâğıt" zemin) ---- */
+.gv{margin:0;background:#fffaf0;color:#2a2118;border:2px dashed #d9b98a;border-radius:18px;padding:14px}
+.gv figcaption{font-weight:800;color:#8a3f1d;margin-bottom:10px;font-size:1.05rem}
+.gv svg{display:block;width:100%;height:auto}
+.g-paneller{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch}
+.g-panel{flex:1 1 200px;background:#fff;border:2px solid #ecdcc0;border-radius:14px;padding:10px;text-align:center}
+.g-etk{font-size:.85rem;font-weight:700;color:#6b5e50;background:#fdf0dc;border-radius:999px;display:inline-block;padding:2px 10px}
+.g-e{font-size:2.6rem;line-height:1.25;margin:6px 0}
+.g-balon{background:#e9f3ff;border:2px solid #9cc3f0;border-radius:14px;padding:6px 10px;font-size:.95rem;margin-top:4px}
+.g-kartlar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.g-kart{background:#fff;border:2px solid #ecdcc0;border-radius:14px;padding:10px;text-align:center}
+.g-kart b{display:block}
+.g-kart small{display:block;color:#5b4f42;font-size:.9rem;line-height:1.35;margin-top:4px}
+.g-tablo{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:12px;overflow:hidden;border:2px solid #ecdcc0;font-size:1rem}
+.g-tablo th{background:#b5562b;color:#fff;padding:8px 10px;text-align:left}
+.g-tablo td{padding:8px 10px;border-top:1px solid #f0e4cf}
+.g-tablo tr:nth-child(even) td{background:#fff7ea}
+.g-tablo .o{text-align:center;font-size:1.25rem}
+.g-serit{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:700;font-size:.9rem;color:#6b5e50}
+.g-serit i{flex:1;height:6px;border-radius:3px;background:linear-gradient(90deg,#d9b98a,#b5562b)}
+.g-akis{display:flex;align-items:stretch;gap:6px;justify-content:center}
+.g-adim{flex:1 1 0;max-width:200px;background:#fff;border:2px solid #ecdcc0;border-radius:14px;padding:8px;text-align:center;font-size:.98rem;line-height:1.3}
+.g-adim .no{display:inline-block;width:26px;height:26px;border-radius:50%;background:#f2c14e;font-weight:800;font-size:.85rem;line-height:26px}
+.g-adim .g-e{font-size:2.2rem;margin:4px 0}
+.g-ok{align-self:center;font-size:1.6rem;color:#b5562b;font-weight:800}
+@media (max-width:560px){.g-akis{flex-direction:column;align-items:center}.g-adim{max-width:none;width:100%}.g-ok{transform:rotate(90deg)}}
+.g-agac{display:flex;flex-direction:column;align-items:center}
+.g-kusak{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.g-uye{background:#fff;border:2px solid #9ccf9c;border-radius:14px;padding:6px 12px;text-align:center;min-width:100px;line-height:1.3}
+.g-uye .g-e{font-size:2rem;margin:0}
+.g-uye .yil{font-weight:800;color:#2f7d32}
+.g-uye .yil.bos{color:#b3261e;font-size:1.2rem}
+.g-bag{width:4px;height:20px;background:#9ccf9c}
+.g-kimlik{display:flex;gap:16px;align-items:center;background:#fff;border:2px solid #ecdcc0;border-radius:14px;padding:12px;flex-wrap:wrap}
+.g-sil{width:84px;height:84px;border-radius:50%;background:#e9e2d6;display:grid;place-items:center;flex:none;font-size:2.6rem;font-weight:800;color:#8a7a66}
+.g-kimlik dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 10px;flex:1 1 240px}
+.g-kimlik dt{font-weight:700;color:#6b5e50}
+.g-kimlik dd{margin:0}
+.g-harita{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:center}
+.g-merkez{grid-column:1/-1;justify-self:center;background:#b5562b;color:#fff;border-radius:999px;padding:8px 22px;font-weight:800}
+.g-dal{background:#fff;border:2px solid #ecdcc0;border-radius:12px;padding:6px;text-align:center;font-weight:700;font-size:.95rem}
+.g-dal span{display:block;font-size:1.8rem}
+.g-zaman{display:flex;position:relative}
+.g-zaman::before{content:"";position:absolute;left:4%;right:4%;top:58px;height:6px;background:linear-gradient(90deg,#d9b98a,#b5562b);border-radius:3px}
+.g-nokta{position:relative;flex:1;text-align:center;padding:0 4px;font-size:.95rem;line-height:1.3}
+.g-nokta .g-e{font-size:2rem;height:44px;margin:0}
+.g-nokta .d{width:20px;height:20px;border-radius:50%;background:#b5562b;border:4px solid #fff;margin:4px auto 6px;box-shadow:0 0 0 2px #b5562b}
+.g-nokta b{display:block;color:#8a3f1d}
+.g-venn-dar{display:none}
+@media (max-width:560px){.gv svg[aria-label^="İki küme"]{display:none}.g-venn-dar{display:grid;gap:8px}
+ .g-venn-dar div{border-radius:14px;padding:8px 12px;font-weight:800}.g-venn-dar small{display:block;font-weight:400;font-size:1rem}
+ .g-venn-dar .orta{background:#fff;border:3px dashed #b5562b;color:#b5562b;text-align:center}}
+.konfeti{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;z-index:9;pointer-events:none;animation:dus 1s ease-in forwards}
+@keyframes dus{to{transform:translateY(105vh) rotate(540deg)}}
+@media (prefers-reduced-motion:no-preference){.ilerle i{transition:width .3s}.sec button{transition:background .15s,transform .1s}.sec button:active{transform:translateY(2px)}}
+@media (prefers-reduced-motion:reduce){.konfeti{display:none}}
 </style>
 </head>
 <body>
+<button id="sesbtn" class="ikincil" aria-label="Sesi kapat" title="Ses">🔊</button>
 <div id="app"></div>
 <script>
 /* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
@@ -164,363 +238,196 @@ const RaporMotoru = (() => {
 </script>
 <script>
 'use strict';
-/* ===== VERİ (öğretmen yalnızca burayı düzenler) ===== */
+/* ===== VERİ (öğretmen yalnızca burayı düzenler) =====
+ * Her maddede "gorsel" soru kartının üstünde çizilir. Türler:
+ *   paneller {paneller:[{etiket, e, balon}]}            resimli sahne / konuşma balonu
+ *   kartlar  {kartlar:[{e, ad, alt}]}                     simgeli kartlar
+ *   tablo    {basliklar:[...], satirlar:[[...]], serit}  tablo (serit: true → altta "geçmiş → bugün" şeridi)
+ *   akis     {adimlar:[{e, ad}]}                          oklu akış şeması
+ *   agac     {kusaklar:[[{e, ad, yil}]]}                  aile ağacı (yil "?" → kırmızı)
+ *   venn     {sol:{ad, satir:[]}, sag:{ad, satir:[]}}     iki küme şeması, ortası "?"
+ *   yol      {bas, son, not}                              kroki (yol haritası)
+ *   kimlik   {satirlar:[[simge, etiket, değer]]}         kahraman kimlik kartı (adı "?")
+ *   harita   {merkez, dallar:[{e, ad}]}                   kavram haritası (6 dal)
+ *   zaman    {noktalar:[{e, yil, ad}]}                    zaman şeridi
+ */
 const OYUN = {
  "id": "sos-gecmistebiz-sinav",
  "ad": "Ünite Değerlendirme: Geçmişte Biz",
+ "tema": {
+  "baslik": "Zaman Sandığı",
+  "hikaye": "Büyükannenin eski sandığı açıldı! İçinden mektuplar, fotoğraflar, oyuncaklar ve madalyalar çıktı. Her eşya bir soru saklıyor. Görsellere dikkatle bak, soruları cevapla.",
+  "karakter": "Tiktak"
+ },
  "kazanimlar": [
-  {
-   "kod": "SB.4.2.1",
-   "ad": "Sözlü, yazılı, görsel kaynaklar ve nesnelerden yararlanarak aile tarihi çalışması yapar."
-  },
-  {
-   "kod": "SB.4.2.2",
-   "ad": "Ailesi ve çevresindeki millî kültürü yansıtan ögeleri araştırarak örnekler verir."
-  },
-  {
-   "kod": "SB.4.2.3",
-   "ad": "Geleneksel çocuk oyunlarını değişim ve süreklilik açısından günümüzdeki oyunlarla karşılaştırır."
-  },
-  {
-   "kod": "SB.4.2.4",
-   "ad": "Millî Mücadele kahramanlarının hayatlarından hareketle Millî Mücadele'nin önemini kavrar."
-  }
+  { "kod": "SB.4.2.1", "ad": "Sözlü, yazılı, görsel kaynaklar ve nesnelerden yararlanarak aile tarihi çalışması yapar.", "kisa": "Aile Tarihi", "e": "🌳", "renk": "#2f7d32" },
+  { "kod": "SB.4.2.2", "ad": "Ailesi ve çevresindeki millî kültürü yansıtan ögeleri araştırarak örnekler verir.", "kisa": "Millî Kültür", "e": "🎭", "renk": "#7b3fa0" },
+  { "kod": "SB.4.2.3", "ad": "Geleneksel çocuk oyunlarını değişim ve süreklilik açısından günümüzdeki oyunlarla karşılaştırır.", "kisa": "Çocuk Oyunları", "e": "🪀", "renk": "#c96a00" },
+  { "kod": "SB.4.2.4", "ad": "Millî Mücadele kahramanlarının hayatlarından hareketle Millî Mücadele'nin önemini kavrar.", "kisa": "Millî Mücadele", "e": "🎖️", "renk": "#b3261e" }
  ],
  "maddeler": [
   {
-   "id": "s1",
-   "kaz": "SB.4.2.1",
-   "soru": "Ayşe, dedesiyle sohbet edip onun çocukluk anılarını dinledi ve defterine not aldı.\n\nAyşe aile tarihini araştırırken hangi tür kaynaktan yararlanmıştır?",
+   "id": "s1", "kaz": "SB.4.2.1",
+   "gorsel": { "tur": "paneller", "baslik": "Ayşe'nin araştırma günü", "paneller": [
+     { "etiket": "Dedesi", "e": "👴", "balon": "Ben senin yaşındayken köyümüzde elektrik yoktu. Akşamları gaz lambasıyla ders çalışırdık." },
+     { "etiket": "Ayşe", "e": "👧📓", "balon": "Dedemin anlattıklarını dinleyip defterime yazıyorum." } ] },
+   "soru": "Ayşe aile tarihini araştırırken hangi tür kaynaktan yararlanmıştır?",
    "dogru": "Sözlü kaynak",
-   "yanlislar": [
-    [
-     "Yazılı kaynak",
-     "kaynak-turu-karisti"
-    ],
-    [
-     "Görsel kaynak",
-     "kaynak-turu-karisti"
-    ],
-    [
-     "Nesne",
-     "kaynak-turu-karisti"
-    ]
-   ],
+   "yanlislar": [ ["Yazılı kaynak", "kaynak-turu-karisti"], ["Görsel kaynak", "kaynak-turu-karisti"], ["Nesne", "kaynak-turu-karisti"] ],
    "why": "Bir kişinin anlattıklarını dinleyerek öğrendiğimiz bilgiler sözlü kaynaktır. Ayşe'nin not alması kaynağı değiştirmez."
   },
   {
-   "id": "s2",
-   "kaz": "SB.4.2.1",
-   "soru": "Aşağıdakilerden hangisi yazılı kaynaktır?",
+   "id": "s2", "kaz": "SB.4.2.1",
+   "gorsel": { "tur": "kartlar", "baslik": "Elif'in aile tarihi dosyası", "kartlar": [
+     { "e": "📜", "ad": "Mektup", "alt": "Büyükannesinin gençliğinde yazdığı" },
+     { "e": "🗣️", "ad": "Anı", "alt": "Babaannesinin anlattığı" },
+     { "e": "🖼️", "ad": "Fotoğraf", "alt": "Anne ve babasının düğünü" },
+     { "e": "⌚", "ad": "Cep saati", "alt": "Dedesinden kalan" } ] },
+   "soru": "Elif'in dosyasındakilerden hangisi yazılı kaynaktır?",
    "dogru": "Büyükannenin gençliğinde yazdığı mektup",
-   "yanlislar": [
-    [
-     "Babaannenin anlattığı bir anı",
-     "sozlu-ile-karisti"
-    ],
-    [
-     "Anne ve babanın düğün fotoğrafı",
-     "gorsel-ile-karisti"
-    ],
-    [
-     "Dedenin eski cep saati",
-     "nesne-ile-karisti"
-    ]
-   ],
+   "yanlislar": [ ["Babaannenin anlattığı bir anı", "sozlu-ile-karisti"], ["Anne ve babanın düğün fotoğrafı", "gorsel-ile-karisti"], ["Dedenin eski cep saati", "nesne-ile-karisti"] ],
    "why": "Mektup, yazıyla oluşturulmuş bir belgedir; bu yüzden yazılı kaynaktır. Fotoğraf görsel, saat nesne, anlatılan anı sözlü kaynaktır."
   },
   {
-   "id": "s3",
-   "kaz": "SB.4.2.1",
-   "soru": "Elif aile ağacını hazırlıyor ama bazı akrabalarının doğum yıllarını bilmiyor.\n\nBilgileri doğru yazmak için en uygun yol hangisidir?",
+   "id": "s3", "kaz": "SB.4.2.1",
+   "gorsel": { "tur": "agac", "baslik": "Elif'in aile ağacı (yarım)", "kusaklar": [
+     [ { "e": "👴", "ad": "Dedesi", "yil": "1952" }, { "e": "👵", "ad": "Ninesi", "yil": "?" } ],
+     [ { "e": "👨", "ad": "Babası", "yil": "?" }, { "e": "👩", "ad": "Annesi", "yil": "1984" } ],
+     [ { "e": "👧", "ad": "Elif", "yil": "2016" } ] ] },
+   "soru": "Elif'in aile ağacında bazı doğum yılları eksik (?).\n\nBilgileri doğru tamamlamak için en uygun yol hangisidir?",
    "dogru": "Aile büyüklerine sorup bilgileri belgelerle karşılaştırmak",
-   "yanlislar": [
-    [
-     "Doğum yıllarını tahmin ederek yazmak",
-     "tahmin-yeterli-sandi"
-    ],
-    [
-     "Sınıftaki bir arkadaşına sormak",
-     "uygun-olmayan-kaynak"
-    ],
-    [
-     "İnternette bulduğu başka bir aile ağacını kopyalamak",
-     "uygun-olmayan-kaynak"
-    ]
-   ],
+   "yanlislar": [ ["Doğum yıllarını tahmin ederek yazmak", "tahmin-yeterli-sandi"], ["Sınıftaki bir arkadaşına sormak", "uygun-olmayan-kaynak"], ["İnternette bulduğu başka bir aile ağacını kopyalamak", "uygun-olmayan-kaynak"] ],
    "why": "Aile tarihinde en güvenilir bilgi, aileyi tanıyan büyüklerden ve aile belgelerinden gelir. Birden çok kaynağı karşılaştırmak hatayı azaltır."
   },
   {
-   "id": "s4",
-   "kaz": "SB.4.2.1",
-   "soru": "Ali'nin ailesinde yaşanan olaylar:\n• Babası 1985'te doğdu.\n• Kardeşi 2019'da doğdu.\n• Babaannesi 1958'de doğdu.\n• Ali 2016'da doğdu.\n\nBu olaylardan en eski olanı hangisidir?",
+   "id": "s4", "kaz": "SB.4.2.1",
+   "gorsel": { "tur": "tablo", "baslik": "Ali'nin ailesinde yaşanan olaylar", "serit": true,
+     "basliklar": ["Olay", "Yıl"],
+     "satirlar": [ ["👨 Babasının doğumu", "1985"], ["👶 Kardeşinin doğumu", "2019"], ["👵 Babaannesinin doğumu", "1958"], ["👦 Ali'nin doğumu", "2016"] ] },
+   "soru": "Bu olaylar zaman şeridine yerleştirilecek.\n\nTabloya göre şeridin en başına (en eskiye) hangi olay yazılmalıdır?",
    "dogru": "Babaannesinin doğumu",
-   "yanlislar": [
-    [
-     "Kardeşinin doğumu",
-     "en-yeni-ile-karisti"
-    ],
-    [
-     "Babasının doğumu",
-     "sirayi-okumadi"
-    ],
-    [
-     "Ali'nin doğumu",
-     "kendinden-basladi"
-    ]
-   ],
+   "yanlislar": [ ["Kardeşinin doğumu", "en-yeni-ile-karisti"], ["Babasının doğumu", "sirayi-okumadi"], ["Ali'nin doğumu", "kendinden-basladi"] ],
    "why": "En eski olay, yılı en küçük olandır. 1958, diğer yıllardan (1985, 2016, 2019) daha eskidir."
   },
   {
-   "id": "s5",
-   "kaz": "SB.4.2.2",
-   "soru": "Bayramlarda büyüklerimizi ziyaret edip ellerini öpmemiz, millî kültürümüzün hangi ögesine örnektir?",
+   "id": "s5", "kaz": "SB.4.2.2",
+   "gorsel": { "tur": "paneller", "baslik": "Bayram sabahı", "paneller": [
+     { "etiket": "Can", "e": "👦🤲", "balon": "Bayramın kutlu olsun dedeciğim!" },
+     { "etiket": "Dedesi", "e": "👴🍬", "balon": "Seninki de kutlu olsun! Al bakalım, bayram şekerin." } ] },
+   "soru": "Resimde büyüklerin elini öpüp bayramlarını kutlamak, millî kültürümüzün hangi ögesine örnektir?",
    "dogru": "Gelenek ve göreneklere",
-   "yanlislar": [
-    [
-     "El sanatlarına",
-     "kultur-ogesi-karisti"
-    ],
-    [
-     "Yemek kültürüne",
-     "kultur-ogesi-karisti"
-    ],
-    [
-     "Mimari yapılara",
-     "kultur-ogesi-karisti"
-    ]
-   ],
+   "yanlislar": [ ["El sanatlarına", "kultur-ogesi-karisti"], ["Yemek kültürüne", "kultur-ogesi-karisti"], ["Mimari yapılara", "kultur-ogesi-karisti"] ],
    "why": "Nesilden nesile aktarılan, toplumun alışkanlık hâline getirdiği davranışlar gelenek ve göreneklerdir. Bayram ziyareti de böyledir."
   },
   {
-   "id": "s6",
-   "kaz": "SB.4.2.2",
-   "soru": "Su dolu bir teknenin üzerine boyalar serpilir, fırçayla desen yapılır ve desen kâğıda aktarılır.\n\nAnlatılan geleneksel sanatımız hangisidir?",
+   "id": "s6", "kaz": "SB.4.2.2",
+   "gorsel": { "tur": "akis", "baslik": "Bir geleneksel sanatın adımları", "adimlar": [
+     { "e": "🛁", "ad": "Tekneye su doldurulur" },
+     { "e": "🎨", "ad": "Suyun üstüne boyalar serpilir" },
+     { "e": "🖌️", "ad": "Fırçayla desen yapılır" },
+     { "e": "📄", "ad": "Desen kâğıda aktarılır" } ] },
+   "soru": "Şemada adımları gösterilen geleneksel sanatımız hangisidir?",
    "dogru": "Ebru",
-   "yanlislar": [
-    [
-     "Halı dokumacılığı",
-     "sanat-turu-karisti"
-    ],
-    [
-     "Ahşap oymacılığı",
-     "sanat-turu-karisti"
-    ],
-    [
-     "Çömlekçilik",
-     "sanat-turu-karisti"
-    ]
-   ],
+   "yanlislar": [ ["Halı dokumacılığı", "sanat-turu-karisti"], ["Ahşap oymacılığı", "sanat-turu-karisti"], ["Çömlekçilik", "sanat-turu-karisti"] ],
    "why": "Su üzerinde boyalarla desen yapıp kâğıda aktarma sanatına ebru denir."
   },
   {
-   "id": "s7",
-   "kaz": "SB.4.2.2",
-   "soru": "Zeynep, yaşadığı yöreye ait millî kültür ögelerini araştırıyor.\n\nAşağıdakilerden hangisi onun araştırmasına uygun bir örnektir?",
+   "id": "s7", "kaz": "SB.4.2.2",
+   "gorsel": { "tur": "harita", "baslik": "Zeynep'in araştırma haritası", "merkez": "Yöremizin Millî Kültürü", "dallar": [
+     { "e": "🎵", "ad": "Müzik" }, { "e": "💃", "ad": "Dans" }, { "e": "🍲", "ad": "Yemek" },
+     { "e": "🧶", "ad": "El sanatları" }, { "e": "🎉", "ad": "Gelenekler" }, { "e": "🗣️", "ad": "Dil ve söz" } ] },
+   "soru": "Zeynep, kavram haritasındaki başlıklara uygun örnekler toplayacak.\n\nAşağıdakilerden hangisi onun araştırmasına uygundur?",
    "dogru": "Yöresine ait bir türkü ve halk oyunu",
-   "yanlislar": [
-    [
-     "Yeni çıkan bir bilgisayar oyunu",
-     "gunumuz-urunu-ile-karisti"
-    ],
-    [
-     "Başka bir ülkenin çizgi film karakteri",
-     "kultur-kaynagi-karisti"
-    ],
-    [
-     "Okulun yeni boyanan duvarı",
-     "kultur-ogesi-degil"
-    ]
-   ],
+   "yanlislar": [ ["Yeni çıkan bir bilgisayar oyunu", "gunumuz-urunu-ile-karisti"], ["Başka bir ülkenin çizgi film karakteri", "kultur-kaynagi-karisti"], ["Okulun yeni boyanan duvarı", "kultur-ogesi-degil"] ],
    "why": "Türküler ve halk oyunları, nesilden nesile aktarılan millî kültür ögelerimizdendir."
   },
   {
-   "id": "s8",
-   "kaz": "SB.4.2.2",
-   "soru": "Hıdrellez ve nevruz gibi bahar şenliklerini yaşatmak neden önemlidir?",
+   "id": "s8", "kaz": "SB.4.2.2",
+   "gorsel": { "tur": "kartlar", "baslik": "Bahar şenliklerimiz", "kartlar": [
+     { "e": "🔥🌱", "ad": "Nevruz · 21 Mart", "alt": "Ateş yakılır, üzerinden atlanır. Komşular birlikte yemek yer." },
+     { "e": "🌹🎗️", "ad": "Hıdrellez · 6 Mayıs", "alt": "Dilekler gül ağacına bağlanır. Kırlarda şenlik yapılır." } ] },
+   "soru": "Kartlarda tanıtılan bahar şenliklerini yaşatmak neden önemlidir?",
    "dogru": "Kültürümüzü gelecek nesillere aktarır ve insanları bir araya getirir.",
-   "yanlislar": [
-    [
-     "Yalnızca okullarda kutlandığı için önemlidir.",
-     "yanlis-genelleme"
-    ],
-    [
-     "Her ülkede aynı şekilde kutlandığı için önemlidir.",
-     "yanlis-genelleme"
-    ],
-    [
-     "Yeni ortaya çıkmış eğlenceler olduğu için önemlidir.",
-     "degisim-sureklilik-karisti"
-    ]
-   ],
+   "yanlislar": [ ["Yalnızca okullarda kutlandığı için önemlidir.", "yanlis-genelleme"], ["Her ülkede aynı şekilde kutlandığı için önemlidir.", "yanlis-genelleme"], ["Yeni ortaya çıkmış eğlenceler olduğu için önemlidir.", "degisim-sureklilik-karisti"] ],
    "why": "Şenlikler ve bayramlar, kültürel mirası yaşatır; insanların birlikte eğlenmesini ve dayanışmasını sağlar."
   },
   {
-   "id": "s9",
-   "kaz": "SB.4.2.3",
-   "soru": "Geçmişte çocuklar oyuncaklarını çoğunlukla nasıl elde ederdi?",
+   "id": "s9", "kaz": "SB.4.2.3",
+   "gorsel": { "tur": "tablo", "baslik": "Dedemin çocukluğundaki oyuncaklar",
+     "basliklar": ["Oyun / oyuncak", "Neyle yapılırdı?"],
+     "satirlar": [ ["✋ Beştaş", "🪨 Dereden toplanan taşlar"], ["🏏 Çelik çomak", "🪵 Ağaç dalından sopalar"], ["🪢 İp atlama", "🧵 Evdeki eski ip"], ["🧸 Bez bebek", "👗 Artık kumaş parçaları"] ] },
+   "soru": "Tabloya göre geçmişte çocuklar oyuncaklarını çoğunlukla nasıl elde ederdi?",
    "dogru": "Taş, sopa, ip ve kumaş gibi malzemelerle kendileri yaparlardı.",
-   "yanlislar": [
-    [
-     "İnternetten sipariş ederlerdi.",
-     "gunumuzle-karisti"
-    ],
-    [
-     "Pille çalışan oyuncakları mağazadan alırlardı.",
-     "gunumuzle-karisti"
-    ],
-    [
-     "Hiç oyuncakları olmazdı, oyun da oynamazlardı.",
-     "asiri-genelleme"
-    ]
-   ],
+   "yanlislar": [ ["İnternetten sipariş ederlerdi.", "gunumuzle-karisti"], ["Pille çalışan oyuncakları mağazadan alırlardı.", "gunumuzle-karisti"], ["Hiç oyuncakları olmazdı, oyun da oynamazlardı.", "asiri-genelleme"] ],
    "why": "Geçmişte çocuklar çevrelerindeki basit malzemelerle oyuncak yapardı: beştaş için taş, çelik çomak için sopa, ip atlamak için ip."
   },
   {
-   "id": "s10",
-   "kaz": "SB.4.2.3",
-   "soru": "Aşağıdakilerden hangisi çocuk oyunlarında geçmişten günümüze DEĞİŞMEDEN süren (sürekliliği olan) bir özelliktir?",
+   "id": "s10", "kaz": "SB.4.2.3",
+   "gorsel": { "tur": "venn", "baslik": "Çocuk oyunları: dün ve bugün",
+     "sol": { "ad": "⏳ Geçmişte", "satir": ["🪨 Taştan, sopadan", "oyuncaklar", "🏘️ Sokakta", "mahalle oyunları"] },
+     "sag": { "ad": "📱 Günümüzde", "satir": ["🎮 İnternet", "üzerinden oyunlar", "🏬 AVM'deki", "oyun alanları"] } },
+   "soru": "Şemanın ortasındaki ? yerine hem geçmişte hem günümüzde olan, yani DEĞİŞMEDEN süren (sürekliliği olan) hangisi yazılmalıdır?",
    "dogru": "Çocukların oyunla eğlenmesi ve arkadaşlık kurması",
-   "yanlislar": [
-    [
-     "Oyunların tablette oynanması",
-     "degisim-sureklilik-karisti"
-    ],
-    [
-     "Oyun parklarında kaydırak bulunması",
-     "degisim-sureklilik-karisti"
-    ],
-    [
-     "Oyuncakların fabrikada üretilmesi",
-     "degisim-sureklilik-karisti"
-    ]
-   ],
+   "yanlislar": [ ["Oyunların tablette oynanması", "degisim-sureklilik-karisti"], ["Oyun parklarında kaydırak bulunması", "degisim-sureklilik-karisti"], ["Oyuncakların fabrikada üretilmesi", "degisim-sureklilik-karisti"] ],
    "why": "Oyunlar ve oyuncaklar değişse de çocukların oyunla eğlenmesi, yarışması ve arkadaş edinmesi her dönemde vardır. Bu sürekliliktir."
   },
   {
-   "id": "s11",
-   "kaz": "SB.4.2.3",
-   "soru": "Aşağıdakilerden hangisi çocuk oyunlarında geçmişten günümüze olan bir DEĞİŞİMDİR?",
+   "id": "s11", "kaz": "SB.4.2.3",
+   "gorsel": { "tur": "tablo", "baslik": "Zeki'nin karşılaştırma tablosu",
+     "basliklar": ["Oyun özelliği", "👴 Dedemin çocukluğu", "👦 Benim çocukluğum"],
+     "satirlar": [ ["🙈 Saklambaç oynanır", "✅", "✅"], ["📏 Oyunların kuralları vardır", "✅", "✅"], ["📱 Tablette dijital oyunlar", "❌", "✅"], ["🏃 Oyunda yarışılır", "✅", "✅"] ] },
+   "soru": "Tabloya göre aşağıdakilerden hangisi çocuk oyunlarında geçmişten günümüze olan bir DEĞİŞİMDİR?",
    "dogru": "Dijital oyunların yaygınlaşması",
-   "yanlislar": [
-    [
-     "Saklambacın bugün de oynanması",
-     "sureklilik-ile-karisti"
-    ],
-    [
-     "Oyunlarda kuralların olması",
-     "sureklilik-ile-karisti"
-    ],
-    [
-     "Çocukların oyunda yarışması",
-     "sureklilik-ile-karisti"
-    ]
-   ],
+   "yanlislar": [ ["Saklambacın bugün de oynanması", "sureklilik-ile-karisti"], ["Oyunlarda kuralların olması", "sureklilik-ile-karisti"], ["Çocukların oyunda yarışması", "sureklilik-ile-karisti"] ],
    "why": "Geçmişte bilgisayar ve tablet yoktu. Dijital oyunların ortaya çıkması bir değişimdir. Diğerleri geçmişte de vardı."
   },
   {
-   "id": "s12",
-   "kaz": "SB.4.2.3",
-   "soru": "\"Dedem çocukken mahallede arkadaşlarıyla misket oynarmış. Ben de okul bahçesinde arkadaşlarımla misket oynuyorum.\"\n\nBu durum neyi gösterir?",
+   "id": "s12", "kaz": "SB.4.2.3",
+   "gorsel": { "tur": "paneller", "baslik": "Dün ve bugün", "paneller": [
+     { "etiket": "Dedem çocukken (1965)", "e": "👦🔵🟢🔴", "balon": "Mahallede arkadaşlarımla misket oynardık." },
+     { "etiket": "Ben bugün", "e": "🧒🔵🟢🔴", "balon": "Okul bahçesinde arkadaşlarımla misket oynuyorum." } ] },
+   "soru": "İki resimdeki durum neyi gösterir?",
    "dogru": "Bazı geleneksel oyunların günümüzde de sürdüğünü",
-   "yanlislar": [
-    [
-     "Oyunların tamamen değiştiğini",
-     "degisim-sureklilik-karisti"
-    ],
-    [
-     "Misketin yeni çıkmış bir oyun olduğunu",
-     "zaman-karisti"
-    ],
-    [
-     "Mahallelerde hiç oyun oynanmadığını",
-     "metni-okumadi"
-    ]
-   ],
+   "yanlislar": [ ["Oyunların tamamen değiştiğini", "degisim-sureklilik-karisti"], ["Misketin yeni çıkmış bir oyun olduğunu", "zaman-karisti"], ["Mahallelerde hiç oyun oynanmadığını", "metni-okumadi"] ],
    "why": "Misket dedenin çocukluğunda da vardı, bugün de oynanıyor. Bu, oyunlardaki sürekliliğe örnektir."
   },
   {
-   "id": "s13",
-   "kaz": "SB.4.2.4",
-   "soru": "Millî Mücadele yıllarında İnebolu–Kastamonu yolunda kağnıyla cephane taşırken karlı havada şehit olan kahraman kadın kimdir?",
+   "id": "s13", "kaz": "SB.4.2.4",
+   "gorsel": { "tur": "yol", "baslik": "Kroki: Cephane yolu (kış, 1921)", "bas": "⚓ İnebolu", "son": "🏔️ Kastamonu", "not": "Kağnılarla cepheye cephane taşınıyor" },
+   "soru": "Krokide gösterilen yolda kağnıyla cephane taşırken karlı havada şehit olan kahraman kadın kimdir?",
    "dogru": "Şerife Bacı",
-   "yanlislar": [
-    [
-     "Kara Fatma",
-     "kahraman-karisti"
-    ],
-    [
-     "Halide Edip Adıvar",
-     "kahraman-karisti"
-    ],
-    [
-     "Nene Hatun",
-     "donem-karisti"
-    ]
-   ],
+   "yanlislar": [ ["Kara Fatma", "kahraman-karisti"], ["Halide Edip Adıvar", "kahraman-karisti"], ["Nene Hatun", "donem-karisti"] ],
    "why": "Şerife Bacı, cepheye cephane taşırken kar ve soğukta şehit olmuştur. Millî Mücadele'de kadınların fedakârlığının sembolüdür."
   },
   {
-   "id": "s14",
-   "kaz": "SB.4.2.4",
-   "soru": "İzmir'in işgal edildiği gün düşmana ilk kurşunu atan gazeteci kimdir?",
+   "id": "s14", "kaz": "SB.4.2.4",
+   "gorsel": { "tur": "kimlik", "baslik": "Kahraman kimlik kartı", "satirlar": [
+     ["📰", "Mesleği", "Gazeteci"], ["📍", "Şehir", "İzmir"], ["📅", "Tarih", "15 Mayıs 1919"], ["🎯", "Ne yaptı?", "İşgal günü düşmana ilk kurşunu attı."] ] },
+   "soru": "Kimlik kartı verilen kahraman kimdir?",
    "dogru": "Hasan Tahsin",
-   "yanlislar": [
-    [
-     "Sütçü İmam",
-     "kahraman-karisti"
-    ],
-    [
-     "Seyit Onbaşı",
-     "donem-karisti"
-    ],
-    [
-     "Yörük Ali Efe",
-     "kahraman-karisti"
-    ]
-   ],
+   "yanlislar": [ ["Sütçü İmam", "kahraman-karisti"], ["Seyit Onbaşı", "donem-karisti"], ["Yörük Ali Efe", "kahraman-karisti"] ],
    "why": "Gazeteci Hasan Tahsin, 15 Mayıs 1919'da İzmir'in işgali sırasında düşmana ilk kurşunu atmıştır."
   },
   {
-   "id": "s15",
-   "kaz": "SB.4.2.4",
-   "soru": "Millî Mücadele'de kadınlar, çocuklar ve yaşlılar da cepheye cephane, yiyecek ve giyecek taşıdı.\n\nBu durum bize ne anlatır?",
+   "id": "s15", "kaz": "SB.4.2.4",
+   "gorsel": { "tur": "akis", "baslik": "Millî Mücadele'de cepheye destek", "adimlar": [
+     { "e": "👩👦👴", "ad": "Kadınlar, çocuklar ve yaşlılar" },
+     { "e": "📦🍞🧥", "ad": "Cephane, yiyecek ve giyecek taşıdılar" },
+     { "e": "🪖", "ad": "Cephedeki askerlere ulaştırdılar" } ] },
+   "soru": "Şemada gösterilen durum bize ne anlatır?",
    "dogru": "Kurtuluşun bütün milletin birlikte çalışmasıyla kazanıldığını",
-   "yanlislar": [
-    [
-     "Savaşı yalnızca askerlerin kazandığını",
-     "yalniz-asker-sandi"
-    ],
-    [
-     "Halkın savaşla ilgilenmediğini",
-     "metni-okumadi"
-    ],
-    [
-     "Cephane taşımanın kolay bir iş olduğunu",
-     "yanlis-cikarim"
-    ]
-   ],
+   "yanlislar": [ ["Savaşı yalnızca askerlerin kazandığını", "yalniz-asker-sandi"], ["Halkın savaşla ilgilenmediğini", "metni-okumadi"], ["Cephane taşımanın kolay bir iş olduğunu", "yanlis-cikarim"] ],
    "why": "Cephedeki askerlere bütün halk destek vermiştir. Millî Mücadele, milletin birlik ve dayanışmasıyla kazanılmıştır."
   },
   {
-   "id": "s16",
-   "kaz": "SB.4.2.4",
-   "soru": "Millî Mücadele kahramanlarının hayatlarını öğrenmek bize en çok ne kazandırır?",
+   "id": "s16", "kaz": "SB.4.2.4",
+   "gorsel": { "tur": "zaman", "baslik": "Geçmişten bugüne", "noktalar": [
+     { "e": "🎖️", "yil": "1919–1922", "ad": "Kahramanlar vatan için fedakârlık yaptı" },
+     { "e": "🏛️", "yil": "1923", "ad": "Cumhuriyet ilan edildi" },
+     { "e": "🏫", "yil": "Bugün", "ad": "Özgür ülkemizde okula gidiyoruz" } ] },
+   "soru": "Zaman şeridini düşündüğünde, Millî Mücadele kahramanlarının hayatlarını öğrenmek bize en çok ne kazandırır?",
    "dogru": "Bağımsızlığın değerini ve vatan sevgisini daha iyi anlamamızı",
-   "yanlislar": [
-    [
-     "Yalnızca tarihleri ezberlememizi",
-     "ezber-sandi"
-    ],
-    [
-     "Kahramanların hepsinin büyük şehirlerden çıktığını öğrenmemizi",
-     "yanlis-genelleme"
-    ],
-    [
-     "Geçmişin bugünü hiç etkilemediğini düşünmemizi",
-     "yanlis-cikarim"
-    ]
-   ],
+   "yanlislar": [ ["Yalnızca tarihleri ezberlememizi", "ezber-sandi"], ["Kahramanların hepsinin büyük şehirlerden çıktığını öğrenmemizi", "yanlis-genelleme"], ["Geçmişin bugünü hiç etkilemediğini düşünmemizi", "yanlis-cikarim"] ],
    "why": "Kahramanların fedakârlıklarını öğrenmek, bugün sahip olduğumuz bağımsızlığın nasıl kazanıldığını ve değerini anlamamızı sağlar."
   }
  ]
@@ -534,12 +441,130 @@ const depo = (() => { const mem = {}; return {
   oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
   yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } },
   sil(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) { /* depolama kapalı */ } } }; })();
-const DEVAM = 'sinav-devam-' + OYUN.id;
+const DEVAM = 'sinav-devam-' + OYUN.id + '-v2';
+const hareketAz = (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+
+/* ---- ses (Web Audio; köşedeki düğmeyle kapanır) ---- */
+const SES = (() => {
+  let ctx = null, acik = depo.oku('4d-ses') !== '0';
+  function ton(f, d, gecik) {
+    if (!acik) return;
+    try {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      const t = ctx.currentTime + (gecik || 0), o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
+      o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + d);
+    } catch (e) { /* ses yok */ }
+  }
+  return {
+    tik() { ton(660, 0.09); },
+    sayfa() { ton(520, 0.06); },
+    kutla() { [523, 659, 784, 1047].forEach((f, i) => ton(f, 0.25, i * 0.12)); },
+    acik: () => acik,
+    degis() { acik = !acik; depo.yaz('4d-ses', acik ? '1' : '0'); return acik; }
+  };
+})();
+const sesBtn = document.getElementById('sesbtn');
+function sesDugme() { sesBtn.textContent = SES.acik() ? '🔊' : '🔇'; sesBtn.setAttribute('aria-label', SES.acik() ? 'Sesi kapat' : 'Sesi aç'); }
+sesBtn.onclick = () => { SES.degis(); sesDugme(); };
+sesDugme();
+
+/* ---- çizimler (satır içi SVG / HTML; dış dosya yok) ---- */
+function sandikSVG() {
+  return '<svg viewBox="0 0 340 170" role="img" aria-label="İçinden eski eşyalar çıkan açık bir sandık">' +
+    '<defs><radialGradient id="isik"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/></radialGradient></defs>' +
+    '<circle cx="170" cy="86" r="92" fill="url(#isik)"/>' +
+    '<text x="30" y="150" font-size="44">🕰️</text><text x="276" y="60" font-size="26">✨</text><text x="40" y="52" font-size="22">✨</text>' +
+    '<path d="M80 86 L98 52 L242 52 L260 86 Z" fill="#c9844a" stroke="#6b3f1a" stroke-width="4" stroke-linejoin="round"/>' +
+    '<text x="98" y="84" font-size="36">📜</text><text x="138" y="74" font-size="36">🖼️</text><text x="180" y="76" font-size="36">🪀</text><text x="216" y="84" font-size="36">🎖️</text>' +
+    '<rect x="80" y="86" width="180" height="74" rx="8" fill="#a0612e" stroke="#6b3f1a" stroke-width="4"/>' +
+    '<rect x="80" y="104" width="180" height="8" fill="#6b3f1a"/><rect x="80" y="138" width="180" height="6" fill="#6b3f1a" opacity=".6"/>' +
+    '<rect x="160" y="100" width="20" height="24" rx="4" fill="#f2c14e" stroke="#6b3f1a" stroke-width="3"/><circle cx="170" cy="111" r="3" fill="#6b3f1a"/></svg>';
+}
+function tiktakSVG(hal) {   /* hal: mutlu | dusun */
+  const agiz = hal === 'mutlu' ? '<path d="M42 38 Q50 47 58 38" fill="none" stroke="#3a2a1a" stroke-width="3" stroke-linecap="round"/>'
+                               : '<path d="M44 41 Q50 39 56 41" fill="none" stroke="#3a2a1a" stroke-width="3" stroke-linecap="round"/>';
+  return '<svg viewBox="0 0 100 124" aria-hidden="true">' +
+    '<rect x="14" y="4" width="72" height="11" rx="5" fill="#8a5a2b"/><rect x="14" y="109" width="72" height="11" rx="5" fill="#8a5a2b"/>' +
+    '<path d="M24 15 H76 Q76 46 52 62 Q76 78 76 109 H24 Q24 78 48 62 Q24 46 24 15Z" fill="#eef7ff" stroke="#8a5a2b" stroke-width="4"/>' +
+    '<path d="M50 72 Q66 86 68 104 H32 Q34 86 50 72Z" fill="#f2c14e"/><rect x="48.5" y="56" width="3" height="18" fill="#f2c14e"/>' +
+    '<circle cx="42" cy="29" r="4" fill="#3a2a1a"/><circle cx="58" cy="29" r="4" fill="#3a2a1a"/><circle cx="43.5" cy="27.5" r="1.3" fill="#fff"/><circle cx="59.5" cy="27.5" r="1.3" fill="#fff"/>' +
+    '<circle cx="35" cy="38" r="4" fill="#f6a5a5" opacity=".7"/><circle cx="65" cy="38" r="4" fill="#f6a5a5" opacity=".7"/>' + agiz + '</svg>';
+}
+function rozetSVG() {
+  return '<svg viewBox="0 0 160 170" role="img" aria-label="Zaman Yolcusu rozeti">' +
+    '<path d="M50 96 L36 160 L60 148 L72 166 L80 110Z" fill="#b3261e"/><path d="M110 96 L124 160 L100 148 L88 166 L80 110Z" fill="#2b6cb0"/>' +
+    '<circle cx="80" cy="72" r="62" fill="#f2c14e" stroke="#b5862b" stroke-width="6"/><circle cx="80" cy="72" r="48" fill="#ffe08a" stroke="#fff" stroke-width="3" stroke-dasharray="6 5"/>' +
+    '<text x="80" y="70" text-anchor="middle" font-size="38">⏳</text>' +
+    '<text x="80" y="98" text-anchor="middle" font-size="13" font-weight="800" fill="#8a3f1d">ZAMAN YOLCUSU</text></svg>';
+}
+
+const CIZ = {
+  paneller: g => '<div class="g-paneller">' + g.paneller.map(p => '<div class="g-panel"><span class="g-etk">' + esc(p.etiket) + '</span><div class="g-e" aria-hidden="true">' + esc(p.e) + '</div>' +
+    (p.balon ? '<div class="g-balon">💬 ' + esc(p.balon) + '</div>' : '') + '</div>').join('') + '</div>',
+  kartlar: g => '<div class="g-kartlar">' + g.kartlar.map(k => '<div class="g-kart"><div class="g-e" aria-hidden="true">' + esc(k.e) + '</div><b>' + esc(k.ad) + '</b>' +
+    (k.alt ? '<small>' + esc(k.alt) + '</small>' : '') + '</div>').join('') + '</div>',
+  tablo: g => '<table class="g-tablo"><thead><tr>' + g.basliklar.map(b => '<th scope="col">' + esc(b) + '</th>').join('') + '</tr></thead><tbody>' +
+    g.satirlar.map(s => '<tr>' + s.map((h, i) => '<td' + (i && /^[✅❌]$/.test(h) ? ' class="o"' : '') + '>' + esc(h) + '</td>').join('') + '</tr>').join('') + '</tbody></table>' +
+    (g.serit ? '<div class="g-serit" aria-hidden="true"><span>⏪ Geçmiş</span><i></i><span>Bugün ⏩</span></div>' : ''),
+  akis: g => '<div class="g-akis">' + g.adimlar.map((a, i) => '<div class="g-adim"><span class="no">' + (i + 1) + '</span><div class="g-e" aria-hidden="true">' + esc(a.e) + '</div>' + esc(a.ad) + '</div>')
+    .join('<div class="g-ok" aria-hidden="true">➜</div>') + '</div>',
+  agac: g => '<div class="g-agac">' + g.kusaklar.map(k => '<div class="g-kusak">' + k.map(u => '<div class="g-uye"><div class="g-e" aria-hidden="true">' + esc(u.e) + '</div>' + esc(u.ad) +
+    '<div class="yil' + (u.yil === '?' ? ' bos' : '') + '">' + (u.yil === '?' ? '❓' : esc(u.yil)) + '</div></div>').join('') + '</div>').join('<div class="g-bag" aria-hidden="true"></div>') + '</div>',
+  venn: g => {
+    const sat = (a, x) => a.map((l, i) => '<text x="' + x + '" y="' + (112 + i * 24) + '" text-anchor="middle" font-size="16" fill="#2a2118"' + (i % 2 ? '' : ' font-weight="700"') + '>' + esc(l) + '</text>').join('');
+    return '<svg viewBox="0 0 560 290" role="img" aria-label="İki küme şeması: ' + esc(g.sol.ad) + ' ve ' + esc(g.sag.ad) + ', ortası soru işareti">' +
+      '<circle cx="205" cy="148" r="128" fill="#f2c14e" fill-opacity=".35" stroke="#b5862b" stroke-width="3"/>' +
+      '<circle cx="355" cy="148" r="128" fill="#6aa9e9" fill-opacity=".3" stroke="#2b6cb0" stroke-width="3"/>' +
+      '<text x="150" y="72" text-anchor="middle" font-size="19" font-weight="800" fill="#8a5a1a">' + esc(g.sol.ad) + '</text>' +
+      '<text x="410" y="72" text-anchor="middle" font-size="19" font-weight="800" fill="#1f4f86">' + esc(g.sag.ad) + '</text>' +
+      sat(g.sol.satir, 145) + sat(g.sag.satir, 415) +
+      '<circle cx="280" cy="150" r="28" fill="#fff" stroke="#b5562b" stroke-width="4"/><text x="280" y="162" text-anchor="middle" font-size="32" font-weight="800" fill="#b5562b">?</text>' +
+      '<text x="280" y="214" text-anchor="middle" font-size="13" font-weight="700" fill="#5b4f42">İkisinde</text><text x="280" y="230" text-anchor="middle" font-size="13" font-weight="700" fill="#5b4f42">de var</text></svg>' +
+      /* dar ekran (telefon) için aynı şemanın okunaklı üç kutulu hâli */
+      '<div class="g-venn-dar" aria-hidden="true"><div style="background:#fbe7b5">' + esc(g.sol.ad) + '<small>' + esc(g.sol.satir.join(' ')) + '</small></div>' +
+      '<div class="orta">❓ İkisinde de var</div><div style="background:#d3e5f8">' + esc(g.sag.ad) + '<small>' + esc(g.sag.satir.join(' ')) + '</small></div></div>';
+  },
+  yol: g => '<svg viewBox="0 0 560 210" role="img" aria-label="' + esc(g.bas) + ' ile ' + esc(g.son) + ' arasındaki karlı yol krokisi">' +
+    '<rect width="560" height="210" rx="14" fill="#eef6ff"/>' +
+    '<path d="M0 196 Q140 170 280 186 T560 172 V210 H0Z" fill="#fff"/>' +
+    ['30,40', '120,28', '210,52', '330,30', '420,44', '520,120', '150,150', '380,160'].map(p => { const [x, y] = p.split(','); return '<text x="' + x + '" y="' + y + '" font-size="20">❄️</text>'; }).join('') +
+    '<path d="M70 150 C 170 60, 320 190, 480 82" fill="none" stroke="#8a5a2b" stroke-width="6" stroke-dasharray="14 9" stroke-linecap="round"/>' +
+    '<circle cx="70" cy="150" r="13" fill="#2b6cb0" stroke="#fff" stroke-width="3"/><circle cx="480" cy="82" r="13" fill="#b5562b" stroke="#fff" stroke-width="3"/>' +
+    '<text x="72" y="186" text-anchor="middle" font-size="18" font-weight="800" fill="#1f3550">' + esc(g.bas) + '</text>' +
+    '<text x="470" y="58" text-anchor="middle" font-size="18" font-weight="800" fill="#6b2a10">' + esc(g.son) + '</text>' +
+    '<text x="232" y="128" font-size="38">🐂</text><text x="272" y="128" font-size="30">📦</text>' +
+    '<text x="280" y="200" text-anchor="middle" font-size="15" font-weight="700" fill="#3a2a1a">' + esc(g.not) + '</text></svg>',
+  kimlik: g => '<div class="g-kimlik"><div class="g-sil" aria-label="Adı gizli">?</div><dl>' +
+    g.satirlar.map(s => '<dt>' + esc(s[0]) + ' ' + esc(s[1]) + '</dt><dd>' + esc(s[2]) + '</dd>').join('') + '<dt>👤 Adı</dt><dd><b>?</b></dd></dl></div>',
+  harita: g => { const d = x => '<div class="g-dal"><span aria-hidden="true">' + esc(x.e) + '</span>' + esc(x.ad) + '</div>';
+    return '<div class="g-harita">' + g.dallar.slice(0, 3).map(d).join('') + '<div class="g-merkez">' + esc(g.merkez) + '</div>' + g.dallar.slice(3).map(d).join('') + '</div>'; },
+  zaman: g => '<div class="g-zaman">' + g.noktalar.map(n => '<div class="g-nokta"><div class="g-e" aria-hidden="true">' + esc(n.e) + '</div><div class="d"></div><b>' + esc(n.yil) + '</b>' + esc(n.ad) + '</div>').join('') + '</div>'
+};
+function gorselHtml(g) {
+  if (!g || !CIZ[g.tur]) return '';
+  return '<figure class="gv">' + (g.baslik ? '<figcaption>🔎 ' + esc(g.baslik) + '</figcaption>' : '') + CIZ[g.tur](g) + '</figure>';
+}
+function kazBul(kod) { return OYUN.kazanimlar.find(k => k.kod === kod); }
+function tiktakHtml(hal, metin, buyuk) {
+  return '<div class="tiktak' + (buyuk ? ' buyuk' : '') + '">' + tiktakSVG(hal) + '<div class="balon" id="balon" aria-live="polite"><b>' + esc(OYUN.tema.karakter) + ':</b> ' + esc(metin) + '</div></div>';
+}
+function konfeti() {
+  if (hareketAz) return;
+  const renk = ['#f2c14e', '#b5562b', '#2f7d32', '#7b3fa0', '#2b6cb0', '#c96a00'];
+  for (let i = 0; i < 50; i++) {
+    const p = document.createElement('div'); p.className = 'konfeti';
+    p.style.left = Math.random() * 100 + 'vw'; p.style.background = renk[i % renk.length];
+    p.style.animationDelay = (Math.random() * 0.25) + 's'; p.style.animationDuration = (0.7 + Math.random() * 0.3) + 's';
+    document.body.appendChild(p); setTimeout(() => p.remove(), 1400);
+  }
+}
 
 let S = null;   /* {sira:[madde...], sec:{id:[[metin,yanilgi]...]}, cevap:{id:secilenMetin}, sure:{id:ms}, i:0, t:Date.now()} */
 
 function yeniSinav() {
-  const sira = OYUN.maddeler.slice();   /* soru sırası sabit: kolaydan zora */
+  const sira = OYUN.maddeler.slice();   /* soru sırası sabit: kolaydan zora, bölüm bölüm */
   const sec = {};
   sira.forEach(m => { sec[m.id] = shuffle([[m.dogru, '']].concat(m.yanlislar)); });
   S = { sira, sec, cevap: {}, sure: {}, i: 0, t: Date.now() };
@@ -552,7 +577,10 @@ function devamYukle() {
   try {
     const v = JSON.parse(depo.oku(DEVAM) || 'null');
     if (!v || !v.sec) return false;
-    const ok = OYUN.maddeler.every(m => Array.isArray(v.sec[m.id]) && v.sec[m.id].length === 4);
+    const ok = OYUN.maddeler.every(m => {   /* kayıtlı seçenekler bugünkü sorularla aynı mı? */
+      const s = v.sec[m.id], izin = [m.dogru].concat(m.yanlislar.map(y => y[0]));
+      return Array.isArray(s) && s.length === 4 && s.every(x => Array.isArray(x) && izin.includes(x[0]));
+    });
     if (!ok) return false;
     S = { sira: OYUN.maddeler.slice(), sec: v.sec, cevap: v.cevap || {}, sure: v.sure || {}, i: Math.min(+v.i || 0, OYUN.maddeler.length - 1), t: Date.now() };
     return true;
@@ -563,55 +591,69 @@ function sureTopla() {   /* şu anki sorada geçen süreyi biriktir */
   S.sure[m.id] = (S.sure[m.id] || 0) + (Date.now() - S.t); S.t = Date.now();
 }
 
+function bolumlerHtml() {
+  return '<div class="bolumler">' + OYUN.kazanimlar.map(k => {
+    const n = OYUN.maddeler.filter(m => m.kaz === k.kod).length;
+    return '<div style="background:' + k.renk + '"><span aria-hidden="true">' + k.e + '</span>' + esc(k.kisa) + '<br><small>' + n + ' soru</small></div>';
+  }).join('') + '</div>';
+}
+
 function baslangic() {
   const var_ = (() => { try { const v = JSON.parse(depo.oku(DEVAM) || 'null'); return v && Object.keys(v.cevap || {}).length; } catch (e) { return 0; } })();
-  app.innerHTML = '<div class="kart"><h1>' + esc(OYUN.ad) + '</h1>' +
-    '<p>' + OYUN.maddeler.length + ' soru var. İstediğin soruya dönebilir, cevabını değiştirebilirsin. Acele etme; süre sınırı yok.</p>' +
-    '<p>Sonucunu öğretmenin görecek.</p>' +
-    (var_ ? '<div class="uyari">Yarım kalan bir sınavın var (' + var_ + ' soru cevaplı).</div><p><button class="dolu" id="devam">Kaldığım yerden devam et</button> <button class="ikincil" id="yeni">Baştan başla</button></p>'
-          : '<p><button class="dolu" id="basla">Başla</button></p>') + '</div>';
-  const git = () => { RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar }); soruCiz(); };
+  app.innerHTML = '<div class="kart"><div class="sahne">' + sandikSVG() + '</div><h1>' + esc(OYUN.ad) + '</h1>' +
+    tiktakHtml('mutlu', OYUN.tema.hikaye, true) + bolumlerHtml() +
+    '<p>' + OYUN.maddeler.length + ' soru var. İstediğin soruya dönebilir, cevabını değiştirebilirsin. Acele etme; süre sınırı yok. Sonucunu öğretmenin görecek.</p>' +
+    (var_ ? '<div class="uyari">Yarım kalan bir sınavın var (' + var_ + ' soru cevaplı).</div><div class="alt"><button class="dolu" id="devam">Kaldığım yerden devam et</button><button class="ikincil" id="yeni">Baştan başla</button></div>'
+          : '<div class="alt"><span></span><button class="dolu" id="basla">Sandığı aç, başla! 🗝️</button></div>') + '</div>';
+  const git_ = () => { RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar }); SES.sayfa(); soruCiz(); };
   if (var_) {
-    document.getElementById('devam').onclick = () => { if (devamYukle()) git(); else { yeniSinav(); git(); } };
-    document.getElementById('yeni').onclick = () => { depo.sil(DEVAM); yeniSinav(); git(); };
-  } else document.getElementById('basla').onclick = () => { yeniSinav(); git(); };
+    document.getElementById('devam').onclick = () => { if (devamYukle()) git_(); else { yeniSinav(); git_(); } };
+    document.getElementById('yeni').onclick = () => { depo.sil(DEVAM); yeniSinav(); git_(); };
+  } else document.getElementById('basla').onclick = () => { yeniSinav(); git_(); };
 }
 
 function gezginHtml() {
   return '<div class="gezgin" role="group" aria-label="Soru listesi">' + S.sira.map((m, k) =>
-    '<button data-k="' + k + '" class="' + (S.cevap[m.id] !== undefined ? 'cevapli ' : '') + (k === S.i ? 'simdi' : '') + '" aria-label="Soru ' + (k + 1) + (S.cevap[m.id] !== undefined ? ', cevaplandı' : ', boş') + '"' + (k === S.i ? ' aria-current="true"' : '') + '>' + (k + 1) + '</button>').join('') + '</div>';
+    '<button data-k="' + k + '" style="border-color:' + kazBul(m.kaz).renk + '" class="' + (S.cevap[m.id] !== undefined ? 'cevapli ' : '') + (k === S.i ? 'simdi' : '') + '" aria-label="Soru ' + (k + 1) + (S.cevap[m.id] !== undefined ? ', cevaplandı' : ', boş') + '"' + (k === S.i ? ' aria-current="true"' : '') + '>' + (k + 1) + '</button>').join('') + '</div>';
 }
+function ilerlemeYuzde() { return Math.round(Object.keys(S.cevap).length / S.sira.length * 100); }
 
 function soruCiz() {
-  const m = S.sira[S.i], sec = S.sec[m.id], son = S.i === S.sira.length - 1;
+  const m = S.sira[S.i], sec = S.sec[m.id], son = S.i === S.sira.length - 1, kz = kazBul(m.kaz), n = Object.keys(S.cevap).length;
   S.t = Date.now();
-  app.innerHTML = '<div class="ust"><span>Soru ' + (S.i + 1) + ' / ' + S.sira.length + '</span><span>' + Object.keys(S.cevap).length + ' soru cevaplı</span></div>' +
-    '<div class="kart"><div class="soru" id="soru">' + esc(m.soru) + '</div>' +
+  app.innerHTML = '<div class="ust"><span class="chip" style="background:' + kz.renk + '"><span aria-hidden="true">' + kz.e + '</span>' + esc(kz.kisa) + '</span>' +
+    '<span><b>Soru ' + (S.i + 1) + ' / ' + S.sira.length + '</b> · <span id="sayac">' + n + ' soru cevaplı</span></span></div>' +
+    '<div class="ilerle" role="progressbar" aria-label="Cevaplanan sorular" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + ilerlemeYuzde() + '"><i id="bar" style="width:' + ilerlemeYuzde() + '%"></i></div>' +
+    '<div class="kart">' + gorselHtml(m.gorsel) + '<div class="soru" id="soru">' + esc(m.soru) + '</div>' +
     '<div class="sec" role="radiogroup" aria-labelledby="soru">' + sec.map((s, k) =>
-      '<button role="radio" aria-checked="' + (S.cevap[m.id] === s[0]) + '" data-k="' + k + '" class="' + (S.cevap[m.id] === s[0] ? 'secili' : '') + '">' + String.fromCharCode(65 + k) + ') ' + esc(s[0]) + '</button>').join('') + '</div>' +
+      '<button role="radio" aria-checked="' + (S.cevap[m.id] === s[0]) + '" data-k="' + k + '" class="' + (S.cevap[m.id] === s[0] ? 'secili' : '') + '"><span class="h">' + String.fromCharCode(65 + k) + '</span><span>' + esc(s[0]) + '</span></button>').join('') + '</div>' +
     '<div class="alt"><button class="ikincil" id="onceki"' + (S.i === 0 ? ' disabled' : '') + '>← Önceki</button>' +
-    (son ? '<button class="dolu" id="bitir">Sınavı bitir</button>' : '<button class="dolu" id="sonraki">Sonraki →</button>') + '</div></div>' + gezginHtml();
+    (son ? '<button class="dolu" id="bitir">Sınavı bitir 🏁</button>' : '<button class="dolu" id="sonraki">Sonraki →</button>') + '</div>' +
+    tiktakHtml(S.cevap[m.id] !== undefined ? 'mutlu' : 'dusun', S.cevap[m.id] !== undefined ? 'Bu soruyu cevapladın. İstersen değiştirebilirsin.' : 'Önce görseli incele, sonra soruyu dikkatle oku.') + '</div>' + gezginHtml();
   app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => isaretle(+b.dataset.k); });
   app.querySelectorAll('.gezgin button').forEach(b => { b.onclick = () => git(+b.dataset.k); });
   const o = document.getElementById('onceki'); if (o) o.onclick = () => git(S.i - 1);
   const s = document.getElementById('sonraki'); if (s) s.onclick = () => git(S.i + 1);
   const bt = document.getElementById('bitir'); if (bt) bt.onclick = bitisOnayi;
 }
-function git(k) { if (k < 0 || k >= S.sira.length) return; sureTopla(); S.i = k; kaydetDevam(); soruCiz(); }
+function git(k) { if (k < 0 || k >= S.sira.length) return; sureTopla(); S.i = k; kaydetDevam(); SES.sayfa(); soruCiz(); window.scrollTo(0, 0); }
 function isaretle(k) {
-  const m = S.sira[S.i]; S.cevap[m.id] = S.sec[m.id][k][0]; kaydetDevam();
+  const m = S.sira[S.i]; S.cevap[m.id] = S.sec[m.id][k][0]; kaydetDevam(); SES.tik();
   app.querySelectorAll('.sec button').forEach((b, j) => { const a = j === k; b.classList.toggle('secili', a); b.setAttribute('aria-checked', a); });
-  const g = app.querySelectorAll('.gezgin button')[S.i]; if (g) { g.classList.add('cevapli'); }
-  const ust = app.querySelector('.ust span:last-child'); if (ust) ust.textContent = Object.keys(S.cevap).length + ' soru cevaplı';
+  const g = app.querySelectorAll('.gezgin button')[S.i]; if (g) { g.classList.add('cevapli'); g.setAttribute('aria-label', 'Soru ' + (S.i + 1) + ', cevaplandı'); }
+  const say = document.getElementById('sayac'); if (say) say.textContent = Object.keys(S.cevap).length + ' soru cevaplı';
+  const bar = document.getElementById('bar'); if (bar) { bar.style.width = ilerlemeYuzde() + '%'; bar.parentNode.setAttribute('aria-valuenow', ilerlemeYuzde()); }
+  const t = app.querySelector('.tiktak'); if (t) t.outerHTML = tiktakHtml('mutlu', 'Cevabın kaydedildi. Hazırsan sonraki soruya geç.');
 }
 
 function bitisOnayi() {
   sureTopla();
   const bos = S.sira.filter(m => S.cevap[m.id] === undefined);
   app.innerHTML = '<div class="kart"><h1>Sınavı bitirelim mi?</h1>' +
-    (bos.length ? '<div class="uyari">' + bos.length + ' soruyu boş bıraktın: ' + S.sira.map((m, k) => S.cevap[m.id] === undefined ? (k + 1) : null).filter(Boolean).join(', ') + '.</div>'
-                : '<p>Bütün soruları cevapladın.</p>') +
+    (bos.length ? '<div class="uyari">⚠️ ' + bos.length + ' soruyu boş bıraktın: ' + S.sira.map((m, k) => S.cevap[m.id] === undefined ? (k + 1) : null).filter(Boolean).join(', ') + '.</div>'
+                : '<p>✅ Bütün soruları cevapladın.</p>') +
     '<p>Bitirdikten sonra cevaplarını değiştiremezsin.</p>' +
+    tiktakHtml('dusun', bos.length ? 'Boş soruların var. İstersen dönüp bakabilirsin.' : 'Emin misin? Cevaplarını bir kez daha gözden geçirebilirsin.') +
     '<div class="alt"><button class="ikincil" id="don">Sorulara dön</button><button class="dolu" id="evet">Evet, bitir</button></div></div>';
   document.getElementById('don').onclick = () => { S.i = bos.length ? S.sira.indexOf(bos[0]) : S.i; soruCiz(); };
   document.getElementById('evet').onclick = bitir;
@@ -629,14 +671,17 @@ function bitir() {
   RaporMotoru.bitir();
   depo.sil(DEVAM);
   const portalda = window.parent !== window;
-  app.innerHTML = '<div class="kart"><h1>Sınavı tamamladın</h1>' +
-    '<p>' + (portalda ? 'Cevapların öğretmenine gönderildi. Teşekkürler!' : 'Cevapların öğretmenine gitmesi için sınavı öğrenci portalından aç.') + '</p>' +
-    '<p><button class="ikincil" id="yeniden">Sınavı yeniden çöz</button></p></div>';
+  app.innerHTML = '<div class="kart"><h1>Sınavı tamamladın! 🎉</h1><div class="rozet">' + rozetSVG() + '</div>' +
+    tiktakHtml('mutlu', 'Zaman sandığının bütün sırlarını inceledin. Aferin, sonuna kadar emek verdin!', true) +
+    '<p>' + (portalda ? '📨 Cevapların öğretmenine gönderildi. Teşekkürler!' : 'Cevapların öğretmenine gitmesi için sınavı öğrenci portalından aç.') + '</p>' +
+    '<div class="alt"><span></span><button class="ikincil" id="yeniden">Sınavı yeniden çöz</button></div></div>';
   document.getElementById('yeniden').onclick = () => { S = null; baslangic(); };
+  SES.kutla(); konfeti(); window.scrollTo(0, 0);
 }
 
 document.addEventListener('keydown', e => {
   if (!S || !document.querySelector('.sec')) return;
+  if (e.target && e.target.tagName === 'BUTTON' && (e.key === 'Enter' || e.key === ' ')) return;
   if (e.key >= '1' && e.key <= '4') isaretle(+e.key - 1);
   else if (e.key.toLowerCase() >= 'a' && e.key.toLowerCase() <= 'd' && e.key.length === 1) isaretle(e.key.toLowerCase().charCodeAt(0) - 97);
   else if (e.key === 'ArrowRight') git(S.i + 1);
