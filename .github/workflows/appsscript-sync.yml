@@ -42,6 +42,10 @@ jobs:
       - name: Ogrenci sonuc entegrasyonunu dogrula
         if: ${{ github.event_name == 'push' || inputs.target == 'student' }}
         run: node .github/scripts/verify-appsscript-integration.mjs
+      - name: Yerel testleri calistir (biri bile kalirsa yayin durur)
+        run: |
+          set -eu
+          for f in tests/*.cjs; do echo "== $f"; node "$f"; done
       - name: Kimlik bilgilerini ve hedefi hazirla
         env:
           CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
@@ -59,21 +63,21 @@ jobs:
           printf '{"scriptId":"%s","rootDir":"."}\n' "$SCRIPT_ID" > "$RUNNER_TEMP/4d-script/.clasp.json"
       - name: Uzak projeyi cek
         working-directory: ${{ runner.temp }}/4d-script
-        run: npx --yes @google/clasp@latest pull
+        run: npx --yes @google/clasp@3.4.1 pull
       - name: Secili kaynaklari guvenli birlestir
         env:
           TARGET: ${{ github.event_name == 'push' && 'student' || inputs.target }}
         run: node .github/scripts/prepare-appsscript-sync.mjs "$TARGET" "$RUNNER_TEMP/4d-script"
       - name: Aktarimdan once dosyalari listele
         working-directory: ${{ runner.temp }}/4d-script
-        run: npx --yes @google/clasp@latest show-file-status
+        run: npx --yes @google/clasp@3.4.1 show-file-status
       - name: Kontrol modu sonucu
         if: ${{ github.event_name != 'push' && inputs.dry_run == true }}
         run: echo "DRY RUN BASARILI - Apps Script kodu degistirilmedi."
       - name: Apps Script kaynaklarini guncelle - DAGITIM DEGIL
         if: ${{ github.event_name == 'push' || inputs.dry_run == false }}
         working-directory: ${{ runner.temp }}/4d-script
-        run: npx --yes @google/clasp@latest push --force
+        run: npx --yes @google/clasp@3.4.1 push --force
       - name: Ogrenci mevcut web uygulamasini yayimla
         if: ${{ github.event_name == 'push' || (inputs.target == 'student' && inputs.dry_run == false) }}
         working-directory: ${{ runner.temp }}/4d-script
@@ -82,12 +86,12 @@ jobs:
         run: |
           set -eu
           # Yanlislikla yeni deployment / yeni ogrenci URL'si olusturulmasin.
-          npx --yes @google/clasp@latest list-deployments > "$RUNNER_TEMP/4d-deployments.txt"
+          npx --yes @google/clasp@3.4.1 list-deployments > "$RUNNER_TEMP/4d-deployments.txt"
           grep -F -- "$EXISTING_DEPLOYMENT_ID" "$RUNNER_TEMP/4d-deployments.txt" >/dev/null || {
             echo "::error::Mevcut ogrenci deployment kimligi bulunamadi; yeni deployment olusturulmadi."
             exit 1
           }
-          npx --yes @google/clasp@latest create-deployment --deploymentId "$EXISTING_DEPLOYMENT_ID" --description "4D ogrenci portali GitHub Actions"
+          npx --yes @google/clasp@3.4.1 create-deployment --deploymentId "$EXISTING_DEPLOYMENT_ID" --description "4D ogrenci portali GitHub Actions"
           echo "Mevcut ogrenci web uygulamasi dagitimi guncellendi."
       - name: Kimlik dosyasini sil
         if: always()
