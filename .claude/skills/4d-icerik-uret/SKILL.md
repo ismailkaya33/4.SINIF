@@ -65,6 +65,12 @@ gri düğmeden oluşan "sade" ekran kabul edilmez. Görsel, öğrenmeyi destekle
 - **Her soruda görsel:** Soru kartında konuyu canlandıran bir çizim veya simge bulunur (SVG, CSS çizimi, emoji).
   Matematikte nesne grupları, model, sayı doğrusu, kesir şekli; Fen'de organ/besin/devre çizimi; Türkçe'de olay sahnesi;
   Sosyal'de mekân/zaman çizelgesi. Görsel cevabı sızdırmaz.
+- **Bilgi görselle taşınır (öğretmenin kuralı, 2026-11-13):** Yalnız düz metin + soru dizisinden oluşan etkinlik sıkıcıdır
+  ve teslim edilmez. Konu gerektirdiğinde bilgi ve veri **tablo, infografik, şema, zaman çizelgesi, kavram haritası,
+  grafik, harita/kroki, ikon ve sembollerle** verilir (ör. karşılaştırma → tablo; süreç → oklu akış şeması; geçmiş →
+  zaman şeridi; sınıflama → ikonlu kartlar; miktar → çubuk/resim grafiği). Uzun açıklama metni varsa kutulara bölünür,
+  anahtar kavramlar simgeyle işaretlenir. Bu kural **konu ve ünite değerlendirmelerine (`*-sinav.html`) de uygulanır**:
+  soruların önemli bir kısmı bir tablo, görsel, grafik veya şema üzerinden sorulur.
 - **Renk ve zemin:** Derse ve temaya özgü canlı palet (CSS değişkenleri), desenli veya geçişli (gradyan) arka plan,
   gölgeli yuvarlak köşeli kartlar, renkli büyük düğmeler, büyük ve dost görünümlü başlık yazısı. Kontrast korunur.
 - **Hareket ve kutlama:** Doğruda konfeti/yıldız patlaması, puanın sayarak artması, kartın zıplaması; yanlışta hafif
@@ -203,6 +209,7 @@ filigranı ve metni kopyalanmaz — yalnız düzen ve tarz örneğidir). Her def
 - [ ] Dokunma, fare, klavye ayrı ayrı denendi; telefon ve tahta görünümünde taşma yok
 - [ ] İnternetsiz açılıyor; `localStorage` kapalıyken çalışıyor
 - [ ] (Takipli etkinlikte) `oyunId` gerçek kimlik; oyun sonunda tek `4d:activity-finished` mesajı gidiyor
+- [ ] Bilgi görselle taşınıyor (4.1): konu gerektirdiği yerde tablo/infografik/şema/zaman çizelgesi/sembol var; düz metin + soru dizisi değil (değerlendirmeler dahil)
 - [ ] Görsel zenginlik (4.1): tema + rehber karakter + her soruda görsel + kutlama efekti + ödül/ilerleme + ses düğmesi var; ekran görüntüleri alındı
 - [ ] Türkçe karakter ve yazım doğru; süre hedefe uygun; final bölümü kısa
 - [ ] Sınanmayan/kurulmayan özellik için iddia yok

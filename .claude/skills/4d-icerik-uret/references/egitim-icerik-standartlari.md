@@ -7,7 +7,7 @@ Bu dosya, her yeni çalışmada otomatik uygulanacak kalite kurallarıdır. Çal
 2. **Bilimsel/tarihî doğruluk:** Uydurma bilgi, uydurma alıntı yok (Atatürk'e atfedilen yeni söz uydurulmaz). Emin olunmayan bilgi işaretlenir.
 3. **Çalışan mekanik:** Her buton, geçiş ve puanlama çalışır. Görsel süs doğruluktan sonra gelir.
 4. **Kullanılabilirlik:** Akıllı tahtada ve öğrencinin telefon/tabletinde aynı sürüm sorunsuz çalışır.
-5. **Görsel kalite:** Etkileşimli etkinlik ve oyunlar görsel olarak zengin, renkli ve eğlencelidir: tema, rehber karakter, her soruda çizim/simge, kutlama efektleri, ödül ve kapatılabilir ses (ayrıntı: SKILL.md bölüm 4.1). Görsel soruyu gölgelemez, düşük donanımda akıcı kalır. Baskı materyali az mürekkepli kalır.
+5. **Görsel kalite:** Etkileşimli etkinlik ve oyunlar görsel olarak zengin, renkli ve eğlencelidir: tema, rehber karakter, her soruda çizim/simge, kutlama efektleri, ödül ve kapatılabilir ses (ayrıntı: SKILL.md bölüm 4.1). Konu gerektirdiğinde bilgi tablo, infografik, şema, zaman çizelgesi ve sembollerle verilir; yalnız düz metin + sorudan oluşan etkinlik/değerlendirme teslim edilmez. Görsel soruyu gölgelemez, düşük donanımda akıcı kalır. Baskı materyali az mürekkepli kalır.
 
 ## 2. Pedagojik kurallar (tüm çıktılar)
 - Bir ekranda/slaytta **tek fikir**; az metin, büyük yazı, bol boşluk (bilişsel yük).
