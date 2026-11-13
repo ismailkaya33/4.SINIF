@@ -23,6 +23,8 @@ tam boyutlu resmi öğretmen indirir, Claude A4 PDF yapar (`node tools/gorsel-ur
 Tarz: boyama sayfası gibi değil, olgun görünüm; konuya göre **el yazısı defter** ya da **sketchnote** (Claude seçer).
 **Kavram haritası / şema / süreç** gibi yazının doğru olması gereken sketchnote'lar ChatGPT'siz, kodla çizilir:
 `node tools/sketchnote-yap.mjs tools/sketchnote/notlar/<ad>.js --png … --pdf …` (öğretmenin kararı 2026-11-13; ayrıntı `4d-icerik-uret` 4.3).
+**Defter notu** de aynı araçla: not sayfasında görsellerin yapıştırılacağı yer belli, ayrıca kes-yapıştır sayfası
+(1 A4 = 4 öğrencinin 2'şer görseli, 8,5 × 6 cm; `--kes`). Ayrıntı `4d-icerik-uret` 6.0.
 
 Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yillik-plan-oku.mjs` → `YillikPlan/yillik-plan.json`.
 

@@ -14,7 +14,17 @@
     const rc = rough.svg(svg);
     let tohum = 7; // sabit tohum: aynı not her seferinde aynı çizilir
     const o = (ek) => Object.assign({ seed: tohum++, stroke: MUREKKEP, strokeWidth: 2.4, roughness: 1.3, bowing: 1.1 }, ek || {});
-    const ekle = (n) => { svg.appendChild(n); return n; };
+    let hedef = svg; // çizimin eklendiği yer (grup içinde çizmek için değişir)
+    const ekle = (n) => { hedef.appendChild(n); return n; };
+    // (x, y) noktasına k ölçeğinde bir grup açar; fn içindeki her çizim bu gruba girer.
+    function grup(x, y, k, fn) {
+      const g = document.createElementNS(NS, 'g');
+      g.setAttribute('transform', `translate(${x} ${y}) scale(${k})`);
+      hedef.appendChild(g); const eski = hedef; hedef = g;
+      try { fn(); } finally { hedef = eski; }
+      return g;
+    }
+    const tohumla = (n) => { tohum = n; };
     const tasmalar = [];
 
     function yazi(x, y, metin, boy, ek) {
@@ -115,7 +125,7 @@
       },
     };
 
-    return { svg, rc, o, ekle, yazi, genislik, satirla, paragraf, fosfor, ok, cerceve, simge, tasmaKontrol, tasmalar, G, Y, SARI, MAVI, MUREKKEP };
+    return { svg, rc, o, ekle, grup, tohumla, yazi, genislik, satirla, paragraf, fosfor, ok, cerceve, simge, tasmaKontrol, tasmalar, G, Y, SARI, MAVI, MUREKKEP };
   }
 
   // Yazı tipleri yüklendikten sonra çizer (ölçüm doğru olsun diye); bitince body[data-hazir="1"].
@@ -211,5 +221,5 @@
     });
   }
 
-  window.Sketchnote = { ciz, kavramHaritasi, SARI, MAVI, MUREKKEP };
+  window.Sketchnote = { ciz, kavramHaritasi, araclar, SARI, MAVI, MUREKKEP };
 })();

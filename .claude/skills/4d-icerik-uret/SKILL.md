@@ -162,7 +162,7 @@ indirme adımı yoktur, tek HTML dosyası internetsiz açılır. Simgeler basit 
     kutular: [{ ad: 'Proteinler', is: '…', ornek: '…', simge: 'yumurta' }, …],   // 4 ya da 6 kutu önerilir
     unutma: ['…', '…'] });
   ```
-  Örnek: `notlar/fen-besin-icerikleri.js`. Simgeler: yumurta, ekmek, sise, portakal, dis, bardak, damla, ampul,
+  Örnek: `notlar/fen-besin-icerikleri.js`. Defter notu + kes-yapıştır için `Sketchnote.defterNotu` (bkz. 6.0). Simgeler: yumurta, ekmek, sise, portakal, dis, bardak, damla, ampul,
   buyutec, yildiz (yenisi `sketchnote.js` → `simge` bölümüne eklenir). Serbest düzen için `Sketchnote.ciz(S => …)`.
 - Basmak: `node tools/sketchnote-yap.mjs tools/sketchnote/notlar/<ad>.js --png <yol>.png --pdf <yol>.pdf [--html <yol>.html]`
   (Edge ile; PNG 1984×2806, PDF A4). Defter notu PNG'si `<Ders>/DefterNotlari/`, baskı PDF'i `Baski/<Ders>/`.
@@ -189,7 +189,27 @@ indirme adımı yoktur, tek HTML dosyası internetsiz açılır. Simgeler basit 
 - **Defter notu / çalışma kâğıdı / ev ödevi / ölçme / sunum:** `references/egitim-icerik-standartlari.md` bölüm 4–6'ya uy (A4, az mürekkep; cevap anahtarı ayrı; kazanım–soru eşleşme tablosu; slaytta tek kavram).
 - Defter notu görselleri `<Ders>/DefterNotlari/` altına gider; portal defter listesi ayrıca güncellenir (portal dalı).
 
-### 6.1 Defter notu tasarımı — İKİ PARÇA (öğretmenin kuralı, 2026-11-12)
+### 6.0 Defter notu + kes-yapıştır görselleri — VARSAYILAN YOL (öğretmenin kararı, 2026-11-13)
+Defter notu kodla üretilir (`Sketchnote.defterNotu`, bkz. 4.3); her not iki çıktı verir:
+1. **Not sayfası** (renkli, A4, spiral defter görünümü; portala gider): ara başlık hapları, renkli madde imleri,
+   `**anahtar kelime**` kırmızı-kalın. Not için gereken görseller (genelde **2**) ilgili yazının yanında
+   **"✂ Görsel N — buraya yapıştır"** kesik çizgili kutuyla gösterilir; öğrenci yeri buradan görür.
+2. **Kes-yapıştır sayfası** (A4, çıktı alınır, portala gitmez): 2 sütun × 4 satır = 8 görsel. 2 görselli notta her
+   satır bir öğrencinin takımıdır (**1 sayfa = 4 öğrenci**), 1 görselli notta 8 öğrenci. Varsayılan siyah-beyaz,
+   boyanabilir (`--renkli` ile renkli). Görseller iki sayfada da aynı boyuttadır: **8,5 × 6 cm** (deftere sığar),
+   köşede görsel numarası, çevresinde kesme çizgisi.
+- Not dosyası: `tools/sketchnote/notlar/<ders>-<konu>.js` (örnekler: `mat-carpma`, `fen-kuvvetin-etkileri`,
+  `sos-yonler`, `tr-cumle-bilgisi`). Bloklar: `ara`, `madde`, `ornek`, `gorsel` (sağda görsel, solda maddeler),
+  `gorseller` (yan yana), `dikkat`. Görsel çizimi 510 × 360 birimlik alanda; `S.r(renk)` / `S.m(renk)` siyah-beyazda
+  dolguyu kaldırır / yazıyı siyah yapar (ayrıntı `tools/sketchnote/defter.js` başı).
+- Basmak: `node tools/sketchnote-yap.mjs tools/sketchnote/notlar/<ad>.js --png <Ders>/DefterNotlari/<ad>.png
+  --pdf Baski/<Ders>/<ad>-defter-notu.pdf --kes Baski/<Ders>/<ad>-kes-yapistir.pdf [--renkli]`.
+  "Yazı sığmıyor" uyarısında metin kısaltılır ya da bölüm çıkarılır.
+- Görseller bilgi taşır (tablo, şema, işlem, yön gülü…); süs değildir. İçerik ve her işlem Claude tarafından doğrulanır;
+  kazanım kodu sayfaya yazılmaz, not dosyasının başına "doğrulanmalı" diye not edilir.
+- Sahne/illüstrasyon gereken notlarda aşağıdaki ChatGPT yolu (6.1) kullanılabilir.
+
+### 6.1 Defter notu tasarımı — İKİ PARÇA, ChatGPT yolu (öğretmenin kuralı, 2026-11-12)
 Örnekler: `Baski/ornekler/defter-notu-stili/` (yalnız bu bilgisayarda; başka öğretmenin işi, depoya/yayına konmaz,
 filigranı ve metni kopyalanmaz — yalnız düzen ve tarz örneğidir). Her defter notu iki parçadan oluşur:
 1. **Not sayfası (renkli, A4 dikey, portala gider):** spiral telli defter sayfası (çizgili ya da kareli zemin, solda kırmızı

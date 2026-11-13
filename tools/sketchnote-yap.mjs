@@ -1,13 +1,16 @@
 // 4/D — Kodla sketchnote: not dosyasını tek parça HTML'e çevirir, Edge ile PNG ve A4 PDF basar.
 //
 // Kullanım:
-//   node tools/sketchnote-yap.mjs tools/sketchnote/notlar/<ad>.js [--html cikti.html] [--png cikti.png] [--pdf cikti.pdf] [--olcek 1.6]
+//   node tools/sketchnote-yap.mjs tools/sketchnote/notlar/<ad>.js [--html cikti.html] [--png cikti.png] [--pdf cikti.pdf]
+//        [--kes kes.pdf] [--kes-png kes.png] [--renkli] [--olcek 1.6]
 // Örnek:
 //   node tools/sketchnote-yap.mjs tools/sketchnote/notlar/fen-besin-icerikleri.js --png Baski/Fen/besin-icerikleri.png --pdf Baski/Fen/besin-icerikleri.pdf
 //
 // --html  internetsiz açılan tek dosya (yazı tipi ve çizim kütüphanesi gömülü, ~130 KB)
 // --png   1240×1754 × ölçek piksel resim (varsayılan ölçek 1.6 → 1984×2806; portal/defter notu için)
 // --pdf   A4 dikey, vektör (baskıda her boyutta keskin)
+// --kes   (yalnız defter notu) kes-yapıştır sayfası PDF: 8 görsel hücresi (2 görselli notta 4 öğrenci), 8,5 × 6 cm
+// --kes-png  aynı sayfanın resmi (kontrol için)   --renkli  kes-yapıştır sayfası renkli (varsayılan siyah-beyaz boyama)
 // Basmadan önce taşma kontrolü yapılır: bir kutunun yazısı kutudan taşarsa hangi kutu olduğu yazılır ve basılmaz.
 // Tarayıcı: Windows'ta Edge; başka yerde SKETCHNOTE_TARAYICI ortam değişkeni ya da bilinen Chromium yolları.
 import fs from 'node:fs';
@@ -22,9 +25,10 @@ const arg = (ad) => { const i = process.argv.indexOf('--' + ad); return i > 0 ? 
 
 const notYolu = process.argv[2];
 if (!notYolu || notYolu.startsWith('--') || !fs.existsSync(notYolu)) dur('Not dosyası verilmedi ya da bulunamadı. Örnek: node tools/sketchnote-yap.mjs tools/sketchnote/notlar/fen-besin-icerikleri.js --pdf cikti.pdf');
-const [htmlCikti, pngCikti, pdfCikti] = [arg('html'), arg('png'), arg('pdf')];
+const [htmlCikti, pngCikti, pdfCikti, kesCikti, kesPng] = [arg('html'), arg('png'), arg('pdf'), arg('kes'), arg('kes-png')];
+const kesMod = process.argv.includes('--renkli') ? 'kes-renkli' : 'kes';
 const olcek = Number(arg('olcek') || 1.6);
-if (!htmlCikti && !pngCikti && !pdfCikti) dur('En az biri gerekli: --html, --png ya da --pdf');
+if (!htmlCikti && !pngCikti && !pdfCikti && !kesCikti && !kesPng) dur('En az biri gerekli: --html, --png, --pdf, --kes ya da --kes-png');
 
 // 1) Tek parça HTML
 const oku = (p) => fs.readFileSync(path.join(KOK, p), 'utf8');
@@ -36,17 +40,20 @@ const LATIN_EK = 'U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+
 const fontlar = [
   fontYuzu('kalam-latin-ext-400-normal.woff2', 400, LATIN_EK), fontYuzu('kalam-latin-400-normal.woff2', 400, LATIN),
   fontYuzu('kalam-latin-ext-700-normal.woff2', 700, LATIN_EK), fontYuzu('kalam-latin-700-normal.woff2', 700, LATIN),
+  // Rakamlar Andika'dan (Kalam'ın 1'i I harfine benziyor); sonra tanımlandığı için 0–9'da bu yüz kullanılır
+  fontYuzu('andika-latin-400-normal.woff2', 400, 'U+0030-0039'), fontYuzu('andika-latin-700-normal.woff2', 700, 'U+0030-0039'),
 ].join('\n');
 const html = oku('sayfa.html')
   .replace('/*FONTLAR*/', () => fontlar)
   .replace('/*ROUGH*/', () => '/* rough.js 4.6.6 — MIT, (c) Preet Shihn */\n' + oku('rough.js'))
   .replace('/*SKETCHNOTE*/', () => oku('sketchnote.js'))
+  .replace('/*DEFTER*/', () => oku('defter.js'))
   .replace('/*NOT*/', () => fs.readFileSync(notYolu, 'utf8'));
 const hedefHtml = htmlCikti || path.join(os.tmpdir(), 'sketchnote-' + path.basename(notYolu, '.js') + '.html');
 fs.mkdirSync(path.dirname(path.resolve(hedefHtml)), { recursive: true });
 fs.writeFileSync(hedefHtml, html);
 if (htmlCikti) console.log('HTML:', htmlCikti, `(${Math.round(html.length / 1024)} KB)`);
-if (!pngCikti && !pdfCikti) process.exit(0);
+if (!pngCikti && !pdfCikti && !kesCikti && !kesPng) process.exit(0);
 
 // 2) Tarayıcı
 function tarayici() {
@@ -58,22 +65,27 @@ function tarayici() {
 const TAR = tarayici();
 const url = pathToFileURL(path.resolve(hedefHtml)).href;
 const ortak = ['--headless', '--disable-gpu', '--hide-scrollbars', '--virtual-time-budget=10000', ...(process.platform === 'win32' ? [] : ['--no-sandbox'])];
-const calistir = (ek) => execFileSync(TAR, [...ortak, ...ek, url], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 << 20 });
+const calistir = (ek, mod) => execFileSync(TAR, [...ortak, ...ek, mod ? url + '#' + mod : url], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 << 20 });
 
-// 3) Kontrol: çizim bitti mi, taşma var mı?
-const dom = calistir(['--dump-dom']);
-if (!/data-hazir="1"/.test(dom)) dur('Sayfa çizilemedi (not dosyasında yazım hatası olabilir). HTML\'i tarayıcıda açıp F12 ile bakın: ' + hedefHtml);
-const tasma = dom.match(/data-tasma="([^"]*)"/);
-if (tasma) dur('Yazı kutudan taşıyor: ' + tasma[1] + ' → metni kısaltın ya da kutu sayısını azaltın. Basılmadı.');
-
-// 4) Bas
-for (const c of [pngCikti, pdfCikti]) if (c) fs.mkdirSync(path.dirname(path.resolve(c)), { recursive: true });
-if (pngCikti) {
-  calistir(['--screenshot=' + path.resolve(pngCikti), '--window-size=1240,1754', '--force-device-scale-factor=' + olcek]);
-  console.log('PNG:', pngCikti, `(${Math.round(1240 * olcek)}×${Math.round(1754 * olcek)})`);
+// 3) Kontrol: çizim bitti mi, taşma var mı?  4) Bas
+function kontrol(mod) {
+  const dom = calistir(['--dump-dom'], mod);
+  if (!/data-hazir="1"/.test(dom)) dur('Sayfa çizilemedi (not dosyasında yazım hatası olabilir). HTML\'i tarayıcıda açıp F12 ile bakın: ' + hedefHtml);
+  const tasma = dom.match(/data-tasma="([^"]*)"/);
+  if (tasma) dur('Yazı sığmıyor: ' + tasma[1] + ' → metni kısaltın ya da bölün. Basılmadı.');
 }
-if (pdfCikti) {
-  calistir(['--print-to-pdf=' + path.resolve(pdfCikti), '--no-pdf-header-footer']);
-  console.log('PDF:', pdfCikti, '(A4)');
+const hazirla = (c) => fs.mkdirSync(path.dirname(path.resolve(c)), { recursive: true });
+const png = (c, mod) => { hazirla(c); calistir(['--screenshot=' + path.resolve(c), '--window-size=1240,1754', '--force-device-scale-factor=' + olcek], mod); console.log('PNG:', c, `(${Math.round(1240 * olcek)}×${Math.round(1754 * olcek)})`); };
+const pdf = (c, mod) => { hazirla(c); calistir(['--print-to-pdf=' + path.resolve(c), '--no-pdf-header-footer'], mod); console.log('PDF:', c, '(A4)'); };
+if (pngCikti || pdfCikti) {
+  kontrol();
+  if (pngCikti) png(pngCikti);
+  if (pdfCikti) pdf(pdfCikti);
+}
+if (kesCikti || kesPng) {
+  if (!fs.readFileSync(notYolu, 'utf8').includes('Sketchnote.defterNotu(')) dur('--kes yalnız defter notu (Sketchnote.defterNotu) için kullanılır.');
+  kontrol(kesMod);
+  if (kesPng) png(kesPng, kesMod);
+  if (kesCikti) pdf(kesCikti, kesMod);
 }
 if (!htmlCikti) fs.rmSync(hedefHtml, { force: true });
