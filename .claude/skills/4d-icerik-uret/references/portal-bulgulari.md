@@ -1,5 +1,9 @@
 # Kullanıcının eğitim portalından bulgular
 
+> **Eski tarama (Ekim 2026, 47 dosya).** Desen önerileri hâlâ geçerli; sayılar eskidir. 2026-11-13 durumu:
+> 71 etkinlik; 22'si sonuç mesajı gönderir, 17'sinde ilerleme kaydı var, 9'unda `alert`, 4'ünde dış bağımlılık
+> (`farkliyasamlar`, `insanolmasorumlulugu`, `yayaolaraktrafikkurallarietkinligi`, `Oyunlar/toplamaoyun`).
+
 47 küçük dosya (<200 KB) incelendi: Fen, İnsan Hakları, Matematik, Sosyal, Trafik, Türkçe, oyunlar. Büyük dosyalar (kurtuluşyolu 7,5 MB, sözavcıları 3,9 MB, sayiproblemleri 1,6 MB vb.) okunmadı. Bulgular otomatik tarama ve örnek okumaya dayanır, her dosya tek tek çalıştırılmadı.
 
 ## Genel tablo

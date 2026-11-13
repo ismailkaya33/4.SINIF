@@ -23,8 +23,8 @@ Bu dosya, her yeni çalışmada otomatik uygulanacak kalite kurallarıdır. Çal
 - İlerleme `localStorage` ile kaydedilir (kaydetme yoksa sorun çıkarmadan çalışır).
 - **Motor + veri ayrımı:** İçerik (sorular, sözcükler) düzenlenebilir bir veri alanında durur; öğretmen kodu bozmadan içeriği değiştirebilir.
 - Öğrenci soruyu geçip sonra geri dönebilir.
-- **Öğretmen takip paneli zorunludur:** öğrenci başına tamamladı mı, puan, süre ve hangi kazanımda/soruda zorlandığı görünür. Panel yalnızca öğretmene açıktır (öğrenci ekranında görünmez).
-- Takip verisi toplamak için çevrimdışı tek dosya yetmez, bir veri toplama altyapısı gerekir (bkz. madde 8). Altyapı bağlanmadıysa panel örnek veriyle çalışır ve bunun örnek veri olduğu açıkça belirtilir; gerçek takip varmış gibi gösterilmez.
+- **Takip (4/D kararı):** etkinliğe ayrı öğretmen paneli **eklenmez**. Etkinlik oyun sonunda portala sonuç mesajı gönderir; sonuçları öğretmen raporu (Apps Script) gösterir. Ayrıntı: SKILL.md §5 ve `MIMARI.md`.
+- Gerçek takip yalnız etkinlik portal kayıt listesindeyse olur; değilse takip varmış gibi gösterilmez.
 - Dokunmatik ve fare kontrolü, büyük dokunma alanları, okunur yazı boyutu.
 - Puanlama ve doğru/yanlış mantığı teslimden önce çalıştırılarak sınanır.
 
@@ -38,7 +38,7 @@ Bu dosya, her yeni çalışmada otomatik uygulanacak kalite kurallarıdır. Çal
 - **Performans:** Düşük donanımlı tablet ve telefonlarda akıcı çalışır. 3D (ör. Three.js) yalnızca gerçekten gerekliyse ve mobilde sınanabiliyorsa kullanılır; aksi halde 2D tercih edilir.
 - **Kontrol ve erişilebilirlik:** Dokunma, fare ve klavye desteklenir; dokunma alanları büyük, yazı okunur, ses isteğe bağlıdır.
 - **Uygunluk:** Gerçekçi şiddet yok, korkutucu/rekabeti aşırı artıran öğe yok, "kaybetti" mesajı moral bozmaz.
-- **Takip:** Oyun sonucu (tamamlama, puan, süre, yanlış yapılan kazanımlar) öğretmen takip paneline iletilir (madde 3 ve 8).
+- **Takip:** Ders oyununun sonucu (tamamlama, puan, süre) portal üzerinden öğretmen raporuna iletilir (madde 3). Oyunlar klasöründeki serbest oyunlar takip edilmez (öğretmen kararı).
 - **Dürüstlük:** Çalışmayan veya sınanmamış mekanik, çalışıyormuş gibi sunulmaz.
 
 ## 4. Baskı materyali (defter notu, çalışma kâğıdı, ev ödevi)

@@ -18,9 +18,13 @@ Bütün kayıtlar öğretmenin özel **Google E-Tablosu**nda durur:
 |---|---|
 | `Sayfa1` | Öğrenci listesi ve giriş kodları (`Tur=TEST` olanlar raporda sayılmaz) |
 | `ETKINLIK_SONUCLARI` | Her bitirilen etkinlik için bir satır: doğru, yanlış, süre… |
-| `ETKINLIK_SORU_SONUCLARI` | Soru soru cevaplar (şimdilik yalnız Fen Besinler değerlendirmesi) |
+| `ETKINLIK_SORU_SONUCLARI` | Soru soru cevaplar (şimdilik yalnız Fen Besinler değerlendirmesi, `4d:question-answer` mesajıyla) |
 | `ETKINLIK_TAMAMLAMA` | Öğrencinin “bitirdim” beyanları |
 | `DEFTER_TAMAMLAMA` | “Defter notunu yazdım” işaretleri |
+| `OTURUMLAR` | Açık oturumlar (anahtar özetli saklanır, 7 gün) |
+| `VELI_RAPORLARI` | Aylık ClassDojo özeti; öğrenci yalnız kendi `YAYINDA` satırını görür |
+| `AYIN_YILDIZLARI` | Ayın Yıldızları ve Onur Listesi |
+| Duyuru ve anket sayfaları | Öğretmenin duyuruları (TASLAK → YAYINDA → ARŞİV) ve anket yanıtları |
 
 ## 2. Bir etkinliğin sonucu öğretmene nasıl ulaşır?
 
@@ -91,8 +95,19 @@ Bunlar korunduğu sürece arka taraf (Google, Firebase…) değişse bile etkinl
 
 - Öğrenci adı ve kodları yalnız öğretmenin özel tablosunda durur; GitHub'a konmaz.
 - Öğretmen raporu ayrı ve öğretmene özel projedir; öğrencilerle paylaşılmaz.
-- Mobil uygulamaya geçmeden önce: tahmin edilmesi zor giriş kodları, yanlış giriş denemesi
-  sınırı (`GirisDenemeKoruma_Oneri.gs` taslağı hazır) ve velilere KVKK aydınlatma metni.
+- Yanlış giriş sınırı canlıda `GirisGuvenligi.gs` ile çalışır: aynı yanlış kod 5 kez ya da tüm portalda
+  5 dakikada 60 yanlış deneme → 5 dakika bekleme. Başarılı girişler sayılmaz. (`GirisDenemeKoruma_Oneri.gs` eski
+  taslaktır, yayına gönderilmez.)
+- Öğretmen raporunun gizliliği Apps Script'teki dağıtım ayarına bağlıdır: **Erişim = Yalnızca ben** olmalı.
+- Soru bazlı `4d:item-result` mesajı portalda henüz kaydedilmez (yalnız Fen Besinler ayrı mesajla kaydedilir).
+- Mobil uygulamaya geçmeden önce: tahmin edilmesi zor giriş kodları ve velilere KVKK aydınlatma metni.
+
+## 6.1 Bir değişiklik bozuk çıkarsa geri alma
+
+- **Etkinlik sitesi (`main`):** bozuk commit `git revert` ile geri alınıp gönderilir; birkaç dakikada eski hali yayında.
+- **Portal dalı:** aynı şekilde `git revert` + gönderim; GitHub Actions önceki kodu canlıya geri yükler.
+  Acil durumda öğretmen Apps Script'te Dağıt → Dağıtımları yönet → mevcut dağıtımı düzenle → önceki sürümü seçer
+  (adres değişmez).
 
 ## 7. Hangi dal ne için?
 

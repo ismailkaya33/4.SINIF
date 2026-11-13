@@ -89,10 +89,13 @@ gri düğmeden oluşan "sade" ekran kabul edilmez. Görsel, öğrenmeyi destekle
 - Bu bölüm **baskı materyaline uygulanmaz** (defter notu, çalışma kâğıdı, ev ödevi az mürekkepli kalır; ama küçük
   siyah-beyaz çizim ve simge eklenebilir).
 
-## 4.2 Resimli materyal: Gemini ile çizim (öğretmenin kararı, 2026-11-12)
+## 4.2 Resimli materyal: ChatGPT ile çizim, Gemini yedek (öğretmenin kararı, 2026-11-12)
 Claude kodla (SVG) ancak basit çizim yapar. **Boyama sayfası, poster, resimli defter notu gibi illüstrasyon kalitesi
 gereken işlerde resmi yapay zekâ çizer**; Claude istemi yazar, kontrol eder, sayfaya yerleştirir.
-**Varsayılan yol: Chrome'daki Gemini (aşağıda 1–5).** Öğretmenin kararı (2026-11-12): API ücretsiz katmanında resim
+**Varsayılan yol: Chrome'daki ChatGPT (öğretmenin Plus hesabı); Gemini yedek. Adımlar aşağıda 1–5 (iki sitede aynı).**
+**Resme yazı/sayı çizdirme:** resim modeli yalnız yazısız illüstrasyon üretir; Türkçe başlık, madde, sayı ve kazanım
+cümlesi Claude tarafından doğrulanıp HTML/A4 şablonunda ayrı katman olarak eklenir (yazım ve sayı hatası olmaz).
+Öğretmenin kararı (2026-11-12): API ücretsiz katmanında resim
 modelleri kapalı (limit 0), faturalandırma açılmadı; tam boyutlu resmi öğretmen kendisi indirir ve `İndirilenler`
 klasörüne düşer — Claude oradan `Baski/<Ders>/` klasörüne ASCII adla kopyalar, PDF'i `--pdf-yap` ile basar:
 `node tools/gorsel-uret.mjs --pdf-yap Baski/<Ders>/<konu>-boyama.png --adtarih`.
@@ -123,7 +126,7 @@ verir ve öğretmene hangisini seçtiğini bir cümleyle söyler:
 - Öğretmen açıkça **boyama sayfası** isterse yalnız o iş için aşağıdaki boyama tarifi kullanılır.
 
 Tarayıcı yolu:
-1. **Claude in Chrome** ile yeni sekmede `gemini.google.com/app` açılır (öğretmenin hesabı Chrome'da açık; Claude
+1. **Claude in Chrome** ile yeni sekmede `chatgpt.com` (yedek: `gemini.google.com/app`) açılır (öğretmenin hesabı Chrome'da açık; Claude
    giriş yapmaz, şifre girmez). Giriş yoksa öğretmenden girmesini iste.
 2. İstem Claude tarafından Türkçe ve ayrıntılı yazılır: "Bir görsel oluştur:" + sınıf düzeyi + biçim (A4 dikey;
    boyama ise "yalnız kalın siyah dış çizgi, beyaz zemin, renk/gri/gölge yok, büyük boyama alanları") + başlık ve her
@@ -156,7 +159,9 @@ Tarayıcı yolu:
 - **Oyunlar bölümüne defter notu ve değerlendirme (test) yapılmaz, önerilmez, eksik sayılmaz** (öğretmenin kararı).
   Oyunlar yalnız oyundur; `Oyunlar/DefterNotlari/` klasörü açılmaz.
 - Seviye kuralı: ilk denemede doğru ≥%85 ve ipucu ≤%25 → Ustalaştı; ≥%60 → Gelişiyor; altı → Destek gerekli; <3 madde → Veri az; `tekrar` maddeleri seviyeye katılmaz.
-- Madde bazlı mesaj (`4d:item-result`) motor tarafından gönderilir; portalın bunu kaydetmesi ayrı bir geliştirmedir (kurulmadıysa kurulmuş gibi söyleme).
+- Madde bazlı mesaj (`4d:item-result`) motor tarafından gönderilir ama **portal bunu henüz dinlemiyor ve kaydetmiyor**
+  (2026-11-13 kontrolü). Portal yalnız Fen Besinler için ayrı bir mesajı (`4d:question-answer`) kaydeder. Madde bazlı
+  kayıt ayrı bir geliştirmedir; öğretmene "soru bazlı sonuç raporda görünür" denmez.
 
 ## 6. Diğer çıktılar
 - **Defter notu / çalışma kâğıdı / ev ödevi / ölçme / sunum:** `references/egitim-icerik-standartlari.md` bölüm 4–6'ya uy (A4, az mürekkep; cevap anahtarı ayrı; kazanım–soru eşleşme tablosu; slaytta tek kavram).

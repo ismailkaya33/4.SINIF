@@ -1,6 +1,20 @@
 {
-  "aciklama": "Defter notu görseli → kazanım kodu eşleşmesi (kazanım haritası için). Kod uydurulmaz; emin olunmayan not buraya yazılmaz.",
+  "aciklama": "Defter notu görseli → kazanım kodu eşleşmesi (kazanım haritası için). Kod uydurulmaz; emin olunmayan not buraya yazılmaz. 'eslesme' yalnız klasörde GERÇEKTEN olan dosyalar içindir; henüz indirilmemiş notlar 'bekleyen' altında durur, dosya klasöre gelince adıyla birlikte 'eslesme'ye taşınır. 2026-11-13: mevcut eşleşmeler aynı konunun portal etkinliklerindeki kazanım kodlarından alındı.",
   "eslesme": {
+    "Turkce/DefterNotlari/atasozleri.png": ["T.4.3.11"],
+    "Turkce/DefterNotlari/deyimler.png": ["T.4.3.11"],
+    "Sosyal/DefterNotlari/ailetarihi.png": ["SB.4.2.1"],
+    "Sosyal/DefterNotlari/millikultur.png": ["SB.4.2.2"],
+    "Sosyal/DefterNotlari/cocukoyun.png": ["SB.4.2.3"],
+    "Sosyal/DefterNotlari/millimucadele1.png": ["SB.4.2.4"],
+    "Sosyal/DefterNotlari/millimucadele2.png": ["SB.4.2.4"],
+    "Sosyal/DefterNotlari/millimucadele3.png": ["SB.4.2.4"],
+    "Sosyal/DefterNotlari/millimucadele4.png": ["SB.4.2.4"],
+    "Sosyal/DefterNotlari/millimucadele5.png": ["SB.4.2.4"],
+    "Sosyal/DefterNotlari/millimucadele6.png": ["SB.4.2.4"],
+    "Sosyal/DefterNotlari/millimucadele7.png": ["SB.4.2.4"]
+  },
+  "bekleyen": {
     "Matematik/DefterNotlari/cikarmadatahmin.png": ["M.4.1.3.3"],
     "Sosyal/DefterNotlari/konum.png": ["SB.4.3.1"],
     "Turkce/DefterNotlari/cikarimbaslik.png": ["T.4.3.28", "T.4.3.21"],

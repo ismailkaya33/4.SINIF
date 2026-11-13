@@ -29,7 +29,8 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
 - **Öğrenci portalı + öğretmen raporu:** Google Apps Script. Kaynağı `hazirlik/kazanim-takibi-20261101` dalında `portal/`.
   Bu dala `portal/appsscript/**` veya `portal/ogretmen-rapor/**` gönderimi **anında canlıya** çıkar → önce öğretmenin onayı.
 - **Sonuç akışı:** öğrenci 6 haneli kodla girer → takipli etkinlik portal içinde açılır → etkinlik `postMessage`
-  (`4d:activity-finished`, gerekirse `4d:item-result`) gönderir → portal oturumla `ETKINLIK_SONUCLARI` sayfasına yazar.
+  (`4d:activity-finished`) gönderir → portal oturumla `ETKINLIK_SONUCLARI` sayfasına yazar. Soru bazlı `4d:item-result`
+  (rapor motoru gönderir) portalda **henüz kaydedilmiyor**; yalnız Fen Besinler ayrı mesajla (`4d:question-answer`) kaydedilir.
   Etkinlik doğrudan sunucuya POST etmez; öğrenci kodu etkinlik sayfasına taşınmaz.
 - **Takipli etkinlik listesi:** `portal/etkinlik-kayitlari.json` (portal dalı) → `node tools/katalog-esitle.mjs`.
 - **Oyunlar** klasörü için sonuç kaydı yapılmaz; defter notu ve değerlendirme de hazırlanmaz/önerilmez (öğretmenin kararı).
