@@ -3,6 +3,7 @@
 // Kullanım:
 //   node tools/sketchnote-yap.mjs tools/sketchnote/notlar/<ad>.js [--html cikti.html] [--png cikti.png] [--pdf cikti.pdf]
 //        [--kes kes.pdf] [--kes-png kes.png] [--renkli] [--olcek 1.6]
+//   node tools/sketchnote-yap.mjs <not>.js --istemler     (ChatGPT ile çizilecek görsellerin istemlerini listeler)
 // Örnek:
 //   node tools/sketchnote-yap.mjs tools/sketchnote/notlar/fen-besin-icerikleri.js --png Baski/Fen/besin-icerikleri.png --pdf Baski/Fen/besin-icerikleri.pdf
 //
@@ -17,6 +18,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import vm from 'node:vm';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const KOK = path.join(path.dirname(fileURLToPath(import.meta.url)), 'sketchnote');
@@ -28,6 +30,20 @@ if (!notYolu || notYolu.startsWith('--') || !fs.existsSync(notYolu)) dur('Not do
 const [htmlCikti, pngCikti, pdfCikti, kesCikti, kesPng] = [arg('html'), arg('png'), arg('pdf'), arg('kes'), arg('kes-png')];
 const kesMod = process.argv.includes('--renkli') ? 'kes-renkli' : 'kes';
 const olcek = Number(arg('olcek') || 1.6);
+// Not dosyasını tarayıcısız okur (resim yolları ve ChatGPT istemleri için)
+function notVerisi() {
+  let v = null; const yakala = (x) => { v = x; };
+  try { vm.runInNewContext(fs.readFileSync(notYolu, 'utf8'), { Sketchnote: { defterNotu: yakala, kavramHaritasi: yakala, R: {}, SARI: '', MAVI: '' } }); }
+  catch (e) { dur('Not dosyası okunamadı: ' + e.message); }
+  return v || {};
+}
+const VERI = notVerisi();
+if (process.argv.includes('--istemler')) {
+  const liste = (VERI.gorseller || []).map((g, i) => ({ no: i + 1, ...g })).filter(g => g.resim);
+  if (!liste.length) { console.log('Bu notta ChatGPT ile çizilecek görsel yok.'); process.exit(0); }
+  for (const g of liste) console.log(`\n=== Görsel ${g.no}: ${g.ad}\nDosya: ${g.resim} ${fs.existsSync(g.resim) ? '(VAR)' : '(henüz yok)'}\nİstem:\n${g.istem || '(istem yazılmamış)'}`);
+  process.exit(0);
+}
 if (!htmlCikti && !pngCikti && !pdfCikti && !kesCikti && !kesPng) dur('En az biri gerekli: --html, --png, --pdf, --kes ya da --kes-png');
 
 // 1) Tek parça HTML
@@ -48,7 +64,17 @@ const html = oku('sayfa.html')
   .replace('/*ROUGH*/', () => '/* rough.js 4.6.6 — MIT, (c) Preet Shihn */\n' + oku('rough.js'))
   .replace('/*SKETCHNOTE*/', () => oku('sketchnote.js'))
   .replace('/*DEFTER*/', () => oku('defter.js'))
-  .replace('/*NOT*/', () => fs.readFileSync(notYolu, 'utf8'));
+  .replace('/*NOT*/', () => resimBetigi() + fs.readFileSync(notYolu, 'utf8'));
+// Resimleri sayfaya gömer (internetsiz açılsın); eksik olanlar yer tutucuyla basılır
+function resimBetigi() {
+  const R = {}; const tur = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp' };
+  for (const g of VERI.gorseller || []) {
+    if (!g.resim) continue;
+    if (fs.existsSync(g.resim)) R[g.resim] = `data:${tur[path.extname(g.resim).toLowerCase()] || 'image/png'};base64,${fs.readFileSync(g.resim).toString('base64')}`;
+    else console.log('Uyarı: resim henüz yok, yer tutucu basılacak →', g.resim);
+  }
+  return `Sketchnote.RESIMLER = ${JSON.stringify(R)};\n`;
+}
 const hedefHtml = htmlCikti || path.join(os.tmpdir(), 'sketchnote-' + path.basename(notYolu, '.js') + '.html');
 fs.mkdirSync(path.dirname(path.resolve(hedefHtml)), { recursive: true });
 fs.writeFileSync(hedefHtml, html);

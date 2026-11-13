@@ -206,6 +206,12 @@ Defter notu kodla üretilir (`Sketchnote.defterNotu`, bkz. 4.3); her not iki ç�
   aynı ikililer bir A4 olur. Görselde olan bilgi yazıda tekrarlanmaz. Şema/işlem/tablo kodla çizilir; nesne/sahne
   gösteren görseller (ör. Fen) kodla basit kalır → ChatGPT ile olgun tarzda çizdirilir (öğretmenin bilgisayarında,
   Claude in Chrome; 4.2). Her görsel "kavram haritası" biçiminde olmaz.
+- **ChatGPT görseli = resim yuvası:** `{ ad, resim: 'Baski/<Ders>/resimler/<ad>.png', istem: '…', etiketler: [{ x, y, t }] }`.
+  İstem yazısız illüstrasyon ister (yatay 3:2; gerekirse "iki eşit panel"); Türkçe etiketleri kod resmin üstüne yazar.
+  Resim yokken yer tutucu basılır (düzen görülür); dosya gelince aynı komut resmi gömer, kes-yapıştırda gri tonlu basar.
+  İstemleri listelemek: `node tools/sketchnote-yap.mjs <not>.js --istemler`. Akış: Claude istemleri Chrome'da ChatGPT'ye
+  verir → öğretmen tam boyutlu resmi indirir → Claude `İndirilenler`'den `Baski/<Ders>/resimler/`'e o adla kopyalar →
+  notu yeniden basar. (Bulut oturumu tarayıcıya erişemez; bu adım öğretmenin bilgisayarında yapılır.)
 - Not dosyası: `tools/sketchnote/notlar/<ders>-<konu>.js` (tam örnek: `mat-carpma`). Bloklar: `konu` (alt konu
   başlığı), `ara`, `madde`, `adim` (numaralı), `ornek`, `gorsel` (sağda görsel, solda maddeler), `gorseller` (yan yana),
   `dikkat`, `sayfa` (zorunlu sayfa sonu); `birlikte: true` bir bloğu sonrakiyle aynı sayfada tutar. Alt alta işlem

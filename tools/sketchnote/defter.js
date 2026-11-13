@@ -21,6 +21,8 @@
 //   { dikkat: 'Metin' }                       sarı not kutusu
 //   { sayfa: true }                           buradan yeni sayfaya geç
 //   herhangi bir bloğa birlikte: true         bir sonraki blokla aynı sayfada kalır (ör. problem + çözüm adımları)
+// Görsel: { ad, ciz(S, renkli) } kodla çizim  ya da  { ad, resim: 'Baski/Fen/resimler/x.png', istem: 'ChatGPT istemi',
+//   etiketler: [{ x, y, t, ok }] }  (resim yoksa yer tutucu; istemler: node tools/sketchnote-yap.mjs <not> --istemler)
 // Görsel çizimi 510 × 360 birimlik alanda yapılır (8,5 × 6 cm). S.r(renk) siyah-beyazda dolguyu kaldırır,
 // S.m(renk) siyah-beyazda yazıyı siyah yapar. Alt alta işlem için Sketchnote.dikey(S, x, y, satirlar, ops).
 // Sayfa seçimi (PNG için): #not&s=2, #kes&s=1. Sayfa sayıları body[data-sayfa], body[data-kes-sayfa].
@@ -116,11 +118,39 @@
     S.renkli = renkli;
     S.grup(x, y, K, () => {
       const grup = S.svg.lastChild;
-      sekil(grup, 'rect', { x: 0, y: 0, width: GW, height: GH, fill: '#fff', stroke: cerceve, 'stroke-width': 2.2 / K, 'stroke-dasharray': `${10 / K} ${7 / K}` });
-      g.ciz(S, renkli);
+      sekil(grup, 'rect', { x: 0, y: 0, width: GW, height: GH, fill: '#fff' });
+      if (g.resim) resimYuvasi(S, grup, g, renkli);
+      if (g.ciz) g.ciz(S, renkli);
+      for (const e of g.etiketler || []) etiket(S, e, renkli);
+      sekil(grup, 'rect', { x: 0, y: 0, width: GW, height: GH, fill: 'none', stroke: cerceve, 'stroke-width': 2.2 / K, 'stroke-dasharray': `${10 / K} ${7 / K}` });
       sekil(grup, 'circle', { cx: 22, cy: 22, r: 15, fill: renkli ? R.lacivert : '#fff', stroke: '#111', 'stroke-width': 2 });
       S.yazi(22, 29, String(no), 20, { class: 'kalin', 'text-anchor': 'middle', fill: renkli ? '#fff' : '#111' });
     });
+  }
+  // ChatGPT (ya da başka kaynaktan) gelen resim: yuvaya kırpılarak sığar; siyah-beyaz baskıda gri tonlu.
+  // Resim dosyası yoksa yer tutucu çizilir (sayfa düzeni yine görülür).
+  function resimYuvasi(S, grup, g, renkli) {
+    const veri = (Sketchnote.RESIMLER || {})[g.resim];
+    if (veri) {
+      const im = sekil(grup, 'image', { href: veri, x: 0, y: 0, width: GW, height: GH, preserveAspectRatio: 'xMidYMid slice' });
+      if (!renkli) im.setAttribute('filter', 'url(#gri)');
+      return;
+    }
+    const kirp = sekil(grup, 'svg', { x: 0, y: 0, width: GW, height: GH, overflow: 'hidden' }); // çizgiler kutudan taşmasın
+    sekil(kirp, 'rect', { x: 0, y: 0, width: GW, height: GH, fill: '#f3f5f9' });
+    for (let d = -GH; d < GW; d += 26) sekil(kirp, 'line', { x1: d, y1: GH, x2: d + GH, y2: 0, stroke: '#e2e7ef', 'stroke-width': 3 });
+    S.yazi(GW / 2, GH / 2 - 22, 'ChatGPT ile çizilecek', 26, { class: 'kalin', 'text-anchor': 'middle', fill: '#7a8599' });
+    S.yazi(GW / 2, GH / 2 + 12, g.ad, 22, { 'text-anchor': 'middle', fill: '#7a8599' });
+    S.yazi(GW / 2, GH / 2 + 40, g.resim.split('/').pop(), 17, { 'text-anchor': 'middle', fill: '#9aa3b2' });
+  }
+  // Resim üstüne etiket: { x, y, t, ok: [[x1,y1],[x2,y2],...], renk, boy } — beyaz zeminli, okunaklı
+  function etiket(S, e, renkli) {
+    const boy = e.boy || 24, renk = renkli ? (e.renk || R.kirmizi) : '#111';
+    if (e.ok) S.ok(e.ok, renkli ? (e.okRenk || R.kirmizi) : '#111');
+    const w = S.genislik(e.t, boy, { class: 'kalin' });
+    const x = e.x - w / 2;
+    sekil(S.svg.lastChild, 'rect', { x: x - 10, y: e.y - boy * 0.95, width: w + 20, height: boy * 1.35, rx: 10, fill: '#fff', 'fill-opacity': 0.92, stroke: renk, 'stroke-width': 2 });
+    S.yazi(e.x, e.y, e.t, boy, { class: 'kalin', 'text-anchor': 'middle', fill: renk });
   }
   function makas(svg, x, y) {
     sekil(svg, 'circle', { cx: x - 8, cy: y - 9, r: 6, fill: 'none', stroke: '#555', 'stroke-width': 2 });
