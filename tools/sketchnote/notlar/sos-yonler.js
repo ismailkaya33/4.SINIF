@@ -80,7 +80,7 @@ Sketchnote.defterNotu({
     // 3 — Güneş ile yön bulma (ChatGPT)
     { ad: 'Güneş ile yön bulma', resim: 'Baski/Sosyal/resimler/yonler-3-gunes.png',
       istem: 'Bir görsel oluştur: Sabah erken saatte açık bir arazide 10 yaşında bir çocuk, arkası bize dönük, ufukta yeni doğan Güneş\'e bakıyor ve iki kolunu yanlara doğru düz açmış. Güneş resmin üst ortasında ufuk çizgisinin hemen üstünde; çocuk resmin ortasında, ayakta. Kolların uçlarında ve çocuğun arkasında yazı için boş alan kalsın.' + ORTAK,
-      etiketler: [{ x: 255, y: 34, t: 'önü: DOĞU', boy: 22 }, { x: 70, y: 200, t: 'sol kol: KUZEY', boy: 19 }, { x: 440, y: 200, t: 'sağ kol: GÜNEY', boy: 19 }, { x: 255, y: 340, t: 'arkası: BATI', boy: 22 }] },
+      etiketler: [{ x: 255, y: 34, t: 'önü: DOĞU', boy: 22 }, { x: 82, y: 200, t: 'sol kol: KUZEY', boy: 19 }, { x: 428, y: 200, t: 'sağ kol: GÜNEY', boy: 19 }, { x: 255, y: 340, t: 'arkası: BATI', boy: 22 }] },
     // 4 — Pusula ve gölge (ChatGPT)
     { ad: 'Pusula ve öğle gölgesi', resim: 'Baski/Sosyal/resimler/yonler-4-pusula-golge.png',
       istem: 'Bir görsel oluştur: Sol panel: bir çocuğun avucunda yuvarlak bir pusula, yakından; ibrenin bir ucu kırmızı, diğer ucu beyaz; kadranda harf ya da rakam olmasın. Sağ panel: öğle vakti, Güneş gökyüzünde yüksekte; düz bir zeminde tek bir ağaç ve ağacın gölgesi resmin üst tarafına doğru (Güneş\'in tersine) kısa ve belirgin düşüyor.' + ' Resim ortadan ince beyaz bir boşlukla iki eşit panele bölünsün.' + ORTAK,
