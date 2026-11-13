@@ -117,7 +117,10 @@ const paths = {
     'tur-cikarim-baslik':'Turkce/cikarimbaslik.html',
     'trafik-oyunaraclari':'Trafik/oyunaraclari.html',
     'tur-tablo-grafik':'Turkce/kantindedektifi.html',
-    'tur-ozdeyisler':'Turkce/ozdeyisler.html'
+    'tur-ozdeyisler':'Turkce/ozdeyisler.html',
+    'sos-gecmistebiz-sinav':'Sosyal/sos-gecmistebiz-sinav.html',
+    'tur-pekistirme':'Turkce/pekistirme.html',
+    'tur-sozavcilar':'Turkce/sozavcıları.html'
   };
 /* KATALOG BITIR: ilerleme-yollari */
   const available = new Set(SECILI_ETKINLIKLER_);

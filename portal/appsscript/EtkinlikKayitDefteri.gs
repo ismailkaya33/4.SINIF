@@ -24,7 +24,10 @@ const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({
   'tur-cikarim-baslik': Object.freeze({konu:'Türkçe',kazanim:'T.4.3.28 Çıkarım / T.4.3.21 Başlık belirleme',maxTotal:200}),
   'trafik-oyunaraclari': Object.freeze({konu:'Trafik Güvenliği',kazanim:'TG.4.1.6 Oyun araçlarını güvenli kullanma',maxTotal:200}),
   'tur-tablo-grafik': Object.freeze({konu:'Türkçe',kazanim:'T.4.3.34 Tablo, grafik ve çizelge okuma',maxTotal:200}),
-  'tur-ozdeyisler': Object.freeze({konu:'Türkçe',kazanim:'Özdeyişler (kazanım kodu doğrulanmalı)',maxTotal:200})
+  'tur-ozdeyisler': Object.freeze({konu:'Türkçe',kazanim:'Özdeyişler (kazanım kodu doğrulanmalı)',maxTotal:200}),
+  'sos-gecmistebiz-sinav': Object.freeze({konu:'Sosyal Bilgiler',kazanim:'SB.4.2.1 / SB.4.2.2 / SB.4.2.3 / SB.4.2.4 Geçmişte Biz',maxTotal:200}),
+  'tur-pekistirme': Object.freeze({konu:'Türkçe',kazanim:'Pekiştirmeler (kazanım kodu doğrulanmalı)',maxTotal:200}),
+  'tur-sozavcilar': Object.freeze({konu:'Türkçe',kazanim:'T.4.3.11 Deyim ve atasözleri',maxTotal:200})
 });
 /* KATALOG BITIR: sunucu-izin-listesi */
 function etkinlikTanimi_(id) {
