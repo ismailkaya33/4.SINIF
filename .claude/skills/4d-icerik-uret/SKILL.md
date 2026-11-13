@@ -150,6 +150,28 @@ Tarayıcı yolu:
 - Etkileşimli HTML etkinliklerde görseller yine dosyaya gömülü olur; Gemini resmi gömülecekse küçültülüp
   (WebP/PNG, birkaç yüz KB) `data:` olarak eklenir.
 
+## 4.3 Kodla sketchnote: kavram haritası ve şema (öğretmenin kararı, 2026-11-13)
+**Hangi yol?** Yazının birebir doğru olması gereken, kutu-ok-simge ile anlatılan işler (kavram haritası, sınıflandırma,
+süreç, karşılaştırma, "Unutma!" özetli şema) → **kodla sketchnote**. Sahne, manzara, karakter, ayrıntılı resim,
+boyama sayfası → ChatGPT (4.2). Kodla çizimde Türkçe yazım hatası olmaz, PDF vektördür (her boyutta keskin),
+indirme adımı yoktur, tek HTML dosyası internetsiz açılır. Simgeler basit karalama düzeyindedir; illüstrasyon beklenmez.
+- Araç: `tools/sketchnote/` (rough.js MIT + Kalam yazı tipi OFL, lisansları klasörde; `sketchnote.js` ortak çizim,
+  `sayfa.html` kabuk). Her not `tools/sketchnote/notlar/<ders>-<konu>.js` dosyasıdır ve yalnız içeriği tutar:
+  ```js
+  Sketchnote.kavramHaritasi({ baslik: 'BESİN İÇERİKLERİ', giris: '…', merkez: ['BESİN','İÇERİKLERİ'], rozet: '6',
+    kutular: [{ ad: 'Proteinler', is: '…', ornek: '…', simge: 'yumurta' }, …],   // 4 ya da 6 kutu önerilir
+    unutma: ['…', '…'] });
+  ```
+  Örnek: `notlar/fen-besin-icerikleri.js`. Simgeler: yumurta, ekmek, sise, portakal, dis, bardak, damla, ampul,
+  buyutec, yildiz (yenisi `sketchnote.js` → `simge` bölümüne eklenir). Serbest düzen için `Sketchnote.ciz(S => …)`.
+- Basmak: `node tools/sketchnote-yap.mjs tools/sketchnote/notlar/<ad>.js --png <yol>.png --pdf <yol>.pdf [--html <yol>.html]`
+  (Edge ile; PNG 1984×2806, PDF A4). Defter notu PNG'si `<Ders>/DefterNotlari/`, baskı PDF'i `Baski/<Ders>/`.
+  Araç basmadan önce **taşmayı** denetler; "Yazı kutudan taşıyor: …" derse o kutunun metni kısaltılır.
+- Tarz 4.2'deki sketchnote kuralıdır: beyaz zemin, siyah kalem çizgisi, yalnız sarı + mavi vurgu, karakter yok.
+  Metin 4. sınıf dilinde, kısa (kutu başına 1–2 cümle + örnekler). İçerik bilgisi doğrulanır; kazanım kodu sayfaya
+  yazılmaz (gerekirse "doğrulanmalı").
+- Basılan PNG Claude tarafından açılıp (Read) kontrol edilir; öğretmene PNG + PDF gösterilir.
+
 ## 5. Öğretmene sonuç (portal bağlantısı)
 Öğrenciler 6 haneli kodla portala girer; etkinlik portalın içinde açılınca sonuç öğretmen paneline kendiliğinden gider. **EKR1 kodu, öğrencinin kod kopyalaması ve ayrı öğretmen paneli YOKTUR.**
 - `assets/rapor_motoru.js` (v2) etkinliğe gömülür: `python -I scripts/birlestir.py kaynak.html cikti.html`.
