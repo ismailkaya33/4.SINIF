@@ -8,3 +8,6 @@ desktop.ini
 .tmp.drivedownload/
 .tmp.driveupload/
 __pycache__/
+
+# KVKK yazdırmalık PDF'leri (yerel kopya; kaynağı gizlilik.html ve veli-onay-formu.html)
+KVKK/

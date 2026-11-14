@@ -49,7 +49,10 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
 - TEST40 öğretmen raporunda bilerek görünmez; Claude canlı Google sitesine kod girmez, girişi öğretmen yapar.
 - Test etmediğin şeyi "çalışıyor" deme. Önizleme: Edge headless + sahte veri.
 - Kazanım kodunu uydurma; emin değilsen "doğrulanmalı" yaz ve sor.
-- Bekleyenler: KVKK aydınlatma metni.
+- **KVKK:** aydınlatma metni `gizlilik.html`, veli onay formu `veli-onay-formu.html` (site kökü; yazdırmalık PDF'ler yerelde
+  `KVKK/`, GitHub'a gitmez). Velinin "HAYIR" cevabı özel tablodaki `VELI_ONAYLARI` sayfasına yazılır; portal sosyometri,
+  davranış raporu ve Ayın Yıldızları'nda uygular (`VeliOnaylari.gs`). Portalda yeni bir veri türü işlenirse önce bu metni ve formu güncelle.
+  Bekleyen: metnin okul idaresince onaylanması, formların toplanıp tabloya işlenmesi.
 - **Token tasarrufu:** tarayıcıda ekran görüntüsü yerine önce metin okuma (`get_page_text`/`read_page`/`find`) kullan;
   görüntü gerekirse küçük ölçek (`scale` 0.5) ya da `zoom`. `portal/appsscript/OgrenciGiris_Guncel.html` (~100 KB)
   bütün okunmaz: önce `Grep` ile yeri bul, sadece o aralığı oku. Aynı dosyayı tekrar tekrar okuma.
