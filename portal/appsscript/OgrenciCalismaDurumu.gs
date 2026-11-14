@@ -1,9 +1,9 @@
 /** 4/D - Defter notu tamamlandi bildirimi; kullanicinin kimligi oturumdan gelir. */
 const DEFTER_NOTLARI_ = Object.freeze({
- 'Turkce':['atasozleri.png','deyimler.png','gercekmecaz.png','ikilemeler.jpeg','metninbolumleri.png','pekistirme.JPG','ozdeyisler.png'],
+ 'Turkce':['atasozleri.png','deyimler.png','gercekmecaz.png','ikilemeler.jpeg','metninbolumleri.png','pekistirme.JPG','ozdeyisler.png','tr-cumle-bilgisi-1.png','tr-cumle-bilgisi-2.png'],
  'Matematik':['cikarmadaverilmeyen.png','cikarmadefternotu.png','toplama.png','toplamacikarmaproblemleri.png','zihindencikarma.png','zihindentoplama.png'],
- 'Fen':['besinler1.png','besinler2.png','besinler3.png','besinlerintazeligi.png','besinlerisaklama.png','hareketliyasam.png','dengelibeslenme.png'],
- 'Sosyal':['ailemcocuk.jpg','ailetarihi.png','cocukoyun.png','farkliliklarimizvesaygi.png','mersinkultur.png','millikultur.png','millimucadele1.png','millimucadele2.png','millimucadele3.png','millimucadele4.png','millimucadele5.png','millimucadele6.png','millimucadele7.png']
+ 'Fen':['besinler1.png','besinler2.png','besinler3.png','besinlerintazeligi.png','besinlerisaklama.png','hareketliyasam.png','dengelibeslenme.png','fen-kuvvetin-etkileri-1.png','fen-kuvvetin-etkileri-2.png'],
+ 'Sosyal':['ailemcocuk.jpg','ailetarihi.png','cocukoyun.png','farkliliklarimizvesaygi.png','mersinkultur.png','millikultur.png','millimucadele1.png','millimucadele2.png','millimucadele3.png','millimucadele4.png','millimucadele5.png','millimucadele6.png','millimucadele7.png','sos-yonler-1.png','sos-yonler-2.png']
 });
 const DEFTER_DURUM_SAYFA_='DEFTER_TAMAMLAMA';
 function defterNotuStandart_(id) {
