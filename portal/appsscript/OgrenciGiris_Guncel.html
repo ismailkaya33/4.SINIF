@@ -71,6 +71,7 @@ body.loginView .kutu{min-height:min(640px,calc(100vh - 48px));display:flex;flex-
 #kod:focus{border-color:var(--mor);outline:none;box-shadow:0 0 0 4px #6a4fc633}
 #giris{width:100%;margin-top:14px;min-height:58px;font-size:20px}
 .teacherAccess{display:inline-block;margin-top:16px;color:var(--soluk);font-size:15px;font-weight:700}
+.privacyAccess{margin-left:18px}
 .teacherAccess:hover{color:var(--mavi)}
 
 /* ---------- Oturum: karşılama + duyurular ---------- */
@@ -420,7 +421,7 @@ body.lessonView :is(#anaUst,#anaKose){display:none!important}
 </style></head><body class="loginView"><main class="kutu">
 <h1>4/D Öğrenci Portalı</h1><h2>Akıllı Sınıf</h2>
 <p id="sonuc" role="status" aria-live="polite"></p>
-<div id="girisAlani"><p id="kod-yardim">Öğretmeninin verdiği 6 karakterli sınıf kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" inputmode="text" enterkeyhint="go" spellcheck="false" aria-label="Öğrenci kodu" aria-describedby="kod-yardim"><button id="giris" type="button">Giriş Yap</button><a class="teacherAccess" href="https://script.google.com/macros/s/AKfycbzYet4urwswVKhlxobxrH6R0IC_a1e8hUzpj42d_XwqZkA7N0Gwl4epC1P5XvZBt3DcyQ/exec" target="_blank" rel="noopener">🔒 Öğretmen Paneli</a></div>
+<div id="girisAlani"><p id="kod-yardim">Öğretmeninin verdiği 6 karakterli sınıf kodunu yaz.</p><input id="kod" maxlength="6" autocomplete="off" autocapitalize="characters" inputmode="text" enterkeyhint="go" spellcheck="false" aria-label="Öğrenci kodu" aria-describedby="kod-yardim"><button id="giris" type="button">Giriş Yap</button><a class="teacherAccess" href="https://script.google.com/macros/s/AKfycbzYet4urwswVKhlxobxrH6R0IC_a1e8hUzpj42d_XwqZkA7N0Gwl4epC1P5XvZBt3DcyQ/exec" target="_blank" rel="noopener">🔒 Öğretmen Paneli</a><a class="teacherAccess privacyAccess" href="https://ismailkaya33.github.io/4.SINIF/gizlilik.html" target="_blank" rel="noopener">🛡️ Gizlilik ve KVKK (veliler için)</a></div>
 <div id="oturumAlani" hidden>
 <div class="portalTopStrip">
 <section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>

@@ -46,6 +46,8 @@ function ogrenciAylikRaporlari(token) {
   const oturum = oturumKaydi_(token);
   const ogrenci = oturum ? kayitNoIle_(oturum.no) : null;
   if (!ogrenci) return {basarili: false, raporlar: []};
+  // Velisi davranış raporuna "HAYIR" dediyse rapor gösterilmez (VeliOnaylari.gs).
+  if (veliOnayiYok_(ogrenci.no, 'DavranisRaporu')) return {basarili: true, raporlar: []};
   const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(VELI_RAPOR_SAYFASI_);
   if (!sh) return {basarili: true, raporlar: []};
   const count = Math.max(0, sh.getLastRow() - 1);

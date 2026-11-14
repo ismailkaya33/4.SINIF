@@ -124,7 +124,7 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 }
 </style></head><body>
 <header class="reportHeader"><div><p class="eyebrow">4/D · öğretmen paneli</p><h1>Öğretmen Raporu</h1><p id="status" role="status">Yükleniyor...</p></div><span class="reportPrivacy">🔒 Öğretmene özel</span></header>
-<nav class="reportNav" aria-label="Rapor bölümleri"><a href="#recentPanel">🆕 Son 7 gün</a><a href="#difficultyPanel">Zorlanılanlar</a><a href="#outcomePanel">Kazanımlar</a><a href="#catalogPanel">Ders içerikleri</a><a href="#activityPanel">Etkinlikler</a><a href="#declarationPanel">Tamamlama</a><a href="#notebookPanel">Defter notları</a><a href="#studentPanel">Öğrenciler</a><a href="#announcementPanel">Duyurular</a><a href="#surveyPanel">📝 Anketler</a><a href="#sociometryPanel">👫 Sosyometri</a></nav>
+<nav class="reportNav" aria-label="Rapor bölümleri"><a href="#recentPanel">🆕 Son 7 gün</a><a href="#difficultyPanel">Zorlanılanlar</a><a href="#outcomePanel">Kazanımlar</a><a href="#catalogPanel">Ders içerikleri</a><a href="#activityPanel">Etkinlikler</a><a href="#declarationPanel">Tamamlama</a><a href="#notebookPanel">Defter notları</a><a href="#studentPanel">Öğrenciler</a><a href="#announcementPanel">Duyurular</a><a href="#surveyPanel">📝 Anketler</a><a href="#sociometryPanel">👫 Sosyometri</a><a href="#consentPanel">🔐 Veli onayları</a></nav>
 <div class="stats"><p>Öğrenci <strong id="count">—</strong></p><p>Geçerli sonuç <strong id="results">—</strong></p><p>Sonucu gelen etkinlik <strong id="activeActivities">—</strong></p><p>Henüz kaydı olmayan öğrenci <strong id="noRecordStudents">—</strong></p></div>
 <section id='recentPanel' class='reportSection'><h2>🆕 Son 7 günde yüklenen etkinlikler ve değerlendirmeler</h2><p id="recentRange" class="muted">Siteye son bir haftada eklenen içerikler. Sonuç gönderenlerde başarı, ilk denemede doğru ve desteğe ihtiyacı olabilecek öğrenciler; “Tamamladım” bildirimi alınanlarda bildirim durumu gösterilir.</p><div id="recentSections"><p class="empty">İçerik listesi okunuyor...</p></div></section>
 <section id='difficultyPanel' class='reportSection'><h2>🎯 Zorlanılan etkinlikler</h2><p class="muted">En üstteki etkinlik, öğrencilerin ilk denemede en az doğru yaptığı etkinliktir. Tekrar ya da sınıf içi pekiştirme için ipucu verir; not yerine geçmez.</p><table><thead><tr><th>Etkinlik</th><th>Katılan öğrenci</th><th>Deneme</th><th>İlk denemede doğru</th><th>Deneme başına yanlış</th></tr></thead><tbody id="difficulty"></tbody></table></section>
@@ -145,6 +145,10 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 <section id='sociometryPanel' class='reportSection'><h2>👫 Sınıf Arkadaşlarım (sosyometri)</h2><p class="muted">Öğrenciler 4 soruda (grup çalışması, teneffüs, yan yana oturma, yardım isteme) 3'er arkadaş seçer. Anket açıkken cevabını bir kez değiştirebilir. Olumsuz seçim sorusu yoktur. Misafir (TEST) cevapları sonuçlara katılmaz.</p>
 <p class="sgPrivacy">🔒 Bu sonuçlar yalnız sizin içindir. Öğrencilerle, velilerle ya da başka sınıflarla paylaşmayın; ekran tahtaya yansıtılırken bu bölümü açmayın. Amaç çocukları etiketlemek değil; oturma düzenini, grup çalışmalarını planlamak ve yalnız kalabilecek çocukları erkenden fark etmektir. İşiniz bitince kapanmış anketin cevaplarını buradan kalıcı olarak silebilirsiniz.</p>
 <p id="sosyoMesaj" role="status"></p><div id="sosyoAlan"><p class="empty">Sosyometri okunuyor...</p></div><button id="sosyoYenile" class="secondary" type="button">Sosyometriyi yenile</button></section>
+<section id='consentPanel' class='reportSection'><h2>🔐 Veli onayları (KVKK)</h2><p class="muted">Velilere giden onay formundaki cevaplar özel tablonuzdaki <b>VELI_ONAYLARI</b> sayfasına yazılır: her öğrencinin satırında ilgili sütuna <b>EVET</b> ya da <b>HAYIR</b>. “HAYIR” yazılan çocuk o bölümde portalda yer almaz (sosyometride görünmez ve katılamaz; davranış raporu gösterilmez; Ayın Yıldızları'nda adı çıkmaz). Portal kullanımına “HAYIR” diyen çocuğa giriş kodu vermeyin.</p>
+<p class="muted">Velilere: <a href="https://ismailkaya33.github.io/4.SINIF/gizlilik.html" target="_blank" rel="noopener">Aydınlatma metni</a> · <a href="https://ismailkaya33.github.io/4.SINIF/veli-onay-formu.html" target="_blank" rel="noopener">Onay formu (yazdır)</a></p>
+<p id="onayMesaj" role="status"></p><div id="onayAlan"><p class="empty">Veli onayları okunuyor...</p></div>
+<button id="onayHazirla" type="button">Onay tablosunu hazırla / eksik öğrencileri ekle</button> <button id="onayYenile" class="secondary" type="button">Yenile</button></section>
 <script>
 "use strict";
 /* Görünüm yardımcıları: hücreye metin ya da hazır öğe (rozet, çubuk) konabilir. */
@@ -525,6 +529,13 @@ function sosyometriListele(sonMesaj){
  google.script.run.withSuccessHandler(function(r){
   el.replaceChildren();msg.textContent=bitis;
   const turlar=r&&Array.isArray(r.turlar)?r.turlar:[];
+  // KVKK: veli onayı durumu
+  const vo=r&&r.veliOnayi;
+  if(vo){const u=document.createElement('p');u.className='sgCare';
+   if(!vo.tabloVar)u.textContent='⚠️ Veli onay tablosu henüz yok. Anketi öğrencilere açmadan önce onay formlarını toplayıp “🔐 Veli onayları” bölümünden tabloyu hazırlayın.';
+   else{const parcalar=[];if(vo.hayir)parcalar.push('Velisi onaylamayan '+vo.hayir+' öğrenci listeye ve sonuçlara alınmadı.');if(vo.bekleyen)parcalar.push(vo.bekleyen+' öğrencinin sosyometri onayı tabloya henüz işlenmedi (“EVET” ya da “HAYIR” yazılmamış).');
+    if(parcalar.length)u.textContent='🔐 '+parcalar.join(' ');else{u.className='sgCare allChosen';u.textContent='🔐 Bütün öğrencilerin sosyometri onayı işlendi.'}}
+   el.appendChild(u)}
   if(!turlar.some(function(t){return t.durum==='TASLAK'||t.durum==='YAYINDA'})){
    const box=document.createElement('div'),p=document.createElement('p'),b=document.createElement('button');box.className='announcement';
    p.textContent=turlar.length?'Yeni bir tur (ör. dönem sonunda karşılaştırmak için) hazırlayabilirsiniz. Önce taslak olur; siz yayımlayana kadar öğrenciler görmez.':'Sosyometri anketi henüz hazırlanmadı. Hazırlayınca taslak olur; siz yayımlayana kadar öğrenciler görmez.';
@@ -550,6 +561,24 @@ function sosyometriListele(sonMesaj){
 }
 document.getElementById('sosyoYenile').addEventListener('click',sosyometriListele);
 sosyometriListele();
+/* ---------- Veli onayları (KVKK) ---------- */
+function veliOnaylariListele(sonMesaj){
+ const el=document.getElementById('onayAlan'),msg=document.getElementById('onayMesaj'),bitis=typeof sonMesaj==='string'?sonMesaj:'';
+ msg.textContent='Veli onayları okunuyor...';
+ google.script.run.withSuccessHandler(function(r){
+  el.replaceChildren();msg.textContent=bitis;
+  if(!r||!r.tabloVar){const e=document.createElement('p');e.className='empty';e.textContent='VELI_ONAYLARI sayfası henüz yok. Aşağıdaki düğme, özel tablonuzda her öğrenci için boş bir satır açar; formlar geldikçe EVET / HAYIR yazarsınız.';el.appendChild(e);return}
+  const ozet=document.createElement('p');ozet.textContent=r.ogrenciSayisi+' öğrenci'+(r.tablodaOlmayan?' · tabloda satırı olmayan: '+r.tablodaOlmayan+' (düğmeyle eklenir)':'');el.appendChild(ozet);
+  el.appendChild(makeTable(['Onay','Evet','Hayır','Henüz gelmedi','Hayır diyenler'],r.alanlar.map(function(a){return [a.ad,a.evet,a.hayir,a.bos,a.hayirAdlar.length?a.hayirAdlar.join(', '):'—']})));
+ }).withFailureHandler(function(e){el.replaceChildren();msg.textContent='Veli onayları alınamadı: '+(e&&e.message||'Bilinmiyor');}).ogretmenVeliOnaylari();
+}
+document.getElementById('onayHazirla').addEventListener('click',function(){
+ const b=this;b.disabled=true;document.getElementById('onayMesaj').textContent='Hazırlanıyor...';
+ google.script.run.withSuccessHandler(function(s){b.disabled=false;veliOnaylariListele(s&&s.eklenen?'✅ '+s.eklenen+' öğrenci için satır eklendi. Özel tablonuzda VELI_ONAYLARI sayfasını açıp EVET / HAYIR yazın.':'Tabloda bütün öğrenciler zaten var.');sosyometriListele()})
+  .withFailureHandler(function(e){b.disabled=false;document.getElementById('onayMesaj').textContent='Hata: '+(e&&e.message||'Hazırlanamadı');}).ogretmenVeliOnayTablosuHazirla();
+});
+document.getElementById('onayYenile').addEventListener('click',veliOnaylariListele);
+veliOnaylariListele();
 google.script.run.withSuccessHandler(function(r){
  const saat=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
  document.getElementById('status').textContent='Rapor güncel ('+saat+' itibarıyla). MİSAFİR kayıtları hariç.';

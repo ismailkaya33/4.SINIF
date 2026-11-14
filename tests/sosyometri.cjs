@@ -32,10 +32,10 @@ const student=vm.createContext({...common,
  oturumTokenGecerliBicimdeMi_:t=>typeof t==='string'&&t.startsWith('tok-'),
  oturumKaydi_:t=>sessions[t]?{no:sessions[t],row:2}:null,
  kayitNoIle_:no=>{const r=sheets.Sayfa1.rows.slice(1).filter(x=>x[0]===String(no));return r.length===1?{no:r[0][0],ad:r[0][1],misafir:r[0][3]==='TEST'}:null}});
-vm.runInContext(fs.readFileSync('portal/appsscript/Kod.gs','utf8')+'\n'+fs.readFileSync('portal/appsscript/Sosyometri.gs','utf8'),student);
+vm.runInContext(['Kod.gs','VeliOnaylari.gs','Sosyometri.gs'].map(p=>fs.readFileSync('portal/appsscript/'+p,'utf8')).join('\n'),student);
 // Öğretmen projesi (ayrı proje, aynı tablo)
 const teacher=vm.createContext({...common});
-vm.runInContext(fs.readFileSync('portal/ogretmen-rapor/OgretmenSosyometri.gs','utf8'),teacher);
+vm.runInContext(['OgretmenVeliOnaylari.gs','OgretmenSosyometri.gs'].map(p=>fs.readFileSync('portal/ogretmen-rapor/'+p,'utf8')).join('\n'),teacher);
 
 // vm içindeki dizi/nesneler başka "realm"den gelir; karşılaştırma için JSON ile düz nesneye çevrilir.
 const J=x=>x===undefined?x:JSON.parse(JSON.stringify(x));

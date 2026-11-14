@@ -21,12 +21,21 @@ function ogrenciAyinYildizlari(token) {
   if (!sh || sh.getLastRow() < 2) return {basarili: true, aylar: []};
   const benim = veliRaporAdNormal_(ogrenci.ad);
   const rows = sh.getRange(2, 1, sh.getLastRow() - 1, 6).getDisplayValues();
+  // Velisi Ayın Yıldızları'na "HAYIR" diyen öğrencinin satırı (E sütunundaki kayıt adına göre) gösterilmez.
+  const gizli = {};
+  const kayit = kayitSayfasi_();
+  if (kayit.getLastRow() > 1) {
+    kayit.getRange(2, 1, kayit.getLastRow() - 1, 2).getDisplayValues().forEach(r => {
+      if (veliOnayiYok_(String(r[0]).trim(), 'AyinYildizlari')) gizli[veliRaporAdNormal_(r[1])] = true;
+    });
+  }
   const aylar = {};
   rows.forEach(r => {
     const ay = String(r[0]).trim();
     const odul = veliRaporAdNormal_(r[1]).replace(/\s|\./g, '');
     const ad = String(r[2]).trim();
     if (!ay || !ad || !YILDIZ_ODULLER_[odul] || veliRaporAdNormal_(r[5]).replace(/\s/g, '') !== 'YAYINDA') return;
+    if (gizli[veliRaporAdNormal_(r[4])]) return;
     (aylar[ay] = aylar[ay] || []).push({
       sira: YILDIZ_ODULLER_[odul],
       ad: ad.slice(0, 40),

@@ -97,15 +97,21 @@ function sosyoKadro_(ss) {
   const kayit = ss.getSheetByName('Sayfa1');
   const rows = kayit && kayit.getLastRow() > 1 ? kayit.getRange(2, 1, kayit.getLastRow() - 1, 4).getDisplayValues() : [];
   const sayi = {}, ogrenciler = [], testNolar = [];
+  // Velisi sosyometriye "HAYIR" diyen öğrenci analize hiç girmez (OgretmenVeliOnaylari.gs).
+  const onay = ogrVeliOnaylariOku_(ss);
+  const veliOnayi = {tabloVar: onay.tabloVar, hayir: 0, bekleyen: 0};
   rows.forEach(function (r) { const no = String(r[0]).trim(); if (no) sayi[no] = (sayi[no] || 0) + 1; });
   rows.forEach(function (r) {
     const no = String(r[0]).trim(), ad = String(r[1]).trim();
     if (!no || !ad || sayi[no] !== 1) return;
-    if (String(r[3]).trim().toUpperCase() === 'TEST') testNolar.push(no);
-    else ogrenciler.push({no: no, ad: ad});
+    if (String(r[3]).trim().toUpperCase() === 'TEST') { testNolar.push(no); return; }
+    const d = (onay.kayit[no] || {}).Sosyometri || '';
+    if (d === 'HAYIR') { veliOnayi.hayir++; return; }
+    if (d !== 'EVET') veliOnayi.bekleyen++;
+    ogrenciler.push({no: no, ad: ad});
   });
   ogrenciler.sort(function (a, b) { return a.ad.localeCompare(b.ad, 'tr'); });
-  return {ogrenciler: ogrenciler, testNolar: testNolar};
+  return {ogrenciler: ogrenciler, testNolar: testNolar, veliOnayi: veliOnayi};
 }
 
 function sosyoTurSayfasi_(ss) {
@@ -139,7 +145,7 @@ function ogretmenSosyometri() {
         analiz: analiz
       };
     });
-  return {turlar: turlar, ogrenciSayisi: kadro.ogrenciler.length};
+  return {turlar: turlar, ogrenciSayisi: kadro.ogrenciler.length, veliOnayi: kadro.veliOnayi};
 }
 
 /** Şablondan TASLAK tur ekler. Açık (taslak/yayında) bir tur varken yenisi eklenmez. */

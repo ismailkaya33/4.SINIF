@@ -64,7 +64,9 @@ function sosyoSinifListesi_() {
   rows.forEach(function (r) { const no = String(r[0]).trim(); if (no) sayi[no] = (sayi[no] || 0) + 1; });
   return rows.filter(function (r) {
     const no = String(r[0]).trim();
-    return no && sayi[no] === 1 && String(r[1]).trim() && String(r[3]).trim().toUpperCase() !== 'TEST';
+    // Velisi sosyometriye "HAYIR" diyen öğrenci listede görünmez (VeliOnaylari.gs).
+    return no && sayi[no] === 1 && String(r[1]).trim() && String(r[3]).trim().toUpperCase() !== 'TEST' &&
+      !veliOnayiYok_(no, 'Sosyometri');
   }).map(function (r) { return {no: String(r[0]).trim(), ad: String(r[1]).trim().slice(0, 60)}; });
 }
 
@@ -133,6 +135,7 @@ function ogrenciSosyometri(token) {
   const oturum = oturumKaydi_(token);
   const ogrenci = oturum ? kayitNoIle_(oturum.no) : null;
   if (!ogrenci) return {basarili: false};
+  if (veliOnayiYok_(ogrenci.no, 'Sosyometri')) return {basarili: true, acik: false};
   const tur = sosyoAcikTur_();
   if (!tur) return {basarili: true, acik: false};
   const a = sosyoArkadaslar_(tur, ogrenci.no);
@@ -168,7 +171,7 @@ function sosyometriCevapla(token, turKimlik, cevaplar) {
   const ogrenci = oturum ? kayitNoIle_(oturum.no) : null;
   if (!ogrenci) return {basarili: false, mesaj: 'Oturum kapanmış. Yeniden giriş yap.'};
   const tur = sosyoAcikTur_();
-  if (!tur || tur.kimlik !== kimlik) return {basarili: false, mesaj: 'Bu anket artık açık değil.'};
+  if (!tur || tur.kimlik !== kimlik || veliOnayiYok_(ogrenci.no, 'Sosyometri')) return {basarili: false, mesaj: 'Bu anket artık açık değil.'};
   const a = sosyoArkadaslar_(tur, ogrenci.no);
   const temiz = sosyoCevapDogrula_(tur, a.noIle, cevaplar);
   if (!temiz) return {basarili: false, mesaj: 'Her soruda ' + Math.min(tur.secim, a.arkadaslar.length) + ' arkadaşını seç.'};

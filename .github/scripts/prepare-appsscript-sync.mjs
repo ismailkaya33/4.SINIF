@@ -16,6 +16,7 @@ const student=[
  ['portal/appsscript/VeliRaporu.gs','VeliRaporu'],
  ['portal/appsscript/AyinYildizlari.gs','AyinYildizlari'],
  ['portal/appsscript/Sosyometri.gs','Sosyometri'],
+ ['portal/appsscript/VeliOnaylari.gs','VeliOnaylari'],
  ['portal/appsscript/OgrenciGiris_Guncel.html','OgrenciGiris']
 ];
 const teacher=[
@@ -23,6 +24,7 @@ const teacher=[
  ['portal/ogretmen-rapor/OgretmenDuyuruTaslak.gs','OgretmenDuyuruTaslak'],
  ['portal/ogretmen-rapor/OgretmenAnket.gs','OgretmenAnket'],
  ['portal/ogretmen-rapor/OgretmenSosyometri.gs','OgretmenSosyometri'],
+ ['portal/ogretmen-rapor/OgretmenVeliOnaylari.gs','OgretmenVeliOnaylari'],
  ['portal/ogretmen-rapor/OgretmenRapor.html','OgretmenRapor']
 ];
 const mapping=target==='student'?student:teacher;
