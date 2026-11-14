@@ -210,6 +210,10 @@ Defter notu kodla üretilir (`Sketchnote.defterNotu`, bkz. 4.3); her not iki ç�
   aynı ikililer bir A4 olur. Görselde olan bilgi yazıda tekrarlanmaz. Şema/işlem/tablo kodla çizilir; nesne/sahne
   gösteren görseller (ör. Fen) kodla basit kalır → ChatGPT ile olgun tarzda çizdirilir (öğretmenin bilgisayarında,
   Claude in Chrome; 4.2). Her görsel "kavram haritası" biçiminde olmaz.
+- **Gereksiz görsel yok (öğretmenin kuralı, 2026-11-14):** öğrencinin deftere kendisinin kolayca yazabileceği ya da
+  çizebileceği basit şeyler (örnek cümle listesi, olumlu→olumsuz tablosu, soru sözcükleri kümesi gibi kısa metin/şema)
+  kes-yapıştır görseli yapılmaz; bunlar notta madde olarak kalır. Görsel yalnız öğrencinin kendi çizemeyeceği sahne,
+  nesne, harita/kroki ya da karmaşık şema için kullanılır.
 - **ChatGPT görseli = resim yuvası:** `{ ad, resim: 'Baski/<Ders>/resimler/<ad>.png', istem: '…', etiketler: [{ x, y, t }] }`.
   İstem yazısız illüstrasyon ister (yatay 3:2; gerekirse "iki eşit panel"); Türkçe etiketleri kod resmin üstüne yazar.
   Resim yokken yer tutucu basılır (düzen görülür); dosya gelince aynı komut resmi gömer, kes-yapıştırda gri tonlu basar.
