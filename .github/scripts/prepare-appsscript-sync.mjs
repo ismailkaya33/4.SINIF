@@ -15,12 +15,14 @@ const student=[
  ['portal/appsscript/OgrenciCalismaDurumu.gs','OgrenciCalismaDurumu'],
  ['portal/appsscript/VeliRaporu.gs','VeliRaporu'],
  ['portal/appsscript/AyinYildizlari.gs','AyinYildizlari'],
+ ['portal/appsscript/Sosyometri.gs','Sosyometri'],
  ['portal/appsscript/OgrenciGiris_Guncel.html','OgrenciGiris']
 ];
 const teacher=[
  ['portal/ogretmen-rapor/OgretmenRapor.gs','Kod'],
  ['portal/ogretmen-rapor/OgretmenDuyuruTaslak.gs','OgretmenDuyuruTaslak'],
  ['portal/ogretmen-rapor/OgretmenAnket.gs','OgretmenAnket'],
+ ['portal/ogretmen-rapor/OgretmenSosyometri.gs','OgretmenSosyometri'],
  ['portal/ogretmen-rapor/OgretmenRapor.html','OgretmenRapor']
 ];
 const mapping=target==='student'?student:teacher;

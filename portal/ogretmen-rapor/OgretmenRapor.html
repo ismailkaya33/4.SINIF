@@ -84,6 +84,30 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 .surveyGroup{margin:8px 0 2px;color:var(--muted);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
 .surveyTop{margin:10px 0;padding:10px 14px;border-radius:10px;background:var(--warn-bg);color:#6b4308;font-weight:700}
 @media(max-width:650px){.surveyBar{grid-template-columns:1fr 44px}.surveyBar .progress{grid-column:1/-1;grid-row:2}}
+.sgPrivacy{margin:0 0 14px!important;padding:10px 14px;border-radius:10px;background:var(--brand-bg);color:var(--brand-d)!important;font-weight:600}
+.sgTabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.sgTabs button{min-height:36px;padding:6px 14px;border:1px solid #c5d5ee;background:var(--card);color:var(--brand-d);font-size:14px}
+.sgTabs button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.sgCare{margin:8px 0 14px;padding:12px 16px;border-radius:12px;background:#fff8ea;border:1px solid #f1dcb0;color:#5c4210}
+.sgCare strong{display:block;margin-bottom:4px;color:#6b4308}
+.sgCare p{margin:6px 0 0;font-size:14px}
+.sgCare.allChosen{background:var(--ok-bg);border-color:#bfe3cf;color:var(--ok)}
+.sgFigure{margin:6px 0 14px;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.sgFigure svg{display:block;width:100%;max-width:640px;height:auto;margin:0 auto}
+.sgFigure figcaption{margin:6px 0 0;color:var(--muted);font-size:13.5px;text-align:center}
+.sgFigure label{display:inline-flex;align-items:center;gap:6px;margin:0;font-weight:600;color:var(--muted)}
+.sgFigure input{display:inline;width:auto;margin:0}
+.sgRing{fill:none;stroke:#d7e0eb;stroke-dasharray:4 5}
+.sgRingLabel{fill:#8592a3;font-size:11px;font-weight:700}
+.sgMutual{stroke:var(--ok);stroke-width:2.6;opacity:.85}
+.sgOne{stroke:#7f93ab;stroke-width:1;opacity:.4}
+.sgNode circle{stroke:#fff;stroke-width:2}
+.sgNode text{fill:var(--ink);font-size:10.5px;font-weight:700;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:3px}
+.sgL0 circle{fill:var(--brand)}.sgL1 circle{fill:#5f8fd3}.sgL2 circle{fill:#a8c2e6}.sgL3 circle{fill:#f0bf5e}
+.sgLegend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;margin:6px 0 0;padding:0;list-style:none;font-size:13px;color:var(--muted)}
+.sgLegend i{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:50%;vertical-align:-1px}
+.sgPairs{margin:4px 0 12px;padding-left:20px;columns:2;column-gap:24px}
+@media(max-width:650px){.sgPairs{columns:1}}
 @media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){
  body{padding:12px 12px 36px}
@@ -100,7 +124,7 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 }
 </style></head><body>
 <header class="reportHeader"><div><p class="eyebrow">4/D · öğretmen paneli</p><h1>Öğretmen Raporu</h1><p id="status" role="status">Yükleniyor...</p></div><span class="reportPrivacy">🔒 Öğretmene özel</span></header>
-<nav class="reportNav" aria-label="Rapor bölümleri"><a href="#recentPanel">🆕 Son 7 gün</a><a href="#difficultyPanel">Zorlanılanlar</a><a href="#outcomePanel">Kazanımlar</a><a href="#catalogPanel">Ders içerikleri</a><a href="#activityPanel">Etkinlikler</a><a href="#declarationPanel">Tamamlama</a><a href="#notebookPanel">Defter notları</a><a href="#studentPanel">Öğrenciler</a><a href="#announcementPanel">Duyurular</a><a href="#surveyPanel">📝 Anketler</a></nav>
+<nav class="reportNav" aria-label="Rapor bölümleri"><a href="#recentPanel">🆕 Son 7 gün</a><a href="#difficultyPanel">Zorlanılanlar</a><a href="#outcomePanel">Kazanımlar</a><a href="#catalogPanel">Ders içerikleri</a><a href="#activityPanel">Etkinlikler</a><a href="#declarationPanel">Tamamlama</a><a href="#notebookPanel">Defter notları</a><a href="#studentPanel">Öğrenciler</a><a href="#announcementPanel">Duyurular</a><a href="#surveyPanel">📝 Anketler</a><a href="#sociometryPanel">👫 Sosyometri</a></nav>
 <div class="stats"><p>Öğrenci <strong id="count">—</strong></p><p>Geçerli sonuç <strong id="results">—</strong></p><p>Sonucu gelen etkinlik <strong id="activeActivities">—</strong></p><p>Henüz kaydı olmayan öğrenci <strong id="noRecordStudents">—</strong></p></div>
 <section id='recentPanel' class='reportSection'><h2>🆕 Son 7 günde yüklenen etkinlikler ve değerlendirmeler</h2><p id="recentRange" class="muted">Siteye son bir haftada eklenen içerikler. Sonuç gönderenlerde başarı, ilk denemede doğru ve desteğe ihtiyacı olabilecek öğrenciler; “Tamamladım” bildirimi alınanlarda bildirim durumu gösterilir.</p><div id="recentSections"><p class="empty">İçerik listesi okunuyor...</p></div></section>
 <section id='difficultyPanel' class='reportSection'><h2>🎯 Zorlanılan etkinlikler</h2><p class="muted">En üstteki etkinlik, öğrencilerin ilk denemede en az doğru yaptığı etkinliktir. Tekrar ya da sınıf içi pekiştirme için ipucu verir; not yerine geçmez.</p><table><thead><tr><th>Etkinlik</th><th>Katılan öğrenci</th><th>Deneme</th><th>İlk denemede doğru</th><th>Deneme başına yanlış</th></tr></thead><tbody id="difficulty"></tbody></table></section>
@@ -118,6 +142,9 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 <section id='surveyPanel' class='reportSection'><h2>📝 Anketler</h2><p class="muted">Hazır anketi ekleyince TASLAK olur; öğrenciler siz “Yayımla” diyene kadar görmez. Her öğrenci bir kez cevaplar. Misafir (TEST) cevapları sayılmaz.</p>
 <h3>Hazır anketler</h3><div id="hazirAnketler"><p class="empty">Hazır anketler okunuyor...</p></div><span id="anketMesaj" role="status"></span>
 <h3>Anketlerim ve sonuçlar</h3><p id="anketListeMesaj" role="status"></p><div id="anketListe"></div><button id="anketYenile" class="secondary" type="button">Anketleri yenile</button></section>
+<section id='sociometryPanel' class='reportSection'><h2>👫 Sınıf Arkadaşlarım (sosyometri)</h2><p class="muted">Öğrenciler 4 soruda (grup çalışması, teneffüs, yan yana oturma, yardım isteme) 3'er arkadaş seçer. Anket açıkken cevabını bir kez değiştirebilir. Olumsuz seçim sorusu yoktur. Misafir (TEST) cevapları sonuçlara katılmaz.</p>
+<p class="sgPrivacy">🔒 Bu sonuçlar yalnız sizin içindir. Öğrencilerle, velilerle ya da başka sınıflarla paylaşmayın; ekran tahtaya yansıtılırken bu bölümü açmayın. Amaç çocukları etiketlemek değil; oturma düzenini, grup çalışmalarını planlamak ve yalnız kalabilecek çocukları erkenden fark etmektir. İşiniz bitince kapanmış anketin cevaplarını buradan kalıcı olarak silebilirsiniz.</p>
+<p id="sosyoMesaj" role="status"></p><div id="sosyoAlan"><p class="empty">Sosyometri okunuyor...</p></div><button id="sosyoYenile" class="secondary" type="button">Sosyometriyi yenile</button></section>
 <script>
 "use strict";
 /* Görünüm yardımcıları: hücreye metin ya da hazır öğe (rozet, çubuk) konabilir. */
@@ -389,6 +416,140 @@ function anketListele(){
 }
 document.getElementById('anketYenile').addEventListener('click',anketListele);
 hazirAnketleriGoster();anketListele();
+/* ---------- Sosyometri ("Sınıf Arkadaşlarım") ---------- */
+function sosyoKisaAd(ad){const p=String(ad).trim().split(/\s+/);return p.length>1?p[0]+' '+p[p.length-1].charAt(0)+'.':p[0]}
+function sosyoSvg(tag,attrs){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.keys(attrs||{}).forEach(function(k){e.setAttribute(k,attrs[k])});return e}
+/* Hedef sosyogram: merkeze yakın = daha çok seçilen; en dış halka = henüz seçilmeyen. Yeşil çizgi = karşılıklı seçim. */
+/* Eşik: sınıf ortalaması (öğrenci başına alınan seçim). Ortalamanın 2 katı ve üstü "çok", ortalama ve üstü "orta". */
+function sosyoEsik(v){const n=v.alinan.length||1,top=v.alinan.reduce(function(a,b){return a+b},0);return Math.max(1,Math.round(top/n))}
+function sosyogramCiz(ogrenciler,v,esik,tekYonGoster){
+ const S=760,M=S/2,yaricap=[95,180,258,318],seviye=function(n){return n>=2*esik?0:n>=esik?1:n>=1?2:3};
+ // Sıra: karşılıklı arkadaşlar yan yana gelsin diye karşılıklılık ağında derinlik öncelikli dolaşma; açılar bu sırayla dağıtılır.
+ const n=ogrenciler.length,komsu=ogrenciler.map(function(){return []}),gezildi=new Array(n).fill(false),sira=[];
+ v.karsilikli.forEach(function(p){komsu[p[0]].push(p[1]);komsu[p[1]].push(p[0])});
+ const baslangic=ogrenciler.map(function(o,i){return i}).sort(function(a,b){return komsu[b].length-komsu[a].length||v.alinan[b]-v.alinan[a]});
+ function gez(i){gezildi[i]=true;sira.push(i);komsu[i].slice().sort(function(a,b){return v.alinan[b]-v.alinan[a]}).forEach(function(j){if(!gezildi[j])gez(j)})}
+ baslangic.forEach(function(i){if(!gezildi[i]&&komsu[i].length)gez(i)});
+ baslangic.filter(function(i){return !gezildi[i]}).sort(function(a,b){return ogrenciler[a].ad.localeCompare(ogrenciler[b].ad,'tr')}).forEach(function(i){sira.push(i)});
+ const konum={},aci={};
+ sira.forEach(function(i,k){aci[i]=-Math.PI/2+2*Math.PI*k/Math.max(1,n)});
+ // Aynı halkadaki komşular arasında en az ~48 px boşluk; sığmazsa halka eşit aralıkla dağıtılır.
+ [0,1,2,3].forEach(function(l){
+  const ids=sira.filter(function(i){return seviye(v.alinan[i])===l}),r=yaricap[l];if(ids.length<2)return;
+  const enAz=Math.min(2*Math.PI/ids.length,48/r);let onceki=-Infinity;
+  ids.forEach(function(i){if(aci[i]<onceki+enAz)aci[i]=onceki+enAz;onceki=aci[i]});
+  if(aci[ids[ids.length-1]]-aci[ids[0]]>2*Math.PI-enAz){const a0=aci[ids[0]];ids.forEach(function(i,k){aci[i]=a0+2*Math.PI*k/ids.length})}
+ });
+ sira.forEach(function(i){const r=yaricap[seviye(v.alinan[i])];konum[i]=[M+r*Math.cos(aci[i]),M+r*Math.sin(aci[i])]});
+ const svg=sosyoSvg('svg',{viewBox:'0 0 '+S+' '+S,role:'img','aria-label':'Sosyogram: merkeze yakın öğrenciler daha çok seçildi; yeşil çizgiler karşılıklı seçimleri gösterir.'});
+ const defs=sosyoSvg('defs'),ok=sosyoSvg('marker',{id:'sgOk',viewBox:'0 0 10 10',refX:'22',refY:'5',markerWidth:'7',markerHeight:'7',orient:'auto-start-reverse'});
+ ok.appendChild(sosyoSvg('path',{d:'M0,0L10,5L0,10z',fill:'#7f93ab'}));defs.appendChild(ok);svg.appendChild(defs);
+ [138,220,289,350].forEach(function(r){svg.appendChild(sosyoSvg('circle',{cx:M,cy:M,r:r,class:'sgRing'}))});
+ const karsilikli={};v.karsilikli.forEach(function(p){karsilikli[p[0]+'-'+p[1]]=karsilikli[p[1]+'-'+p[0]]=true});
+ if(tekYonGoster)v.secimler.forEach(function(p){if(karsilikli[p[0]+'-'+p[1]])return;const a=konum[p[0]],b=konum[p[1]];if(!a||!b)return;svg.appendChild(sosyoSvg('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],class:'sgOne','marker-end':'url(#sgOk)'}))});
+ v.karsilikli.forEach(function(p){const a=konum[p[0]],b=konum[p[1]];if(!a||!b)return;svg.appendChild(sosyoSvg('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],class:'sgMutual'}))});
+ const esSayisi=new Array(ogrenciler.length).fill(0);v.karsilikli.forEach(function(p){esSayisi[p[0]]++;esSayisi[p[1]]++});
+ ogrenciler.forEach(function(o,i){
+  // İsim dışa doğru yazılır; sağ yarıda sola, sol yarıda sağa yaslanır, böylece komşu isimler üst üste binmez.
+  const p=konum[i],c=Math.cos(aci[i]),s=Math.sin(aci[i]),yas=c>0.35?'start':c<-0.35?'end':'middle';
+  const g=sosyoSvg('g',{class:'sgNode sgL'+seviye(v.alinan[i])}),title=sosyoSvg('title'),t=sosyoSvg('text',{x:p[0]+c*17,y:p[1]+s*17+(yas==='middle'?(s>0?8:0):4),style:'text-anchor:'+yas});
+  title.textContent=o.ad+' — '+v.alinan[i]+' seçim, '+esSayisi[i]+' karşılıklı'+(o.cevapladi?'':' (henüz cevaplamadı)');
+  t.textContent=sosyoKisaAd(o.ad);
+  g.append(title,sosyoSvg('circle',{cx:p[0],cy:p[1],r:12}),t);svg.appendChild(g);
+ });
+ return svg;
+}
+function sosyoSonucCiz(tur,ogrenciSayisi){
+ const wrap=document.createElement('div'),a=tur.analiz,ogr=a.ogrenciler;
+ const bilgi=document.createElement('p');
+ bilgi.textContent='Cevaplayan: '+a.cevapSayisi+' / '+ogrenciSayisi+' öğrenci · Cevabını değiştiren: '+a.duzeltmeSayisi+(a.testCevapSayisi?' · Deneme (TEST) hesabından gelen cevap: '+a.testCevapSayisi+' (sonuçlara katılmaz)':'');
+ wrap.appendChild(bilgi);
+ const bekleyen=ogr.filter(function(o){return !o.cevapladi}).map(function(o){return o.ad});
+ if(bekleyen.length){const d=document.createElement('details'),sm=document.createElement('summary'),p=document.createElement('p');sm.className='plain';sm.textContent='◻ Henüz cevaplamayanlar ('+bekleyen.length+')';p.className='note';p.textContent=bekleyen.join(', ');d.append(sm,p);wrap.appendChild(d)}
+ if(!a.cevapSayisi){const e=document.createElement('p');e.className='empty';e.textContent='Henüz cevap yok. Anket yayımlandıktan sonra öğrenciler portala girince cevaplayabilir.';wrap.appendChild(e);return wrap}
+ const sekmeler=[{id:'tumu',ad:'Tüm sorular'}].concat(tur.sorular.map(function(s){return {id:s.id,ad:(s.simge?s.simge+' ':'')+s.kisa}}));
+ const tabs=document.createElement('div'),gorunum=document.createElement('div');tabs.className='sgTabs';tabs.setAttribute('role','group');tabs.setAttribute('aria-label','Soru seçimi');
+ let secili='tumu',tekYon=false;
+ function ciz(){
+  tabs.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.id===secili?'true':'false')});
+  gorunum.replaceChildren();
+  const tumu=secili==='tumu',v=a.sorular[secili],soru=tur.sorular.filter(function(s){return s.id===secili})[0];
+  if(!v)return;
+  const esik=sosyoEsik(v);
+  if(soru){const q=document.createElement('h4');q.className='surveyQ';q.textContent=soru.metin;gorunum.appendChild(q)}
+  // Nazik dikkat kutusu: henüz seçilmeyenler
+  const care=document.createElement('div'),ct=document.createElement('strong');care.className='sgCare';
+  if(v.secilmeyen.length){
+   ct.textContent=(tumu?'🤍 Hiçbir soruda henüz seçilmeyenler: ':'🤍 Bu soruda henüz seçilmeyenler: ')+v.secilmeyen.map(function(i){return ogr[i].ad}).join(', ');
+   const p=document.createElement('p');p.textContent='Bu bir not ya da etiket değildir. Sessiz, sınıfa yeni gelmiş ya da anket günü okulda olmayan bir çocuk da seçilmemiş olabilir. Bu arkadaşlarımızı sevdikleri biriyle aynı gruba koymak, küçük sorumluluklar vermek ve teneffüste yakından izlemek iyi bir başlangıçtır.';
+   care.append(ct,p);
+   if(a.cevapSayisi<ogrenciSayisi){const p2=document.createElement('p');p2.textContent='Henüz herkes cevaplamadı; bu liste değişebilir.';care.appendChild(p2)}
+  }else{care.classList.add('allChosen');ct.textContent=tumu?'🎉 Her öğrenci en az bir soruda seçilmiş.':'🎉 Bu soruda her öğrenci en az bir kez seçilmiş.';care.appendChild(ct)}
+  gorunum.appendChild(care);
+  // Sosyogram
+  const fig=document.createElement('figure'),cap=document.createElement('figcaption'),lab=document.createElement('label'),cb=document.createElement('input');fig.className='sgFigure';
+  cb.type='checkbox';cb.checked=tekYon;cb.addEventListener('change',function(){tekYon=cb.checked;ciz()});lab.append(cb,'Tek yönlü seçimleri de göster (ok: seçenden seçilene)');
+  const leg=document.createElement('ul');leg.className='sgLegend';
+  [['var(--brand)','Çok seçilen ('+2*esik+'+)'],['#5f8fd3','Orta ('+esik+'–'+(2*esik-1)+')'],['#a8c2e6','Az seçilen ('+(esik>1?'1–'+(esik-1):'—')+')'],['#f0bf5e','Henüz seçilmeyen'],['var(--ok)','— karşılıklı seçim']].forEach(function(x){const li=document.createElement('li'),i=document.createElement('i');i.style.background=x[0];li.append(i,x[1]);leg.appendChild(li)});
+  cap.textContent=(tumu?'Dört sorunun toplamı. Karşılıklı çizgi: aynı soruda iki öğrencinin birbirini seçmesi. ':'Bu sorunun seçimleri. ')+'Halkalar sınıf ortalamasına göredir (öğrenci başına ortalama '+esik+' seçim). Bir öğrencinin üzerine gelince tam adı ve seçim sayısı görünür.';
+  fig.append(lab,sosyogramCiz(ogr,v,esik,tekYon),leg,cap);gorunum.appendChild(fig);
+  // Karşılıklı seçimler
+  const kh=document.createElement('h4');kh.className='surveyQ';kh.textContent='🤝 Karşılıklı seçimler ('+v.karsilikli.length+')';gorunum.appendChild(kh);
+  if(v.karsilikli.length){const ul=document.createElement('ul');ul.className='sgPairs';v.karsilikli.map(function(p){return ogr[p[0]].ad+' ↔ '+ogr[p[1]].ad}).sort(function(x,y){return x.localeCompare(y,'tr')}).forEach(function(t){const li=document.createElement('li');li.textContent=t;ul.appendChild(li)});gorunum.appendChild(ul)}
+  else{const e=document.createElement('p');e.className='note';e.style.margin='0 0 12px';e.textContent='Henüz karşılıklı seçim yok.';gorunum.appendChild(e)}
+  // Tablo
+  const es=ogr.map(function(){return []}),secenler=ogr.map(function(){return []}),secti=ogr.map(function(){return []});
+  v.karsilikli.forEach(function(p){es[p[0]].push(ogr[p[1]].ad);es[p[1]].push(ogr[p[0]].ad)});
+  v.secimler.forEach(function(p){secenler[p[1]].push(ogr[p[0]].ad);secti[p[0]].push(ogr[p[1]].ad)});
+  const sira=ogr.map(function(o,i){return i}).sort(function(x,y){return v.alinan[y]-v.alinan[x]||ogr[x].ad.localeCompare(ogr[y].ad,'tr')});
+  const durum=function(i){return badge(ogr[i].cevapladi?'Cevapladı':'Bekleniyor')};
+  const liste=function(x){return x.length?x.sort(function(m,n){return m.localeCompare(n,'tr')}).join(', '):'—'};
+  let headers,rows;
+  if(tumu){
+   headers=['Öğrenci','Toplam seçim'].concat(tur.sorular.map(function(s){return s.kisa})).concat(['Karşılıklı arkadaşları','Anket']);
+   rows=sira.map(function(i){return [ogr[i].ad,v.alinan[i]].concat(tur.sorular.map(function(s){return a.sorular[s.id].alinan[i]})).concat([liste(es[i].filter(function(x,k,arr){return arr.indexOf(x)===k})),durum(i)])});
+  }else{
+   headers=['Öğrenci','Aldığı seçim','Onu seçenler','Kendi seçtikleri','Karşılıklı','Anket'];
+   rows=sira.map(function(i){return [ogr[i].ad,v.alinan[i],liste(secenler[i]),liste(secti[i]),liste(es[i]),durum(i)]});
+  }
+  const th=document.createElement('h4');th.className='surveyQ';th.textContent='📋 Öğrenci tablosu (en çok seçilen üstte)';
+  gorunum.append(th,makeTable(headers,rows));
+ }
+ sekmeler.forEach(function(s){const b=document.createElement('button');b.type='button';b.dataset.id=s.id;b.textContent=s.ad;b.addEventListener('click',function(){secili=s.id;ciz()});tabs.appendChild(b)});
+ wrap.append(tabs,gorunum);ciz();
+ return wrap;
+}
+function sosyometriListele(sonMesaj){
+ const el=document.getElementById('sosyoAlan'),msg=document.getElementById('sosyoMesaj'),bitis=typeof sonMesaj==='string'?sonMesaj:'';
+ msg.textContent='Sosyometri okunuyor...';
+ google.script.run.withSuccessHandler(function(r){
+  el.replaceChildren();msg.textContent=bitis;
+  const turlar=r&&Array.isArray(r.turlar)?r.turlar:[];
+  if(!turlar.some(function(t){return t.durum==='TASLAK'||t.durum==='YAYINDA'})){
+   const box=document.createElement('div'),p=document.createElement('p'),b=document.createElement('button');box.className='announcement';
+   p.textContent=turlar.length?'Yeni bir tur (ör. dönem sonunda karşılaştırmak için) hazırlayabilirsiniz. Önce taslak olur; siz yayımlayana kadar öğrenciler görmez.':'Sosyometri anketi henüz hazırlanmadı. Hazırlayınca taslak olur; siz yayımlayana kadar öğrenciler görmez.';
+   b.type='button';b.textContent='Sosyometri anketini hazırla (taslak)';
+   b.addEventListener('click',function(){b.disabled=true;msg.textContent='Hazırlanıyor...';google.script.run.withSuccessHandler(sosyometriListele).withFailureHandler(function(e){b.disabled=false;msg.textContent='Hata: '+(e&&e.message||'Hazırlanamadı');}).ogretmenSosyometriHazirla()});
+   box.append(p,b);el.appendChild(box);
+  }
+  turlar.forEach(function(t,k){
+   const box=document.createElement('details'),sum=document.createElement('summary'),body=document.createElement('div'),durumAd={YAYINDA:'Yayında',TASLAK:'Taslak',ARSIV:'Kapalı'}[t.durum]||t.durum;
+   box.open=k===0;sum.className='plain';sum.textContent=t.baslik+' — '+durumAd+' · '+t.analiz.cevapSayisi+'/'+r.ogrenciSayisi+' cevap';body.style.padding='0 16px 14px';
+   function btn(label,cls,soru,calistir){const b=document.createElement('button');b.type='button';b.textContent=label;if(cls)b.className=cls;b.style.margin='0 8px 8px 0';b.addEventListener('click',function(){if(!confirm(soru))return;b.disabled=true;calistir(b)});return b}
+   function durumBtn(next,label,cls,soru){return btn(label,cls,soru,function(b){google.script.run.withSuccessHandler(sosyometriListele).withFailureHandler(function(e){b.disabled=false;msg.textContent='İşlem hatası: '+(e&&e.message||'Bilinmiyor');}).ogretmenSosyometriDurumDegistir(t.kimlik,next)})}
+   const bar=document.createElement('p');
+   if(t.durum==='TASLAK')bar.append(durumBtn('YAYINDA','Öğrencilere aç (yayımla)','', 'Sosyometri anketi öğrencilerin portalında görünsün mü?'),durumBtn('ARSIV','Vazgeç (kapat)','secondary','Bu taslak kapatılsın mı?'));
+   else if(t.durum==='YAYINDA')bar.append(durumBtn('ARSIV','Anketi kapat','secondary','Anket kapatılsın mı? Öğrenciler artık cevaplayamaz ve değiştiremez; sonuçlar burada kalır.'));
+   else{
+    bar.append(durumBtn('YAYINDA','Yeniden aç','secondary','Anket yeniden açılsın mı? Cevaplamayanlar cevaplayabilir.'));
+    if(t.analiz.cevapSayisi||t.analiz.testCevapSayisi)bar.append(btn('🗑 Cevapları kalıcı sil','secondary','Bu anketin bütün cevapları tablodan KALICI olarak silinsin mi? Bu işlem geri alınamaz.',function(b){google.script.run.withSuccessHandler(function(s){sosyometriListele('🗑 '+(s&&s.silinen||0)+' cevap kalıcı olarak silindi.')}).withFailureHandler(function(e){b.disabled=false;msg.textContent='Silme hatası: '+(e&&e.message||'Bilinmiyor');}).ogretmenSosyometriCevaplariniSil(t.kimlik)}));
+   }
+   body.append(bar,sosyoSonucCiz(t,r.ogrenciSayisi));box.append(sum,body);el.appendChild(box);
+  });
+ }).withFailureHandler(function(e){el.replaceChildren();msg.textContent='Sosyometri alınamadı: '+(e&&e.message||'Bilinmiyor');}).ogretmenSosyometri();
+}
+document.getElementById('sosyoYenile').addEventListener('click',sosyometriListele);
+sosyometriListele();
 google.script.run.withSuccessHandler(function(r){
  const saat=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
  document.getElementById('status').textContent='Rapor güncel ('+saat+' itibarıyla). MİSAFİR kayıtları hariç.';
