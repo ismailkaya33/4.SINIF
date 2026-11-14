@@ -96,8 +96,8 @@ gereken işlerde resmi yapay zekâ çizer**; Claude istemi yazar, kontrol eder, 
 **Resme yazı/sayı çizdirme:** resim modeli yalnız yazısız illüstrasyon üretir; Türkçe başlık, madde, sayı ve kazanım
 cümlesi Claude tarafından doğrulanıp HTML/A4 şablonunda ayrı katman olarak eklenir (yazım ve sayı hatası olmaz).
 Öğretmenin kararı (2026-11-12): API ücretsiz katmanında resim
-modelleri kapalı (limit 0), faturalandırma açılmadı; tam boyutlu resmi öğretmen kendisi indirir ve `İndirilenler`
-klasörüne düşer — Claude oradan `Baski/<Ders>/` klasörüne ASCII adla kopyalar, PDF'i `--pdf-yap` ile basar:
+modelleri kapalı (limit 0), faturalandırma açılmadı. Tam boyutlu resmi **Claude indirir** (öğretmenin kararı,
+2026-11-14; adım 4) ve `İndirilenler` klasörüne düşer — Claude oradan `Baski/<Ders>/` klasörüne ASCII adla kopyalar, PDF'i `--pdf-yap` ile basar:
 `node tools/gorsel-uret.mjs --pdf-yap Baski/<Ders>/<konu>-boyama.png --adtarih`.
 **Araç yolu (yalnız faturalandırma açılırsa):** `GEMINI_API_KEY` (Türkçe klavyede `GEMİNİ_API_KEY` de olur) ile:
 ```
@@ -133,14 +133,18 @@ Tarayıcı yolu:
    kartın adı/sahnesi + "tüm yazılar doğru Türkçe karakterlerle". Kazanıma bağlı içerik planı istemden önce yapılır.
 3. Sonuç ekranda kontrol edilir: Türkçe yazım (İ/ı, ş, ğ), eksik/yanlış kart, korkutucu veya uygunsuz öğe. Hata
    varsa aynı sohbette düzeltme istenir (en fazla 2–3 tur), sonra öğretmene gösterilir.
-4. Tam boyutlu resmi **öğretmen indirir** (Claude indirme düğmesine basmaz; öğretmene "resmin üstündeki indirme
-   düğmesi" der). Claude `İndirilenler`'deki en yeni resmi açıp doğrular, `Baski/<Ders>/` klasörüne ASCII adla
-   kopyalar (`<konu>-boyama.png`). Ön izleme resmi (~700 px) baskı için yetersizdir, kullanılmaz.
+4. Tam boyutlu resmi **Claude indirir** (öğretmenin kararı, 2026-11-14: "sen indir"). ChatGPT sekmesinde JS ile
+   sayfadaki son büyük resim (`main img`, `naturalWidth > 1000`; blob, tam boyut PNG 1536×1024) bir `<a download="<ad>.png">`
+   bağlantısıyla indirilir → `İndirilenler`'e hedef adla düşer. Claude dosyanın PNG olduğunu (ilk baytlar `89 50 4E 47`)
+   denetler ve `Baski/<Ders>/` (defter notunda `Baski/<Ders>/resimler/`) klasörüne ASCII adla kopyalar. Düzeltme
+   istenen sohbette son (düzeltilmiş) resim alınır. Ön izleme resmi (~700 px) baskı için yetersizdir, kullanılmaz.
 5. Claude resmi A4 HTML'e yerleştirir (gerekirse Ad/Tarih şeridi) ve Edge ile PDF basar. Teslim: PNG + PDF.
 - **Hazır istemler:** `Baski/istemler/boyama-posterleri.md` (Sosyal + Fen, yıl boyu, ORTAK BAŞ + konu İÇERİK) ve
   `Baski/istemler/defter-notlari-*.md` (renkli defter notu stili). Yeni istem yazınca buraya eklenir.
 - Chrome'da ChatGPT'ye yazarken: yeni sohbet aç, kutuya **tıkla** (arka sekmede odak gelmez), tek paragraf yaz, Enter.
-  Birkaç istek ayrı sekmelerde aynı anda gönderilebilir. Sonucu görmek için resmi JS ile tam ekran kaplamaya koyup
+  Birkaç istek ayrı sekmelerde gönderilebilir ama **sırayla**: ChatGPT yeni sohbet taslağını sekmeler arasında paylaşır
+  (iki istem tek mesajda birleşebilir). Her sekmede yazmadan önce kutuyu `ctrl+a` + `Delete` ile temizle, 1 sn bekleyip
+  Enter'a bas; adres `/c/…` olunca sonraki sekmeye geç. Sonucu görmek için resmi JS ile tam ekran kaplamaya koyup
   `zoom` ile iki yarıda oku, sonra kaplamayı kaldır.
 - **ChatGPT** (`chatgpt.com`, öğretmenin Plus hesabı Chrome'da açık): aynı akış. 2026-11-12 karşılaştırmasında
   öğretmen ChatGPT çizimini daha iyi buldu → **önce ChatGPT**, Gemini yedek. İstem tek paragraf yazılır (Enter gönderir).
@@ -210,7 +214,7 @@ Defter notu kodla üretilir (`Sketchnote.defterNotu`, bkz. 4.3); her not iki ç�
   İstem yazısız illüstrasyon ister (yatay 3:2; gerekirse "iki eşit panel"); Türkçe etiketleri kod resmin üstüne yazar.
   Resim yokken yer tutucu basılır (düzen görülür); dosya gelince aynı komut resmi gömer, kes-yapıştırda gri tonlu basar.
   İstemleri listelemek: `node tools/sketchnote-yap.mjs <not>.js --istemler`. Akış: Claude istemleri Chrome'da ChatGPT'ye
-  verir → öğretmen tam boyutlu resmi indirir → Claude `İndirilenler`'den `Baski/<Ders>/resimler/`'e o adla kopyalar →
+  verir → Claude tam boyutlu resmi indirir (4.2 adım 4) → `İndirilenler`'den `Baski/<Ders>/resimler/`'e o adla kopyalar →
   notu yeniden basar. (Bulut oturumu tarayıcıya erişemez; bu adım öğretmenin bilgisayarında yapılır.)
 - Not dosyası: `tools/sketchnote/notlar/<ders>-<konu>.js` (tam örnek: `mat-carpma`). Bloklar: `konu` (alt konu
   başlığı), `ara`, `madde`, `adim` (numaralı), `ornek`, `gorsel` (sağda görsel, solda maddeler), `gorseller` (yan yana),
