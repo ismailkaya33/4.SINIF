@@ -13,6 +13,7 @@
 //   2) Komut satırı — yanlış seçenek, eksik değer, yanlış uzantı; PNG/PDF gerçekten yazılıyor mu, boyutu doğru mu.
 //   3) Gerçek notlar — notlar/*.js hatasız derleniyor mu ve sayfalardaki yazı düzeni test/beklenen/<ad>.json ile aynı mı
 //                     (bir değişiklik mevcut notların satır/sayfa düzenini bozarsa burada yakalanır).
+//   4) Tek komutla basım — tools/defter-bas.mjs dosyaları doğru klasöre koyuyor mu, resmi eksik notu portala yazmıyor mu.
 // Test örnekleri gerçek ders içeriği değildir; portala ve baskıya gitmez.
 import fs from 'node:fs';
 import os from 'node:os';
@@ -153,6 +154,34 @@ async function gercekNot(dosya) {
     farklar.slice(0, 6).join('\n') + '\n(değişiklik bilerek yapıldıysa: node tools/sketchnote/test/calistir.mjs --guncelle)');
 }
 
+// ---- 4) Tek komutla basım (tools/defter-bas.mjs) ----
+const kosBas = (argumanlar) => new Promise((coz) => {
+  execFile(process.execPath, [path.join(DEPO, 'tools', 'defter-bas.mjs'), ...argumanlar], { cwd: DEPO, encoding: 'utf8', maxBuffer: 64 << 20 }, (hata, stdout, stderr) => {
+    coz({ kod: hata ? (typeof hata.code === 'number' ? hata.code : 1) : 0, cikti: (stdout || '') + (stderr || '') });
+  });
+});
+async function basTestleri() {
+  const kok = path.join(GECICI, 'bas'), kayit = path.join(DEPO, 'tools', 'sketchnote', 'yayin.json');
+  const kayitOnce = fs.existsSync(kayit) ? fs.readFileSync(kayit, 'utf8') : null;
+  // resimsiz (hepsi kodla çizilen) not: doğru klasörlere basılır
+  let s = await kosBas(['mat-carpma', '--cikti-kok', kok, '--olcek', '0.5']);
+  const beklenen = ['Matematik/DefterNotlari/mat-carpma-1.png', 'Matematik/DefterNotlari/mat-carpma-2.png', 'Matematik/DefterNotlari/mat-carpma-3.png', 'Baski/Matematik/mat-carpma-defter-notu.pdf', 'Baski/Matematik/mat-carpma-kes-yapistir.pdf'];
+  kaydet('defter-bas: mat-carpma doğru klasörlere basılıyor', s.kod === 0 && beklenen.every(f => fs.existsSync(path.join(kok, f))), s.cikti);
+  // resmi eksik not: portal klasörüne yazmayı reddeder; --taslak ile yalnız Baski/<Ders>/taslak/ altına basar
+  s = await kosBas(['fen-miknatislar', '--cikti-kok', kok]);
+  if (/resim eksik/.test(s.cikti)) {
+    kaydet('defter-bas: resmi eksik not portal klasörüne basılmıyor', s.kod === 1 && !fs.existsSync(path.join(kok, 'Fen', 'DefterNotlari')), s.cikti);
+    s = await kosBas(['fen-miknatislar', '--taslak', '--cikti-kok', kok, '--olcek', '0.5']);
+    kaydet('defter-bas: --taslak yalnız Baski/Fen/taslak/ altına basıyor', s.kod === 0 && fs.existsSync(path.join(kok, 'Baski', 'Fen', 'taslak', 'fen-miknatislar-1.png')) && !fs.existsSync(path.join(kok, 'Fen', 'DefterNotlari')), s.cikti);
+  } else kaydet('defter-bas: fen-miknatislar (resimleri bu bilgisayarda var) basılıyor', s.kod === 0, s.cikti);
+  s = await kosBas(['boyle-bir-not-yok']);
+  kaydet('defter-bas: olmayan not adı anlaşılır hata veriyor', s.kod === 1 && s.cikti.includes('adında not yok'), s.cikti);
+  s = await kosBas([]);
+  kaydet('defter-bas: durum tablosu bütün notları listeliyor', s.kod === 0 && ['mat-carpma', 'fen-miknatislar', 'sos-yonler', 'tr-cumle-bilgisi'].every(a => s.cikti.includes(a)), s.cikti);
+  const kayitSonra = fs.existsSync(kayit) ? fs.readFileSync(kayit, 'utf8') : null;
+  kaydet('defter-bas: test, depodaki basım kaydına (yayin.json) dokunmuyor', kayitOnce === kayitSonra, 'yayin.json değişti');
+}
+
 // ---- çalıştır (aynı anda en çok 4 tarayıcı) ----
 async function havuz(isler, n = 4) {
   let i = 0; const calis = async () => { while (i < isler.length) await isler[i++](); };
@@ -167,6 +196,7 @@ if (!hizli) {
   console.log('Gerçek notlar');
   const notlar = fs.readdirSync(path.join(DEPO, 'tools', 'sketchnote', 'notlar')).filter(f => f.endsWith('.js') && gec(f)).sort();
   await havuz(notlar.map(f => () => gercekNot(f)), 3);
+  if (!suzgec || 'defter-bas'.includes(suzgec)) { console.log('Tek komutla basım (defter-bas)'); await basTestleri(); }
 }
 fs.rmSync(GECICI, { recursive: true, force: true });
 const kalan = sonuclar.filter(s => !s.tamam);
