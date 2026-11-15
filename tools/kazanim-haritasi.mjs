@@ -30,13 +30,18 @@ const buHafta = ([...takvim].reverse().find(w => Date.parse(w.bas) <= bugun) || 
 
 // --- etkinliklerdeki kazanım kodları ---
 const KOD_RE = /\b(?:T|M|F|SB|Y|TG)\.4(?:\.\d+){2,3}\b/g;
+// Bir etkinlik yalnız KENDİ dersinin kazanımına sayılır (Türkçe klasöründeki dosya M.… koduna sayılmaz).
+// Ayrıca rapor motorunun açıklama satırındaki örnek kod (ör. "M.4.1.2.3") kazanım sayılmaz: bu satır motoru
+// gömülü her etkinlikte geçtiği için eskiden Türkçe/Sosyal/Trafik etkinlikleri de M.4.1.2.3'e yazılıyordu.
+const ONEK = { Turkce: 'T.', Matematik: 'M.', Fen: 'F.', Sosyal: 'SB.', Insanhaklari: 'Y.', Trafik: 'TG.' };
+const ORNEK_KOD_RE = /ör\.\s*"(?:T|M|F|SB|Y|TG)\.4(?:\.\d+){2,3}"/g;
 const etk = new Map();   // kod → [{ad, yol, gizli, deg}]
 for (const [ders, klasor] of Object.entries(DERS)) {
   if (!existsSync(klasor)) continue;
   for (const f of readdirSync(klasor).filter(f => f.endsWith('.html'))) {
     const yol = `${klasor}/${f}`, k = katalog.find(x => x.yol === yol);
     const metin = readFileSync(yol, 'utf8');
-    const kodlar = new Set((metin.match(KOD_RE) || []).map(kod));
+    const kodlar = new Set((metin.replace(ORNEK_KOD_RE, '').match(KOD_RE) || []).map(kod).filter(c => c.startsWith(ONEK[klasor])));
     for (const c of kodlar) {
       const l = etk.get(c) || []; l.push({ ad: k?.ad || f, yol, gizli: !!k?.gizli, deg: !!k?.degerlendirme || /sinav|degerlendirme/i.test(f), katalogda: !!k }); etk.set(c, l);
     }
