@@ -21,6 +21,14 @@ text { font-family: 'Kalam', cursive; }
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="gri"><feColorMatrix type="saturate" values="0"/></filter></svg>
 <div class="sayfa"><svg id="s" viewBox="0 0 1240 1754" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sketchnote"></svg></div>
+<script>
+// Not dosyasında yazım (sözdizimi) hatası olursa araç bunu görsün: body[data-hata]
+window.addEventListener('error', function (e) {
+  if (document.body.dataset.hata) return;
+  document.body.dataset.hata = String(e.message || 'bilinmeyen hata').replace(/"/g, "'").replace(/[<>]/g, '');
+  document.body.dataset.hazir = '1';
+});
+</script>
 <script>/*ROUGH*/</script>
 <script>/*SKETCHNOTE*/</script>
 <script>/*DEFTER*/</script>

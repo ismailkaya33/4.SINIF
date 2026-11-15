@@ -67,6 +67,9 @@
     }
     function cerceve(x, y, w, h, ek) { return ekle(rc.rectangle(x, y, w, h, o(Object.assign({ strokeWidth: 2.6, roughness: 1.6, bowing: 1.6 }, ek)))); }
     function tasmaKontrol(ad, altY, sinir) { if (altY > sinir) { tasmalar.push(ad); console.error('TASMA: ' + ad); } }
+    // Basımı durdurmayan uyarı (ör. "görsel kullanılmadı"); araç ekrana "Uyarı: …" diye yazar.
+    const uyarilar = [];
+    function uyar(m) { if (!uyarilar.includes(m)) uyarilar.push(m); }
 
     // ---- Simgeler: merkez (cx, cy), yaklaşık 100×100 alan. Yeni simge buraya eklenir. ----
     const simge = {
@@ -125,16 +128,26 @@
       },
     };
 
-    return { svg, rc, o, ekle, grup, tohumla, yazi, genislik, satirla, paragraf, fosfor, ok, cerceve, simge, tasmaKontrol, tasmalar, G, Y, SARI, MAVI, MUREKKEP };
+    return { svg, rc, o, ekle, grup, tohumla, yazi, genislik, satirla, paragraf, fosfor, ok, cerceve, simge, tasmaKontrol, tasmalar, uyar, uyarilar, G, Y, SARI, MAVI, MUREKKEP };
   }
 
   // Yazı tipleri yüklendikten sonra çizer (ölçüm doğru olsun diye); bitince body[data-hazir="1"].
+  // Çizim sırasında hata olursa body[data-hata] = hata iletisi (araç bunu ekrana yazar, sayfa basılmaz).
+  // Taşmalar body[data-tasma] (basımı durdurur), uyarılar body[data-uyari] (durdurmaz); ikisi de " | " ile ayrılır.
+  const temiz = (m) => m.replace(/"/g, "'").replace(/[<>]/g, ''); // HTML özniteliğinde sorun çıkarmasın
   async function ciz(fn) {
-    await Promise.all(['400 32px Kalam', '700 40px Kalam'].map(f => document.fonts.load(f, 'İğşıÇÖÜ0123456789')));
-    const svg = document.getElementById('s');
-    const S = araclar(svg);
-    await fn(S);
-    if (S.tasmalar.length) document.body.dataset.tasma = S.tasmalar.join(', ');
+    let S = null;
+    try {
+      await Promise.all(['400 32px Kalam', '700 40px Kalam'].map(f => document.fonts.load(f, 'İğşıÇÖÜ0123456789')));
+      const svg = document.getElementById('s');
+      S = araclar(svg);
+      await fn(S);
+    } catch (e) {
+      document.body.dataset.hata = temiz(String((e && e.message) || e));
+      console.error(e);
+    }
+    if (S && S.tasmalar.length) document.body.dataset.tasma = temiz(S.tasmalar.join(' | '));
+    if (S && S.uyarilar.length) document.body.dataset.uyari = temiz(S.uyarilar.join(' | '));
     document.body.dataset.hazir = '1';
   }
 
@@ -143,11 +156,16 @@
   function kavramHaritasi(v) {
     return ciz(S => {
       const { yazi, genislik, satirla, paragraf, fosfor, ok, cerceve, simge, o, ekle, rc, SARI, MAVI } = S;
+      if (!v || !v.baslik) throw new Error('Notta "baslik" yok.');
+      if (!Array.isArray(v.kutular) || !v.kutular.length) throw new Error('Kavram haritasında "kutular" listesi boş ya da yok.');
+      v.kutular.forEach((b, i) => { if (!b || !b.ad || !b.is) throw new Error(`Kutu ${i + 1}: "ad" ve "is" (açıklama) zorunlu.`); });
       document.title = v.baslik + ' — sketchnote';
-      // Başlık
-      const bg = genislik(v.baslik, 78, { class: 'kalin' });
+      // Başlık (uzunsa sayfaya sığana kadar küçülür; yine sığmazsa taşma sayılır)
+      let bb = 78; while (genislik(v.baslik, bb, { class: 'kalin' }) > G - 110 && bb > 44) bb -= 2;
+      const bg = genislik(v.baslik, bb, { class: 'kalin' });
+      if (bg > G - 110) S.tasmaKontrol('Başlık sayfaya sığmıyor (kısaltın): ' + v.baslik, 1, 0);
       fosfor(620 - bg / 2 - 24, 62, bg + 48, 70, SARI);
-      yazi(620, 120, v.baslik, 78, { class: 'kalin', 'text-anchor': 'middle' });
+      yazi(620, 120, v.baslik, bb, { class: 'kalin', 'text-anchor': 'middle' });
       ekle(rc.line(620 - bg / 2 - 10, 140, 620 + bg / 2 + 10, 136, o({ strokeWidth: 3 })));
       ekle(rc.line(620 - bg / 2 + 20, 150, 620 + bg / 2 - 20, 148, o({ strokeWidth: 2 })));
       let ust = 175;
@@ -171,6 +189,7 @@
         fosfor(x + 18, y + 26, adG + 26, 44, i % 2 ? MAVI : SARI, i % 2 ? { hachureGap: 8, fillWeight: 1.6 } : {});
         yazi(x + 31, y + 62, b.ad, 40, { class: 'kalin' });
         const asagi = adG + 70 > KW - 130; // başlık uzunsa simge açıklamanın yanına iner
+        if (b.simge && !simge[b.simge]) S.uyar(`"${b.ad}" kutusunda bilinmeyen simge: ${b.simge} (simge çizilmedi)`);
         if (b.simge && simge[b.simge]) simge[b.simge](x + KW - 62, asagi ? y + 150 : y + 62);
         let son = paragraf(x + 24, y + 132, b.is, 32, KW - 48 - (b.simge && asagi ? 110 : 0), 40);
         if (b.ornek) {
@@ -179,7 +198,7 @@
           const og = genislik('Örnek:', 30, { class: 'kalin' }) + 12;
           son = paragraf(x + 24 + og, oy, b.ornek, 30, KW - 48 - og, 38);
         }
-        S.tasmaKontrol(b.ad, son, y + KH - 18);
+        S.tasmaKontrol(`Yazı kutudan taşıyor: "${b.ad}" kutusu → metni kısaltın`, son, y + KH - 18);
       });
       // Merkez çember
       const MX = 620, MY = ust + (satir * KH + (satir - 1) * ara) / 2, R = 122;
@@ -188,6 +207,7 @@
       const m = v.merkez || [v.baslik];
       m.forEach((t, i) => {
         let boy = i ? 33 : 42; while (genislik(t, boy, { class: 'kalin' }) > 170 && boy > 22) boy -= 2;
+        if (genislik(t, boy, { class: 'kalin' }) > 186) S.tasmaKontrol('Ortadaki çemberin yazısı sığmıyor (kısaltın): ' + t, 1, 0);
         yazi(MX, MY + (m.length === 1 ? 14 : i ? 30 : -12), t, boy, { class: 'kalin', 'text-anchor': 'middle' });
       });
       if (v.rozet) {
@@ -215,7 +235,7 @@
         yazi(221, UY + 60, 'Unutma!', 40, { class: 'kalin' });
         let uy = UY + 116;
         v.unutma.forEach((t, i) => { uy = paragraf(222, uy, t, 32, 960, 42) + 50; });
-        S.tasmaKontrol('Unutma', uy - 50, UY + UH - 18);
+        S.tasmaKontrol('Yazı kutudan taşıyor: "Unutma!" kutusu → metni kısaltın', uy - 50, UY + UH - 18);
       }
       if (v.ek) v.ek(S); // isteğe bağlı ek çizim
     });

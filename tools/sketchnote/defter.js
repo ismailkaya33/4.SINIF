@@ -111,7 +111,7 @@
   // Bir görseli (x, y) köşesine 8,5 × 6 cm çizer.
   function gorselCiz(S, v, no, x, y, renkli, cerceve) {
     const g = v.gorseller[no - 1];
-    if (!g) { S.tasmaKontrol('Görsel ' + no + ' tanımlı değil', 1, 0); return; }
+    if (!g) return; // "tanımlı değil" hatası notuDenetle'de bildirildi
     S.tohumla(1000 * no); // her kopyada aynı çizim
     S.r = (c) => (renkli ? c : undefined);
     S.m = (c) => (renkli ? c : '#111');
@@ -125,7 +125,21 @@
       sekil(grup, 'rect', { x: 0, y: 0, width: GW, height: GH, fill: 'none', stroke: cerceve, 'stroke-width': 2.2 / K, 'stroke-dasharray': `${10 / K} ${7 / K}` });
       sekil(grup, 'circle', { cx: 22, cy: 22, r: 15, fill: renkli ? R.lacivert : '#fff', stroke: '#111', 'stroke-width': 2 });
       S.yazi(22, 29, String(no), 20, { class: 'kalin', 'text-anchor': 'middle', fill: renkli ? '#fff' : '#111' });
+      gorselTasmaDenetimi(S, grup, no);
     });
+  }
+  // Görselin içindeki yazılar 510 × 360 alanın sağından/solundan taşıyor mu? Basımı durdurmaz, uyarı verir
+  // (kesim çizgisinin dışında kalan yazı kes-yapıştırda kesilir).
+  function gorselTasmaDenetimi(S, grup, no) {
+    for (const t of grup.querySelectorAll('text')) {
+      let k; try { k = t.getBBox(); } catch (e) { continue; }
+      if (!k.width) continue;
+      const sol = k.x, sag = k.x + k.width, y = Number(t.getAttribute('y'));
+      if (sol < -2 || sag > GW + 2 || y < 0 || y > GH + 2) {
+        const ne = sol < -2 ? `soldan ${Math.round(-sol)}` : sag > GW + 2 ? `sağdan ${Math.round(sag - GW)}` : 'alttan/üstten';
+        S.uyar(`Görsel ${no}: "${t.textContent.trim().slice(0, 40)}" yazısı görsel kutusundan taşıyor (${ne} birim)`);
+      }
+    }
   }
   // ChatGPT (ya da başka kaynaktan) gelen resim: yuvaya kırpılarak sığar; siyah-beyaz baskıda gri tonlu.
   // Resim dosyası yoksa yer tutucu çizilir (sayfa düzeni yine görülür).
@@ -139,9 +153,10 @@
     const kirp = sekil(grup, 'svg', { x: 0, y: 0, width: GW, height: GH, overflow: 'hidden' }); // çizgiler kutudan taşmasın
     sekil(kirp, 'rect', { x: 0, y: 0, width: GW, height: GH, fill: '#f3f5f9' });
     for (let d = -GH; d < GW; d += 26) sekil(kirp, 'line', { x1: d, y1: GH, x2: d + GH, y2: 0, stroke: '#e2e7ef', 'stroke-width': 3 });
-    S.yazi(GW / 2, GH / 2 - 22, 'ChatGPT ile çizilecek', 26, { class: 'kalin', 'text-anchor': 'middle', fill: '#7a8599' });
-    S.yazi(GW / 2, GH / 2 + 12, g.ad, 22, { 'text-anchor': 'middle', fill: '#7a8599' });
-    S.yazi(GW / 2, GH / 2 + 40, g.resim.split('/').pop(), 17, { 'text-anchor': 'middle', fill: '#9aa3b2' });
+    // data-yt: yer tutucu yazısı (test imzasına girmez; resim gelince zaten kaybolur)
+    S.yazi(GW / 2, GH / 2 - 22, 'ChatGPT ile çizilecek', 26, { class: 'kalin', 'text-anchor': 'middle', fill: '#7a8599', 'data-yt': 1 });
+    S.yazi(GW / 2, GH / 2 + 12, g.ad || '', 22, { 'text-anchor': 'middle', fill: '#7a8599', 'data-yt': 1 });
+    S.yazi(GW / 2, GH / 2 + 40, String(g.resim).split('/').pop(), 17, { 'text-anchor': 'middle', fill: '#9aa3b2', 'data-yt': 1 });
   }
   // Resim üstüne etiket: { x, y, t, ok: [[x1,y1],[x2,y2],...], renk, boy } — beyaz zeminli, okunaklı
   function etiket(S, e, renkli) {
@@ -178,6 +193,78 @@
     }
   }
 
+  // Bir bloğun türü; tanınmayan ya da boş blok için null (sessizce atlanmaz, hata verilir).
+  const TURLER = ['konu', 'ara', 'madde', 'adim', 'ornek', 'dikkat', 'gorsel', 'gorseller', 'sayfa'];
+  function blokTuru(b) {
+    if (!b || typeof b !== 'object') return null;
+    for (const t of TURLER) {
+      const d = b[t];
+      if (d === undefined || d === null || d === false || d === '') continue;
+      if ((t === 'adim' || t === 'gorseller') && !(Array.isArray(d) && d.length)) continue;
+      return t;
+    }
+    return null;
+  }
+  // Not dosyasını çizmeden önce denetler: yazım hatalı blok adı, boş blok, tanımsız/kullanılmayan görsel…
+  // Hatalar basımı durdurur (S.tasmaKontrol), uyarılar durdurmaz (S.uyar).
+  function notuDenetle(S, v) {
+    const hata = (m) => S.tasmaKontrol(m, 1, 0);
+    if (!v || typeof v !== 'object') throw new Error('Not verisi yok: Sketchnote.defterNotu({ baslik, bloklar, gorseller }) biçiminde olmalı.');
+    if (!v.baslik || !String(v.baslik).trim()) throw new Error('Notta "baslik" yok ya da boş.');
+    if (!Array.isArray(v.bloklar) || !v.bloklar.length) throw new Error('Notta "bloklar" listesi yok ya da boş.');
+    if (v.gorseller !== undefined && !Array.isArray(v.gorseller)) throw new Error('"gorseller" bir liste olmalı: gorseller: [ { ad, ciz(S) {…} }, … ]');
+    v.gorseller = v.gorseller || [];
+    const kullanim = new Map();
+    const kullan = (no, i) => {
+      if (!Number.isInteger(no) || no < 1 || no > v.gorseller.length) { hata(`Blok ${i + 1}: Görsel ${no} tanımlı değil (notta ${v.gorseller.length} görsel var)`); return; }
+      kullanim.set(no, (kullanim.get(no) || 0) + 1);
+    };
+    v.bloklar.forEach((b, i) => {
+      const tur = blokTuru(b);
+      if (!tur) {
+        const adlar = b && typeof b === 'object' ? Object.keys(b).filter(k => k !== 'birlikte') : [];
+        hata(`Blok ${i + 1} ${adlar.length ? `tanınmadı ya da boş (${adlar.join(', ')})` : 'boş'} — geçerli türler: ${TURLER.join(', ')}`);
+        return;
+      }
+      const cift = TURLER.filter(t => t !== tur && b[t] !== undefined && b[t] !== null && b[t] !== false && b[t] !== '');
+      if (cift.length) hata(`Blok ${i + 1}: bir blokta tek tür olur; "${tur}" ile birlikte "${cift.join(', ')}" de yazılmış — ayrı bloklara bölün`);
+      if (tur === 'adim') b.adim.forEach((m, j) => { if (!m || !String(m).trim()) hata(`Blok ${i + 1}: ${j + 1}. adım boş`); });
+      if (tur === 'gorsel') {
+        kullan(b.gorsel, i);
+        if (b.metin !== undefined && !Array.isArray(b.metin)) { hata(`Blok ${i + 1}: "metin" bir liste olmalı: metin: ['…', '…']`); b.metin = []; }
+      }
+      if (tur === 'gorseller') {
+        if (b.gorseller.length > 2) hata(`Blok ${i + 1}: yan yana en çok 2 görsel sığar (${b.gorseller.length} verilmiş) — ikişerli bloklara bölün`);
+        b.gorseller.forEach(no => kullan(no, i));
+      }
+    });
+    v.gorseller.forEach((g, i) => {
+      const no = i + 1;
+      if (!g || typeof g !== 'object') { hata(`Görsel ${no} boş`); v.gorseller[i] = { ad: '', ciz() {} }; return; }
+      if (!g.ciz && !g.resim) hata(`Görsel ${no}${g.ad ? ` (${g.ad})` : ''}: "ciz" ya da "resim" yok`);
+      if (g.ciz && typeof g.ciz !== 'function') { hata(`Görsel ${no}: "ciz" bir fonksiyon olmalı`); g.ciz = null; }
+      if (g.resim && !g.istem) S.uyar(`Görsel ${no}${g.ad ? ` (${g.ad})` : ''}: ChatGPT istemi ("istem") yazılmamış`);
+      if (!kullanim.has(no)) S.uyar(`Görsel ${no}${g.ad ? ` (${g.ad})` : ''} notta hiçbir yere yerleştirilmemiş (yalnız kes-yapıştır sayfasında çıkar)`);
+      else if (kullanim.get(no) > 1) S.uyar(`Görsel ${no} notta ${kullanim.get(no)} kez kullanılmış`);
+    });
+  }
+  // Tek satırlık başlıklar (not başlığı, alt konu, ara başlık) genişliğe sığana kadar küçülür;
+  // en küçük boyda da sığmazsa taşma sayılır. Sığan başlığın boyu değişmez.
+  function sigdir(S, metin, boy, enAz, gen, ad) {
+    let b = boy;
+    while (S.genislik(metin, b, { class: 'kalin' }) > gen && b > enAz) b -= 1;
+    if (S.genislik(metin, b, { class: 'kalin' }) > gen) S.tasmaKontrol(`${ad} satıra sığmıyor (kısaltın): ${metin}`, 1, 0);
+    return b;
+  }
+  // Sayfadaki yazılar sağ kenardan taşıyor mu? (bölünemeyen çok uzun sözcük gibi)
+  function yatayTasmaDenetimi(S0, svg, sayfaNo) {
+    for (const t of svg.children) {
+      if (t.tagName !== 'text') continue;
+      let k; try { k = t.getBBox(); } catch (e) { continue; }
+      if (k.width && k.x + k.width > SAG + 22) S0.tasmaKontrol(`Sayfa ${sayfaNo}: "${t.textContent.trim().slice(0, 40)}…" satırı sağdan taşıyor (bölünemeyen uzun sözcük?)`, 1, 0);
+    }
+  }
+
   // Blok yükseklikleri (sayfaya yerleştirmek için önce ölçülür)
   function yukseklik(S, b) {
     if (b.konu) return KONU_H;
@@ -199,19 +286,22 @@
     // 1) Bloklar sayfalara dağıtılır
     const sayfalar = [[]]; let y = UST_ILK;
     v.bloklar.forEach((b, i) => {
+      if (!blokTuru(b)) return; // hatası notuDenetle'de bildirildi
       if (b.sayfa) { if (sayfalar[sayfalar.length - 1].length) { sayfalar.push([]); y = UST; } return; }
       const h = yukseklik(S0, b);
       // Başlıklar (konu, ara) ve 'birlikte: true' işaretli bloklar bir sonraki blokla aynı sayfada kalır (zincir).
       let gerek = h;
       for (let j = i; j < v.bloklar.length - 1; j++) {
         const bu = v.bloklar[j], sonraki = v.bloklar[j + 1];
-        if (!(bu.konu || bu.ara || bu.birlikte) || sonraki.sayfa) break;
+        if (!(bu.konu || bu.ara || bu.birlikte) || !sonraki || sonraki.sayfa) break;
         gerek += yukseklik(S0, sonraki);
       }
       if (y + gerek > ALT && sayfalar[sayfalar.length - 1].length) { sayfalar.push([]); y = UST; }
       sayfalar[sayfalar.length - 1].push(b); y += h;
     });
+    if (sayfalar.length > 1 && !sayfalar[sayfalar.length - 1].length) sayfalar.pop(); // sondaki { sayfa: true } boş sayfa açmasın
     const n = sayfalar.length;
+    if (n > 3) S0.uyar(`Not ${n} sayfa tuttu (kural: 1–3 sayfa). Konuyu iki nota bölmek ya da metni kısaltmak gerekebilir.`);
     // 2) Her sayfa çizilir
     let araSay = 0, imi = 0;
     sayfalar.forEach((bloklar, si) => {
@@ -219,15 +309,17 @@
       const S = si === 0 ? S0 : Object.assign(Sketchnote.araclar(svg), { tasmaKontrol: S0.tasmaKontrol });
       defterZemini(svg);
       if (si === 0) {
-        const bg = S.genislik(v.baslik, 64, { class: 'kalin' });
+        const bb = sigdir(S, v.baslik, 64, 40, SAG - SOL - 230, 'Not başlığı');
+        const bg = S.genislik(v.baslik, bb, { class: 'kalin' });
         const bx = 655 - bg / 2 - 40;
         sekil(svg, 'rect', { x: bx, y: 50, width: bg + 80, height: 92, rx: 46, fill: '#ffe3ea', stroke: R.pembe, 'stroke-width': 3, 'stroke-dasharray': '10 6' });
-        S.yazi(655, 117, v.baslik, 64, { class: 'kalin', 'text-anchor': 'middle', fill: R.kirmizi });
+        S.yazi(655, 117, v.baslik, bb, { class: 'kalin', 'text-anchor': 'middle', fill: R.kirmizi });
         for (const [x1] of [[bx - 70], [bx + bg + 98]])
           sekil(svg, 'path', { d: `M ${x1} 96 q 13 -14 26 0 t 26 0`, fill: 'none', stroke: R.pembe, 'stroke-width': 4, 'stroke-linecap': 'round' });
       } else {
-        S.yazi(SOL, 82, v.baslik + ' (devam)', 34, { class: 'kalin', fill: R.kirmizi });
-        sekil(svg, 'line', { x1: SOL, y1: 96, x2: SOL + S.genislik(v.baslik + ' (devam)', 34, { class: 'kalin' }), y2: 96, stroke: R.pembe, 'stroke-width': 3, 'stroke-dasharray': '8 6' });
+        const db = sigdir(S, v.baslik + ' (devam)', 34, 22, SAG - SOL, 'Devam başlığı');
+        S.yazi(SOL, 82, v.baslik + ' (devam)', db, { class: 'kalin', fill: R.kirmizi });
+        sekil(svg, 'line', { x1: SOL, y1: 96, x2: SOL + S.genislik(v.baslik + ' (devam)', db, { class: 'kalin' }), y2: 96, stroke: R.pembe, 'stroke-width': 3, 'stroke-dasharray': '8 6' });
       }
       if (n > 1) S.yazi(655, 1735, `${si + 1} / ${n}`, 26, { class: 'kalin', 'text-anchor': 'middle', fill: R.gri });
 
@@ -246,15 +338,17 @@
         const bas = y;
         if (b.konu) {
           y += 8;
-          S.yazi(SOL, y + 30, b.konu, 40, { class: 'kalin', fill: R.kirmizi });
-          const w = S.genislik(b.konu, 40, { class: 'kalin' });
+          const kb = sigdir(S, b.konu, 40, 30, SAG - SOL, 'Alt konu başlığı');
+          S.yazi(SOL, y + 30, b.konu, kb, { class: 'kalin', fill: R.kirmizi });
+          const w = S.genislik(b.konu, kb, { class: 'kalin' });
           S.ekle(S.rc.line(SOL, y + 43, SOL + w, y + 41, S.o({ stroke: R.kirmizi, strokeWidth: 3, roughness: 0.8 })));
           y = bas + KONU_H;
         } else if (b.ara) {
           y += 4;
-          const w = S.genislik(b.ara, 34, { class: 'kalin' });
+          const ab = sigdir(S, b.ara, 34, 26, SAG - SOL - 44, 'Ara başlık');
+          const w = S.genislik(b.ara, ab, { class: 'kalin' });
           sekil(svg, 'rect', { x: SOL, y: y, width: w + 44, height: 52, rx: 26, fill: HAPLAR[araSay++ % HAPLAR.length] });
-          S.yazi(SOL + 22, y + 37, b.ara, 34, { class: 'kalin', fill: R.lacivert });
+          S.yazi(SOL + 22, y + 37, b.ara, ab, { class: 'kalin', fill: R.lacivert });
           y = bas + ARA_H;
         } else if (b.madde) {
           y += madde(SOL, y, b.madde, SAG - SOL) * MADDE_SATIR + 14;
@@ -287,19 +381,22 @@
           y = bas + yukseklik(S, b);
         }
       }
-      S0.tasmaKontrol('Sayfa ' + (si + 1), y - 40, ALT + 10);
+      S0.tasmaKontrol(`Sayfa ${si + 1}: tek bir blok sayfaya sığmayacak kadar uzun`, y - 40, ALT + 10);
+      yatayTasmaDenetimi(S0, svg, si + 1);
     });
     return n;
   }
 
   function kesSayfalari(S0, v, renkli) {
     const gruplar = [];
+    if (!v.gorseller.length) throw new Error('Bu notta görsel yok; kes-yapıştır sayfası hazırlanamaz.');
     for (let i = 1; i <= v.gorseller.length; i += 2) gruplar.push(i + 1 <= v.gorseller.length ? [i, i + 1] : [i]);
     gruplar.forEach((grp, si) => {
       const svg = yeniSayfa(si === 0 ? S0.svg : null);
       const S = si === 0 ? S0 : Object.assign(Sketchnote.araclar(svg), { tasmaKontrol: S0.tasmaKontrol });
       const ogrenci = grp.length === 2 ? 4 : 8;
-      S.yazi(620, 62, v.baslik + ' — kes-yapıştır görselleri' + (gruplar.length > 1 ? ` (${si + 1}/${gruplar.length})` : ''), 34, { class: 'kalin', 'text-anchor': 'middle' });
+      const kesBaslik = v.baslik + ' — kes-yapıştır görselleri' + (gruplar.length > 1 ? ` (${si + 1}/${gruplar.length})` : '');
+      S.yazi(620, 62, kesBaslik, sigdir(S, kesBaslik, 34, 20, 1160, 'Kes-yapıştır başlığı'), { class: 'kalin', 'text-anchor': 'middle' });
       const aciklama = grp.length === 2 ? `her satır bir öğrenci: Görsel ${grp[0]} + Görsel ${grp[1]}` : `Görsel ${grp[0]}`;
       S.yazi(620, 102, `${ogrenci} öğrenci için · ${aciklama} · 8,5 × 6 cm · kesik çizgiden kesin`, 24, { 'text-anchor': 'middle', fill: '#444' });
       const bosluk = 56, x0 = (1240 - 2 * KW - bosluk) / 2, y0 = 135, satirAra = (1754 - 30 - y0 - 4 * KH) / 3;
@@ -318,6 +415,7 @@
       const [mod, ...parametre] = (location.hash || '#not').slice(1).split('&');
       const secili = Number((parametre.find(p => p.startsWith('s=')) || 's=0').slice(2));
       const kes = mod.startsWith('kes');
+      notuDenetle(S, v);
       document.title = v.baslik + (kes ? ' — kes-yapıştır' : ' — defter notu');
       const n = kes ? kesSayfalari(S, v, mod === 'kes-renkli') : notSayfalari(S, v);
       document.body.dataset[kes ? 'kesSayfa' : 'sayfa'] = String(n);

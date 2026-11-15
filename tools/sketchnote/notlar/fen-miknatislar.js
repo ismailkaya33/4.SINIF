@@ -48,14 +48,16 @@ Sketchnote.defterNotu({
       const mik = (x, y, sol) => { // sol: 'N' ya da 'S' (soldaki uç)
         const sag = sol === 'N' ? 'S' : 'N', renk = { N: R.kirmizi, S: R.mavi };
         for (const [i, k] of [[0, sol], [1, sag]]) {
-          ekle(rc.rectangle(x + i * 60, y, 60, 40, o({ fill: S.r(renk[k]), fillStyle: 'hachure', hachureGap: 6, strokeWidth: 2.2 })));
-          yazi(x + i * 60 + 30, y + 30, k, 26, { class: 'kalin', 'text-anchor': 'middle' });
+          ekle(rc.rectangle(x + i * 50, y, 50, 40, o({ fill: S.r(renk[k]), fillStyle: 'hachure', hachureGap: 6, strokeWidth: 2.2 })));
+          yazi(x + i * 50 + 25, y + 30, k, 26, { class: 'kalin', 'text-anchor': 'middle' });
         }
       };
       const satir = (y, a, b, sonuc, cek) => {
-        mik(24, y, a); mik(cek ? 172 : 196, y, b);
-        if (cek) { ok([[150, y + 20], [158, y + 21], [166, y + 20]], S.m(R.yesil)); ok([[192, y + 20], [184, y + 21], [176, y + 20]], S.m(R.yesil)); }
-        else { ok([[152, y + 20], [140, y + 21], [128, y + 20]], S.m(R.kirmizi)); ok([[192, y + 20], [204, y + 21], [216, y + 20]], S.m(R.kirmizi)); }
+        // Mıknatıs 100 birim geniş. Oklar iki mıknatısın arasındaki boşlukta durur (kutup harflerinin üstüne binmez):
+        // çekerken birbirine doğru (→ ←), iterken birbirinden uzağa (← →).
+        mik(20, y, a); mik(cek ? 188 : 216, y, b);
+        if (cek) { ok([[124, y + 20], [137, y + 21], [151, y + 20]], S.m(R.yesil)); ok([[184, y + 20], [171, y + 21], [157, y + 20]], S.m(R.yesil)); }
+        else { ok([[164, y + 20], [146, y + 21], [127, y + 20]], S.m(R.kirmizi)); ok([[172, y + 20], [190, y + 21], [209, y + 20]], S.m(R.kirmizi)); }
         yazi(330, y + 18, sonuc, 22, { class: 'kalin', fill: S.m(cek ? R.yesil : R.kirmizi) });
         yazi(330, y + 42, cek ? 'zıt kutuplar' : 'aynı kutuplar', 18, { fill: S.m(R.lacivert) });
       };
@@ -79,7 +81,7 @@ Sketchnote.defterNotu({
       // U (at nalı)
       ekle(rc.path('M 300 70 L 300 130 A 50 50 0 0 0 400 130 L 400 70 L 372 70 L 372 130 A 22 22 0 0 1 328 130 L 328 70 Z', o({ fill: S.r('#c9c9c9'), fillStyle: 'hachure', hachureGap: 8, strokeWidth: 2.2 })));
       ekle(rc.rectangle(300, 62, 28, 30, dol(K))); ekle(rc.rectangle(372, 62, 28, 30, dol(M)));
-      yazi(314, 56, 'N', 20, { class: 'kalin', 'text-anchor': 'middle' }); yazi(386, 56, 'S', 20, { class: 'kalin', 'text-anchor': 'middle' });
+      yazi(284, 86, 'N', 20, { class: 'kalin', 'text-anchor': 'middle' }); yazi(416, 86, 'S', 20, { class: 'kalin', 'text-anchor': 'middle' });
       yazi(350, 210, 'U (at nalı)', 22, { class: 'kalin', 'text-anchor': 'middle', fill: S.m(R.kirmizi) });
       // halka
       ekle(rc.circle(110, 270, 90, dol(M))); ekle(rc.circle(110, 270, 40, o({ fill: '#fff', fillStyle: 'solid', strokeWidth: 2 })));
