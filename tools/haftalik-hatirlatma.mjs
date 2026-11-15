@@ -59,6 +59,7 @@ for (const [ders, liste] of Object.entries(plan.dersler)) {
   const ici = katalog.filter(k => k.yol.startsWith(klasor + '/'));
   console.log(`  Portaldaki içerikler (${ici.length}): ` + ici.map(k => `${k.ad}${k.gizli ? ' [gizli]' : ''}`).join(' · '));
   const dn = `${klasor}/DefterNotlari`;
-  const defter = existsSync(dn) ? readdirSync(dn).filter(f => !/^desktop\.ini$/i.test(f)) : [];
+  // Yalnız resim dosyaları defter notudur ("not-1.txt" gibi boş klasör tutucular sayılmaz)
+  const defter = existsSync(dn) ? readdirSync(dn).filter(f => /\.(png|jpe?g|webp)$/i.test(f)) : [];
   console.log(`  Defter notları (${defter.length}): ${defter.join(' · ') || '—'}`);
 }

@@ -39,7 +39,7 @@ Sketchnote.defterNotu({
       istem: 'Bir görsel oluştur: Masanın üzerinde bir el, kırmızı-mavi bir çubuk mıknatısı tutuyor; mıknatısın uçlarına ataşlar, toplu iğneler ve küçük demir çiviler yapışmış, bir kısmı havada asılı duruyor.' + ORTAK,
       etiketler: [{ x: 255, y: 336, t: 'ÇEKER: ataş, toplu iğne, demir çivi', boy: 21, renk: '#2a9d8f' }] },
     { ad: 'Mıknatısın çekmedikleri', resim: 'Baski/Fen/resimler/miknatis-2-cekmez.png',
-      istem: 'Bir görsel oluştur: Masanın üzerinde kırmızı-mavi bir çubuk mıknatıs ve hemen yanında, ona yapışmadan duran tahta kurşun kalem, plastik silgi, cam bilye, kâğıt parçası, lastik ve gümüş renkli alüminyum içecek kutusu.' + ORTAK,
+      istem: 'Bir görsel oluştur: Masanın üzerinde kırmızı-mavi bir çubuk mıknatıs ve hemen yanında, ona yapışmadan duran tahta kurşun kalem, plastik silgi, cam bilye, kâğıt parçası, paket lastiği ve gümüş renkli alüminyum içecek kutusu.' + ORTAK,
       etiketler: [{ x: 255, y: 336, t: 'ÇEKMEZ: tahta, plastik, cam, kâğıt, alüminyum', boy: 20 }] },
     // 3 — Kutupların etkileşimi (kodla)
     { ad: 'Kutuplar: iter mi, çeker mi?', ciz(S) {
@@ -92,7 +92,7 @@ Sketchnote.defterNotu({
       yazi(350, 340, 'disk', 22, { class: 'kalin', 'text-anchor': 'middle', fill: S.m(R.kirmizi) });
     } },
     { ad: 'Etki kartondan geçer', resim: 'Baski/Fen/resimler/miknatis-6-aradan.png',
-      istem: 'Bir görsel oluştur: Bir çocuk iki eliyle yatay tuttuğu kartondan bir labirent oyununu inceliyor; bir eliyle kartonun altında küçük bir mıknatısı gezdiriyor, kartonun üstündeki ataş labirentin yolunda ilerliyor. Kartonun altı ve üstü yandan bakınca birlikte görünsün.' + ORTAK,
+      istem: 'Bir görsel oluştur: Bir çocuk bir eliyle, üzerine labirent çizilmiş bir kartonu yatay tutuyor; öteki eliyle kartonun altında küçük bir mıknatısı gezdiriyor, kartonun üstündeki ataş labirentin yolunda ilerliyor. Kartonun altı ve üstü yandan bakınca birlikte görünsün.' + ORTAK,
       etiketler: [{ x: 255, y: 336, t: 'Mıknatısın etkisi kartonun içinden geçer', boy: 21 }] },
     { ad: 'Mıknatıslı vinç', resim: 'Baski/Fen/resimler/miknatis-7-vinc.png',
       istem: 'Bir görsel oluştur: Bir hurdalıkta, vincin ucundaki büyük yuvarlak mıknatıs, yerdeki karışık hurda yığınından demir parçalarını kaldırıyor; yerde tahta ve plastik atıklar kalıyor. Gündüz, sade gökyüzü.' + ORTAK,
