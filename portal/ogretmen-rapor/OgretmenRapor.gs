@@ -113,13 +113,15 @@ const selectedActivities=["Turkce/ikilemeler.html","Turkce/pekistirme.html","Tur
    return {id:activityId,completed:count,waiting:Object.keys(roster).length-count,
     students:perStudent.map(function(st){return {no:st.no,ad:st.ad,status:done[st.no]?'Tamamladım bildirildi':'Henüz bildirim yok'};})};
   });
-  const notebookCatalog={
-    'Turkce':[['atasozleri.png','Atasözleri'],['deyimler.png','Deyimler'],['gercekmecaz.png','Gerçek, Mecaz ve Terim Anlam'],['ikilemeler.jpeg','İkilemeler'],['metninbolumleri.png','Metnin Bölümleri'],['pekistirme.JPG','Pekiştirme']],
+  /* KATALOG BASLA: rapor-defter-notlari — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
+const notebookCatalog={
+    'Turkce':[['atasozleri.png','Atasözleri'],['deyimler.png','Deyimler'],['gercekmecaz.png','Gerçek, Mecaz ve Terim Anlam'],['ikilemeler.jpeg','İkilemeler'],['metninbolumleri.png','Metnin Bölümleri'],['pekistirme.JPG','Pekiştirme'],['ozdeyisler.png','Özdeyişler'],['tr-cumle-bilgisi-1.png','Cümle Bilgisi 1'],['tr-cumle-bilgisi-2.png','Cümle Bilgisi 2']],
     'Matematik':[['cikarmadaverilmeyen.png','Çıkarma İşleminde Verilmeyenler'],['cikarmadefternotu.png','Çıkarma İşlemi'],['toplama.png','Toplama'],['toplamacikarmaproblemleri.png','Toplama ve Çıkarma Problemleri'],['zihindencikarma.png','Zihinden Çıkarma'],['zihindentoplama.png','Zihinden Toplama']],
-    'Fen':[['besinler1.png','Besinler 1'],['besinler2.png','Besinler 2'],['besinler3.png','Besinler 3'],['besinlerintazeligi.png','Besinlerin Tazeliği'],['besinlerisaklama.png','Besinleri Saklama']],
-    'Sosyal':[['ailemcocuk.jpg','Ailem ve Çocuk'],['ailetarihi.png','Aile Tarihi'],['cocukoyun.png','Çocuk Oyunları'],['farkliliklarimizvesaygi.png','Farklılıklara Saygı'],['mersinkultur.png','Mersin Kültürü'],['millikultur.png','Millî Kültür'],['millimucadele1.png','Millî Mücadele 1'],['millimucadele2.png','Millî Mücadele 2'],['millimucadele3.png','Millî Mücadele 3'],['millimucadele4.png','Millî Mücadele 4'],['millimucadele5.png','Millî Mücadele 5'],['millimucadele6.png','Millî Mücadele 6'],['millimucadele7.png','Millî Mücadele 7']]
+    'Fen':[['besinler1.png','Besinler 1'],['besinler2.png','Besinler 2'],['besinler3.png','Besinler 3'],['besinlerintazeligi.png','Besinlerin Tazeliği'],['besinlerisaklama.png','Besinleri Saklama'],['hareketliyasam.png','Hareketli Yaşıyorum, Sağlığımı Koruyorum ve Besin İsrafı'],['dengelibeslenme.png','Dengeli Beslenme'],['fen-kuvvetin-etkileri-1.png','Kuvvetin Etkileri 1'],['fen-kuvvetin-etkileri-2.png','Kuvvetin Etkileri 2']],
+    'Sosyal':[['ailemcocuk.jpg','Ailem ve Çocuk'],['ailetarihi.png','Aile Tarihi'],['cocukoyun.png','Çocuk Oyunları'],['farkliliklarimizvesaygi.png','Farklılıklara Saygı'],['mersinkultur.png','Mersin Kültürü'],['millikultur.png','Millî Kültür'],['millimucadele1.png','Millî Mücadele 1'],['millimucadele2.png','Millî Mücadele 2'],['millimucadele3.png','Millî Mücadele 3'],['millimucadele4.png','Millî Mücadele 4'],['millimucadele5.png','Millî Mücadele 5'],['millimucadele6.png','Millî Mücadele 6'],['millimucadele7.png','Millî Mücadele 7'],['sos-yonler-1.png','Yönler 1'],['sos-yonler-2.png','Yönler 2']]
   };
-  const notebookNames={'Turkce':'Türkçe','Matematik':'Matematik','Fen':'Fen Bilimleri','Sosyal':'Sosyal Bilgiler'};
+  const notebookNames={"Turkce":"Türkçe","Matematik":"Matematik","Fen":"Fen Bilimleri","Sosyal":"Sosyal Bilgiler"};
+/* KATALOG BITIR: rapor-defter-notlari */
   const notebookItems=[];
   Object.keys(notebookCatalog).forEach(function(dir){
     notebookCatalog[dir].forEach(function(row){notebookItems.push({id:dir+'/'+row[0],title:notebookNames[dir]+' • '+row[1]});});

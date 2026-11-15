@@ -37,13 +37,52 @@ export function katalogYukle() {
   for (const e of k.otomatikSonuc) {
     if (e.dersListesinde && !secili.has(e.yol)) throw Error('Ders listesindeki takipli etkinlik seçili listede yok: ' + e.yol);
   }
+  const notlar = new Set();
+  for (const n of k.defterNotlari || []) {
+    if (!DERS_ADLARI[n.ders]) throw Error('Defter notu: bilinmeyen ders klasörü: ' + n.ders);
+    if (!/^[A-Za-z0-9_.-]+\.(png|jpe?g|JPG|JPEG|PNG)$/.test(n.dosya || '')) throw Error('Defter notu: geçersiz dosya adı: ' + n.dosya);
+    if (!n.ad) throw Error('Defter notu: ad eksik: ' + n.dosya);
+    if (n.surum !== undefined && !/^[0-9a-z]{1,20}$/.test(n.surum)) throw Error('Defter notu: geçersiz sürüm: ' + n.dosya);
+    if (notlar.has(n.ders + '/' + n.dosya)) throw Error('Defter notu iki kez yazılmış: ' + n.ders + '/' + n.dosya);
+    notlar.add(n.ders + '/' + n.dosya);
+  }
   return k;
+}
+
+// Defter notu klasörü -> portalda görünen ders adı (öğrenci portalı ve öğretmen raporu aynı adları kullanır).
+const DERS_ADLARI = {Turkce: 'Türkçe', Matematik: 'Matematik', Fen: 'Fen Bilimleri', Sosyal: 'Sosyal Bilgiler', Insanhaklari: 'İnsan Hakları', Trafik: 'Trafik Güvenliği'};
+
+function defterGruplari(k) {
+  const g = {};
+  for (const n of k.defterNotlari || []) (g[n.ders] = g[n.ders] || []).push(n);
+  return g;
 }
 
 function bolumler(k) {
   const site = k.siteAdresi, oto = k.otomatikSonuc, listede = oto.filter(e => e.dersListesinde);
   const ic = (girinti, satirlar) => satirlar.map(s => girinti + s).join(',\n');
+  const dg = defterGruplari(k), dersler = Object.keys(dg);
   return {
+    'portal/appsscript/OgrenciCalismaDurumu.gs#defter': [{
+      ad: 'defter-notlari-izin-listesi',
+      eski: /const DEFTER_NOTLARI_ = Object\.freeze\(\{[\s\S]*?\n\}\);/,
+      yeni: 'const DEFTER_NOTLARI_ = Object.freeze({\n' +
+        ic(' ', dersler.map(d => tekTirnak(d) + ':[' + dg[d].map(n => tekTirnak(n.dosya)).join(',') + ']')) + '\n});'
+    }],
+    'portal/appsscript/OgrenciGiris_Guncel.html#defter': [{
+      ad: 'portal-defter-notlari',
+      eski: /const defterKatalog=\{[\s\S]*?\n\};/,
+      yeni: 'const defterKatalog={\n' +
+        dersler.map(d => js(DERS_ADLARI[d]) + ':{dir:' + js(d) + ',files:' + js(dg[d].map(n => [n.dosya, n.ad])) + '}').join(',\n') + '\n};\n' +
+        'const DEFTER_SURUMLERI=' + js(Object.fromEntries((k.defterNotlari || []).filter(n => n.surum).map(n => [n.ders + '/' + n.dosya, n.surum]))) + ';'
+    }],
+    'portal/ogretmen-rapor/OgretmenRapor.gs#defter': [{
+      ad: 'rapor-defter-notlari',
+      eski: /const notebookCatalog=\{[\s\S]*?\n  \};\n  const notebookNames=\{.*?\};/,
+      yeni: 'const notebookCatalog={\n' +
+        ic('    ', dersler.map(d => tekTirnak(d) + ':[' + dg[d].map(n => '[' + tekTirnak(n.dosya) + ',' + tekTirnak(n.ad) + ']').join(',') + ']')) + '\n  };\n' +
+        '  const notebookNames=' + js(Object.fromEntries(dersler.map(d => [d, DERS_ADLARI[d]]))) + ';'
+    }],
     'portal/appsscript/EtkinlikKayitDefteri.gs': [{
       ad: 'sunucu-izin-listesi',
       eski: /const SONUC_IZINLI_ETKINLIKLER_ = Object\.freeze\(\{[\s\S]*?\n\}\);/,
@@ -119,8 +158,13 @@ function politikaUygula(metin, k) {
 
 /** Hangi dosyaların listeyle uyuşmadığını döndürür (hiçbir şey yazmaz). */
 export function katalogFarklari() {
-  const k = katalogYukle(), farkli = [], yeniler = {};
-  for (const [dosya, liste] of Object.entries(bolumler(k))) {
+  const k = katalogYukle(), farkli = [], yeniler = {}, dosyalar = {};
+  // Anahtardaki "#..." eki aynı dosyanın ikinci bölüm grubunu ayırır (ör. defter notları).
+  for (const [anahtar, liste] of Object.entries(bolumler(k))) {
+    const d = anahtar.split('#')[0];
+    dosyalar[d] = (dosyalar[d] || []).concat(liste);
+  }
+  for (const [dosya, liste] of Object.entries(dosyalar)) {
     const eski = oku(dosya);
     let yeni = eski;
     for (const b of liste) yeni = bolumUygula(yeni, b, dosya);

@@ -1005,12 +1005,15 @@ window.addEventListener("message",function(e){
 document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunCer.removeAttribute("src");});
 
 /* Ders alt sayfasi: etkinlikler / defter notlari / degerlendirmeler. */
+/* KATALOG BASLA: portal-defter-notlari — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
 const defterKatalog={
-"Türkçe":{dir:"Turkce",files:[["atasozleri.png","Atasözleri","Turkce/atasozleri.png"],["deyimler.png","Deyimler","Turkce/deyimler.png"],["gercekmecaz.png","Gerçek, Mecaz ve Terim Anlam"],["ikilemeler.jpeg","İkilemeler"],["metninbolumleri.png","Metnin Bölümleri"],["pekistirme.JPG","Pekiştirme"],["ozdeyisler.png","Özdeyişler"],["tr-cumle-bilgisi-1.png","Cümle Bilgisi 1"],["tr-cumle-bilgisi-2.png","Cümle Bilgisi 2"]]},
+"Türkçe":{dir:"Turkce",files:[["atasozleri.png","Atasözleri"],["deyimler.png","Deyimler"],["gercekmecaz.png","Gerçek, Mecaz ve Terim Anlam"],["ikilemeler.jpeg","İkilemeler"],["metninbolumleri.png","Metnin Bölümleri"],["pekistirme.JPG","Pekiştirme"],["ozdeyisler.png","Özdeyişler"],["tr-cumle-bilgisi-1.png","Cümle Bilgisi 1"],["tr-cumle-bilgisi-2.png","Cümle Bilgisi 2"]]},
 "Matematik":{dir:"Matematik",files:[["cikarmadaverilmeyen.png","Çıkarma İşleminde Verilmeyenler"],["cikarmadefternotu.png","Çıkarma İşlemi"],["toplama.png","Toplama"],["toplamacikarmaproblemleri.png","Toplama ve Çıkarma Problemleri"],["zihindencikarma.png","Zihinden Çıkarma"],["zihindentoplama.png","Zihinden Toplama"]]},
 "Fen Bilimleri":{dir:"Fen",files:[["besinler1.png","Besinler 1"],["besinler2.png","Besinler 2"],["besinler3.png","Besinler 3"],["besinlerintazeligi.png","Besinlerin Tazeliği"],["besinlerisaklama.png","Besinleri Saklama"],["hareketliyasam.png","Hareketli Yaşıyorum, Sağlığımı Koruyorum ve Besin İsrafı"],["dengelibeslenme.png","Dengeli Beslenme"],["fen-kuvvetin-etkileri-1.png","Kuvvetin Etkileri 1"],["fen-kuvvetin-etkileri-2.png","Kuvvetin Etkileri 2"]]},
 "Sosyal Bilgiler":{dir:"Sosyal",files:[["ailemcocuk.jpg","Ailem ve Çocuk"],["ailetarihi.png","Aile Tarihi"],["cocukoyun.png","Çocuk Oyunları"],["farkliliklarimizvesaygi.png","Farklılıklara Saygı"],["mersinkultur.png","Mersin Kültürü"],["millikultur.png","Millî Kültür"],["millimucadele1.png","Millî Mücadele 1"],["millimucadele2.png","Millî Mücadele 2"],["millimucadele3.png","Millî Mücadele 3"],["millimucadele4.png","Millî Mücadele 4"],["millimucadele5.png","Millî Mücadele 5"],["millimucadele6.png","Millî Mücadele 6"],["millimucadele7.png","Millî Mücadele 7"],["sos-yonler-1.png","Yönler 1"],["sos-yonler-2.png","Yönler 2"]]}
 };
+const DEFTER_SURUMLERI={"Turkce/ozdeyisler.png":"20261112","Fen/hareketliyasam.png":"20261105b","Fen/dengelibeslenme.png":"20261105b"};
+/* KATALOG BITIR: portal-defter-notlari */
 /* KATALOG BASLA: portal-secili-etkinlikler — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
 const seciliEtkinlikler=new Set(["Turkce/ikilemeler.html","Turkce/pekistirme.html","Turkce/sozavcıları.html","Matematik/cikarmaislemi.html","Fen/besinkasifleri.html","Fen/besinlerdegerlendirme.html","Sosyal/oyunzamani.html","Sosyal/kurtulus.html","Oyunlar/carpmaordekvurma.html","Matematik/dogalsayilardegerlendirme.html","Matematik/toplamacikarmaproblem1.html","Matematik/toplamacikarmaproblem2.html","Insanhaklari/insanolmasorumlulugu.html","Trafik/yayaolaraktrafikkurallarietkinligi.html","Insanhaklari/farkliyasamlar.html","Matematik/cikarmadatahmin.html","Matematik/mat-toplama-problemleri-sinav.html","Sosyal/konumkasifi.html","Turkce/tur-atasozu-deyim-sinav.html","Turkce/cikarimbaslik.html","Trafik/oyunaraclari.html","Turkce/kantindedektifi.html","Turkce/ozdeyisler.html","Sosyal/sos-gecmistebiz-sinav.html"]);
 /* KATALOG BITIR: portal-secili-etkinlikler */
@@ -1109,7 +1112,7 @@ function defterKartiOlustur(dir,filename,label,recordId){
  const id=recordId||dir+"/"+filename;
  const card=document.createElement("article");card.className="noteCard";
  const title=document.createElement("strong");title.textContent="📒 "+label;
- const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename)+(["hareketliyasam.png","dengelibeslenme.png"].includes(filename)?"?v=20261105b":(filename==="ozdeyisler.png"?"?v=20261112":""));
+ const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename)+(DEFTER_SURUMLERI[dir+"/"+filename]?"?v="+DEFTER_SURUMLERI[dir+"/"+filename]:"");
  link.target="_blank";link.rel="noopener noreferrer";link.textContent="Notu Aç ↗";link.setAttribute("aria-label",label+" defter notunu yeni sekmede aç");
  const choice=document.createElement("label");choice.className="noteCheckbox";
  const input=document.createElement("input");input.type="checkbox";input.dataset.noteId=id;
