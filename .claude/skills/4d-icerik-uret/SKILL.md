@@ -285,3 +285,17 @@ filigranı ve metni kopyalanmaz — yalnız düzen ve tarz örneğidir). Her def
 - [ ] Görsel zenginlik (4.1): tema + rehber karakter + her soruda görsel + kutlama efekti + ödül/ilerleme + ses düğmesi var; ekran görüntüleri alındı
 - [ ] Türkçe karakter ve yazım doğru; süre hedefe uygun; final bölümü kısa
 - [ ] Sınanmayan/kurulmayan özellik için iddia yok
+
+## 9. Dış yapay zekâdan gelen iş (öğretmenin kararı, 2026-11-16)
+Kota bitince öğretmen işi `Promptlar/*.txt` ile ChatGPT/Gemini'ye yaptırır (kullanım: `Promptlar/00-OKU-BENI.txt`) ve
+dosyayı + "teslim kartı"nı getirir. Bu skill'deki bir kural değişirse ilgili prompt dosyası da güncellenir.
+Getirilen iş **güvenilmeyen taslaktır**; sıfırdan üretme, ama şunları yapmadan yayınlama:
+1. `python -I scripts/html_kontrol.py <dosya>`; dış bağlantı, `alert/confirm/prompt`, ağ isteği, ad/kod sorusu ve
+   yarım bırakılmış ("devamı…", TODO) bölüm ara. Bütün cevapları yeniden doğrula; kazanım kodunu yıllık plandan kontrol et.
+2. Tarayıcıda iki profille oyna (hepsi doğru / yanılgılı); takipli işte tek `4d:activity-finished` mesajını ve
+   `correct + wrong = total`, `firstTry ≤ correct`, `attemptId` (12–80, harf/rakam/_/-) kurallarını sına.
+   Dış işler rapor motorunu gömmez, mesajı kendisi gönderir; çalışıyorsa motoru sonradan gömmek şart değildir.
+3. `pedagojik-denetci` ajanına baktır; dosya adını/klasörünü bölüm 7'ye göre düzelt; takip için `4d-etkinlik-takibe-al`.
+4. `04`/`05` çıktıları (`tools/sketchnote/notlar/*.js`): `gorselTarifleri` aracın tanımadığı bir taslak alanıdır →
+   her tarifi `gorseller` içinde kod çizimine ya da resim yuvasına çevir, alanı sil, sonra bas (6.0).
+5. Baskı işleri (`06`, `07`) `Baski/<Ders>/`'e; A4 taşmasını Edge ile PDF basarak kontrol et.
