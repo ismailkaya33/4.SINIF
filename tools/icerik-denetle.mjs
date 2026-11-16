@@ -118,7 +118,10 @@ if (dk) {
   for (const y of Object.keys(dk.bekleyen || {})) if (var_(y)) ekle('BİLGİ', 'tools/defter-kazanim.json', `"bekleyen"deki not artık klasörde: ${y} ("eslesme"ye taşınabilir)`);
 }
 const materyal = var_('materyaller.html') ? oku('materyaller.html') : '';
-for (const y of defterler) if (materyal && !materyal.includes(y)) ekle('BİLGİ', y, 'Defter notu sitede duruyor ama katalog sayfasında (materyaller.html) bağlantısı yok. Portal listesi ayrı tutulur (portal dalı); orada da eklenmemiş olabilir.');
+// Defter notlarının tek listesi defter-notlari.json (materyaller.html, portal ve öğretmen raporu buradan beslenir)
+const tekListe = var_('defter-notlari.json') ? JSON.parse(oku('defter-notlari.json')).defterNotlari.map(n => `${n.ders}/DefterNotlari/${n.dosya}`) : [];
+for (const y of defterler) if (!tekListe.includes(y)) ekle('BİLGİ', y, 'Defter notu sitede duruyor ama tek listede (defter-notlari.json) yok → katalog sayfasında ve portalda görünmez.');
+for (const y of tekListe) if (!defterler.includes(y)) ekle('HATA', y, 'defter-notlari.json bu notu listeliyor ama resim dosyası sitede yok (kırık bağlantı).');
 for (const y of defterler) { const b = fs.statSync(path.join(KOK, y)).size; if (b > 1500 * 1024) ekle('BİLGİ', y, `Defter notu resmi büyük (${(b / 1048576).toFixed(1)} MB) → telefonda yavaş açılır.`); }
 // kodla üretilen notlar: kaynağı var, yayımlanmış resmi var mı?
 const notKlasoru = 'tools/sketchnote/notlar';

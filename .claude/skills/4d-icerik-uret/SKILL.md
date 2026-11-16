@@ -191,7 +191,9 @@ indirme adımı yoktur, tek HTML dosyası internetsiz açılır. Simgeler basit 
 
 ## 6. Diğer çıktılar
 - **Defter notu / çalışma kâğıdı / ev ödevi / ölçme / sunum:** `references/egitim-icerik-standartlari.md` bölüm 4–6'ya uy (A4, az mürekkep; cevap anahtarı ayrı; kazanım–soru eşleşme tablosu; slaytta tek kavram).
-- Defter notu görselleri `<Ders>/DefterNotlari/` altına gider; portal defter listesi ayrıca güncellenir (portal dalı).
+- Defter notu görselleri `<Ders>/DefterNotlari/` altına gider ve **tek listeye** (`defter-notlari.json`, site kökü; `{ders, dosya, ad, surum?}`)
+  bir satır eklenir. `materyaller.html` bu listeyi kendisi okur. Resim yenilenince `surum` değiştirilir (önbellek). Portal ve öğretmen raporu
+  için portal dalında `node tools/katalog-esitle.mjs` çalıştırılır (portal gönderimi ayrıca onay ister).
 
 ### 6.0 Defter notu + kes-yapıştır görselleri — VARSAYILAN YOL (öğretmenin kararı, 2026-11-13)
 Defter notu kodla üretilir (`Sketchnote.defterNotu`, bkz. 4.3); her not iki çıktı verir:

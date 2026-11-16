@@ -810,6 +810,51 @@
             } catch (e) {}
         })();
     </script>
+    <script>
+        // Defter notlarının tek listesi (defter-notlari.json): listede olup bu sayfada elle yazılmamış not
+        // kendiliğinden eklenir; "surum" verilmişse bağlantıya ?v= eklenir (yenilenen resim eski kopyadan açılmasın).
+        // Liste okunamazsa sayfa elle yazılmış notlarla eskisi gibi çalışır.
+        (function () {
+            var SAYFA = {Turkce:'turkce', Matematik:'matematik', Fen:'fen', Sosyal:'sosyal', Insanhaklari:'insan', Trafik:'trafik'};
+            function defterListesi(sayfa) {
+                var basliklar = sayfa.querySelectorAll('.page-title');
+                for (var i = 0; i < basliklar.length; i++) {
+                    if (basliklar[i].textContent.indexOf('Defter Notları') === -1) continue;
+                    var el = basliklar[i].closest('.page-header').nextElementSibling;
+                    if (el && el.matches('ul.game-list')) return el;
+                }
+                var bas = document.createElement('div'); bas.className = 'page-header'; bas.style.marginTop = '20px';
+                var h = document.createElement('h2'); h.className = 'page-title';
+                var ik = document.createElement('span'); ik.style.fontSize = '2rem'; ik.textContent = '📝';
+                h.appendChild(ik); h.appendChild(document.createTextNode(' Defter Notları')); bas.appendChild(h);
+                var ul = document.createElement('ul'); ul.className = 'game-list';
+                sayfa.appendChild(bas); sayfa.appendChild(ul);
+                return ul;
+            }
+            function uygula(k) {
+                if (!k || !Array.isArray(k.defterNotlari)) return;
+                var mevcut = {};
+                document.querySelectorAll('.subject-page a[href*="/DefterNotlari/"]').forEach(function (a) {
+                    mevcut[decodeURIComponent(a.getAttribute('href').split('?')[0])] = a;
+                });
+                k.defterNotlari.forEach(function (n) {
+                    if (!n || !SAYFA[n.ders] || typeof n.dosya !== 'string' || !n.ad) return;
+                    var yol = n.ders + '/DefterNotlari/' + n.dosya;
+                    var href = yol + (n.surum ? '?v=' + encodeURIComponent(n.surum) : '');
+                    if (mevcut[yol]) { if (n.surum) mevcut[yol].setAttribute('href', href); return; }
+                    var sayfa = document.getElementById(SAYFA[n.ders]);
+                    if (!sayfa) return;
+                    var li = document.createElement('li'), a = document.createElement('a');
+                    a.href = href; a.target = '_blank'; a.textContent = String(n.ad) + ' Defter Notu 📸';
+                    li.appendChild(a); defterListesi(sayfa).appendChild(li); mevcut[yol] = a;
+                });
+            }
+            try {
+                fetch('defter-notlari.json?t=' + Math.floor(Date.now() / 300000), {cache: 'no-store'})
+                    .then(function (r) { return r.ok ? r.json() : null; }).then(uygula).catch(function () {});
+            } catch (e) {}
+        })();
+    </script>
 
 
 <script type="module">
