@@ -14,6 +14,9 @@ Ayrı bir sohbet projesi kullanılmaz. Kurallar burada ve `.claude/skills/` alt�
 | `4d-canli-kontrol` | Gönderilen değişikliğin canlıda çalıştığını kontrol etmek |
 | `4d-haftalik-hatirlatma` | Yıllık plana göre bu/sıradaki haftanın konuları ve portalda eksik etkinlik/defter notu |
 
+**Kota bitince başka yapay zekâ:** her iş türü için hazır prompt `Promptlar/` klasöründe (`00-OKU-BENI.txt`). Öğretmen dışarıda
+yaptırdığı işi getirince `4d-icerik-uret` bölüm 9'a göre kontrol edilip sisteme alınır; portal kodu için dış prompt yoktur (bilerek).
+
 Ajan: `pedagojik-denetci` (`.claude/agents/`) — yeni/yenilenen etkinlik veya değerlendirmeyi **yayın onayı istenmeden önce**
 salt okunur denetler (kazanım, cevap doğruluğu, dil, erişilebilirlik, sonuç mesajı). Dosya değiştirmez; son karar öğretmenin.
 
