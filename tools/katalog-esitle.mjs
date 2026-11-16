@@ -4,9 +4,13 @@
 //   node tools/katalog-esitle.mjs           -> dosyaları listeye göre günceller
 //   node tools/katalog-esitle.mjs --kontrol -> sadece kontrol eder; fark varsa hata verir
 //
+// Defter notları bu dalda tutulmaz: tek listeleri main dalındaki (site) defter-notlari.json dosyasıdır.
+// Araç onu "git fetch origin main" ile alıp okur (GitHub Actions'taki denetim de aynı yolu kullanır).
+//
 // Her dosyada "KATALOG BASLA: ..." ile "KATALOG BITIR: ..." arasındaki bölüm bu komutla
 // yazılır. O bölümleri elle değiştirmeyin; değişikliği JSON dosyasında yapın.
 import {readFileSync, writeFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
 
@@ -17,8 +21,24 @@ const crlfMi = p => readFileSync(join(KOK, p), 'utf8').includes('\r\n');
 const js = v => JSON.stringify(v);
 const tekTirnak = v => "'" + String(v).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
 
+// Defter notlarının tek listesi: main dalındaki defter-notlari.json. DEFTER_KAYNAK ile başka bir dal/commit
+// verilebilir (yalnız deneme için; ör. DEFTER_KAYNAK=main).
+function defterListesiOku() {
+  const kaynak = process.env.DEFTER_KAYNAK || 'origin/main';
+  const git = (...a) => execFileSync('git', a, {cwd: KOK, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']});
+  if (!process.env.DEFTER_KAYNAK) { try { git('fetch', '-q', '--depth=1', 'origin', 'main:refs/remotes/origin/main'); } catch (e) { /* çevrimdışı: eldeki kopya kullanılır */ } }
+  let metin;
+  try { metin = git('show', kaynak + ':defter-notlari.json'); }
+  catch (e) { throw Error('Defter notu listesi okunamadı (' + kaynak + ':defter-notlari.json). İnternet bağlantısını ve main dalını kontrol edin.'); }
+  const d = JSON.parse(metin);
+  if (!Array.isArray(d.defterNotlari)) throw Error('defter-notlari.json içinde "defterNotlari" listesi yok.');
+  return d.defterNotlari;
+}
+
 export function katalogYukle() {
   const k = JSON.parse(oku('portal/etkinlik-kayitlari.json'));
+  if (k.defterNotlari) throw Error('portal/etkinlik-kayitlari.json içinde defterNotlari olmamalı; defter notları main dalındaki defter-notlari.json dosyasında tutulur.');
+  k.defterNotlari = defterListesiOku();
   const idler = new Set(), yollar = new Set();
   for (const e of k.otomatikSonuc) {
     if (!/^[a-z0-9-]{3,60}$/.test(e.id)) throw Error('Geçersiz etkinlik kimliği: ' + e.id);
