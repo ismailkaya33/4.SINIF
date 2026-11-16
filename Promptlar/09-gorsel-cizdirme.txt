@@ -1,0 +1,36 @@
+﻿(Bu prompt resim çizebilen yapay zekâlar içindir: ChatGPT, Gemini, Copilot. Köşeli parantezli yerleri doldur,
+kullanmayacağın TARZ paragrafını sil, sonra tek mesaj olarak gönder.)
+
+Bir görsel oluştur.
+
+KONU: [ör. Mıknatısın çektiği ve çekmediği maddeler]
+GÖRSELDE OLACAKLAR: [tek tek say: ör. solda at nalı mıknatıs; sağında ataş, çivi, anahtar; altta ayrı duran
+tahta kaşık, plastik cetvel, cam bardak]
+BİÇİM: [yatay 3:2  /  A4 dikey]
+
+HEDEF KİTLE: 10–13 yaş ilkokul öğrencileri. Görünüm olgun, düzenli ve okunaklı olsun. Boyama sayfası gibi kalın
+siyah dış çizgiler, büyük sevimli çizgi film karakterleri ve aşırı süs OLMASIN.
+
+TARZ — SKETCHNOTE (kavram, süreç, Fen, Sosyal konuları için): sketchnote (görsel not) tarzı, beyaz zemin üzerinde
+ince siyah kalem çizgileri, yalnız sarı ve mavi iki vurgu rengi, el çizimi düzensiz çerçeveler, kıvrımlı oklar,
+küçük fikir çizimleri (ampul, büyüteç, konuyla ilgili nesne); sevimli karakter yok.
+
+TARZ — EL YAZISI DEFTER (işlem, kural, adım adım çözüm konuları için): kareli defter sayfası üzerine düzenli ders
+notu görünümü (bullet journal), koyu mavi tükenmez kalem çizgileri, sarı ve pembe fosforlu kalem vurgusu, başlığın
+üstünde yarı saydam yeşil washi bant, kenarlarda küçük el çizimi oklar ve kesik çizgili kutular; karakter yok,
+temiz illüstrasyon.
+
+ÇOK ÖNEMLİ — YAZI YOK: Görselin içinde HİÇBİR yazı, harf, sayı, etiket, başlık, imza, logo ya da filigran olmasın.
+Yazıların geleceği yerleri boş bırak (boş etiket kutusu ya da boş alan); yazıları ben sonradan ekleyeceğim.
+
+OLMAYACAKLAR: gerçek kişi, tarihî kişi (Atatürk dâhil), marka, kurum logosu, tanınmış çizgi film karakteri,
+ders kitabı sayfası taklidi, korkutucu ya da şiddet içeren öğe.
+
+Nesneler tanınır ve bilimsel olarak doğru olsun; her nesne diğerinden açıkça ayrı dursun, arka plan sade kalsın.
+
+---------------------------------------------------------------
+BOYAMA SAYFASI istersen yukarıdaki iki TARZ paragrafının yerine şunu yaz:
+"Boyama sayfası: yalnız kalın siyah dış çizgi, beyaz zemin; renk, gri ton ve gölge yok; büyük boyama alanları."
+
+İNDİRME: Resmi küçük ön izlemeden değil, üstüne tıklayıp "İndir" ile TAM BOYUT olarak indir.
+Dosya adını küçük İngilizce harf ve tireyle ver (ör. fen-miknatis-1.png).

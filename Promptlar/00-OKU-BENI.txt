@@ -1,0 +1,79 @@
+﻿4/D PORTALI — BAŞKA YAPAY ZEKÂLARLA ÇALIŞMA PROMPTLARI
+======================================================
+
+Bu klasör ne işe yarar?
+Claude'da kota bittiğinde işi ChatGPT, Gemini, Copilot gibi başka bir yapay zekâya yaptırabilmen için,
+her iş türüne ayrı bir hazır prompt (istek metni) var. Promptlar portalın kurallarını içinde taşır;
+böylece çıkan dosya sisteme uyar.
+
+HANGİ İŞ İÇİN HANGİ DOSYA?
+  01-etkilesimli-etkinlik.txt      Ders etkinliği (sonucu öğretmen raporuna düşen)
+  02-oyun.txt                      Oyunlar bölümü için oyun (sonuç kaydı yok)
+  03-degerlendirme-testi.txt       Ekranda çözülen konu / ünite değerlendirmesi
+  04-defter-notu.txt               Defter notu içeriği
+  05-kavram-haritasi.txt           Tek sayfalık kavram haritası içeriği
+  06-calisma-kagidi-ev-odevi.txt   Yazdırılacak çalışma kâğıdı, ev ödevi, kes-yapıştır
+  07-basili-olcme-kagidi.txt       Yazdırılacak yazılı / ölçme kâğıdı
+  08-akilli-tahta-sunumu.txt       Akıllı tahta sunumu
+  09-gorsel-cizdirme.txt           Resim çizdirme (defter notu görseli, poster, boyama)
+  10-kontrol-denetim.txt           Başka yapay zekânın yaptığı işi denetletme
+
+NASIL KULLANILIR? (4 adım)
+  1. İlgili dosyaya çift tıkla (Not Defteri'nde açılır). Ctrl+A ile hepsini seç, Ctrl+C ile kopyala.
+  2. Yapay zekâda YENİ bir sohbet aç, Ctrl+V ile yapıştır.
+  3. Üstteki "ÖĞRETMEN DOLDURUR" kutusunu doldur (ders, konu, kazanım…). Varsa kitap sayfasını / PDF'i ekle. Gönder.
+  4. Önce plan ya da soru gelirse cevapla; sonra dosyayı ve altındaki TESLİM KARTI'nı verir.
+  İpucu: her iş için ayrı sohbet aç. Cevap yarıda kesilirse yalnız "devam" yaz.
+
+ÇIKAN İŞİ KAYDETME
+  HTML dosyası (01, 02, 03, 06, 07, 08):
+    - Yapay zekâ "indir" düğmesi veriyorsa dosyayı indir.
+    - Vermiyorsa: kod kutusunun köşesindeki "Kopyala"ya bas → Not Defteri'ni aç → yapıştır →
+      Dosya > Farklı Kaydet → Dosya adı: teslim kartındaki ad (ör. carpmaislemi.html) →
+      Kayıt türü: "Tüm dosyalar" → Kodlama: "UTF-8" → Kaydet.
+    - Dosyaya çift tıkla; tarayıcıda açılır. Baştan sona bir kez kendin oyna / oku.
+  Defter notu ve kavram haritası (04, 05): aynı yolla ama adı .js ile biter (ör. mat-carpma.js).
+  Resim (09): tam boyut indir.
+  TESLİM KARTI'nı da bir yere kopyala (Claude'a verirken lazım olacak).
+
+NEREYE KONUR?  (klasör: C:\Users\ismai\Projeler\4.SINIF)
+  01 etkinlik, 03 değerlendirme  →  ders klasörü: Turkce, Matematik, Fen, Sosyal, Insanhaklari, Trafik
+  02 oyun                        →  Oyunlar
+  04, 05 (.js dosyaları)         →  tools\sketchnote\notlar
+  06, 07 baskı işleri            →  Baski\<Ders>   (internete gitmez; tarayıcıda açıp "Yazdır" ile bas)
+  08 sunum                       →  Baski\<Ders>   (tahtada açmak için; siteye konsun istersen Claude'a söyle)
+  09 resim                       →  Baski\<Ders>\resimler
+
+HANGİ İŞ CLAUDE'SUZ BİTER, HANGİSİ CLAUDE'U BEKLER?
+  Tek başına biter      : 06 çalışma kâğıdı / ev ödevi, 07 ölçme kâğıdı, 08 sunum → aç, yazdır ya da tahtada göster.
+  Yarısı sende biter    : 01 etkinlik, 02 oyun, 03 değerlendirme → dosyayı ders klasörüne koyup GitHub'a
+                          gönderince öğrenciler portalda görür ve oynar. Ama SONUCUN ÖĞRETMEN RAPORUNA düşmesi
+                          için etkinliğin portal kayıt listesine eklenmesi gerekir; bunu Claude yapar.
+  Claude tamamlar       : 04 defter notu, 05 kavram haritası → içerik hazır olur; sayfaya dizip PNG/PDF basmayı
+                          ve görselleri Claude yapar (az kota harcar, çünkü içerik hazırdır).
+
+CLAUDE'A TESLİM MESAJI (kota açılınca Claude Code'a bunu yaz)
+  "Başka yapay zekâda hazırlanmış bir iş getirdim: <dosyanın yeri ve adı>. Teslim kartı: <kartı yapıştır>.
+   Dış yapay zekâ işi olarak sisteme al: kontrol et, eksikleri düzelt, denetçiye baktır, sonra bana ne
+   yayınlanacağını söyle."
+
+  Claude şunları yapar: dosyayı kontrol betiğinden geçirir, cevapları doğrular, tarayıcıda dener, pedagojik
+  denetçiye baktırır, gerekiyorsa etkinliği takibe alır, senden onay alıp yayınlar.
+
+CLAUDE'U BEKLEMEDEN YAYINLAMAK İSTERSEN (yalnız 01, 02, 03)
+  Önce: dosyayı 10-kontrol-denetim.txt ile BAŞKA bir yapay zekâya denetlet ve kendin baştan sona bir kez oyna.
+  Sonra:
+  1. github.com/ismailkaya33/4.SINIF adresini aç, giriş yap.
+  2. Ders klasörüne tıkla (ör. Matematik).
+  3. Sağ üstte "Add file" → "Upload files".
+  4. Dosyayı pencereye sürükle, alttaki yeşil "Commit changes" düğmesine bas.
+  5. 2–3 dakika sonra portalda "YENİ" etiketiyle görünür.
+  Yanlış bir şey çıkarsa: aynı sayfada dosyaya tıkla → sağ üstte üç nokta → "Delete file" → "Commit changes".
+  Not: bu yolla yayınlanan etkinlik oynanır ama sonucu rapora düşmez; Claude takibe alınca düşmeye başlar.
+
+DİKKAT
+  - Başka yapay zekâlara ÖĞRENCİ ADI, öğrenci kodu, ClassDojo raporu, portal tablosu gibi kişisel veri VERME.
+  - Yapay zekâ kazanım kodu uydurabilir; karttaki kodu yıllık plandan kontrol et.
+  - PORTALIN KENDİSİ (giriş ekranı, öğretmen raporu, Google tablosu kodları) için burada prompt YOK; bilerek.
+    O kodlar gönderildiği anda canlıya çıkar ve öğrenci verisine dokunur; orada değişikliği yalnız Claude ile,
+    senin onayınla yapıyoruz.
