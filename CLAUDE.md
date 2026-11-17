@@ -29,6 +29,9 @@ Tarz: boyama sayfası gibi değil, olgun görünüm; konuya göre **el yazısı 
 **Defter notu** de aynı araçla: not sayfasında görsellerin yapıştırılacağı yer belli, ayrıca kes-yapıştır sayfası
 (1 A4 = 4 öğrencinin 2'şer görseli, 8,5 × 6 cm; `--kes`). Ayrıntı `4d-icerik-uret` 6.0.
 
+**İyileştirme listesi:** `IYILESTIRME-LISTESI.md` (site kökü). Bekleyen işler, fikirler ve **öğretmen kararları** burada;
+haftalık takip ajanı günceller. Bulut otonom ajanı yalnız okur ve kararlara uyar, dosyayı değiştirmez.
+
 Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yillik-plan-oku.mjs` → `YillikPlan/yillik-plan.json`.
 
 ## Parçalar (ayrıntı: `MIMARI.md`)
