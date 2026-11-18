@@ -1,0 +1,1 @@
+- 2026-11-18: Bölüm açma/kapama sade JS ile (bağımlılık yok); veri yükleme koduna dokunulmadı.

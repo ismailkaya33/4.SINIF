@@ -122,6 +122,12 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
  tbody td:before{content:attr(data-label);color:var(--brand-d);font-size:13px;font-weight:800}
  details>table{margin:0 10px 10px;width:calc(100% - 20px)}
 }
+
+.secToggle{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:44px;margin:0;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.secToggle:focus-visible{outline:3px solid #2f6fda;outline-offset:3px;border-radius:8px}
+.secToggle .chev{flex:none;font-size:18px;transition:transform .15s}
+.secToggle[aria-expanded=true] .chev{transform:rotate(180deg)}
+.secBody[hidden]{display:none}
 </style></head><body>
 <header class="reportHeader"><div><p class="eyebrow">4/D · öğretmen paneli</p><h1>Öğretmen Raporu</h1><p id="status" role="status">Yükleniyor...</p></div><span class="reportPrivacy">🔒 Öğretmene özel</span></header>
 <nav class="reportNav" aria-label="Rapor bölümleri"><a href="#recentPanel">🆕 Son 7 gün</a><a href="#difficultyPanel">Zorlanılanlar</a><a href="#outcomePanel">Kazanımlar</a><a href="#catalogPanel">Ders içerikleri</a><a href="#activityPanel">Etkinlikler</a><a href="#declarationPanel">Tamamlama</a><a href="#notebookPanel">Defter notları</a><a href="#studentPanel">Öğrenciler</a><a href="#announcementPanel">Duyurular</a><a href="#surveyPanel">📝 Anketler</a><a href="#sociometryPanel">👫 Sosyometri</a><a href="#consentPanel">🔐 Veli onayları</a></nav>
@@ -623,4 +629,25 @@ google.script.run.withSuccessHandler(function(r){
  emptyNote('activitySections','Henüz takip edilen etkinlik yok.');emptyNote('declarationSections','Henüz tamamlama bildirimi yok.');emptyNote('notebookSections','Henüz defter notu yok.');
  renderRows('students',(r.students||[]).map(x=>[x.ad,badge(x.activityCount>0?"En az bir etkinlik tamamlandı":"Henüz kayıt yok"),x.activityCount,x.attemptCount,ratioMeter(x.correct,x.total)]));
 }).withFailureHandler(function(e){document.getElementById('status').textContent='Rapor hatası: '+(e&&e.message||'Bilinmiyor')}).ogretmenRaporVerisi();
+</script><script>
+"use strict";
+/* Bölümleri açılır/kapanır yapar. Yalnız görünümdür; veriye dokunmaz. İlk bölüm açık, diğerleri kapalı başlar. */
+(function(){
+ var secs=[].slice.call(document.querySelectorAll('.reportSection'));
+ function setOpen(sec,open){var b=sec.querySelector('.secToggle'),body=sec.querySelector('.secBody');if(!b||!body)return;b.setAttribute('aria-expanded',open?'true':'false');body.hidden=!open}
+ secs.forEach(function(sec,i){
+  var h=sec.querySelector('h2');if(!h)return;
+  var body=document.createElement('div');body.className='secBody';body.id=sec.id+'Body';
+  while(h.nextSibling)body.appendChild(h.nextSibling);
+  sec.appendChild(body);
+  var btn=document.createElement('button');btn.type='button';btn.className='secToggle';btn.setAttribute('aria-controls',body.id);
+  var t=document.createElement('span');t.textContent=h.textContent;var c=document.createElement('span');c.className='chev';c.setAttribute('aria-hidden','true');c.textContent='▾';
+  btn.append(t,c);h.textContent='';h.appendChild(btn);
+  btn.addEventListener('click',function(){setOpen(sec,btn.getAttribute('aria-expanded')!=='true')});
+  setOpen(sec,i===0);
+ });
+ function openFromHash(){var id=(location.hash||'').slice(1);var sec=id&&document.getElementById(id);if(sec&&sec.classList.contains('reportSection')){setOpen(sec,true);sec.scrollIntoView()}}
+ [].slice.call(document.querySelectorAll('.reportNav a')).forEach(function(a){a.addEventListener('click',function(){var sec=document.getElementById(a.getAttribute('href').slice(1));if(sec)setOpen(sec,true)})});
+ window.addEventListener('hashchange',openFromHash);openFromHash();
+})();
 </script></body></html>
