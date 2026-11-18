@@ -73,7 +73,8 @@ function ogretmenRaporVerisi() {
   const perStudent=Object.keys(roster).map(function(no){
     const mine=results.filter(function(x){return x.no===no});
     const ids=[...new Set(mine.map(function(x){return x.id}))];
-    return {no:no,ad:roster[no].ad,activityCount:ids.length,attemptCount:mine.length,correct:mine.reduce((n,x)=>n+x.correct,0),total:mine.reduce((n,x)=>n+x.total,0)};
+    const son=mine.reduce(function(b,x){return !b||x.at>b.at?x:b},null);
+    return {no:no,ad:roster[no].ad,activityCount:ids.length,attemptCount:mine.length,correct:mine.reduce((n,x)=>n+x.correct,0),total:mine.reduce((n,x)=>n+x.total,0),lastAt:son?son.at:0,lastId:son?son.id:''};
   }).sort(function(a,b){return a.ad.localeCompare(b.ad,'tr')});
   /* KATALOG BASLA: rapor-etkinlik-kimlikleri — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
 const allIds=["mat-kayipsayilar","mat-oruntuler","mat-dogalsayilar-degerlendirme","mat-toplamacikarma-1","mat-toplamacikarma-2","insan-sorumluluk","trafik-yaya","fen-besinlerdegerlendirme","tur-ikilemeler","mat-cikarmaislemi","fen-besinkasifleri","sos-oyunzamani","insan-farkliyasamlar","mat-cikarmadatahmin","mat-toplama-problemleri-sinav","sos-konum","tur-atasozu-deyim-sinav","tur-cikarim-baslik","trafik-oyunaraclari","tur-tablo-grafik","tur-ozdeyisler","sos-gecmistebiz-sinav","tur-pekistirme","tur-sozavcilar"]; // İzlenebilir etkinlikler
