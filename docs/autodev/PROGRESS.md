@@ -18,3 +18,7 @@
 1. Yeni "Öğrenci takip özeti" bölümü canlıda değil; yalnız claude/ogretmen-paneli-gelistirme dalında.
 2. "Geride" kuralı: sonucu gelen etkinliklerin yarısından azını tamamlayan. "Desteğe ihtiyacı olabilir": doğru oranı %50'nin altı. Eşikleri değiştirmek isterseniz söyleyin.
 3. Kartlar yalnız etkinlik sonuçlarını kullanır (veli HAYIR süzmesi gerektiren veri yok).
+- İş (c) bitti: 84 etkinlik sayfası 360 px'de tarandı. Düzeltildi (claude/site-gelistirme): Fen/besinlerdegerlendirme.html görsel taşması; Fen/madenler2.html 2 görsele alt metin. Kalanlar ONERI'ye yazıldı. Test: icerik-denetle çalıştı (yalnız eski büyük-dosya uyarıları), taşma yeniden ölçüldü. Etkinlik içeriği değişmediği için pedagojik denetçi çalıştırılmadı.
+- Sıradaki: iş d (güvenlik taraması).
+Öğretmenin bakmasi gerekenler (ek):
+4. Site düzeltmeleri canlıda değil; claude/site-gelistirme dalında. main'e alma kararı sizin.
