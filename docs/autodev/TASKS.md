@@ -6,7 +6,7 @@
 - Öğretmen paneli CSP/çerçeve ayarı yok; Apps Script bunu sınırlı destekler, şimdilik gerek yok.
 (İlk tarama henüz yapılmadı; sonraki çalışmada 15-25 öneri yazılacak.)
 - Panel bölümleri şimdilik "ilk açık, diğerleri kapalı"; öğretmen açık kalma tercihi isterse hatırlama (localStorage) eklenebilir. risk: düşük, küçük.
-- Site (c taramasından kalanlar, düşük öncelik): Insanhaklari/farkliyasamlar.html'de 25 düğme 30 px'den kısa; Fen/besinlerdegerlendirme.html ve besinakademisi.html'de etiketsiz giriş kutuları (bulmaca harf kutuları); Sosyal/kurtulus.html'de 360 px'de 5 px taşma (ses düğmesi). risk: düşük, küçük.
+- Site (c taramasından kalanlar, düşük öncelik): Insanhaklari/farkliyasamlar.html'de 25 düğme 30 px'den kısa; Fen/besinlerdegerlendirme.html ve besinakademisi.html'de etiketsiz giriş kutuları (bulmaca harf kutuları); Sosyal/kurtulus.html 360 px taşması DÜZELTİLDİ (2026-11-19, site dalı). risk: düşük, küçük.
 - Site: Turkce/sozavcıları.html 3,8 MB ve birkaç defter notu PNG'si 1,6–2,4 MB (icerik-denetle uyarısı); görseller küçültülürse telefonda hızlı açılır. risk: orta (dosya adı değişmemeli).
 ## BITTI
 - [x] P3 | güvenlik | d. Salt okuma güvenlik taraması | TAMAM (2026-11-19): ciddi açık bulunmadı, 3 küçük öneri ONERI'de.

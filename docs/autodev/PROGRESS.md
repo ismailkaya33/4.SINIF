@@ -33,3 +33,11 @@
 2. ONAYLI listesi boş: yeni iş için ONERI'den seçip Claude'a "şunu onayla" demeniz yeterli.
 3. Önceki çalışmaların panel ve site düzeltmeleri hâlâ yalnız claude/ dallarında; canlıya alma kararı sizin.
 Engel yok.
+
+## 2026-11-19 10:15 UTC (dördüncü çalışma)
+- ONAYLI boştu; güvenli küçük düzeltme yapıldı: Sosyal/kurtulus.html üst çubuğu 360 px'de 5 px taşıyordu (ses düğmesi); boşluklar küçültüldü, taşma kalktı. Dal: claude/site-gelistirme.
+- Test: 360 px'de taşma yok (Playwright), icerik-denetle yalnız eski büyük-dosya uyarıları, panel testleri ve verify-appsscript geçti.
+Öğretmenin bakmasi gerekenler:
+1. Düzeltme canlıda değil; claude/site-gelistirme dalında, main'e alma kararı sizin.
+2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
+Engel yok.
