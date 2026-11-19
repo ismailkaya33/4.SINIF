@@ -22,3 +22,14 @@
 - Sıradaki: iş d (güvenlik taraması).
 Öğretmenin bakmasi gerekenler (ek):
 4. Site düzeltmeleri canlıda değil; claude/site-gelistirme dalında. main'e alma kararı sizin.
+
+## 2026-11-19 00:15 UTC (üçüncü çalışma)
+- İş (d) bitti: güvenlik taraması (yalnız okuma, kod değişmedi). Bulgular: öğretmen panelinde HTML kaçış sorunu yok (veri `textContent` ile yazılıyor, `innerHTML` yalnız 2 sabit metinde); öğrenci sayfasında `innerHTML` yok; oyundan gelen mesaj kaynak+pencere kontrolüyle süzülüyor; dış bağlantılar `noopener`; oturum kodu rastgele 2 UUID, sunucuda özetle (hash) saklı; giriş deneme sınırı çalışıyor (kod başına + genel); rapor ayrı projede, öğrenci projesinde rapor okuma işlevi yok. Ciddi açık bulunmadı.
+- Küçük notlar ONERI'ye yazıldı (2 öğretmen işlevi tarayıcıdan çağrılabilir ama veri döndürmüyor; kullanılmayan `GirisDenemeKoruma_Oneri.gs`).
+- Test: kod değişmediği için çalıştırılmadı.
+- ONAYLI bölümü boş; güvenli küçük düzeltme de yapılmadı (ONERI'deki site notları düşük öncelikli ve onay bekliyor).
+Öğretmenin bakmasi gerekenler:
+1. Güvenlik taramasında ciddi sorun çıkmadı; sizden bir işlem gerekmiyor.
+2. ONAYLI listesi boş: yeni iş için ONERI'den seçip Claude'a "şunu onayla" demeniz yeterli.
+3. Önceki çalışmaların panel ve site düzeltmeleri hâlâ yalnız claude/ dallarında; canlıya alma kararı sizin.
+Engel yok.
