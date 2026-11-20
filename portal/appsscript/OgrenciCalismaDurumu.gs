@@ -1,10 +1,11 @@
 /** 4/D - Defter notu tamamlandi bildirimi; kullanicinin kimligi oturumdan gelir. */
 /* KATALOG BASLA: defter-notlari-izin-listesi — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
 const DEFTER_NOTLARI_ = Object.freeze({
- 'Turkce':['atasozleri.png','deyimler.png','gercekmecaz.png','ikilemeler.jpeg','metninbolumleri.png','pekistirme.JPG','ozdeyisler.png','tr-cumle-bilgisi-1.png','tr-cumle-bilgisi-2.png'],
- 'Matematik':['cikarmadaverilmeyen.png','cikarmadefternotu.png','toplama.png','toplamacikarmaproblemleri.png','zihindencikarma.png','zihindentoplama.png'],
+ 'Turkce':['atasozleri.png','deyimler.png','gercekmecaz.png','ikilemeler.jpeg','metninbolumleri.png','pekistirme.JPG','ozdeyisler.png','tr-cumle-bilgisi-1.png','tr-cumle-bilgisi-2.png','tr-cumle-bilgisi-3.png','tr-cikarim-baslik-1.png','tr-cikarim-baslik-2.png','tr-gercek-hayal-1.png','tr-gercek-hayal-2.png','tr-bilgi-kaynagi-1.png','tr-bilgi-kaynagi-2.png'],
+ 'Matematik':['cikarmadaverilmeyen.png','cikarmadefternotu.png','toplama.png','toplamacikarmaproblemleri.png','zihindencikarma.png','zihindentoplama.png','mat-carpma-1.png','mat-carpma-2.png','mat-carpma-3.png'],
  'Fen':['besinler1.png','besinler2.png','besinler3.png','besinlerintazeligi.png','besinlerisaklama.png','hareketliyasam.png','dengelibeslenme.png','fen-kuvvetin-etkileri-1.png','fen-kuvvetin-etkileri-2.png'],
- 'Sosyal':['ailemcocuk.jpg','ailetarihi.png','cocukoyun.png','farkliliklarimizvesaygi.png','mersinkultur.png','millikultur.png','millimucadele1.png','millimucadele2.png','millimucadele3.png','millimucadele4.png','millimucadele5.png','millimucadele6.png','millimucadele7.png','sos-yonler-1.png','sos-yonler-2.png']
+ 'Sosyal':['ailemcocuk.jpg','ailetarihi.png','cocukoyun.png','farkliliklarimizvesaygi.png','mersinkultur.png','millikultur.png','millimucadele1.png','millimucadele2.png','millimucadele3.png','millimucadele4.png','millimucadele5.png','millimucadele6.png','millimucadele7.png','sos-yonler-1.png','sos-yonler-2.png','sos-kroki-1.png','sos-kroki-2.png'],
+ 'Insanhaklari':['ih-hak-ihlali-1.png','ih-hak-ihlali-2.png']
 });
 /* KATALOG BITIR: defter-notlari-izin-listesi */
 const DEFTER_DURUM_SAYFA_='DEFTER_TAMAMLAMA';
@@ -112,7 +113,14 @@ const SECILI_ETKINLIKLER_ = Object.freeze([
  'Trafik/oyunaraclari.html',
  'Turkce/kantindedektifi.html',
  'Turkce/ozdeyisler.html',
- 'Sosyal/sos-gecmistebiz-sinav.html'
+ 'Sosyal/sos-gecmistebiz-sinav.html',
+ 'Insanhaklari/haklarimizinpesinde.html',
+ 'Turkce/gercekmihayalmi.html',
+ 'Turkce/bilgidedektifi.html',
+ 'Matematik/carpmaustalari.html',
+ 'Sosyal/krokiatolyesi.html',
+ 'Trafik/ulasimaraclari.html',
+ 'Fen/sagligimibenkorurum.html'
 ]);
 /* KATALOG BITIR: secili-etkinlikler */
 const ETKINLIK_BEYAN_SAYFASI_='ETKINLIK_TAMAMLAMA';

@@ -25,7 +25,14 @@
     {"id": "tur-ozdeyisler", "yol": "Turkce/ozdeyisler.html", "ad": "Türkçe • Sözler Müzesi: Özdeyişler", "konu": "Türkçe", "kazanim": "Özdeyişler (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true},
     {"id": "sos-gecmistebiz-sinav", "yol": "Sosyal/sos-gecmistebiz-sinav.html", "ad": "Sosyal Bilgiler • Ünite Değerlendirme: Geçmişte Biz", "konu": "Sosyal Bilgiler", "kazanim": "SB.4.2.1 / SB.4.2.2 / SB.4.2.3 / SB.4.2.4 Geçmişte Biz", "maxTotal": 200, "dersListesinde": true},
     {"id": "tur-pekistirme", "yol": "Turkce/pekistirme.html", "ad": "Türkçe • Pekiştirme Dedektifi 1", "konu": "Türkçe", "kazanim": "Pekiştirmeler (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true},
-    {"id": "tur-sozavcilar", "yol": "Turkce/sozavcıları.html", "ad": "Türkçe • Atasözleri ve Deyimler", "konu": "Türkçe", "kazanim": "T.4.3.11 Deyim ve atasözleri", "maxTotal": 200, "dersListesinde": true}
+    {"id": "tur-sozavcilar", "yol": "Turkce/sozavcıları.html", "ad": "Türkçe • Atasözleri ve Deyimler", "konu": "Türkçe", "kazanim": "T.4.3.11 Deyim ve atasözleri", "maxTotal": 200, "dersListesinde": true},
+    {"id": "insan-hak-kisitlama", "yol": "Insanhaklari/haklarimizinpesinde.html", "ad": "İnsan Hakları • Haklarımızın Peşinde", "konu": "İnsan Hakları, Yurttaşlık ve Demokrasi", "kazanim": "Y.4.2.4 / Y.4.2.5 Hak kısıtlanınca duygu ve sorumluluk", "maxTotal": 200, "dersListesinde": true},
+    {"id": "tur-gercek-hayal", "yol": "Turkce/gercekmihayalmi.html", "ad": "Türkçe • Gerçek mi Hayal mi? Hikâye Atölyesi", "konu": "Türkçe", "kazanim": "T.4.3.26 Gerçek ve hayalî ögeler / T.4.3.27 Kahramanları karşılaştırma", "maxTotal": 200, "dersListesinde": true},
+    {"id": "tur-bilgi-kaynagi", "yol": "Turkce/bilgidedektifi.html", "ad": "Türkçe • Bilgi Dedektifi: Güvenilir Kaynak", "konu": "Türkçe", "kazanim": "T.4.3.36 Bilgi kaynaklarının güvenilirliği", "maxTotal": 200, "dersListesinde": true},
+    {"id": "mat-carpma", "yol": "Matematik/carpmaustalari.html", "ad": "Matematik • Çarpma Ustaları: Fabrika Görevi", "konu": "Matematik", "kazanim": "M.4.1.4.1 / M.4.1.4.2 Çarpma işlemi", "maxTotal": 200, "dersListesinde": true},
+    {"id": "sos-kroki", "yol": "Sosyal/krokiatolyesi.html", "ad": "Sosyal Bilgiler • Kroki Atölyesi", "konu": "Sosyal Bilgiler", "kazanim": "SB.4.3.2 Kroki çizme", "maxTotal": 200, "dersListesinde": true},
+    {"id": "trafik-ulasim-araclari", "yol": "Trafik/ulasimaraclari.html", "ad": "Trafik Güvenliği • Ulaşım Araçları Karşılaştırma", "konu": "Trafik Güvenliği", "kazanim": "TG.4.1.7 Ulaşım araçlarını karşılaştırma", "maxTotal": 200, "dersListesinde": true},
+    {"id": "fen-alkol-sigara", "yol": "Fen/sagligimibenkorurum.html", "ad": "Fen Bilimleri • Sağlığımı Ben Korurum", "konu": "Fen Bilimleri", "kazanim": "F.4.2.1.5 Alkol ve sigaranın zararları", "maxTotal": 200, "dersListesinde": true}
   ],
   "seciliEtkinlikler": [
     {"yol": "Turkce/ikilemeler.html", "ad": "Türkçe • İkileme Dedektifi"},
@@ -51,6 +58,13 @@
     {"yol": "Trafik/oyunaraclari.html", "ad": "Trafik Güvenliği • Güvenli Sürüş: Oyun Araçları"},
     {"yol": "Turkce/kantindedektifi.html", "ad": "Türkçe • Kantin Dedektifi: Tablo, Grafik ve Çizelge"},
     {"yol": "Turkce/ozdeyisler.html", "ad": "Türkçe • Sözler Müzesi: Özdeyişler"},
-    {"yol": "Sosyal/sos-gecmistebiz-sinav.html", "ad": "Sosyal • Ünite Değerlendirme: Geçmişte Biz"}
+    {"yol": "Sosyal/sos-gecmistebiz-sinav.html", "ad": "Sosyal • Ünite Değerlendirme: Geçmişte Biz"},
+    {"yol": "Insanhaklari/haklarimizinpesinde.html", "ad": "İnsan Hakları • Haklarımızın Peşinde"},
+    {"yol": "Turkce/gercekmihayalmi.html", "ad": "Türkçe • Gerçek mi Hayal mi? Hikâye Atölyesi"},
+    {"yol": "Turkce/bilgidedektifi.html", "ad": "Türkçe • Bilgi Dedektifi: Güvenilir Kaynak"},
+    {"yol": "Matematik/carpmaustalari.html", "ad": "Matematik • Çarpma Ustaları: Fabrika Görevi"},
+    {"yol": "Sosyal/krokiatolyesi.html", "ad": "Sosyal • Kroki Atölyesi"},
+    {"yol": "Trafik/ulasimaraclari.html", "ad": "Trafik Güvenliği • Ulaşım Araçları Karşılaştırma"},
+    {"yol": "Fen/sagligimibenkorurum.html", "ad": "Fen • Sağlığımı Ben Korurum"}
   ]
 }

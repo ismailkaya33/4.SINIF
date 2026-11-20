@@ -120,7 +120,14 @@ const paths = {
     'tur-ozdeyisler':'Turkce/ozdeyisler.html',
     'sos-gecmistebiz-sinav':'Sosyal/sos-gecmistebiz-sinav.html',
     'tur-pekistirme':'Turkce/pekistirme.html',
-    'tur-sozavcilar':'Turkce/sozavcıları.html'
+    'tur-sozavcilar':'Turkce/sozavcıları.html',
+    'insan-hak-kisitlama':'Insanhaklari/haklarimizinpesinde.html',
+    'tur-gercek-hayal':'Turkce/gercekmihayalmi.html',
+    'tur-bilgi-kaynagi':'Turkce/bilgidedektifi.html',
+    'mat-carpma':'Matematik/carpmaustalari.html',
+    'sos-kroki':'Sosyal/krokiatolyesi.html',
+    'trafik-ulasim-araclari':'Trafik/ulasimaraclari.html',
+    'fen-alkol-sigara':'Fen/sagligimibenkorurum.html'
   };
 /* KATALOG BITIR: ilerleme-yollari */
   const available = new Set(SECILI_ETKINLIKLER_);
