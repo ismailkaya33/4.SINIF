@@ -3,7 +3,7 @@
 const DEFTER_NOTLARI_ = Object.freeze({
  'Turkce':['atasozleri.png','deyimler.png','gercekmecaz.png','ikilemeler.jpeg','metninbolumleri.png','pekistirme.JPG','ozdeyisler.png','tr-cumle-bilgisi-1.png','tr-cumle-bilgisi-2.png','tr-cumle-bilgisi-3.png','tr-cikarim-baslik-1.png','tr-cikarim-baslik-2.png','tr-gercek-hayal-1.png','tr-gercek-hayal-2.png','tr-bilgi-kaynagi-1.png','tr-bilgi-kaynagi-2.png'],
  'Matematik':['cikarmadaverilmeyen.png','cikarmadefternotu.png','toplama.png','toplamacikarmaproblemleri.png','zihindencikarma.png','zihindentoplama.png','mat-carpma-1.png','mat-carpma-2.png','mat-carpma-3.png'],
- 'Fen':['besinler1.png','besinler2.png','besinler3.png','besinlerintazeligi.png','besinlerisaklama.png','hareketliyasam.png','dengelibeslenme.png','fen-kuvvetin-etkileri-1.png','fen-kuvvetin-etkileri-2.png'],
+ 'Fen':['besinler1.png','besinler2.png','besinler3.png','besinlerintazeligi.png','besinlerisaklama.png','hareketliyasam.png','dengelibeslenme.png','fen-kuvvetin-etkileri-1.png','fen-kuvvetin-etkileri-2.png','fen-alkol-sigara-1.png','fen-alkol-sigara-2.png'],
  'Sosyal':['ailemcocuk.jpg','ailetarihi.png','cocukoyun.png','farkliliklarimizvesaygi.png','mersinkultur.png','millikultur.png','millimucadele1.png','millimucadele2.png','millimucadele3.png','millimucadele4.png','millimucadele5.png','millimucadele6.png','millimucadele7.png','sos-yonler-1.png','sos-yonler-2.png','sos-kroki-1.png','sos-kroki-2.png'],
  'Insanhaklari':['ih-hak-ihlali-1.png','ih-hak-ihlali-2.png']
 });
