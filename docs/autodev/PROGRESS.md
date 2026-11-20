@@ -41,3 +41,11 @@ Engel yok.
 1. Düzeltme canlıda değil; claude/site-gelistirme dalında, main'e alma kararı sizin.
 2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
 Engel yok.
+
+## 2026-11-20 00:15 UTC (beşinci çalışma)
+- ONAYLI boştu; güvenli küçük düzeltme: Fen/besinlerdegerlendirme.html (bulmaca harf kutuları) ve Fen/besinakademisi.html (5 boşluk) giriş kutularına ekran okuyucu etiketi (aria-label) eklendi. Dal: claude/site-gelistirme.
+- Test: JS sözdizimi tamam, 360 px'de taşma yok, konsol hatası yok (Playwright); icerik-denetle yalnız eski büyük-dosya uyarıları. Panel kodu değişmedi.
+Öğretmenin bakmasi gerekenler:
+1. Düzeltme canlıda değil; claude/site-gelistirme dalında, main'e alma kararı sizin.
+2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
+Engel yok.
