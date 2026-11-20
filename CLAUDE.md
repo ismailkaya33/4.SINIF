@@ -19,6 +19,10 @@ yaptırdığı işi getirince `4d-icerik-uret` bölüm 9'a göre kontrol edilip 
 
 Ajan: `pedagojik-denetci` (`.claude/agents/`) — yeni/yenilenen etkinlik veya değerlendirmeyi **yayın onayı istenmeden önce**
 salt okunur denetler (kazanım, cevap doğruluğu, dil, erişilebilirlik, sonuç mesajı). Dosya değiştirmez; son karar öğretmenin.
+Ajan: `repo-kasifi` — GitHub'da projeye ve öğretmene yarayacak **tamamen ücretsiz** açık kaynak depo/araç arar, inceler
+(lisans, bakım, KVKK, çevrimdışı). Salt okunur; depo indirmez/çalıştırmaz. Haftalık yerel görev `4d-repo-kesfi` (Cumartesi 10:00)
+raporu `docs/repo-kesif/<tarih>.md`'ye, hafızasını `docs/repo-kesif/incelenenler.md`'ye yazar (commit/push yok). Öğretmen
+istemediği öneriyi orada "reddedildi" yapar; bir daha önerilmez.
 
 **Görsel üretimi** (boyama, poster, resimli not): Claude in Chrome ile öğretmenin ChatGPT Plus (yedek: Gemini Pro) hesabında çizdirilir,
 tam boyutlu resmi Claude indirir (öğretmenin kararı 2026-11-14), Claude A4 PDF yapar (`node tools/gorsel-uret.mjs --pdf-yap`). API anahtarı
@@ -50,6 +54,8 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
 
 ## Kurallar
 - Göndermeden (push) önce ne yayınlanacağını söyle ve onay al; portal dalında iki kez dikkat et.
+  İstisna (öğretmenin kararı 2026-11-17): zamanlanmış "4. SINIF — OTONOM PROJE GELİŞTİRME" görevi yalnız `claude/` ile başlayan
+  dallara (canlıya çıkmazlar) onaysız push edebilir; `main` ve portal dalı için kural aynen geçerlidir.
 - İşe başlarken `git pull`; iş bitince klasörü **main** dalında bırak.
 - Sır (anahtar, tablo kimliği, öğrenci adı/kodu) depoya yazılmaz; öğrenci verisi herkese açık sayfaya gömülmez.
 - TEST40 öğretmen raporunda bilerek görünmez; Claude canlı Google sitesine kod girmez, girişi öğretmen yapar.

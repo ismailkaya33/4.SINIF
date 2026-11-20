@@ -15,3 +15,6 @@ KVKK/
 # Baskı dosyaları, ChatGPT resimleri, öğrenci listeleri: yalnız öğretmenin bilgisayarında durur, GitHub'a gitmez
 # (eskiden yalnız o bilgisayardaki .git/info/exclude ile korunuyordu; yeni kopyalarda da korunsun diye buraya eklendi)
 Baski/
+
+# Öğretmenin kişisel notları (ör. bilgisayardaki programların listesi): GitHub'a gitmez
+Yerel/
