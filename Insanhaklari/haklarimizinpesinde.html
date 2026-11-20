@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haklarımızın Peşinde</title>
+<style>
+/* Renkler JS ile OYUN.tema'dan gelir. Buradakiler yedek değerdir. */
+:root{--ana:#3a6fe0;--ikinci:#ff7b54;--gok1:#bfe3ff;--gok2:#fff5e8;--kart:#fff;--yazi:#1f2a44;--soluk:#5b6782;--ok:#1f9d5c;--hata:#c0392b;--sari:#fff4cf}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;color:var(--yazi);font:18px/1.45 system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,var(--gok1) 0%,var(--gok2) 65%) fixed;background-color:var(--gok2);overflow-x:hidden}
+#app{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:12px 14px 110px}
+.dekor{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.dekor svg{position:absolute}
+#konfeti{position:fixed;inset:0;width:100%;height:100%;z-index:50;pointer-events:none}
+h1,h2,.baslik{font-family:"Trebuchet MS",system-ui,sans-serif;font-weight:800}
+h1{font-size:clamp(1.6rem,4.6vw,2.3rem);margin:6px 0 4px;text-align:center}
+h2{font-size:1.3rem;margin:4px 0 8px}
+.kart{background:var(--kart);border-radius:24px;padding:16px;margin:12px 0;box-shadow:0 8px 0 rgba(31,42,68,.10),0 14px 30px rgba(31,42,68,.12)}
+button{font:inherit;cursor:pointer;color:var(--yazi)}
+button:disabled{cursor:default}
+button:focus-visible{outline:4px solid #ffb703;outline-offset:3px}
+.buyuk{display:block;margin:14px auto 4px;background:var(--ana);color:#fff;border:0;border-radius:18px;padding:12px 28px;min-height:58px;
+  font-size:1.25rem;font-weight:800;box-shadow:0 6px 0 rgba(0,0,0,.22)}
+.buyuk:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+/* Üst çubuk + mahalle yolu */
+.ust{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ust .baslik{font-size:1rem;background:#fff;border-radius:999px;padding:4px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.sag{display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.puan{background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;font-size:1.1rem;box-shadow:0 3px 0 rgba(0,0,0,.1);white-space:nowrap}
+.puan.pop{animation:pop .4s}
+.ses{background:#fff;border:0;border-radius:50%;width:48px;height:48px;font-size:1.3rem;box-shadow:0 3px 0 rgba(0,0,0,.1)}
+.yol{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:10px 0 0;padding:8px 10px;background:#fff;border-radius:18px}
+.durak{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:1.05rem;background:#fff;border:3px dashed #b9c3d6}
+.durak.simdi{border:3px solid var(--ana);transform:scale(1.15);background:#eaf1ff}
+.durak.bitti{border:3px solid var(--ok);background:#e3f7ec}
+.cizgi{flex:1 1 4px;min-width:4px;max-width:20px;height:4px;border-radius:2px;background:#b9c3d6}
+.sayac{margin-left:auto;font-size:.85rem;font-weight:700;color:var(--soluk);white-space:nowrap}
+/* Vaka kartı */
+.vbas{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;justify-content:space-between}
+.yer{font-weight:800;color:var(--ana)}
+.etiket{display:inline-block;color:#fff;font-weight:800;border-radius:999px;padding:2px 12px;font-size:.85rem;background:var(--ikinci)}
+.etiket.puansiz{background:#7b5cff}.etiket.tekrar{background:#f4a300}
+.adimlar{display:flex;gap:4px;margin:10px 0 4px;flex-wrap:wrap}
+.adim{flex:1 1 0;min-width:0;text-align:center;font-size:.82rem;font-weight:700;padding:5px 4px;border-radius:12px;background:#f1f4fa;color:#7a8399;border:2px solid transparent}
+.adim.aktif{background:#eaf1ff;color:var(--ana);border-color:var(--ana)}
+.adim.gecti{background:#e3f7ec;color:var(--ok)}
+.gorsel{display:flex;justify-content:center;margin:8px 0 4px}
+.gorsel svg{width:100%;max-width:520px;height:auto;border-radius:16px}
+.durum{background:var(--sari);border-left:6px solid #f4a300;border-radius:14px;padding:10px 14px;margin:8px 0 6px;font-size:1.05rem}
+.soru{font-size:clamp(1.2rem,3.6vw,1.5rem);font-weight:800;margin:10px 0 12px;text-align:center}
+.sec{display:grid;grid-template-columns:1fr;gap:10px}
+.sec button{position:relative;min-height:60px;border-radius:18px;border:3px solid var(--c);background:var(--z);font-size:1.08rem;font-weight:700;
+  padding:8px 40px 8px 52px;text-align:left;box-shadow:0 5px 0 var(--c)}
+.sec button:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--c)}
+.sec button:nth-child(1){--c:#ff8a5c;--z:#fff0e9}.sec button:nth-child(2){--c:#2ec4b6;--z:#e4f8f6}
+.sec button:nth-child(3){--c:#f4a300;--z:#fff6dc}.sec button:nth-child(4){--c:#7b5cff;--z:#efeaff}
+.sec .no{position:absolute;left:10px;top:50%;margin-top:-17px;width:34px;height:34px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:1rem}
+.sec button.dogru{--c:var(--ok);--z:#e3f7ec}
+.sec button.dogru::after{content:"✔";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--ok);font-size:1.5rem}
+.sec button.yanlis{--c:#a7b0c0;--z:#f1f3f7;color:#6f788c;text-decoration:line-through}
+.sec button.yanlis::after{content:"✖";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--hata);font-size:1.3rem}
+.alt{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.kucuk-btn{background:#fff8e1;border:3px solid #ffd166;border-radius:999px;padding:6px 18px;min-height:50px;font-weight:800;box-shadow:0 4px 0 #ffd166}
+.kucuk-btn.mavi{background:#eaf1ff;border-color:#9db8f5;box-shadow:0 4px 0 #9db8f5}
+.kucuk-btn.yesil{background:#e3f7ec;border-color:#7fd3a5;box-shadow:0 4px 0 #7fd3a5}
+/* Duygu kartları (puansız) */
+.duygular{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:560px){.duygular{grid-template-columns:repeat(2,1fr)}}
+.duygu{border:3px solid #d9def0;background:#fff;border-radius:18px;padding:8px 6px;min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:800;font-size:1rem;box-shadow:0 4px 0 #d9def0}
+.duygu .e{font-size:2.2rem;line-height:1.1}
+.duygu[aria-pressed="true"]{border-color:#7b5cff;background:#efeaff;box-shadow:0 4px 0 #7b5cff}
+.not{font-size:.92rem;color:var(--soluk);text-align:center;margin:8px 0 0}
+/* Sıralama */
+.yuvalar{display:grid;gap:8px;margin:6px 0 12px}
+.yuva{display:flex;align-items:center;gap:10px;min-height:58px;border:3px dashed #b9c3d6;border-radius:16px;padding:6px 12px;background:#f7f9fd;font-weight:700}
+.yuva b{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--ana);color:#fff;display:grid;place-items:center}
+.yuva.dolu{border-style:solid;border-color:var(--ana);background:#eaf1ff}
+.yuva.dogru{border-color:var(--ok);background:#e3f7ec}
+.skartlar{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.skartlar{grid-template-columns:1fr}}
+.skart{min-height:60px;border-radius:16px;border:3px solid #ffb38f;background:#fff3ec;font-weight:700;font-size:1.02rem;padding:8px 12px;text-align:left;box-shadow:0 4px 0 #ffb38f}
+.skart:disabled{opacity:.4;box-shadow:none}
+/* Rehber karakter + konuşma balonu */
+.karakter-satir{display:flex;align-items:flex-end;gap:10px;margin-top:8px}
+.krk{flex:0 0 auto;width:104px}
+.krk.kucuk{width:84px}
+.krk svg{display:block;width:100%;height:auto;transform-origin:50% 100%}
+.krk .goz-mutlu,.krk .kas{display:none}
+.krk.mutlu .goz-mutlu{display:inline}.krk.mutlu .goz-acik{display:none}
+.krk.dusun .goz-acik{transform:translate(2px,-3px)}
+.krk.uzgun .kas{display:inline}.krk.uzgun .goz-acik{transform:translateY(2px)}
+.balon{position:relative;flex:1;min-width:0;background:#fff;border-radius:20px;padding:12px 16px;font-weight:600;min-height:3.2em;margin-bottom:22px;
+  box-shadow:0 5px 0 rgba(31,42,68,.10);border:3px solid #fff}
+.balon::before{content:"";position:absolute;left:-14px;bottom:16px;border:9px solid transparent;border-right:14px solid #fff;border-left:0}
+.balon.mutlu{border-color:#bfead2}.balon.uzgun{border-color:#ffd3cc}.balon.dusun{border-color:#ffe7a3}.balon.mor{border-color:#d6ccff}
+.devam-yer{text-align:center}
+@media (max-width:460px){.krk{width:72px}.krk.kucuk{width:64px}.balon{padding:10px 12px}.adim{font-size:.8rem;padding:4px 2px}.ust .baslik{font-size:.9rem}}
+/* Başlık ekranı: 3 adım şeması */
+.akis{display:flex;align-items:stretch;gap:6px;margin:12px 0 6px}
+.akis .k{flex:1 1 0;min-width:0;border-radius:16px;padding:10px 8px;text-align:center;font-size:.92rem}
+.akis .k .s{font-size:1.8rem;display:block}
+.akis .k b{display:block;font-size:1.02rem;margin:2px 0}
+.akis .ok{align-self:center;font-size:1.4rem;color:var(--soluk)}
+.k1{background:#eaf1ff;border:3px solid #9db8f5}.k2{background:#efeaff;border:3px solid #c3b4ff}.k3{background:#e3f7ec;border:3px solid #8fd8ae}
+@media (max-width:520px){.akis{flex-direction:column}.akis .ok{transform:rotate(90deg)}}
+.formul{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0 2px}
+.formul span{border-radius:12px;padding:4px 10px;font-weight:700;font-size:.95rem}
+.formul .f1{background:#ffe08a}.formul .f2{background:#ffc8dd}.formul .f3{background:#bde0fe}
+/* Bitiş */
+.bitis{text-align:center}
+.rozet{width:124px;height:auto}
+.rozet-ad{font-weight:800;font-size:1.2rem;margin-top:-4px}
+.yildizlar{font-size:1.6rem;letter-spacing:3px;margin:6px 0;word-break:break-all}
+.duygu-ozet{background:#f6f3ff;border-radius:16px;padding:10px 14px;margin:10px 0;text-align:left}
+.pano{width:100%;border-collapse:separate;border-spacing:0 6px;text-align:left;font-size:.98rem}
+.pano th{font-size:1.02rem;padding:6px 10px;color:#fff}
+.pano th:first-child{background:var(--ana);border-radius:12px 0 0 12px}.pano th:last-child{background:var(--ok);border-radius:0 12px 12px 0}
+.pano td{padding:8px 10px;vertical-align:top}
+.pano td:first-child{background:#eaf1ff;border-radius:12px 0 0 12px;font-weight:700}.pano td:last-child{background:#e3f7ec;border-radius:0 12px 12px 0}
+#karne .rm{padding:4px 0;text-align:left}
+#karne .rm h2{font-family:"Trebuchet MS",system-ui,sans-serif;text-align:center}
+#karne .rm-k{border:0;background:#f5f8ff;border-radius:16px}
+#karne .rm-bar{height:18px;border-radius:10px}
+@media (prefers-reduced-motion:no-preference){
+  .krk.zipla svg{animation:zipla .6s}
+  .krk.salla svg,.sec button.salla,.yuvalar.salla{animation:salla .45s}
+  .kart.gir{animation:gir .35s ease-out}
+  .sec button,.duygu,.skart{transition:transform .08s,box-shadow .08s,background .15s}
+  .durak{transition:transform .2s}
+}
+@keyframes zipla{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-18px) scale(1.05,.95)}60%{transform:translateY(0) scale(1.06,.94)}}
+@keyframes salla{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-2deg)}40%{transform:translateX(8px) rotate(2deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes gir{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pop{50%{transform:scale(1.25)}}
+</style>
+</head>
+<body>
+<div class="dekor" aria-hidden="true">
+  <svg style="top:3%;left:-3%;width:170px" viewBox="0 0 170 60"><g fill="#fff"><ellipse cx="50" cy="38" rx="45" ry="20"/><ellipse cx="90" cy="28" rx="40" ry="26"/><ellipse cx="128" cy="40" rx="38" ry="18"/></g></svg>
+  <svg style="top:14%;right:-3%;width:140px" viewBox="0 0 170 60"><g fill="#fff"><ellipse cx="50" cy="38" rx="45" ry="20"/><ellipse cx="90" cy="28" rx="40" ry="26"/><ellipse cx="128" cy="40" rx="38" ry="18"/></g></svg>
+  <svg style="bottom:0;left:0;width:100%;height:80px" viewBox="0 0 1200 80" preserveAspectRatio="none"><path d="M0 40 Q150 10 300 40 T600 40 T900 40 T1200 40 V80 H0Z" fill="#9be08a" opacity=".45"/><path d="M0 58 Q150 34 300 58 T600 58 T900 58 T1200 58 V80 H0Z" fill="#6cc46a" opacity=".45"/></svg>
+</div>
+<canvas id="konfeti" aria-hidden="true"></canvas>
+<div id="app"></div>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 2;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+})();
+
+</script>
+<script>
+'use strict';
+/* =====================================================================================
+ * VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda)
+ * Her VAKA bir mahalle durağıdır: yer, sahne çizimi, durum metni ve sırayla sorulan adımlar.
+ * Adım türleri:
+ *   hak        (PUANLI, Y.4.2.4) Hangi hak kısıtlanıyor / ihlal ediliyor mu?
+ *   duygu      (PUANSIZ) Ne hissederdin? Her seçim kabul edilir, rapora GİTMEZ.
+ *   ifade      (PUANLI, Y.4.2.4) Duygunu ifade etmenin uygun yolu (Ben dili)
+ *   sorumluluk (PUANLI, Y.4.2.5) Çözümde üstlenilecek uygun sorumluluk
+ *   sirala     (PUANLI, Y.4.2.5) Doğru adımları sırayla seç (bir kart tuzak)
+ * Yanılgı etiketleri:
+ *   fark-etmeme         : hak kısıtlamasını fark etmedi ("ilk gelen kullanır", "eskiler karar verir")
+ *   hak-karistirma      : durumla ilgisiz bir hakkı seçti
+ *   saka-sanir          : izinsiz davranışı "şaka" diye önemsiz saydı
+ *   her-kurali-ihlal-sanir : başkasının hakkını koruyan kuralı ihlal sandı
+ *   sinirsiz-ozgurluk   : özgürlüğün sınırı olmadığını sandı
+ *   ifade-ozgurlugu-karistirma : her kısıtlamayı ifade özgürlüğü ihlali sandı
+ *   kirici-soz          : duygusunu kırıcı/aşağılayıcı sözle anlattı
+ *   sen-dili            : "Sen hep…" diye suçlayarak anlattı
+ *   icine-atma          : duygusunu içine attı, söylemedi
+ *   istek-kabalik-sanir : isteğini söylemeyi kabalık sandı
+ *   ses-yukseltme       : sesini yükseltmeyi çözüm sandı
+ *   misilleme           : aynısını yaparak karşılık vermeyi seçti
+ *   sessiz-kalma        : susup hakkından vazgeçti
+ *   seyirci-kalma       : başkasının hakkı ihlal edilirken karışmadı
+ *   sorunu-buyutme      : kavga/kalabalıkla sorunu büyüttü
+ *   dedikodu            : durumu herkese anlatıp yaydı
+ *   kacma               : sorundan kaçmayı (derse/okula gitmemeyi) seçti
+ *   ispiyon-sanir       : yetişkine haber vermeyi "ispiyonculuk" sandı
+ *   gecici-cozum        : iyi niyetli ama sorunu kalıcı çözmeyen yolu seçti
+ *   hakki-yok-sayma     : arkadaşının hakkını önemsiz saydı
+ *   adim-sirasi         : adımların sırasını karıştırdı
+ * ===================================================================================== */
+const OYUN = {
+  id: 'insan-hak-kisitlama', ad: 'Haklarımızın Peşinde',
+  tema: {
+    ad: 'Hak Mahallesi', karakterAdi: 'Umut Güvercin',
+    hikaye: 'Mahallemizde bazı çocukların hakları kısıtlanıyor. Durak durak gezelim: hakkı fark edelim, duygumuzu doğru yolla anlatalım ve çözüm için sorumluluk alalım!',
+    odulSimge: '🏅', odulAd: 'hak rozeti', sonSimge: '🏁',
+    bitisBaslik: 'Hak Mahallesi turunu tamamladın!',
+    renkAna: '#3a6fe0', renkIkinci: '#ff7b54', karakterRenk: '#f7f9ff', gok1: '#bfe3ff', gok2: '#fff5e8'
+  },
+  kazanimlar: [
+    { kod: 'Y.4.2.4', ad: 'Hakkım kısıtlandığında hissettiklerimi uygun yolla ifade ederim' },
+    { kod: 'Y.4.2.5', ad: 'Hak kısıtlandığında çözüm için uygun sorumluluk üstlenirim' }
+  ],
+  duygular: [['😢', 'Üzgün'], ['😠', 'Kızgın'], ['😞', 'Kırgın'], ['😟', 'Endişeli'], ['😳', 'Utanmış'], ['😔', 'Yalnız'], ['😤', 'Haksızlığa uğramış'], ['😕', 'Şaşkın']],
+  vakalar: [
+    { id: 'park', yer: 'Park', simge: '🌳', sahne: 'park',
+      durum: 'Mahalle parkında iki salıncak var. Büyük çocuklar her gün salıncakları saatlerce tutuyor, sıra bekleyenlere “Burası bizim!” diyor. Sen de her gün sıra bekleyip salıncağa binmeden eve dönüyorsun.',
+      adimlar: [
+        { id: 'h1', tur: 'hak', soru: 'Bu durumda senin hangi hakkın kısıtlanıyor?', dogru: 'Oyun oynama ve dinlenme hakkı',
+          yanlislar: [['Eğitim hakkı', 'hak-karistirma'], ['Hiçbiri; parkta ilk gelen hep kullanır.', 'fark-etmeme'], ['Düşünceni söyleme özgürlüğü', 'hak-karistirma']],
+          ipucu: ['Salıncak ne için yapılmıştır?', 'Park herkesindir. “İlk gelen sonsuza kadar kullanır” diye bir kural yoktur.'],
+          why: 'Park herkesindir. Salıncağı sırayla kullanmak herkesin oyun hakkını korur; birinin hep tutması diğerlerinin oyun oynama hakkını kısıtlar.' },
+        { id: 'd1', tur: 'duygu', soru: 'Her gün salıncağa binemeden eve döndüğünü düşün. Ne hissederdin?' },
+        { id: 's1', tur: 'sorumluluk', soru: 'Bu sorunun çözümünde hangi sorumluluğu üstlenebilirsin?',
+          dogru: 'Sıra kuralını önerirsin; dinlenmezse bir büyüğe söylersin.',
+          yanlislar: [['Hiçbir şey demezsin; üzülsen de bir daha o parka hiç gitmezsin.', 'sessiz-kalma'], ['Salıncak sana geçince sen de saatlerce kimseye vermezsin.', 'misilleme'], ['Bütün arkadaşlarını toplayıp büyük çocuklarla tartışmaya gidersin.', 'sorunu-buyutme']],
+          ipucu: ['Herkesin oynamasını sağlayan seçenek hangisi?', 'Önce konuşarak çöz; olmazsa bir büyükten yardım iste.'],
+          why: 'Kuralı hatırlatmak ve gerekirse bir büyüğe haber vermek sorunu büyütmeden çözer. Susmak hakkından vazgeçmektir; aynısını yapmak ise başkasının hakkını kısıtlamaktır.' }
+      ] },
+    { id: 'secim', yer: 'Sınıf', simge: '🗳️', sahne: 'secim',
+      durum: 'Sınıf başkanlığı seçimi var. Sen aday olmak için elini kaldırdığında birkaç kişi “Sen bu okula yeni geldin, aday olamazsın!” diyor ve adının tahtaya yazılmasına karşı çıkıyor.',
+      adimlar: [
+        { id: 'h2', tur: 'hak', soru: 'Bu durumda hangi hakkın kısıtlanıyor?', dogru: 'Aday olma ve seçilme hakkı',
+          yanlislar: [['Oyun oynama hakkı', 'hak-karistirma'], ['Hiçbiri; okulun eski öğrencileri karar verir.', 'fark-etmeme'], ['Sağlık hakkı', 'hak-karistirma']],
+          ipucu: ['Seçimde sen ne olmak istiyordun?', 'Sınıftaki HER öğrenci aday olabilir; okula yeni gelmek bunu değiştirmez.'],
+          why: 'Sınıftaki her öğrencinin aday olma ve seçilme hakkı vardır. “Yenisin” diye engellenmek bu hakkı kısıtlar ve eşit davranılmamaktır.' },
+        { id: 'd2', tur: 'duygu', soru: 'Aday olman engellendiğinde ne hissederdin?' },
+        { id: 'i1', tur: 'ifade', soru: 'Duygunu en uygun biçimde nasıl anlatırsın?',
+          dogru: '“Engellenince kırıldım. Benim adım da yazılsın istiyorum.”',
+          yanlislar: [['“Siz zaten hiçbir şeyden anlamıyorsunuz, sizinle konuşmam!”', 'kirici-soz'], ['Hiçbir şey söylemezsin, eve gidince tek başına ağlarsın.', 'icine-atma'], ['“Başkan olursam sizi hiçbir işe karıştırmayacağım!”', 'misilleme']],
+          ipucu: ['Duygunu söyle ama kimseyi kırma, tehdit etme.', 'Ben dili: “Ben … hissediyorum, çünkü … . … istiyorum.”'],
+          why: 'Ben diliyle duygunu ve isteğini sakin, açık söylersin. Kırıcı söz ve tehdit sorunu büyütür; içine atınca da kimse durumu öğrenemez.' }
+      ] },
+    { id: 'kutuphane', yer: 'Kütüphane', simge: '📚', sahne: 'kutuphane',
+      durum: 'Okul kütüphanesinde bir öğrenci tabletten sesli video açtı. Görevli “Burada herkes okuyor, sesi kapatır mısın?” dedi. Öğrenci “Hakkım kısıtlandı!” diye söylendi.',
+      adimlar: [
+        { id: 'h3', tur: 'hak', soru: 'Bu öğrencinin hakkı ihlal edilmiş mi?', dogru: 'Hayır; kural herkesin okuma hakkını korur.',
+          yanlislar: [['Evet; eğlenme hakkı ihlal edildi, video izleyemedi.', 'her-kurali-ihlal-sanir'], ['Evet; düşüncesini söyleme özgürlüğü engellendi.', 'ifade-ozgurlugu-karistirma'], ['Evet; kütüphanede herkes istediğini yapabilir.', 'sinirsiz-ozgurluk']],
+          ipucu: ['Kütüphanede başka kimlerin hakkı var?', 'Bir kural başkalarının hakkını koruyorsa bu bir ihlal değildir.'],
+          why: 'Özgürlüğümüz başkalarının hakkının başladığı yerde biter. Sessizlik kuralı kütüphanedeki herkesin okuma ve öğrenme hakkını korur; ihlal değildir.' }
+      ] },
+    { id: 'bahce', yer: 'Okul bahçesi', simge: '⚽', sahne: 'bahce',
+      durum: 'Sen teneffüste top oynayan grubun içindesin. Gruptan bazıları, sınıfa yeni gelen bir öğrenciyi “Sen yavaşsın!” diyerek hiçbir oyuna almıyor. O her teneffüs yalnız kalıyor.',
+      adimlar: [
+        { id: 'd3', tur: 'duygu', soru: 'Kendi grubunda bir arkadaşının dışlandığını görünce sen ne hissederdin?' },
+        { id: 'i2', tur: 'ifade', soru: 'Gruptaki arkadaşlarına duygunu söyleyeceksin. Hangi cümle “Ben dili” ile söylenmiştir?',
+          dogru: '“Arkadaşımız dışlanınca üzülüyorum. Onu da oyuna alalım istiyorum.”',
+          yanlislar: [['“Siz çok kötüsünüz; okulda hiç kimse sizinle oynamasın!”', 'kirici-soz'], ['“Sen hep birilerini dışlıyorsun, oyunu da hep sen bozuyorsun!”', 'sen-dili'], ['Hiçbir şey demezsin; içinden üzülsen de oyuna devam edersin.', 'icine-atma']],
+          ipucu: ['Ben dilinde cümle “sen” ile suçlamaz; “ben” ile duyguyu söyler.', 'Hem duyguyu hem isteği söyleyen cümleyi bul.'],
+          why: 'Ben dili duyguyu (üzülüyorum) ve isteği (oyuna alalım) suçlamadan anlatır. “Sen hep…” cümleleri suçlar; susmak duyguyu saklar.' },
+        { id: 's2', tur: 'sorumluluk', soru: 'Çözüm için sen hangi sorumluluğu üstlenebilirsin?',
+          dogru: 'Yeni arkadaşını çağırır, herkesin oynayabileceğini söylersin.',
+          yanlislar: [['Seni dışlamadıkları için karışmazsın; bu senin sorunun değil.', 'seyirci-kalma'], ['Onu dışlayanları sen de oyundan atar, onlarla hiç konuşmazsın.', 'misilleme'], ['Okulda herkese onun teneffüste hep yalnız kaldığını anlatırsın.', 'dedikodu']],
+          ipucu: ['Hak ihlaline seyirci kalmak sorunu sürdürür.', 'Arkadaşını oyuna katmanın bir yolu var mı?'],
+          why: 'Başkasının hakkı kısıtlanırken susmak da sorunu sürdürür. Arkadaşını oyuna katmak ve kuralı hatırlatmak sorumluluk almaktır.' }
+      ] },
+    { id: 'gunluk', yer: 'Sınıf', simge: '📔', sahne: 'gunluk',
+      durum: 'Sıra arkadaşın, çantandan düşen günlüğünü izinsiz açtı ve yüksek sesle okumaya başladı. Birkaç kişi gülüyor.',
+      adimlar: [
+        { id: 'h4', tur: 'hak', soru: 'Bu durumda hangi hakkın ihlal ediliyor?', dogru: 'Özel hayata saygı (mahremiyet) hakkı',
+          yanlislar: [['Eğitim hakkı', 'hak-karistirma'], ['Hiçbiri; bu sadece bir şaka.', 'saka-sanir'], ['Oyun oynama hakkı', 'hak-karistirma']],
+          ipucu: ['Günlük kimin, içinde ne yazar?', 'Kişinin özel eşyası izni olmadan açılamaz.'],
+          why: 'Günlük kişinin özel eşyasıdır. İzinsiz açıp okumak özel hayata saygı hakkını ihlal eder; “şaka” diye yapılması bunu değiştirmez.' },
+        { id: 'd4', tur: 'duygu', soru: 'Günlüğün herkesin önünde okunsa ne hissederdin?' },
+        { id: 'i3', tur: 'ifade', soru: 'Duygunu nasıl ifade edersin?',
+          dogru: '“İzinsiz okununca utandım. Lütfen hemen geri ver.”',
+          yanlislar: [['“Ben de senin çantanı karıştırıp herkese göstereceğim!”', 'misilleme'], ['Gülüp geçersin, sonra günlerce kimseyle konuşmazsın.', 'icine-atma'], ['“Sen dünyanın en kötü insanısın, defol git buradan!”', 'kirici-soz']],
+          ipucu: ['Duygunu ve isteğini açıkça söyle.', 'Karşılık vermek ya da susmak sorunu çözmez.'],
+          why: 'Duygunu (utandım) ve isteğini (geri ver) sakin ve açık söylemek en uygun yoldur. Tehdit ve hakaret kavgayı büyütür; susup küsmek sorunu çözmez.' }
+      ] },
+    { id: 'kantin', yer: 'Kantin', simge: '🥪', sahne: 'kantin',
+      durum: 'Kantinde sıra beklerken biri her gün önüne geçiyor. Sen ona şöyle dedin: “Sen hep öne geçiyorsun, çok bencilsin! Sıraya gir.”',
+      adimlar: [
+        { id: 'i4', tur: 'ifade', soru: 'Bu cümlenin TAMAMI “Ben dili”ne çevrilince hangisi olur?',
+          dogru: '“Sıram geçilince haksızlığa uğramış hissediyorum. Lütfen sıraya gir.”',
+          yanlislar: [['“Sıram geçilince üzülüyorum ama sen yine de çok bencil birisin.”', 'sen-dili'], ['“Haksızlığa uğradım ama sıraya girmesen de olur, önemli değil.”', 'istek-kabalik-sanir'], ['“Sen hep öne geçiyorsun!” cümlesini daha yüksek sesle bağırmak', 'ses-yukseltme']],
+          ipucu: ['Suçlayan sözlerin (“sen hep…”, “bencilsin”) hiçbiri kalmamalı.', 'Ben dili duyguyu söyler, isteği de korur: “Lütfen …”.'],
+          why: 'Suçlayan sözler (“Sen hep…”, “bencilsin”) çıkarılır, yerine duygu söylenir. İsteği söylemek kabalık değildir: “Lütfen sıraya gir.” Bağırmak sorunu büyütür.' }
+      ] },
+    { id: 'tahta', yer: 'Sınıf', simge: '📋', sahne: 'tahta',
+      durum: 'Derste bir grup her gün senin sıranın önünde ayakta durup şakalaşıyor. Tahtayı göremiyor, dersi takip edemiyorsun.',
+      adimlar: [
+        { id: 's3', tur: 'sorumluluk', soru: 'Bu durumda hangi sorumluluğu üstlenebilirsin?',
+          dogru: 'Onlara sakince anlatırsın; sürerse öğretmene söylersin.',
+          yanlislar: [['Sesini çıkarmazsın; dersi dinleyemesen de beklersin.', 'sessiz-kalma'], ['Sen de ertesi gün onların önünde durup tahtayı kapatırsın.', 'misilleme'], ['Ders saatinde sınıftan çıkıp koridorda beklersin.', 'kacma']],
+          ipucu: ['Bu durumda hangi hakkın kısıtlanıyor? Öğrenme… ', 'Önce konuş, olmazsa sınıftaki yetişkinden yardım iste.'],
+          why: 'Bu durum eğitim hakkını kısıtlar. Önce konuşmak, olmazsa öğretmene söylemek sorunu çözer. Susmak ve dersten kaçmak hakkından vazgeçmektir.' }
+      ] },
+    { id: 'rampa', yer: 'Okul', simge: '♿', sahne: 'rampa',
+      durum: 'Tekerlekli sandalye kullanan sınıf arkadaşın, okul kütüphanesinin girişinde yalnızca merdiven olduğu için kütüphaneye kendi başına giremiyor.',
+      adimlar: [
+        { id: 's4', tur: 'sorumluluk', soru: 'Sorunu KALICI olarak çözmek için sınıf olarak ne yapabilirsiniz?',
+          dogru: 'Okul yönetimine yazılı rampa önerisi verirsiniz.',
+          yanlislar: [['Kitaplarını siz seçip getirirsiniz; başka bir şey gerekmez.', 'gecici-cozum'], ['“Sınıfta da kitap var, kütüphane şart değil” dersiniz.', 'hakki-yok-sayma'], ['Merdivenin önüne oturup kimseyi kütüphaneye sokmazsınız.', 'sorunu-buyutme']],
+          ipucu: ['“Kalıcı” çözüm, sorun bir daha yaşanmasın diye yapılır.', 'Okulda bir değişiklik yapma yetkisi kimdedir?'],
+          why: 'Arkadaşının da kütüphaneye kendi başına girebilmesi gerekir. Okul yönetimine öneri vermek kalıcı çözümdür. Kitap taşımak iyi niyetlidir ama sorunu ortadan kaldırmaz.' }
+      ] },
+    { id: 'servis', yer: 'Okul servisi', simge: '🚌', sahne: 'servis',
+      durum: 'Okul servisinde her gün birkaç kişi çantanı alıp saklıyor. Çok üzülüyorsun ama henüz kimseye bir şey söylemedin.',
+      adimlar: [
+        { id: 's5', tur: 'sorumluluk', soru: 'Kime başvurmalısın?',
+          dogru: 'Servisteki görevliye ve ailene anlatırsın.',
+          yanlislar: [['Kimseye söylemezsin; söylersen “ispiyoncu” olursun.', 'ispiyon-sanir'], ['Sen de ertesi gün onların çantalarını saklarsın.', 'misilleme'], ['Serviste herkesin önünde onlarla kavga edersin.', 'sorunu-buyutme']],
+          ipucu: ['Yardım istemek ispiyonculuk değildir; hakkını korumaktır.', 'Serviste sorumlu olan yetişkin kim? Evde kime anlatabilirsin?'],
+          why: 'Hakkın ihlal edildiğinde güvendiğin bir yetişkine anlatmak ispiyonculuk değil, sorumluluktur. Serviste görevli, evde ailen sana yardım eder.' }
+      ] },
+    { id: 'yol', yer: 'Son durak', simge: '🏁', sahne: 'yol',
+      durum: 'Bir hakkın kısıtlandığında atacağın adımları düşün. Kartlardan biri tuzak: o kartı seçme!',
+      adimlar: [
+        { id: 's6', tur: 'sirala', soru: 'Doğru üç adımı sırayla seç.',
+          kartlar: [['Ne olduğunu fark et: Hangi hakkım kısıtlanıyor?', 1, ''], ['Duygunu Ben diliyle anlat, çözüm öner.', 2, ''], ['Çözülmezse güvendiğin bir yetişkine başvur.', 3, ''], ['Aynısını sen de ona yap, ödeşin.', 0, 'misilleme']],
+          ipucu: ['Önce sorunu fark etmelisin.', 'Yetişkine başvurmak, kendi denemen işe yaramadığında gelir. (Tehlike varsa hemen başvurulur.)'],
+          why: 'Önce hakkın kısıtlandığını fark ederiz, sonra duygumuzu Ben diliyle anlatıp çözüm öneririz; çözülmezse bir yetişkine başvururuz. Karşılık vermek ise başka bir hakkı kısıtlar. Tekrar eden zorbalıkta ya da tehlikede ise beklemeden doğrudan bir yetişkine başvurulur.' }
+      ] }
+  ],
+  /* Bitişte gösterilen "Haklarım ve Sorumluluklarım" panosu fikri (yazdırma dosyası yok; sınıfta kartona çizilir) */
+  pano: [
+    ['🎠 Oyun oynama ve dinlenme hakkım var.', 'Sırayı hatırlatırım, kimseyi oyundan dışlamam.'],
+    ['📚 Eğitim hakkım var.', 'Derste kimsenin öğrenmesine engel olmam.'],
+    ['🔒 Özel hayatıma saygı hakkım var.', 'Başkasının eşyasına izinsiz dokunmam.'],
+    ['🗳️ Aday olma ve seçilme hakkım var.', 'Herkesin aday olmasına saygı duyarım.'],
+    ['⚖️ Eşit davranılma hakkım var.', 'Hak kısıtlanınca susmam; Ben diliyle anlatır, gerekirse yetişkine başvururum.']
+  ]
+};
+
+/* ===== TEMA ÇİZİMLERİ ===== */
+const T = OYUN.tema;
+const TEN = ['#f2c7a5', '#d9a07a', '#8d5a3b', '#f5d6bf'], SAC = ['#3b2a20', '#1f1f1f', '#a0522d', '#6b4226'];
+/* Basit çocuk figürü: ayak (x, y), k = ölçek. o: {r gömlek, t ten, s saç, y: 'mutlu'|'uzgun'|'notr', kol: 'yukari'|'' } */
+function kisi(x, y, k, o) {
+  const t = o.t || TEN[0], s = o.s || SAC[0], r = o.r || '#3a86ff', yz = o.y || 'notr';
+  const agiz = yz === 'mutlu' ? 'M-4 -51 Q0 -47 4 -51' : yz === 'uzgun' ? 'M-4 -48.5 Q0 -52.5 4 -48.5' : 'M-3 -50 L3 -50';
+  const kol = o.kol === 'yukari' ? `<path d="M-9 -38 L-14 -24 M9 -40 L15 -64" stroke="${t}" stroke-width="5" stroke-linecap="round"/>`
+    : o.kol === 'ileri' ? `<path d="M-9 -38 L-14 -24 M9 -38 L22 -40" stroke="${t}" stroke-width="5" stroke-linecap="round"/>`
+    : `<path d="M-9 -38 L-14 -23 M9 -38 L14 -23" stroke="${t}" stroke-width="5" stroke-linecap="round"/>`;
+  return `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-7" y="-21" width="5.5" height="21" rx="2" fill="#3d405b"/><rect x="1.5" y="-21" width="5.5" height="21" rx="2" fill="#3d405b"/>` +
+    kol + `<rect x="-10" y="-45" width="20" height="27" rx="8" fill="${r}"/><circle cx="0" cy="-56" r="11" fill="${t}"/>` +
+    `<path d="M-11.5 -56 A11.5 11.5 0 0 1 11.5 -56 Q3 -63 -11.5 -56Z" fill="${s}"/>` +
+    `<circle cx="-4" cy="-55" r="1.7" fill="#1f2a44"/><circle cx="4" cy="-55" r="1.7" fill="#1f2a44"/>` +
+    `<path d="${agiz}" stroke="#1f2a44" stroke-width="1.7" fill="none" stroke-linecap="round"/></g>`;
+}
+const svgAc = (etiket) => `<svg viewBox="0 0 400 170" role="img" aria-label="${etiket}">`;
+const SAHNE = {
+  park: () => svgAc('Parkta iki salıncakta büyük çocuklar oturuyor, iki küçük çocuk sıra bekliyor') +
+    '<rect width="400" height="170" fill="#d4efff"/><circle cx="355" cy="30" r="18" fill="#ffd166"/><rect y="128" width="400" height="42" fill="#9be08a"/>' +
+    '<rect x="34" y="70" width="10" height="60" fill="#8d5a3b"/><circle cx="39" cy="58" r="30" fill="#3bb273"/><circle cx="20" cy="74" r="18" fill="#3bb273"/>' +
+    '<path d="M130 132 L160 38 L300 38 L330 132" stroke="#e76f51" stroke-width="7" fill="none" stroke-linejoin="round"/>' +
+    '<path d="M190 40 V104 M206 40 V104 M254 40 V104 M270 40 V104" stroke="#6b7280" stroke-width="2"/>' +
+    '<rect x="184" y="102" width="28" height="6" rx="2" fill="#264653"/><rect x="248" y="102" width="28" height="6" rx="2" fill="#264653"/>' +
+    kisi(198, 116, 1.0, { r: '#e63946', y: 'mutlu', t: TEN[1] }) + kisi(262, 116, 1.0, { r: '#457b9d', y: 'mutlu', s: SAC[1] }) +
+    kisi(352, 140, 0.8, { r: '#f4a261', y: 'uzgun', s: SAC[2] }) + kisi(378, 140, 0.8, { r: '#2a9d8f', y: 'uzgun', t: TEN[2], s: SAC[1] }) +
+    '<path d="M340 72 q6 -10 12 0" stroke="#5b6782" stroke-width="2" fill="none"/><text x="356" y="70" font-size="16">⏳</text></svg>',
+  secim: () => svgAc('Sınıfta başkan adayları tahtası, oy sandığı ve elini kaldırmış bir öğrenci') +
+    '<rect width="400" height="170" fill="#fff3d6"/><rect y="138" width="400" height="32" fill="#e9c46a"/>' +
+    '<rect x="96" y="14" width="210" height="86" rx="6" fill="#2d6a4f" stroke="#8d5a3b" stroke-width="6"/>' +
+    '<text x="201" y="38" font-size="15" font-weight="800" fill="#fff" text-anchor="middle">BAŞKAN ADAYLARI</text>' +
+    '<path d="M120 58 h80 M120 80 h60" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/><text x="112" y="62" font-size="12" fill="#fff">1.</text><text x="112" y="84" font-size="12" fill="#fff">2.</text>' +
+    '<text x="250" y="84" font-size="24" fill="#ffd166">?</text>' +
+    '<rect x="322" y="96" width="56" height="44" rx="4" fill="#bde0fe" stroke="#1d3557" stroke-width="3"/><rect x="336" y="94" width="28" height="5" fill="#1d3557"/><path d="M342 84 h16 v12 h-16z" fill="#fff" stroke="#1d3557" stroke-width="2"/>' +
+    kisi(52, 160, 1.15, { r: '#7b5cff', y: 'notr', kol: 'yukari', t: TEN[3], s: SAC[2] }) +
+    kisi(190, 160, 1.0, { r: '#e76f51', y: 'notr', s: SAC[1] }) + kisi(226, 160, 1.0, { r: '#2a9d8f', y: 'notr', t: TEN[1] }) +
+    '<text x="196" y="112" font-size="18">✋</text></svg>',
+  kutuphane: () => svgAc('Kütüphanede kitap okuyan öğrenciler, sesli video açmış bir öğrenci ve görevli') +
+    '<rect width="400" height="170" fill="#e8f1ff"/><rect y="140" width="400" height="30" fill="#c9b79c"/>' +
+    '<rect x="14" y="14" width="150" height="110" rx="6" fill="#8d5a3b"/>' +
+    [24, 60, 96].map(y => [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<rect x="${22 + i * 17}" y="${y}" width="13" height="30" rx="2" fill="${['#e63946', '#ffd166', '#2a9d8f', '#457b9d', '#f4a261', '#7b5cff', '#06d6a0', '#ef476f'][(i + y) % 8]}"/>`).join('')).join('') +
+    '<rect x="196" y="16" width="120" height="30" rx="8" fill="#fff" stroke="#457b9d" stroke-width="2"/><text x="256" y="36" font-size="13" font-weight="800" fill="#1d3557" text-anchor="middle">🤫 OKUMA SALONU</text>' +
+    kisi(214, 150, 0.95, { r: '#f4a261', y: 'notr', kol: 'ileri', s: SAC[1] }) + '<rect x="230" y="98" width="20" height="15" rx="2" fill="#1f2a44"/>' +
+    '<path d="M256 100 q6 6 0 12 M262 96 q10 10 0 20" stroke="#e63946" stroke-width="2.5" fill="none"/>' +
+    kisi(300, 150, 0.9, { r: '#2a9d8f', y: 'notr', t: TEN[2] }) + '<rect x="292" y="104" width="18" height="13" fill="#fff" stroke="#457b9d" stroke-width="2"/>' +
+    '<rect x="330" y="104" width="62" height="40" rx="4" fill="#a0522d"/>' + kisi(360, 104, 0.9, { r: '#264653', y: 'notr', t: TEN[1], s: SAC[0] }) + '</svg>',
+  bahce: () => svgAc('Okul bahçesinde top oynayan bir grup ve bankta yalnız oturan bir öğrenci') +
+    '<rect width="400" height="170" fill="#d4efff"/><rect x="230" y="20" width="160" height="80" fill="#f4e1c1" stroke="#c9a66b" stroke-width="3"/>' +
+    [0, 1, 2, 3].map(i => `<rect x="${244 + i * 36}" y="36" width="22" height="22" fill="#bde0fe" stroke="#457b9d" stroke-width="2"/>`).join('') +
+    '<rect y="100" width="400" height="70" fill="#ffd29d"/>' +
+    '<rect x="20" y="120" width="70" height="8" rx="3" fill="#8d5a3b"/><rect x="26" y="128" width="5" height="18" fill="#8d5a3b"/><rect x="80" y="128" width="5" height="18" fill="#8d5a3b"/>' +
+    kisi(55, 122, 0.9, { r: '#7b5cff', y: 'uzgun', t: TEN[3], s: SAC[2] }) +
+    kisi(200, 156, 1.0, { r: '#e63946', y: 'mutlu', kol: 'yukari' }) + kisi(250, 160, 1.0, { r: '#2a9d8f', y: 'mutlu', t: TEN[2], s: SAC[1] }) + kisi(300, 156, 1.0, { r: '#f4a261', y: 'mutlu', t: TEN[1] }) +
+    '<circle cx="246" cy="120" r="10" fill="#fff" stroke="#1f2a44" stroke-width="2"/><path d="M240 114 l6 4 l6 -4 M246 118 v8" stroke="#1f2a44" stroke-width="1.6" fill="none"/></svg>',
+  gunluk: () => svgAc('Sınıfta bir öğrenci başkasının günlüğünü izinsiz okuyor, günlüğün sahibi üzgün') +
+    '<rect width="400" height="170" fill="#fdf0e6"/><rect y="132" width="400" height="38" fill="#e9c46a"/>' +
+    '<rect x="40" y="118" width="320" height="14" rx="4" fill="#a0522d"/>' +
+    kisi(90, 150, 1.05, { r: '#457b9d', y: 'uzgun', t: TEN[1], s: SAC[1] }) +
+    kisi(220, 150, 1.05, { r: '#f4a261', y: 'mutlu', kol: 'yukari', s: SAC[2] }) +
+    '<g transform="translate(232 44) rotate(-8)"><rect width="46" height="34" rx="3" fill="#ef476f"/><rect x="23" width="23" height="34" fill="#ffc8dd"/><path d="M27 8 h14 M27 14 h14 M27 20 h10" stroke="#9d4b6b" stroke-width="2"/><circle cx="11" cy="17" r="6" fill="none" stroke="#fff" stroke-width="2.5"/></g>' +
+    kisi(310, 150, 0.95, { r: '#2a9d8f', y: 'mutlu', t: TEN[2] }) + kisi(345, 150, 0.95, { r: '#e76f51', y: 'mutlu' }) +
+    '<text x="300" y="70" font-size="15" font-weight="800" fill="#c0392b">ha ha</text></svg>',
+  kantin: () => svgAc('Kantinde sıra bekleyen öğrenciler; biri sıranın önüne geçiyor') +
+    '<rect width="400" height="170" fill="#fff8e7"/><rect y="140" width="400" height="30" fill="#cfd8dc"/>' +
+    '<rect x="16" y="40" width="96" height="100" fill="#f4a261"/>' + [0, 1, 2, 3, 4, 5].map(i => `<path d="M${16 + i * 16} 28 h16 v14 q-8 8 -16 0z" fill="${i % 2 ? '#fff' : '#e63946'}"/>`).join('') +
+    '<rect x="26" y="56" width="76" height="40" rx="4" fill="#fff"/><text x="64" y="82" font-size="18" text-anchor="middle">🥪🧃</text><text x="64" y="128" font-size="14" font-weight="800" fill="#fff" text-anchor="middle">KANTİN</text>' +
+    kisi(160, 150, 1.0, { r: '#457b9d', y: 'notr' }) + kisi(205, 150, 1.0, { r: '#7b5cff', y: 'uzgun', t: TEN[1], s: SAC[2] }) + kisi(250, 150, 1.0, { r: '#2a9d8f', y: 'notr', t: TEN[2], s: SAC[1] }) + kisi(295, 150, 1.0, { r: '#f4a261', y: 'notr' }) +
+    kisi(350, 150, 1.0, { r: '#e63946', y: 'mutlu', t: TEN[3], s: SAC[1] }) +
+    '<path d="M345 76 C320 30 190 30 150 74" stroke="#e63946" stroke-width="4" fill="none" stroke-dasharray="8 6"/><path d="M150 74 l-2 -14 M150 74 l13 -5" stroke="#e63946" stroke-width="4" stroke-linecap="round"/></svg>',
+  tahta: () => svgAc('Sınıfta ayakta duran bir grup, sırada oturan öğrencinin tahtayı görmesini engelliyor') +
+    '<rect width="400" height="170" fill="#eef6ff"/><rect y="140" width="400" height="30" fill="#e9c46a"/>' +
+    '<rect x="120" y="12" width="230" height="70" rx="6" fill="#2d6a4f" stroke="#8d5a3b" stroke-width="6"/><text x="235" y="54" font-size="20" font-weight="800" fill="#fff" text-anchor="middle">46 × 3 = ?</text>' +
+    kisi(200, 140, 1.05, { r: '#e76f51', y: 'mutlu' }) + kisi(238, 140, 1.05, { r: '#2a9d8f', y: 'mutlu', t: TEN[2], s: SAC[1] }) + kisi(276, 140, 1.05, { r: '#f4a261', y: 'mutlu', t: TEN[1] }) +
+    '<rect x="20" y="120" width="80" height="12" rx="3" fill="#a0522d"/><rect x="28" y="132" width="5" height="16" fill="#a0522d"/><rect x="88" y="132" width="5" height="16" fill="#a0522d"/>' +
+    kisi(60, 128, 0.95, { r: '#457b9d', y: 'uzgun', s: SAC[2] }) +
+    '<path d="M74 72 L180 66" stroke="#5b6782" stroke-width="2.5" stroke-dasharray="6 5"/><text x="178" y="76" font-size="22" font-weight="800" fill="#c0392b">✖</text></svg>',
+  rampa: () => svgAc('Kütüphane kapısına yalnızca merdivenle çıkılıyor; tekerlekli sandalyedeki öğrenci aşağıda bekliyor') +
+    '<rect width="400" height="170" fill="#e8f1ff"/><rect y="146" width="400" height="24" fill="#b7c4cf"/>' +
+    '<rect x="220" y="16" width="170" height="80" fill="#f4e1c1" stroke="#c9a66b" stroke-width="3"/><rect x="284" y="44" width="40" height="52" fill="#8d5a3b"/><circle cx="316" cy="72" r="3" fill="#ffd166"/>' +
+    '<rect x="248" y="22" width="112" height="18" rx="4" fill="#fff"/><text x="304" y="36" font-size="12" font-weight="800" fill="#1d3557" text-anchor="middle">📚 KÜTÜPHANE</text>' +
+    [0, 1, 2, 3].map(i => `<rect x="${236 + i * 0}" y="${96 + i * 12.5}" width="${150 - i * 0}" height="12.5" fill="${i % 2 ? '#d9dee5' : '#c5ccd6'}" stroke="#8a94a6"/>`).join('') +
+    '<g transform="translate(120 146)"><circle cx="0" cy="-14" r="14" fill="none" stroke="#1f2a44" stroke-width="4"/><circle cx="28" cy="-6" r="6" fill="#1f2a44"/><path d="M-6 -30 H26 L28 -12" stroke="#1f2a44" stroke-width="4" fill="none"/><path d="M-6 -30 V-62" stroke="#1f2a44" stroke-width="4"/></g>' +
+    kisi(126, 116, 1.0, { r: '#7b5cff', y: 'notr', kol: 'ileri', t: TEN[2], s: SAC[1] }).replace('<rect x="-7" y="-21" width="5.5" height="21" rx="2" fill="#3d405b"/><rect x="1.5" y="-21" width="5.5" height="21" rx="2" fill="#3d405b"/>', '<path d="M-4 -20 h18 v16" stroke="#3d405b" stroke-width="6" fill="none"/>') +
+    '<text x="186" y="80" font-size="26" font-weight="800" fill="#c0392b">?</text></svg>',
+  servis: () => svgAc('Okul servisi; koltuk arkasına saklanmış bir çanta') +
+    '<rect width="400" height="170" fill="#d4efff"/><rect y="140" width="400" height="30" fill="#8a94a6"/><path d="M0 154 h400" stroke="#fff" stroke-width="3" stroke-dasharray="20 16"/>' +
+    '<rect x="40" y="30" width="320" height="104" rx="22" fill="#ffd166" stroke="#f4a300" stroke-width="4"/><rect x="40" y="96" width="320" height="10" fill="#1f2a44" opacity=".15"/>' +
+    [0, 1, 2, 3, 4].map(i => `<rect x="${60 + i * 56}" y="44" width="44" height="38" rx="6" fill="#bde0fe" stroke="#1d3557" stroke-width="2"/>`).join('') +
+    '<circle cx="82" cy="70" r="9" fill="#f2c7a5"/><circle cx="138" cy="70" r="9" fill="#8d5a3b"/><circle cx="194" cy="70" r="9" fill="#d9a07a"/><circle cx="306" cy="70" r="9" fill="#f5d6bf"/>' +
+    '<rect x="250" y="66" width="22" height="16" rx="4" fill="#e63946"/><text x="262" y="60" font-size="18" font-weight="800" fill="#c0392b" text-anchor="middle">?</text>' +
+    '<circle cx="100" cy="136" r="16" fill="#1f2a44"/><circle cx="300" cy="136" r="16" fill="#1f2a44"/><circle cx="100" cy="136" r="6" fill="#ccc"/><circle cx="300" cy="136" r="6" fill="#ccc"/>' +
+    '<text x="200" y="124" font-size="14" font-weight="800" fill="#1d3557" text-anchor="middle">OKUL SERVİSİ</text></svg>',
+  yol: () => svgAc('Basamak taşlarıyla bayrağa giden yol') +
+    '<rect width="400" height="170" fill="#d4efff"/><rect y="110" width="400" height="60" fill="#9be08a"/>' +
+    '<path d="M20 150 C100 120 160 160 230 130 S330 100 370 110" stroke="#c9a66b" stroke-width="22" fill="none" stroke-linecap="round" opacity=".6"/>' +
+    [[70, 136, '1', '#3a6fe0'], [160, 142, '2', '#7b5cff'], [250, 124, '3', '#1f9d5c']].map(([x, y, n, c]) => `<ellipse cx="${x}" cy="${y}" rx="26" ry="13" fill="${c}"/><text x="${x}" y="${y + 6}" font-size="17" font-weight="800" fill="#fff" text-anchor="middle">${n}</text>`).join('') +
+    '<rect x="352" y="40" width="5" height="74" fill="#5b6782"/><path d="M357 42 h34 l-8 11 l8 11 h-34z" fill="#ff7b54"/>' +
+    '<text x="200" y="56" font-size="34" text-anchor="middle">🔍 💬 🤝</text></svg>'
+};
+function sahneSVG() {   // başlık ekranı: Hak Mahallesi
+  return '<svg viewBox="0 0 400 180" style="width:100%;max-width:540px" aria-hidden="true">' +
+    '<rect width="400" height="180" rx="18" fill="#d4efff"/><circle cx="350" cy="34" r="20" fill="#ffd166"/><rect y="128" width="400" height="52" fill="#9be08a"/>' +
+    '<path d="M0 150 Q100 136 200 150 T400 150" stroke="#c9a66b" stroke-width="16" fill="none" opacity=".7"/>' +
+    '<rect x="22" y="66" width="96" height="64" fill="#f4e1c1" stroke="#c9a66b" stroke-width="3"/><path d="M14 68 L70 36 L126 68Z" fill="#e76f51"/><rect x="60" y="98" width="20" height="32" fill="#8d5a3b"/><text x="70" y="88" font-size="11" font-weight="800" fill="#1d3557" text-anchor="middle">OKUL</text>' +
+    '<rect x="160" y="84" width="8" height="46" fill="#8d5a3b"/><circle cx="164" cy="74" r="22" fill="#3bb273"/><path d="M196 128 L210 92 L246 92 L260 128" stroke="#e76f51" stroke-width="5" fill="none"/><path d="M220 94 V116 M236 94 V116" stroke="#6b7280" stroke-width="2"/>' +
+    '<rect x="282" y="78" width="96" height="52" fill="#bde0fe" stroke="#457b9d" stroke-width="3"/><text x="330" y="100" font-size="20" text-anchor="middle">📚</text><text x="330" y="122" font-size="10" font-weight="800" fill="#1d3557" text-anchor="middle">KÜTÜPHANE</text>' +
+    kisi(120, 166, 0.8, { r: '#e63946', y: 'mutlu' }) + kisi(150, 168, 0.8, { r: '#2a9d8f', y: 'mutlu', t: TEN[2], s: SAC[1] }) + kisi(280, 166, 0.8, { r: '#7b5cff', y: 'mutlu', t: TEN[1], s: SAC[2] }) +
+    '<g transform="translate(190 16)"><path d="M0 22 Q30 0 60 18 Q30 14 0 22Z" fill="#fff" stroke="#9db8f5" stroke-width="2"/><ellipse cx="34" cy="24" rx="20" ry="11" fill="#fff" stroke="#9db8f5" stroke-width="2"/><circle cx="52" cy="18" r="7" fill="#fff" stroke="#9db8f5" stroke-width="2"/><path d="M58 18 l6 2 l-6 2z" fill="#ffb703"/><path d="M62 22 q8 6 14 2" stroke="#2a9d8f" stroke-width="2" fill="none"/><ellipse cx="72" cy="22" rx="4" ry="2" fill="#3bb273"/></g></svg>';
+}
+function karakterSVG() { // Umut Güvercin; ruh hâli CSS sınıfıyla değişir (mutlu / dusun / uzgun)
+  return '<svg viewBox="0 0 120 130" aria-hidden="true">' +
+    '<ellipse cx="60" cy="122" rx="30" ry="5" fill="#1f2a44" opacity=".12"/>' +
+    '<path d="M22 86 Q4 70 10 50 Q30 62 40 80Z" fill="#e3ebff" stroke="#9db8f5" stroke-width="3"/>' +
+    '<ellipse cx="62" cy="82" rx="36" ry="32" fill="' + T.karakterRenk + '" stroke="#9db8f5" stroke-width="3"/>' +
+    '<path d="M44 80 Q66 64 92 80 Q70 100 44 80Z" fill="#e3ebff" stroke="#9db8f5" stroke-width="2.5"/>' +
+    '<circle cx="62" cy="44" r="24" fill="' + T.karakterRenk + '" stroke="#9db8f5" stroke-width="3"/>' +
+    '<g class="goz-acik"><circle cx="54" cy="42" r="5" fill="#1f2a44"/><circle cx="72" cy="42" r="5" fill="#1f2a44"/><circle cx="55.5" cy="40.5" r="1.6" fill="#fff"/><circle cx="73.5" cy="40.5" r="1.6" fill="#fff"/></g>' +
+    '<g class="goz-mutlu" stroke="#1f2a44" stroke-width="3.5" fill="none" stroke-linecap="round"><path d="M48 44 Q54 36 60 44"/><path d="M66 44 Q72 36 78 44"/></g>' +
+    '<g class="kas" stroke="#1f2a44" stroke-width="3" stroke-linecap="round"><path d="M47 32 L58 35"/><path d="M79 32 L68 35"/></g>' +
+    '<path d="M57 52 L67 52 L62 60Z" fill="#ffb703"/>' +
+    '<path d="M66 56 q10 8 22 4" stroke="#2a9d8f" stroke-width="2.5" fill="none"/><ellipse cx="82" cy="62" rx="6" ry="3" fill="#3bb273" transform="rotate(-20 82 62)"/><ellipse cx="90" cy="58" rx="6" ry="3" fill="#3bb273" transform="rotate(20 90 58)"/>' +
+    '<circle cx="45" cy="52" r="4" fill="#ff8fab" opacity=".55"/><circle cx="80" cy="50" r="4" fill="#ff8fab" opacity=".55"/>' +
+    '<path d="M54 112 v8 M50 120 h8 M70 112 v8 M66 120 h8" stroke="#ff7b54" stroke-width="3" stroke-linecap="round"/></svg>';
+}
+
+/* ===== MOTOR ===== */
+const app = document.getElementById('app');
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const rastgele = a => a[Math.floor(Math.random() * a.length)];
+const KAZ = { hak: 'Y.4.2.4', ifade: 'Y.4.2.4', sorumluluk: 'Y.4.2.5', sirala: 'Y.4.2.5' };   // duygu: puansız, rapora gitmez
+const ADIM = { hak: 0, duygu: 1, ifade: 1, sorumluluk: 2, sirala: 2 };
+const ADIMLAR = [['🔍', 'Fark et'], ['💬', 'Hisset ve anlat'], ['🤝', 'Sorumluluk al']];
+const TUR_AD = { hak: 'Hangi hak?', duygu: 'Duygu kartı', ifade: 'Nasıl anlatırım?', sorumluluk: 'Ne yapabilirim?', sirala: 'Adımları sırala' };
+let sira = [], idx = 0, durum = null, puan = 0, tekrarEklendi = false, secilenDuygular = [];
+const depo = (() => { const mem = {}; return {
+  oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
+  yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } } }; })();
+const DEPO_REKOR = 'rekor-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
+[['--ana', T.renkAna], ['--ikinci', T.renkIkinci], ['--gok1', T.gok1], ['--gok2', T.gok2]].forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+const azHareket = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+
+/* --- Ses (Web Audio; köşedeki düğmeyle kapanır) --- */
+let sesAcik = depo.oku(DEPO_SES) !== '0', actx = null;
+function cal(tur) {
+  if (!sesAcik) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    const N = (f, s, d, tip) => { const o = actx.createOscillator(), g = actx.createGain(); o.type = tip || 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t + s); g.gain.exponentialRampToValueAtTime(0.16, t + s + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + s + d);
+      o.connect(g); g.connect(actx.destination); o.start(t + s); o.stop(t + s + d + 0.05); };
+    if (tur === 'dogru') { N(660, 0, 0.14); N(990, 0.11, 0.25); }
+    else if (tur === 'yanlis') { N(260, 0, 0.18, 'triangle'); N(200, 0.14, 0.22, 'triangle'); }
+    else if (tur === 'kutlama') { [523, 659, 784, 1047].forEach((f, i) => N(f, i * 0.12, 0.3)); }
+    else if (tur === 'yumusak') { N(523, 0, 0.18); N(659, 0.1, 0.22); }
+    else { N(880, 0, 0.07); }
+  } catch (e) { /* ses desteklenmiyor */ }
+}
+function sesDugmesi() { return '<button class="ses" id="ses" aria-label="Sesi ' + (sesAcik ? 'kapat' : 'aç') + '">' + (sesAcik ? '🔊' : '🔇') + '</button>'; }
+function sesBagla() { const b = document.getElementById('ses'); if (b) b.onclick = () => { sesAcik = !sesAcik; depo.yaz(DEPO_SES, sesAcik ? '1' : '0');
+  b.textContent = sesAcik ? '🔊' : '🔇'; b.setAttribute('aria-label', 'Sesi ' + (sesAcik ? 'kapat' : 'aç')); cal('tik'); }; }
+
+/* --- Konfeti (en fazla 60 parça, ~1 sn) --- */
+const cv = document.getElementById('konfeti'), cx = cv.getContext('2d');
+let parca = [], kosuyor = false;
+function konfeti(n, x, y) {
+  if (azHareket()) return;
+  const dpr = window.devicePixelRatio || 1; cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  x = x ?? innerWidth / 2; y = y ?? innerHeight / 3;
+  const renk = [T.renkAna, T.renkIkinci, '#ffd166', '#ef476f', '#06d6a0', '#7b5cff'];
+  for (let i = 0; i < n && parca.length < 60; i++) { const a = Math.random() * Math.PI * 2, h = 3 + Math.random() * 7;
+    parca.push({ x, y, vx: Math.cos(a) * h, vy: Math.sin(a) * h - 5, r: Math.random() * 6.3, vr: (Math.random() - 0.5) * 0.4, w: 7 + Math.random() * 6, c: renk[i % renk.length], t: 0 }); }
+  if (!kosuyor) { kosuyor = true; requestAnimationFrame(adimKonfeti); }
+}
+function adimKonfeti() {
+  cx.clearRect(0, 0, innerWidth, innerHeight);
+  parca.forEach(p => { p.t++; p.vy += 0.35; p.vx *= 0.98; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.globalAlpha = Math.max(0, 1 - p.t / 60); cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.w / 4, p.w, p.w / 2); cx.restore(); });
+  parca = parca.filter(p => p.t < 60);
+  if (parca.length) requestAnimationFrame(adimKonfeti); else { kosuyor = false; cx.clearRect(0, 0, innerWidth, innerHeight); }
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) parca = []; });
+
+function ruh(mod, hareket, metin) {
+  const k = document.getElementById('krk'), b = document.getElementById('balon');
+  if (k) { k.className = 'krk kucuk ' + mod; if (hareket && !azHareket()) { void k.offsetWidth; k.classList.add(hareket); } }
+  if (b) { b.className = 'balon ' + mod; b.textContent = metin; }
+}
+function puanEkle(n) {
+  const el = document.getElementById('puanSayi'); if (!el) return;
+  const bas = puan; puan += n; const t0 = performance.now();
+  if (azHareket()) { el.textContent = puan; return; }
+  const kos = t => { const p = Math.min(1, (t - t0) / 450); el.textContent = Math.round(bas + (puan - bas) * p); if (p < 1) requestAnimationFrame(kos); };
+  requestAnimationFrame(kos);
+  const kap = el.parentNode; kap.classList.remove('pop'); void kap.offsetWidth; kap.classList.add('pop');
+}
+/* Mahalle yolu: her vaka bir durak */
+function yolCiz() {
+  const ana = sira.filter(x => !x.tekrar), simdi = sira[idx];
+  const n = ana.filter(x => x.bitti).length;
+  return '<div class="yol" role="img" aria-label="' + n + ' / ' + ana.length + ' adım tamamlandı">' + OYUN.vakalar.map((v, i) => {
+    const bitti = ana.filter(x => x.v === v).every(x => x.bitti), su = simdi && simdi.v === v;
+    return (i ? '<span class="cizgi"></span>' : '') + '<span class="durak ' + (su ? 'simdi' : bitti ? 'bitti' : '') + '">' + v.simge + '</span>';
+  }).join('') + '<span class="sayac">' + Math.min(idx + 1, sira.length) + ' / ' + sira.length + '</span></div>';
+}
+function ustCiz() {
+  return '<div class="ust"><span class="baslik">🕊️ ' + esc(T.ad) + '</span><span class="sag"><span class="puan" aria-label="Toplanan ' + esc(T.odulAd) + '">' +
+    esc(T.odulSimge) + ' <b id="puanSayi">' + puan + '</b></span>' + sesDugmesi() + '</span></div>' + yolCiz();
+}
+function kartBas(x) {
+  const m = x.m, v = x.v, a = ADIM[m.tur], no = OYUN.vakalar.indexOf(v) + 1;
+  const etk = x.tekrar ? '<span class="etiket tekrar">🔁 Bir şans daha</span>' : m.tur === 'duygu' ? '<span class="etiket puansiz">💜 Puansız</span>' : '<span class="etiket">' + esc(TUR_AD[m.tur]) + '</span>';
+  return '<div class="vbas"><span class="yer">' + v.simge + ' ' + esc(v.yer) + ' · ' + no + '. durak</span>' + etk + '</div>' +
+    '<div class="adimlar" aria-label="Adım: ' + ADIMLAR[a][1] + '">' + ADIMLAR.map((s, i) => '<span class="adim ' + (i === a ? 'aktif' : i < a ? 'gecti' : '') + '">' + s[0] + ' ' + s[1] + '</span>').join('') + '</div>' +
+    '<div class="gorsel">' + SAHNE[v.sahne]() + '</div><div class="durum">' + esc(v.durum) + '</div>';
+}
+function karakterSatir(metin, mod) {
+  return '<div class="karakter-satir"><div id="krk" class="krk kucuk ' + (mod || '') + '">' + karakterSVG() + '</div><div id="balon" class="balon ' + (mod || '') + '" aria-live="polite">' + esc(metin) + '</div></div><div class="devam-yer" id="devamYer"></div>';
+}
+
+function baslangic() {
+  const rekor = depo.oku(DEPO_REKOR);
+  durum = null;
+  app.innerHTML = '<div class="ust"><span></span><span class="sag">' + sesDugmesi() + '</span></div>' +
+    '<div class="kart gir">' + sahneSVG() + '<h1>' + esc(OYUN.ad) + '</h1>' +
+    '<div class="karakter-satir"><div id="krk" class="krk mutlu">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Merhaba! Ben ' +
+    esc(T.karakterAdi) + '. ' + esc(T.hikaye) + '</div></div>' +
+    '<h2 style="text-align:center">Hak yolculuğunun 3 adımı</h2><p class="not" style="margin:0">Her durakta bu adımlardan 1–3 tanesi sorulur.</p>' +
+    '<div class="akis"><div class="k k1"><span class="s">🔍</span><b>1. Fark et</b>Hangi hakkım kısıtlanıyor? Yoksa bu bir kural mı?</div><span class="ok" aria-hidden="true">➜</span>' +
+    '<div class="k k2"><span class="s">💬</span><b>2. Hisset ve anlat</b>Duygumu kimseyi kırmadan, Ben diliyle söylerim.</div><span class="ok" aria-hidden="true">➜</span>' +
+    '<div class="k k3"><span class="s">🤝</span><b>3. Sorumluluk al</b>Kuralı hatırlatırım, çözüm öneririm, gerekirse yetişkine başvururum.</div></div>' +
+    '<div class="formul" aria-label="Ben dili formülü"><span class="f1">Ben … hissediyorum,</span><span class="f2">çünkü … .</span><span class="f3">… istiyorum.</span></div>' +
+    '<p class="not">10 durak · 💜 “Duygu kartı” adımları puansızdır, her duygu kabul edilir · 💡 ipucu alabilirsin</p>' +
+    (rekor ? '<p class="not">🏆 Önceki en iyi sonucun: ' + esc(rekor) + ' ilk denemede doğru</p>' : '') +
+    '<button class="buyuk" id="basla">Tura başla ▶</button></div>';
+  sesBagla();
+  document.getElementById('basla').onclick = () => {
+    cal('tik');
+    RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+    sira = []; OYUN.vakalar.forEach(v => v.adimlar.forEach(m => sira.push({ v, m, tekrar: false, bitti: false, sonuc: '', ertelendi: false })));
+    idx = 0; puan = 0; tekrarEklendi = false; secilenDuygular = []; soru();
+  };
+}
+
+function soru() {
+  window.scrollTo(0, 0);
+  if (idx >= sira.length) {
+    if (!tekrarEklendi) {
+      tekrarEklendi = true;
+      const zor = sira.filter(x => !x.tekrar && x.m.tur !== 'duygu' && x.sonuc !== 'yildiz').slice(0, 4);
+      if (zor.length) {
+        zor.forEach(x => sira.push({ v: x.v, m: x.m, tekrar: true, bitti: false, sonuc: '', ertelendi: true }));
+        durum = null;
+        app.innerHTML = ustCiz() + '<div class="kart gir"><h2>🔁 Bir şans daha</h2><p>İlk denemede zorlandığın ' + zor.length + ' adıma yeniden bakalım. Seçenekler karıştırıldı!</p>' +
+          karakterSatir('Yanlış yapmak öğrenmenin bir parçası. Şimdi daha iyi biliyorsun!', 'mutlu') + '</div>';
+        devamEkle('Devam →', soru); sesBagla();
+        return;
+      }
+    }
+    bitisEkrani(); return;
+  }
+  const x = sira[idx];
+  if (x.m.tur === 'duygu') duyguCiz(x); else if (x.m.tur === 'sirala') siralaCiz(x); else secimCiz(x);
+}
+function devamEkle(metin, fn) {
+  const dev = document.createElement('button'); dev.className = 'buyuk'; dev.id = 'dev'; dev.textContent = metin;
+  dev.onclick = fn; document.getElementById('devamYer').appendChild(dev); dev.focus({ preventScroll: true });
+}
+function sonrakine() { idx++; soru(); }
+
+/* --- Çoktan seçmeli (hak / ifade / sorumluluk) --- */
+function secimCiz(x) {
+  const m = x.m, sec = shuffle([[m.dogru, '']].concat(m.yanlislar));
+  durum = { x, m, sec, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+  // Çok adımlı durakta yalnız durağın son adımı ertelenebilir (adım sırası bozulmasın: hak → duygu → ifade/sorumluluk)
+  const ertele = !x.tekrar && !x.ertelendi && idx < sira.length - 1 && !sira.slice(idx + 1).some(y => y.v === x.v && !y.tekrar);
+  app.innerHTML = ustCiz() + '<div class="kart gir">' + kartBas(x) + '<div class="soru">' + esc(m.soru) + '</div><div class="sec">' +
+    sec.map((s, i) => '<button data-i="' + i + '" aria-label="Seçenek ' + (i + 1) + ': ' + esc(s[0]) + '"><span class="no">' + (i + 1) + '</span>' + esc(s[0]) + '</button>').join('') +
+    '</div><div class="alt"><button class="kucuk-btn" id="ip">💡 İpucu</button>' + (ertele ? '<button class="kucuk-btn mavi" id="ert">⏭ Sonra dön</button>' : '') + '</div>' +
+    karakterSatir(rastgele(['Durumu dikkatle oku, sonra seç.', 'Acele etme; her seçeneği düşün.', 'Resme bakmak da işine yarayabilir.']), '') + '</div>';
+  sesBagla();
+  app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => secimYap(+b.dataset.i); });
+  document.getElementById('ip').onclick = ipucuVer;
+  if (ertele) document.getElementById('ert').onclick = erteleFn;
+}
+function erteleFn() {
+  if (!durum || durum.kilit || durum.deneme) return;
+  const x = sira.splice(idx, 1)[0]; x.ertelendi = true; sira.push(x); cal('tik'); soru();
+}
+function ipucuVer() {
+  if (!durum || durum.kilit) return;
+  const ip = durum.m.ipucu;
+  if (durum.ipucu < ip.length) durum.ipucu++;
+  cal('tik'); ruh('dusun', null, '💡 ' + ip.slice(0, durum.ipucu).join(' '));
+  if (durum.ipucu >= ip.length) { const b = document.getElementById('ip'); if (b) { b.disabled = true; b.textContent = '💡 İpuçları bitti'; } }
+}
+function secimYap(i) {
+  if (!durum || durum.kilit || !durum.sec) return;
+  const btn = app.querySelectorAll('.sec button')[i]; if (!btn || btn.disabled) return;
+  const [metin, yan] = durum.sec[i];
+  durum.deneme++;
+  const e = document.getElementById('ert'); if (e) e.remove();
+  if (metin === durum.m.dogru) {
+    btn.classList.add('dogru'); const r = btn.getBoundingClientRect();
+    dogruBitir(r.left + r.width / 2, r.top + r.height / 2); return;
+  }
+  btn.classList.add('yanlis', 'salla'); btn.disabled = true;
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = yan;
+  if (durum.deneme >= 2) {
+    app.querySelectorAll('.sec button').forEach((b, k) => { if (durum.sec[k][0] === durum.m.dogru) b.classList.add('dogru'); });
+    cozumBitir(); return;
+  }
+  cal('yanlis'); ruh('uzgun', 'salla', '🤔 Henüz değil. Bir daha dene; istersen 💡 ipucu al.');
+}
+function dogruBitir(px, py) {
+  const ilk = durum.deneme === 1;
+  cal('dogru'); konfeti(ilk ? 45 : 22, px, py); puanEkle(durum.x.tekrar ? 3 : ilk ? 10 : 5);
+  bitir(false, ilk ? 'yildiz' : 'yarim', 'mutlu', 'zipla', (ilk ? '⭐ ' + rastgele(['Harika!', 'Süpersin!', 'Tam isabet!']) : '✨ Buldun!') + ' ' + durum.m.why);
+}
+function cozumBitir() { cal('tik'); bitir(true, 'ogrendi', 'dusun', null, '📘 Birlikte bakalım: ' + durum.m.why); }
+function bitir(cozumGoruldu, sonuc, mod, hareket, mesaj) {
+  durum.kilit = true;
+  const x = durum.x;
+  x.bitti = true; x.sonuc = sonuc;
+  RaporMotoru.kaydet({ kazanim: KAZ[durum.m.tur], madde: durum.m.id, yanilgi: durum.ilkYanilgi,
+    ilkDenemeDogru: durum.deneme === 1 && !cozumGoruldu, deneme: durum.deneme, ipucu: durum.ipucu,
+    cozumGoruldu, sureMs: Date.now() - durum.t0, tekrar: x.tekrar });
+  ruh(mod, hareket, mesaj);
+  app.querySelectorAll('.sec button, #ip, .skart, #geri, #kontrol').forEach(b => { b.disabled = true; });
+  const yol = app.querySelector('.yol'); if (yol) yol.outerHTML = yolCiz();
+  devamEkle(idx + 1 < sira.length || !tekrarEklendi ? 'Devam →' : T.sonSimge + ' Turu bitir', sonrakine);
+}
+
+/* --- Duygu kartı (PUANSIZ: her seçim kabul edilir, rapora yazılmaz) --- */
+function duyguCiz(x) {
+  durum = { x, m: x.m, secili: -1, kilit: false };
+  app.innerHTML = ustCiz() + '<div class="kart gir">' + kartBas(x) + '<div class="soru">' + esc(x.m.soru) + '</div>' +
+    '<div class="duygular" role="group" aria-label="Duygu kartları">' + OYUN.duygular.map((d, i) =>
+      '<button class="duygu" data-i="' + i + '" aria-pressed="false" aria-label="' + esc(d[1]) + '"><span class="e" aria-hidden="true">' + d[0] + '</span>' + esc(d[1]) + '</button>').join('') + '</div>' +
+    '<p class="not">Bu adım puanlanmaz. Doğru ya da yanlış duygu yoktur; sana en yakın olanı seç.</p>' +
+    karakterSatir('Kendini o durumda düşün. Hangi duyguyu hissederdin?', 'mor') + '</div>';
+  sesBagla();
+  app.querySelectorAll('.duygu').forEach(b => { b.onclick = () => duyguSec(+b.dataset.i); });
+}
+function duyguSec(i) {
+  if (!durum || durum.kilit || durum.m.tur !== 'duygu') return;
+  const ilk = durum.secili < 0;
+  durum.secili = i;
+  app.querySelectorAll('.duygu').forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
+  const d = OYUN.duygular[i];
+  cal('yumusak');
+  ruh('mutlu', 'zipla', d[0] + ' “' + d[1] + '” hissetmen çok doğal. Duyguların doğrusu ya da yanlışı yoktur; önemli olan onu kimseyi kırmadan anlatmak.');
+  if (ilk) devamEkle('Devam →', () => {
+    if (!durum || durum.kilit) return;
+    durum.kilit = true; durum.x.bitti = true; secilenDuygular.push(OYUN.duygular[durum.secili]); sonrakine();
+  });
+}
+
+/* --- Sıralama: doğru üç kartı sırayla seç (bir kart tuzak) --- */
+function siralaCiz(x) {
+  const m = x.m;
+  durum = { x, m, kartlar: shuffle(m.kartlar), secilen: [], deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+  app.innerHTML = ustCiz() + '<div class="kart gir">' + kartBas(x) + '<div class="soru">' + esc(m.soru) + '</div>' +
+    '<div class="yuvalar" id="yuvalar" aria-live="polite"></div><div class="skartlar">' +
+    durum.kartlar.map((k, i) => '<button class="skart" data-i="' + i + '">' + esc(k[0]) + '</button>').join('') + '</div>' +
+    '<div class="alt"><button class="kucuk-btn mavi" id="geri">↶ Geri al</button><button class="kucuk-btn yesil" id="kontrol">✔ Kontrol et</button><button class="kucuk-btn" id="ip">💡 İpucu</button></div>' +
+    karakterSatir('Kartlara sırayla dokun: önce 1. adımı, sonra 2. ve 3. adımı seç.', '') + '</div>';
+  sesBagla(); yuvaCiz();
+  app.querySelectorAll('.skart').forEach(b => { b.onclick = () => kartSec(+b.dataset.i); });
+  document.getElementById('geri').onclick = geriAl;
+  document.getElementById('kontrol').onclick = siraKontrol;
+  document.getElementById('ip').onclick = ipucuVer;
+}
+function yuvaCiz(cozum) {
+  const y = document.getElementById('yuvalar'); if (!y) return;
+  const liste = cozum ? [1, 2, 3].map(n => durum.kartlar.findIndex(k => k[1] === n)) : durum.secilen;
+  y.innerHTML = [0, 1, 2].map(i => { const k = liste[i];
+    return '<div class="yuva ' + (k === undefined ? '' : cozum ? 'dogru' : 'dolu') + '"><b>' + (i + 1) + '</b>' + (k === undefined ? '<span style="color:#8a94a6">' + (i + 1) + '. adım için bir karta dokun</span>' : esc(durum.kartlar[k][0])) + '</div>'; }).join('');
+  app.querySelectorAll('.skart').forEach((b, i) => { b.disabled = durum.kilit || durum.secilen.includes(i) || durum.secilen.length >= 3; });
+}
+function kartSec(i) {
+  if (!durum || durum.kilit || durum.m.tur !== 'sirala' || durum.secilen.includes(i) || durum.secilen.length >= 3) return;
+  durum.secilen.push(i); cal('tik'); yuvaCiz();
+}
+function geriAl() { if (!durum || durum.kilit || durum.m.tur !== 'sirala') return; durum.secilen.pop(); yuvaCiz(); }
+function siraKontrol() {
+  if (!durum || durum.kilit || durum.m.tur !== 'sirala') return;
+  if (durum.secilen.length < 3) { ruh('dusun', null, 'Önce üç adımı da seç.'); return; }
+  durum.deneme++;
+  const secK = durum.secilen.map(i => durum.kartlar[i]);
+  if (secK.every((k, i) => k[1] === i + 1)) {
+    yuvaCiz(true); const r = document.getElementById('yuvalar').getBoundingClientRect();
+    dogruBitir(r.left + r.width / 2, r.top + r.height / 2); return;
+  }
+  const tuzak = secK.find(k => k[1] === 0);
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = tuzak ? tuzak[2] : 'adim-sirasi';
+  if (durum.deneme >= 2) { yuvaCiz(true); cozumBitir(); return; }
+  cal('yanlis');
+  const y = document.getElementById('yuvalar'); if (!azHareket()) { y.classList.remove('salla'); void y.offsetWidth; y.classList.add('salla'); }
+  durum.secilen = []; yuvaCiz();
+  ruh('uzgun', 'salla', '🤔 Henüz değil. ' + (tuzak ? 'Seçtiğin kartlardan biri tuzaktı! ' : 'Kartlar doğru ama sıra karışık. ') + 'Yeniden dene; istersen 💡 ipucu al.');
+}
+
+/* --- Bitiş --- */
+function yildizYol(cx0, cy0, R, r) { let d = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, u = i % 2 ? r : R;
+  d += (i ? 'L' : 'M') + (cx0 + Math.cos(a) * u).toFixed(1) + ' ' + (cy0 + Math.sin(a) * u).toFixed(1); } return d + 'Z'; }
+function bitisEkrani() {
+  durum = null;
+  const puanli = sira.filter(x => !x.tekrar && x.m.tur !== 'duygu');
+  const yildiz = puanli.filter(x => x.sonuc === 'yildiz').length, oran = yildiz / puanli.length;
+  const [rozetAd, rozetRenk] = oran >= 0.85 ? ['Altın Hak Savunucusu', '#f4b400'] : oran >= 0.6 ? ['Gümüş Hak Savunucusu', '#9aa5b1'] : ['Cesur Hak Savunucusu', '#cd7f32'];
+  const duyguYazi = secilenDuygular.length ? secilenDuygular.map(d => d[0] + ' ' + d[1]).join(' · ') : '';
+  app.innerHTML = ustCiz() + '<div class="kart gir bitis"><h1>🎉 ' + esc(T.bitisBaslik) + '</h1>' +
+    '<svg viewBox="0 0 120 150" class="rozet" role="img" aria-label="' + rozetAd + ' rozeti">' +
+    '<path d="M40 92 L26 146 L45 137 L56 150 L60 98Z" fill="#ef476f"/><path d="M80 92 L94 146 L75 137 L64 150 L60 98Z" fill="#118ab2"/>' +
+    '<circle cx="60" cy="60" r="46" fill="' + rozetRenk + '"/><circle cx="60" cy="60" r="36" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="4"/>' +
+    '<path d="' + yildizYol(60, 60, 24, 10) + '" fill="#fff"/></svg><div class="rozet-ad">' + rozetAd + '</div>' +
+    '<div class="yildizlar" aria-label="' + yildiz + ' yıldız">' + puanli.map(x => x.sonuc === 'yildiz' ? '⭐' : x.sonuc === 'yarim' ? '✨' : '📘').join('') + '</div>' +
+    '<div class="karakter-satir"><div id="krk" class="krk kucuk">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Tebrikler! ' + yildiz + ' adımı ilk denemede doğru yaptın ve ' + puan + ' ' + esc(T.odulAd) +
+    ' topladın. Unutma: Hakkın kısıtlanınca susma; Ben diliyle anlat ve çözüm için sorumluluk al!</div></div>' +
+    (duyguYazi ? '<div class="duygu-ozet"><b>💜 Yolculukta seçtiğin duygular:</b><br>' + esc(duyguYazi) + '<br><span class="not" style="text-align:left;display:block">Bu duygular yalnızca senin ekranında görünür, kaydedilmez.</span></div>' : '') +
+    '<div id="karne"></div>' +
+    '<div class="kart" style="text-align:left;background:#fffdf6"><h2>📌 Sınıf panosu fikri: Haklarım ve Sorumluluklarım</h2>' +
+    '<p style="margin:4px 0 8px">Sınıfça büyük bir kartona iki sütun çizin. Her öğrenci bir hak ve ona uygun bir sorumluluk yazıp yapıştırsın. Örnekler:</p>' +
+    '<table class="pano"><thead><tr><th scope="col">Haklarım</th><th scope="col">Sorumluluklarım</th></tr></thead><tbody>' +
+    OYUN.pano.map(p => '<tr><td>' + esc(p[0]) + '</td><td>' + esc(p[1]) + '</td></tr>').join('') + '</tbody></table></div>' +
+    '<button class="buyuk" id="yeniden">↻ Yeniden oyna</button></div>';
+  sesBagla();
+  RaporMotoru.ekranCiz(document.getElementById('karne'));            // karne + sonucu portala gönderir (oyun başına bir kez)
+  const eski = parseInt(depo.oku(DEPO_REKOR), 10) || 0;
+  if (yildiz > eski) depo.yaz(DEPO_REKOR, String(yildiz));
+  document.getElementById('yeniden').onclick = baslangic;
+  cal('kutlama'); ruh('mutlu', 'zipla', document.getElementById('balon').textContent);
+  konfeti(60); setTimeout(() => konfeti(40, innerWidth * 0.25, innerHeight * 0.3), 350);
+}
+
+document.addEventListener('keydown', e => {                       // klavye: 1-4 seçenek, İ/i ipucu, Enter devam
+  if (e.key === 'Enter') { const d = document.getElementById('dev'); if (d && document.activeElement !== d) { e.preventDefault(); d.click(); } return; }
+  if (!durum || durum.kilit) return;
+  const n = +e.key;
+  if (n >= 1 && n <= 8) {
+    if (durum.sec && n <= 4) secimYap(n - 1);
+    else if (durum.m.tur === 'duygu') duyguSec(n - 1);
+    else if (durum.m.tur === 'sirala' && n <= 4) kartSec(n - 1);
+  } else if ((e.key === 'i' || e.key === 'İ' || e.key === 'ı') && document.getElementById('ip')) ipucuVer();
+});
+baslangic();
+</script>
+</body>
+</html>

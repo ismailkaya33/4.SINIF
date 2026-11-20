@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kroki Atölyesi</title>
+<style>
+:root{--ana:#ff8c42;--ikinci:#2a7fd4;--gok1:#a9d8ff;--gok2:#eef7ff;--kart:#fff;--yazi:#1f2a44;--soluk:#55627a;--ok:#1f8a4c;--hata:#c0392b;--zemin:#fffdf6;--duvar:#33415c}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;color:var(--yazi);font:18px/1.45 system-ui,"Segoe UI",Roboto,Arial,sans-serif;background-color:var(--gok2);
+  background-image:linear-gradient(rgba(42,127,212,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(42,127,212,.10) 1px,transparent 1px),linear-gradient(180deg,var(--gok1),var(--gok2) 65%);
+  background-size:26px 26px,26px 26px,100% 100%;background-attachment:fixed;overflow-x:hidden}
+#app{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:12px 14px 90px}
+#konfeti{position:fixed;inset:0;width:100%;height:100%;z-index:50;pointer-events:none}
+h1,h2,.baslik{font-family:"Trebuchet MS",system-ui,sans-serif;font-weight:800}
+h1{font-size:clamp(1.6rem,4.8vw,2.3rem);margin:6px 0 4px;text-align:center}
+h2{font-size:1.35rem;margin:6px 0}
+.kart{background:var(--kart);border-radius:22px;padding:18px;margin:12px 0;box-shadow:0 7px 0 rgba(31,42,68,.10),0 14px 30px rgba(31,42,68,.12)}
+button{font:inherit;cursor:pointer;color:var(--yazi)}
+button:disabled{cursor:default}
+button:focus-visible{outline:4px solid #ffb703;outline-offset:3px}
+.buyuk{display:block;margin:14px auto 4px;background:var(--ana);color:#fff;border:0;border-radius:18px;padding:12px 28px;min-height:58px;font-size:1.25rem;font-weight:800;box-shadow:0 6px 0 rgba(0,0,0,.22)}
+.buyuk:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.ust{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.ust .baslik{font-size:1rem;background:#fffc;border-radius:999px;padding:4px 14px}
+.sag{display:flex;gap:8px;align-items:center}
+.puan{background:#fff;border-radius:999px;padding:4px 14px;font-weight:800;font-size:1.1rem;box-shadow:0 3px 0 rgba(0,0,0,.1)}
+.puan.pop{animation:pop .4s}
+.ses{background:#fff;border:0;border-radius:50%;width:48px;height:48px;font-size:1.3rem;box-shadow:0 3px 0 rgba(0,0,0,.1)}
+.yol{display:flex;align-items:center;flex-wrap:wrap;gap:3px;margin:10px 0 0;padding:7px 10px;background:#fffc;border-radius:16px}
+.durak{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.72rem;font-weight:800;background:#fff;color:var(--soluk);border:2px dashed #b9c3d6}
+.durak.simdi{border:3px solid var(--ana);color:var(--ana)}
+.durak.yildiz,.durak.yarim,.durak.ogrendi{border:2px solid transparent;font-size:.9rem}
+.durak.yildiz{background:#fff3c4}.durak.yarim{background:#e2f7f4}.durak.ogrendi{background:#e8ecff}
+.cizgi{flex:1 1 3px;min-width:3px;max-width:14px;height:3px;border-radius:2px;background:#b9c3d6}
+.durak.son{width:32px;height:32px;font-size:1.1rem;border:3px solid #ffd166;background:#fff8e1}
+.etiket{display:inline-block;background:var(--ikinci);color:#fff;font-weight:800;border-radius:999px;padding:2px 12px;font-size:.88rem}
+.gorsel{display:flex;justify-content:center;margin:10px 0 2px}
+.gorsel svg{width:100%;max-width:440px;height:auto}
+.emoji-gorsel{font-size:clamp(2rem,7vw,2.8rem);line-height:1.2;text-align:center;margin:8px 0 2px}
+.soru{font-size:clamp(1.2rem,3.8vw,1.55rem);font-weight:800;margin:10px 0 14px;text-align:center}
+.sec{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.sec{grid-template-columns:1fr}}
+.sec button{position:relative;min-height:62px;border-radius:18px;border:3px solid var(--c);background:var(--z);font-size:1.08rem;font-weight:700;
+  padding:8px 40px 8px 52px;text-align:left;box-shadow:0 5px 0 var(--c)}
+.sec button:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--c)}
+.sec button:nth-child(1){--c:#ff8a5c;--z:#fff0e9}.sec button:nth-child(2){--c:#2ec4b6;--z:#e4f8f6}
+.sec button:nth-child(3){--c:#f4a300;--z:#fff6dc}.sec button:nth-child(4){--c:#7b5cff;--z:#efeaff}
+.sec .no{position:absolute;left:10px;top:50%;margin-top:-17px;width:34px;height:34px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:1rem}
+.sec.resimli{grid-template-columns:1fr 1fr;max-width:640px;margin:0 auto}
+.sec.resimli button{padding:40px 6px 6px;text-align:center}
+.sec.resimli .no{top:6px;margin-top:0}
+.sec.resimli svg{display:block;width:100%;height:auto;background:#fff;border-radius:10px}
+.sec button.dogru{--c:var(--ok);--z:#e3f7ec}
+.sec button.dogru::after{content:"✔";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--ok);font-size:1.5rem}
+.sec.resimli button.dogru::after,.sec.resimli button.yanlis::after{top:20px}
+.sec button.yanlis{--c:#a7b0c0;--z:#f1f3f7;color:#6c7589}
+.sec:not(.resimli) button.yanlis{text-decoration:line-through}
+.sec.resimli button.yanlis svg{opacity:.45}
+.sec button.yanlis::after{content:"✖";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--hata);font-size:1.3rem}
+.alt{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.ipucu-btn{background:#fff8e1;border:3px solid #ffd166;border-radius:999px;padding:6px 18px;min-height:50px;font-weight:800;box-shadow:0 4px 0 #ffd166}
+.karakter-satir{display:flex;align-items:flex-end;gap:10px;margin-top:8px}
+.krk{flex:0 0 auto;width:104px}
+.krk.kucuk{width:84px}
+.krk svg{display:block;width:100%;height:auto;transform-origin:50% 100%}
+.goz-mutlu,.kas{display:none}
+.krk.mutlu .goz-mutlu{display:inline}.krk.mutlu .goz-acik{display:none}
+.krk.dusun .goz-acik{transform:translate(3px,-4px)}
+.krk.uzgun .kas{display:inline}.krk.uzgun .goz-acik{transform:translateY(3px)}
+.balon{position:relative;flex:1;background:#fff;border-radius:20px;padding:12px 16px;font-weight:600;min-height:3.2em;margin-bottom:24px;box-shadow:0 5px 0 rgba(31,42,68,.10);border:3px solid #fff}
+.balon::before{content:"";position:absolute;left:-14px;bottom:16px;border:9px solid transparent;border-right:14px solid #fff;border-left:0}
+.balon.mutlu{border-color:#bfead2}.balon.uzgun{border-color:#ffd3cc}.balon.dusun{border-color:#ffe7a3}
+.devam-yer{text-align:center}
+/* Kroki + açıklama kutusu */
+.kroki-kap{margin:8px 0 4px}
+.kroki-ic{position:relative;max-width:440px;margin:0 auto}
+.kroki-ic svg{display:block;width:100%;height:auto}
+.dokun{position:absolute;background:transparent;border:2px dashed rgba(42,127,212,.55);border-radius:10px;padding:0;min-height:0}
+.dokun:hover:not(:disabled){background:rgba(255,183,3,.18);border-color:#ff8c42}
+.dokun.yanlis{border:3px solid var(--hata);background:rgba(192,57,43,.16)}
+.dokun.dogru{border:3px solid var(--ok);background:rgba(31,138,76,.18)}
+.dokun.dogru::after,.dokun.yanlis::after{position:absolute;right:2px;top:0;font-size:1.1rem;font-weight:800;line-height:1;background:#fff;border-radius:50%;padding:2px 3px}
+.dokun.dogru::after{content:"✔";color:var(--ok)}.dokun.yanlis::after{content:"✖";color:var(--hata)}
+.lejant{max-width:440px;margin:8px auto 0;border:2px dashed #8aa4c8;border-radius:14px;padding:6px 10px;background:#f7fbff;font-size:.95rem}
+.lejant b{display:block;font-size:.85rem;color:var(--soluk)}
+.lejant span{display:inline-flex;align-items:center;gap:4px;margin:2px 10px 2px 0}
+.lejant svg{width:34px;height:34px;background:var(--zemin);border-radius:6px}
+.betim{background:#fff8e1;border-radius:14px;padding:8px 14px;margin:6px 0;font-size:1rem}
+.betim ol,.betim ul{margin:4px 0;padding-left:22px}
+.betim li{margin:2px 0}
+/* Atölye (kroki kurma) */
+.atolye{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:flex-start;margin-top:6px}
+.oda-sar{flex:1 1 300px;max-width:420px}
+.oda-ust{display:flex;justify-content:space-between;align-items:center}
+.oda-ad{font-weight:800;color:var(--soluk)}
+.ok-kucuk svg{width:58px;height:60px;display:block}
+.oda{display:grid;gap:3px;border:8px solid var(--duvar);background:var(--zemin);padding:3px;touch-action:none}
+.hucre{position:relative;aspect-ratio:1/1;min-height:0;border:1.5px dashed #c9d3e2;border-radius:6px;background:transparent;padding:0;display:block}
+.hucre svg{display:block;width:100%;height:100%}
+.hucre.hedef{background:#fff1c9;border-color:#ff8c42}
+.hucre.yanlis{background:#ffe1dc;border:2.5px solid var(--hata)}
+.hucre.yanlis::after{content:"✖";position:absolute;right:1px;top:-3px;color:var(--hata);font-size:.95rem;font-weight:800}
+.hucre.dogru{background:#e1f6e8;border:2px solid var(--ok)}
+.hucre.dogru::after{content:"✔";position:absolute;right:1px;top:-3px;color:var(--ok);font-size:.95rem;font-weight:800}
+.tepsi-sar{flex:1 1 220px;max-width:420px;border:2px dashed #8aa4c8;border-radius:14px;padding:8px;background:#f7fbff}
+.tepsi-sar>b{font-size:.9rem;color:var(--soluk)}
+.tepsi{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin-top:6px}
+.parca{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;border:3px solid #9cc0ea;border-radius:14px;background:#fff;padding:4px;min-height:84px;font-size:.85rem;font-weight:700;line-height:1.1;touch-action:none}
+.parca svg{width:44px;height:44px;background:var(--zemin);border-radius:6px}
+.parca.secili{border-color:var(--ana);background:#fff1e6;box-shadow:0 0 0 3px #ffd2b3}
+.parca:disabled{opacity:.35}
+.parca .adet{position:absolute;right:4px;top:3px;background:var(--ikinci);color:#fff;border-radius:999px;font-size:.75rem;padding:0 6px}
+.kur-dug{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.kontrol{background:var(--ok);color:#fff;border:0;border-radius:16px;padding:10px 22px;min-height:54px;font-weight:800;font-size:1.1rem;box-shadow:0 5px 0 #145c33}
+.temizle{background:#fff;border:3px solid #b9c3d6;border-radius:16px;padding:8px 16px;min-height:54px;font-weight:700}
+.hayalet{position:fixed;z-index:60;width:58px;height:58px;pointer-events:none;transform:translate(-50%,-60%);background:#fffdf6;border:3px solid var(--ana);border-radius:12px;box-shadow:0 8px 18px rgba(0,0,0,.25)}
+.hayalet svg{width:100%;height:100%}
+/* Aşama girişi */
+.asama-no{display:inline-block;background:var(--ana);color:#fff;border-radius:999px;padding:2px 14px;font-weight:800}
+.kural{background:#e8f2ff;border-radius:14px;padding:10px 14px;margin:10px 0;font-weight:600}
+.kiyas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.kiyas>div{border-radius:14px;padding:8px 6px;text-align:center;font-size:.86rem;line-height:1.3;border:3px solid var(--k)}
+.kiyas .bas{font-weight:800;font-size:1rem;display:block;margin-bottom:2px}
+.kiyas .em{font-size:1.7rem;display:block}
+.kiyas p{margin:3px 0}
+.adimlar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0;padding:0;list-style:none;counter-reset:a}
+.adimlar li{counter-increment:a;background:#f2f7ff;border-radius:14px;padding:8px 10px 8px 42px;position:relative;font-weight:600;font-size:.95rem}
+.adimlar li::before{content:counter(a);position:absolute;left:8px;top:8px;width:26px;height:26px;border-radius:50%;background:var(--ikinci);color:#fff;display:grid;place-items:center;font-weight:800}
+.ok-ornek{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:6px 0}
+.ok-ornek figure{margin:0;text-align:center;font-size:.85rem;font-weight:600;max-width:150px}
+.ok-ornek svg{width:120px;height:auto}
+.bitis{text-align:center}
+.rozet{width:126px;height:auto}
+.rozet-ad{font-weight:800;font-size:1.25rem;margin-top:-4px}
+.yildizlar{font-size:1.5rem;letter-spacing:3px;margin:6px 0;word-break:break-all}
+#karne .rm{padding:4px 0;text-align:left}
+#karne .rm h2{text-align:center}
+#karne .rm-k{border:0;background:#f5f8ff;border-radius:16px}
+.unutma{text-align:left;background:#fff8e1;border-radius:16px;padding:10px 14px;margin-top:10px}
+.unutma ol{margin:6px 0;padding-left:22px}
+@media (max-width:440px){
+  #app{padding:10px 8px 80px}.kart{padding:12px 10px;border-radius:18px}
+  .oda{border-width:6px;padding:2px;gap:2px}
+  .kiyas{gap:5px}.kiyas>div{font-size:.78rem;padding:6px 3px}
+  .krk.kucuk{width:70px}.balon{padding:10px 12px;font-size:.95rem}
+  .sec.resimli{gap:8px}.sec.resimli button{padding:38px 4px 4px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .krk.zipla svg{animation:zipla .6s}
+  .krk.salla svg,.sec button.salla{animation:salla .45s}
+  .kart.gir{animation:gir .35s ease-out}
+  .sec button{transition:transform .08s,box-shadow .08s,background .15s}
+}
+@keyframes zipla{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-18px) scale(1.05,.95)}60%{transform:translateY(0) scale(1.06,.94)}}
+@keyframes salla{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-3deg)}40%{transform:translateX(8px) rotate(3deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes gir{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pop{50%{transform:scale(1.25)}}
+</style>
+</head>
+<body>
+<canvas id="konfeti" aria-hidden="true"></canvas>
+<div id="app"></div>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 2;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+})();
+
+</script>
+<script>
+'use strict';
+/* ===================== VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda) =====================
+ * Kazanım: SB.4.3.2 Günlük yaşamında kullandığı mekânların krokisini çizer. (yıllık plan, 11. hafta)
+ * Kroki: bir yerin kuşbakışı görünüşünün ölçü kullanılmadan, yaklaşık olarak, simgelerle çizilmiş hâli.
+ *
+ * Madde türleri:  secim (yazılı ya da çizimli seçenek) · dokun (krokide bir eşyaya dokun) · kur (sürükle-bırak ile kroki kur)
+ * Kroki tanımı (KR): { cols, rows, kuzey: yön okunun açısı (0 yukarı, 90 sağ, 180 aşağı), okYok, dis (bahçe),
+ *   esya: [{ t: tür, c: sütun, r: satır, w, h (hücre), d: duvar 'n'|'s'|'e'|'w' (kapı/pencere/tahta), yan: yandan çizim, id }] }
+ * Yanılgı etiketleri:
+ *   kroki-resim-sanir : krokiyi resim gibi ayrıntılı, renkli, desenli çizmek gerektiğini sanıyor
+ *   yandan-gorunus    : kuşbakışı yerine yandan/önden görünüşü kroki sanıyor
+ *   lejant-gereksiz   : açıklama kutusunun (lejant) gereksiz olduğunu sanıyor
+ *   olcek-gerekir     : krokinin de harita gibi ölçekli/ölçülü çizilmesi gerektiğini sanıyor
+ *   yon-oku-gereksiz  : krokide yön okunun gerekmediğini sanıyor
+ *   yon-ekrana-gore   : yönleri yön okuna değil kâğıdın/ekranın üst-alt-sağ-soluna göre okuyor
+ *   giris-sag-sol     : "kapıdan girince sağ" denince içeri girenin değil, ekranın sağını alıyor
+ *   ayna-ters         : yandan bakılan sahneyi krokiye çevirirken sağı ve solu ters çeviriyor
+ *   on-arka-ters      : bize yakın (öndeki) eşyaları krokinin üst tarafına çiziyor
+ *   dogu-bati-ters / kuzey-guney-ters : iki karşıt yönü karıştırıyor
+ *   ara-yon-eksik     : ara yön yerine yalnız bir ana yön söylüyor
+ *   yan-yon           : doğru yöne dik (yandaki) bir yön seçti
+ *   tam-ters-kose     : ara yönün iki parçasını da ters çevirdi (güneybatı yerine kuzeydoğu)
+ *   karsi-duvar       : "sağında" denince karşıdaki duvara bakıyor
+ *   betimleme-okunmadi: yazılı betimlemeyi krokiyle tek tek karşılaştırmadı
+ *   eksigi-goremedi   : krokide zaten bulunan bir öğeyi eksik sanıyor
+ *   yer-iliskisi      : "hemen yanında, önünde, karşısında" gibi konum ilişkisini yanlış kurdu
+ */
+const AD = { tahta: 'Tahta', kapi: 'Kapı', pencere: 'Pencere', dolap: 'Dolap', sira: 'Sıra', masa: 'Masa', omasa: 'Öğretmen masası',
+  yatak: 'Yatak', saksi: 'Saksı', kitaplik: 'Kitaplık', agac: 'Ağaç', bank: 'Bank', kaydirak: 'Kaydırak', giris: 'Giriş' };
+
+const KR = {
+  /* 1. aşama — odanın kapıdan görünüşü (sahne "oda") ve seçenekler */
+  odaDogru: { cols: 3, rows: 3, esya: [{ t: 'pencere', c: 1, r: 0, d: 'n' }, { t: 'dolap', c: 0, r: 0 }, { t: 'saksi', c: 2, r: 0 }, { t: 'masa', c: 2, r: 2 }, { t: 'kapi', c: 1, r: 2, d: 's' }] },
+  odaAyna:  { cols: 3, rows: 3, esya: [{ t: 'pencere', c: 1, r: 0, d: 'n' }, { t: 'dolap', c: 2, r: 0 }, { t: 'saksi', c: 0, r: 0 }, { t: 'masa', c: 0, r: 2 }, { t: 'kapi', c: 1, r: 2, d: 's' }] },
+  odaTers:  { cols: 3, rows: 3, esya: [{ t: 'pencere', c: 1, r: 0, d: 'n' }, { t: 'dolap', c: 0, r: 2 }, { t: 'saksi', c: 2, r: 2 }, { t: 'masa', c: 2, r: 0 }, { t: 'kapi', c: 1, r: 2, d: 's' }] },
+  /* okul bahçesinin girişten görünüşü (sahne "bahce") ve seçenekler */
+  bahceDogru: { cols: 3, rows: 3, dis: true, esya: [{ t: 'kaydirak', c: 0, r: 0 }, { t: 'agac', c: 2, r: 0 }, { t: 'bank', c: 0, r: 2 }, { t: 'giris', c: 1, r: 2, d: 's' }] },
+  bahceAyna:  { cols: 3, rows: 3, dis: true, esya: [{ t: 'kaydirak', c: 2, r: 0 }, { t: 'agac', c: 0, r: 0 }, { t: 'bank', c: 2, r: 2 }, { t: 'giris', c: 1, r: 2, d: 's' }] },
+  bahceTers:  { cols: 3, rows: 3, dis: true, esya: [{ t: 'kaydirak', c: 0, r: 2 }, { t: 'agac', c: 2, r: 2 }, { t: 'bank', c: 0, r: 0 }, { t: 'giris', c: 1, r: 2, d: 's' }] },
+  bahceYan:   { cols: 3, rows: 3, dis: true, esya: [{ t: 'kaydirak', c: 0, r: 0, yan: 1 }, { t: 'agac', c: 2, r: 0, yan: 1 }, { t: 'bank', c: 0, r: 2, yan: 1 }, { t: 'giris', c: 1, r: 2, d: 's' }] },
+  /* 2. aşama — okuma */
+  sinif: { cols: 6, rows: 5, esya: [{ t: 'tahta', c: 2, r: 0, w: 2, d: 'n' }, { t: 'omasa', c: 1, r: 0 }, { t: 'pencere', c: 0, r: 1, d: 'w' }, { t: 'pencere', c: 0, r: 3, d: 'w' },
+    { t: 'saksi', c: 0, r: 4 }, { t: 'kapi', c: 1, r: 4, d: 's' }, { t: 'dolap', c: 5, r: 2, h: 2 },
+    { t: 'sira', c: 2, r: 2 }, { t: 'sira', c: 3, r: 2 }, { t: 'sira', c: 2, r: 3 }, { t: 'sira', c: 3, r: 3 }] },
+  odaKuzeyAsagi: { cols: 4, rows: 3, kuzey: 180, esya: [{ t: 'pencere', c: 0, r: 1, d: 'w' }, { t: 'yatak', c: 3, r: 0 }, { t: 'kapi', c: 1, r: 0, d: 'n' }, { t: 'dolap', c: 3, r: 2 }, { t: 'masa', c: 0, r: 2 }] },
+  odaKuzeySag: { cols: 4, rows: 3, kuzey: 90, esya: [{ t: 'yatak', c: 0, r: 0 }, { t: 'masa', c: 2, r: 0 }, { t: 'dolap', c: 3, r: 2 }, { t: 'pencere', c: 3, r: 1, d: 'e' }, { t: 'kapi', c: 1, r: 2, d: 's' }] },
+  /* 4. aşama — hata avcısı */
+  eceOda: { cols: 4, rows: 3, esya: [{ t: 'kapi', c: 1, r: 2, d: 's', id: 'kapi' }, { t: 'pencere', c: 2, r: 0, d: 'n', id: 'pencere' },
+    { t: 'dolap', c: 0, r: 0, id: 'dolap' }, { t: 'yatak', c: 0, r: 1, h: 2, id: 'yatak' }, { t: 'masa', c: 3, r: 1, id: 'masa' }] },
+  canSinif: { cols: 5, rows: 4, esya: [{ t: 'tahta', c: 1, r: 0, w: 3, d: 'n' }, { t: 'kapi', c: 4, r: 2, d: 'e' }, { t: 'pencere', c: 0, r: 1, d: 'w' }, { t: 'pencere', c: 0, r: 2, d: 'w' },
+    { t: 'omasa', c: 2, r: 1 }, { t: 'sira', c: 1, r: 2 }, { t: 'sira', c: 2, r: 2 }, { t: 'sira', c: 3, r: 2 }, { t: 'sira', c: 1, r: 3 }, { t: 'sira', c: 2, r: 3 }, { t: 'sira', c: 3, r: 3 }, { t: 'dolap', c: 4, r: 0 }] },
+  kantin: { cols: 4, rows: 3, esya: [{ t: 'kapi', c: 0, r: 1, d: 'w', id: 'kapi' }, { t: 'pencere', c: 2, r: 0, d: 'n', id: 'pencere' }, { t: 'masa', c: 1, r: 1, id: 'masa1', aria: 'Kapıya yakın masa' },
+    { t: 'masa', c: 3, r: 1, yan: 1, id: 'masa2', aria: 'Doğu duvarına yakın masa' }, { t: 'dolap', c: 2, r: 2, id: 'dolap' }, { t: 'saksi', c: 3, r: 2, id: 'saksi' }] },
+  selinOda: { cols: 4, rows: 3, okYok: true, esya: [{ t: 'dolap', c: 1, r: 0 }, { t: 'yatak', c: 3, r: 1, h: 2 }, { t: 'pencere', c: 0, r: 1, d: 'w' }, { t: 'kapi', c: 1, r: 2, d: 's' }, { t: 'masa', c: 0, r: 2 }] }
+};
+
+const OYUN = {
+  id: 'sos-kroki', ad: 'Kroki Atölyesi',
+  tema: {
+    ad: 'Kroki Atölyesi', karakterAdi: 'Kuş Pırpır',
+    hikaye: 'Ben her yere yukarıdan, yani kuşbakışı bakarım. Bugün atölyede krokileri tanıyacak, okuyacak, kendin kuracak ve hataları yakalayacaksın!',
+    odulSimge: '✏️', odulAd: 'kalem puanı', sonSimge: '📐', bitisBaslik: 'Kroki ustası oldun!',
+    renkAna: '#ff8c42', renkIkinci: '#2a7fd4'
+  },
+  kazanimlar: [{ kod: 'SB.4.3.2', ad: 'Günlük yaşamında kullandığı mekânların krokisini çizer' }],
+  asamalar: {
+    1: { ad: 'Kroki nedir?', kural: 'Kroki, bir yerin kuşbakışı (yukarıdan) görünüşünün ölçü kullanılmadan, yaklaşık olarak çizilmiş hâlidir. Eşyalar simgelerle gösterilir; simgelerin anlamı açıklama kutusunda yazar.', bilgi: 'kiyas' },
+    2: { ad: 'Krokiyi oku', kural: 'Krokiyi okurken önce yön okunu bul: ok kuzeyi gösterir. Ok her zaman yukarıyı göstermeyebilir! Simgelerin ne olduğunu açıklama kutusundan oku.', bilgi: 'oku' },
+    3: { ad: 'Krokini kur', kural: 'Betimlemeyi cümle cümle oku ve her parçayı krokide yerine koy. Önce yön okuna bak!', bilgi: 'kur' },
+    4: { ad: 'Hata avcısı', kural: 'İyi bir krokide şunlar bulunur: kuşbakışı çizim, doğru yerleştirilmiş eşyalar, yön oku ve açıklama kutusu. Eksik ya da yanlış olanı yakala!', bilgi: 'liste' }
+  },
+  maddeler: [
+    /* ---------- 1. aşama: Kroki nedir? ---------- */
+    { id: 'k1', asama: 1, tur: 'secim', sahne: 'oda', resimli: true,
+      soru: 'Odaya kapıdan bakıyoruz. Kapı odanın güney duvarında. Bu odanın krokisi hangisi?',
+      dogru: { kroki: 'odaDogru', ad: 'kuşbakışı: dolap sol üstte, saksı sağ üstte, masa sağ altta' },
+      yanlislar: [[{ kroki: 'odaAyna', ad: 'kuşbakışı: dolap sağ üstte, saksı sol üstte, masa sol altta' }, 'ayna-ters'],
+        [{ kroki: 'odaTers', ad: 'kuşbakışı: dolap sol altta, saksı sağ altta, masa sağ üstte' }, 'on-arka-ters'],
+        [{ cizim: 'odaOnden', ad: 'odanın önden görünüşü' }, 'yandan-gorunus']],
+      ipucu: ['Kroki yukarıdan (kuşbakışı) bakınca görünendir. Önden çizilmiş resim kroki olmaz.', 'Kapı aşağıda (güneyde). Kapıya, yani bize yakın olan masa krokinin alt tarafında olmalı.', 'Dolap solumuzda. Kuzeye bakan birinin solu batıdır, krokide sol taraftır.'],
+      why: 'Kapıdan kuzeye bakıyoruz: dolap solda ve uzakta, saksı sağda ve uzakta, masa sağda ve bize yakın. Krokide uzak olan yukarıya, yakın olan aşağıya çizilir.' },
+    { id: 'k2', asama: 1, tur: 'secim', sahne: 'krokiHarita',
+      soru: 'Kroki de harita da kuşbakışı çizilir. Krokiyi haritadan ayıran özellik hangisidir?',
+      dogru: 'Kroki ölçü kullanılmadan, yaklaşık olarak çizilir.',
+      yanlislar: [['Kroki yandan bakılarak çizilir.', 'yandan-gorunus'], ['Krokide yön oku kullanılmaz.', 'yon-oku-gereksiz'], ['Krokide her ağaç ve taş tek tek çizilir.', 'kroki-resim-sanir']],
+      ipucu: ['İki çizime de bak: hangisinin altında "0 — 100 m" gibi bir ölçek var?', 'Harita ölçekle, yani belli oranda küçültülerek çizilir. Kroki ise elle, kabaca çizilir.'],
+      why: 'Harita ölçekli çizilir; kroki ise ölçü kullanılmadan, gözle tahmin edilerek yaklaşık çizilir. İkisi de kuşbakışıdır ve ikisinde de yön oku olur.' },
+    { id: 'k3', asama: 1, tur: 'secim', emoji: '🐦 ⬇️ 🛏️ 📄 ✏️',
+      soru: 'Ayşe yatak odasının krokisini çizecek. Hangisini yaparsa doğru yapmış olur?',
+      dogru: 'Yatağını yukarıdan bakınca göründüğü gibi bir dikdörtgenle gösterir.',
+      yanlislar: [['Yatağın ayaklarını ve yorgandaki çiçek desenlerini tek tek çizer.', 'kroki-resim-sanir'], ['Odasına kapıdan bakınca gördüğü gibi çizer.', 'yandan-gorunus'],
+        ['Krokiye açıklama kutusu koymaz, çünkü herkes anlar.', 'lejant-gereksiz']],
+      ipucu: ['Kroki ayrıntı değil, yerleri gösterir.', 'Bir kuş tavanın üstünden baksaydı yatağı nasıl görürdü?'],
+      why: 'Krokide eşyalar kuşbakışı, basit simgelerle çizilir: yukarıdan bakınca yatak bir dikdörtgendir. Desen ve ayrıntı çizilmez, açıklama kutusu da eklenir.' },
+    { id: 'k4', asama: 1, tur: 'secim', sahne: 'bahce', resimli: true,
+      soru: 'Okul bahçesine girişten bakıyoruz. Giriş bahçenin güneyinde. Bahçenin krokisi hangisi?',
+      dogru: { kroki: 'bahceDogru', ad: 'kuşbakışı: kaydırak sol üstte, ağaç sağ üstte, bank sol altta' },
+      yanlislar: [[{ kroki: 'bahceAyna', ad: 'kuşbakışı: kaydırak sağ üstte, ağaç sol üstte, bank sağ altta' }, 'ayna-ters'],
+        [{ kroki: 'bahceTers', ad: 'kuşbakışı: kaydırak sol altta, ağaç sağ altta, bank sol üstte' }, 'on-arka-ters'],
+        [{ kroki: 'bahceYan', ad: 'yerler doğru ama eşyalar yandan çizilmiş' }, 'yandan-gorunus']],
+      ipucu: ['Krokide her şey yukarıdan görüldüğü gibi çizilir. Ağaç tepeden bakınca yuvarlak görünür.', 'Bank bize en yakın; krokide girişe yakın, yani aşağıda olmalı.', 'Kuzeye bakarken sol taraf batıdır: kaydırak ve bank solda.'],
+      why: 'Girişten kuzeye bakıyoruz: kaydırak solda ve uzakta, ağaç sağda ve uzakta, bank solda ve yakında. Hepsi tepeden görüldüğü gibi simgeyle çizilir.' },
+    { id: 'k5', asama: 1, tur: 'secim', emoji: '📷 🏫 🌳 ↔️ ✏️ 📄',
+      soru: 'Elif okul bahçesinin fotoğrafını çekti, Can ise bahçenin krokisini çizdi. Hangisi doğrudur?',
+      dogru: 'Fotoğraf her ayrıntıyı gösterir; kroki yalnızca önemli yerleri simgelerle gösterir.',
+      yanlislar: [['Kroki, fotoğraftan daha çok ayrıntı gösterir.', 'kroki-resim-sanir'], ['Fotoğrafa bir yön oku eklenirse kroki olur.', 'yandan-gorunus'],
+        ['Kroki fotoğraf gibi her şeyi gösterdiği için açıklama kutusu gerekmez.', 'lejant-gereksiz']],
+      ipucu: ['Fotoğraf çoğu zaman önden ya da yandan çekilir. Kroki nereden bakılarak çizilir?', 'Krokide yaprak, tuğla, renk gibi ayrıntılar yoktur; yalnızca yerler ve simgeler vardır.'],
+      why: 'Fotoğraf gördüğümüz her şeyi, çoğu zaman yandan gösterir. Kroki kuşbakışıdır ve yalnızca önemli yerleri simgelerle gösterir; simgelerin anlamı açıklama kutusundadır.' },
+
+    /* ---------- 2. aşama: Krokiyi oku ---------- */
+    { id: 'o1', asama: 2, tur: 'secim', kroki: 'sinif', baslik: 'Sınıf krokisi',
+      soru: 'Kapıdan içeri giren bir öğrencinin sağ tarafındaki duvarın dibinde ne vardır?',
+      dogru: 'Dolap', yanlislar: [['Pencereler', 'giris-sag-sol'], ['Saksı', 'giris-sag-sol'], ['Tahta', 'karsi-duvar']],
+      ipucu: ['Kapı güney duvarında. İçeri giren öğrenci hangi yöne bakar?', 'Kuzeye bakan birinin sağı doğudur. Krokide doğu hangi taraf?'],
+      why: 'Kapı güneyde; içeri giren öğrenci kuzeye bakar. Kuzeye bakanın sağı doğudur. Doğu duvarının dibinde dolap var.' },
+    { id: 'o2', asama: 2, tur: 'secim', kroki: 'sinif', baslik: 'Sınıf krokisi',
+      soru: 'Mert tahtanın önünden kalkıp dolaba yürüyor. Mert hangi yöne gider?',
+      dogru: 'Güneydoğu', yanlislar: [['Doğu', 'ara-yon-eksik'], ['Güneybatı', 'dogu-bati-ters'], ['Kuzeydoğu', 'kuzey-guney-ters']],
+      ipucu: ['Tahta kuzey duvarında. Dolap tahtanın aşağısında mı, yukarısında mı?', 'Dolap hem aşağıda (güney) hem sağda (doğu). İkisini birleştir.'],
+      why: 'Dolap tahtanın hem güneyinde hem doğusunda. Bu yüzden Mert güneydoğuya yürür.' },
+    { id: 'o3', asama: 2, tur: 'secim', kroki: 'odaKuzeyAsagi', baslik: 'Zeynep\'in odası',
+      soru: 'Önce yön okuna dikkatle bak. Pencere odanın hangi duvarındadır?',
+      dogru: 'Doğu', yanlislar: [['Batı', 'yon-ekrana-gore'], ['Kuzey', 'kuzey-guney-ters'], ['Güney', 'yan-yon']],
+      ipucu: ['Bu krokide yön oku aşağıyı gösteriyor: kuzey aşağıda!', 'Kuzey aşağıdaysa güney yukarıda; doğu solda, batı sağda kalır.'],
+      why: 'Yön oku aşağıyı gösteriyor, yani kuzey aşağıda. O zaman doğu sol taraftır. Pencere sol duvarda, yani doğu duvarındadır.' },
+    { id: 'o4', asama: 2, tur: 'secim', kroki: 'odaKuzeySag', baslik: 'Emre\'nin odası',
+      soru: 'Yön okuna göre yatak odanın hangi köşesindedir?',
+      dogru: 'Güneybatı', yanlislar: [['Kuzeybatı', 'yon-ekrana-gore'], ['Kuzeydoğu', 'tam-ters-kose'], ['Güneydoğu', 'dogu-bati-ters']],
+      ipucu: ['Yön oku sağı gösteriyor: kuzey sağda, güney solda.', 'Kuzey sağdaysa doğu aşağıda, batı yukarıda olur.', 'Yatak sol üst köşede: sol = güney, üst = batı.'],
+      why: 'Kuzey sağda olduğu için güney solda, batı yukarıda kalır. Yatak sol üst köşede: güney ile batının buluştuğu köşe, yani güneybatı.' },
+
+    /* ---------- 3. aşama: Krokini kur (sürükle-bırak / dokun-yerleştir / klavye) ---------- */
+    { id: 'b1', asama: 3, tur: 'kur', baslik: 'Sınıf krokisi', cols: 5, rows: 4, kuzey: 0,
+      soru: 'Sınıfın krokisini betimlemeye göre kur.',
+      betimleme: ['Tahta, kuzey duvarının tam ortasındadır.', 'Öğretmen masası, tahtanın hemen batısındadır.', 'Dolap, sınıfın kuzeydoğu köşesindedir.',
+        'Pencere, batı duvarının ortasındadır.', 'Kapı, güney duvarının doğu ucundadır.', 'İki sıra, tahtanın hemen güneyinden başlayarak art arda durur.'],
+      parcalar: [{ t: 'tahta', n: 1, hedef: [[2, 0]] }, { t: 'omasa', n: 1, hedef: [[1, 0]] }, { t: 'dolap', n: 1, hedef: [[4, 0]] },
+        { t: 'pencere', n: 1, hedef: [[0, 1], [0, 2]] }, { t: 'kapi', n: 1, hedef: [[4, 3]] }, { t: 'sira', n: 2, hedef: [[2, 1], [2, 2]] }],
+      ipucu: ['Yön oku yukarıyı gösteriyor: kuzey yukarıda, güney aşağıda, doğu sağda, batı solda.', 'Kuzeydoğu köşesi, yukarı ile sağın buluştuğu köşedir.', 'Tahta üst sıranın ortasına; öğretmen masası onun hemen soluna; sıralar tahtanın altına.'],
+      why: 'Kuzey yukarıda: tahta üst ortada, öğretmen masası onun solunda (batısında), dolap sağ üst köşede, pencere sol duvarda, kapı alt duvarın sağ ucunda, sıralar tahtanın altında.' },
+    { id: 'b2', asama: 3, tur: 'kur', baslik: 'Ayşe\'nin odası', cols: 5, rows: 4, kuzey: 0,
+      soru: 'Ayşe\'nin odasının krokisini betimlemeye göre kur.',
+      betimleme: ['Kapı, kuzey duvarının ortasındadır.', 'Odaya giren kişinin hemen sağında dolap vardır.', 'Pencere, kapının tam karşısındaki duvarın ortasındadır.',
+        'Çalışma masası, pencerenin hemen önündedir.', 'Yatak, odanın güneydoğu köşesindedir.'],
+      parcalar: [{ t: 'kapi', n: 1, hedef: [[2, 0]] }, { t: 'dolap', n: 1, hedef: [[1, 0]] }, { t: 'pencere', n: 1, hedef: [[2, 3]] },
+        { t: 'masa', n: 1, hedef: [[2, 2]] }, { t: 'yatak', n: 1, hedef: [[4, 3]] }],
+      ozel: { 'dolap@3,0': 'giris-sag-sol' },
+      ipucu: ['Kapıyı üst duvarın ortasına koy.', 'Kapıdan içeri giren kişi odanın içine, yani güneye bakar. Güneye bakan birinin sağ eli batıyı gösterir.', 'Dolap kapının hemen batısına (krokide soluna) gelir. Pencere tam karşıda: alt duvarın ortası.'],
+      why: 'İçeri giren kişi güneye bakar; onun sağı batıdır, bu yüzden dolap kapının hemen solunda. Pencere karşı (güney) duvarda, masa pencerenin önünde, yatak sağ alt (güneydoğu) köşede.' },
+    { id: 'b3', asama: 3, tur: 'kur', baslik: 'Okul kütüphanesi', cols: 5, rows: 4, kuzey: 180,
+      soru: 'Dikkat, bu krokide yön oku aşağıyı gösteriyor! Kütüphanenin krokisini kur.',
+      betimleme: ['Kapı, kuzey duvarının ortasındadır.', 'Okuma masası, kapının hemen güneyindedir.', 'Pencere, batı duvarının ortasındadır.',
+        'Kitaplık, güneydoğu köşesindedir.', 'Saksı, kuzeydoğu köşesindedir.'],
+      parcalar: [{ t: 'kapi', n: 1, hedef: [[2, 3]] }, { t: 'masa', n: 1, hedef: [[2, 2]] }, { t: 'pencere', n: 1, hedef: [[4, 1], [4, 2]] },
+        { t: 'kitaplik', n: 1, hedef: [[0, 0]] }, { t: 'saksi', n: 1, hedef: [[0, 3]] }],
+      ipucu: ['Yön oku aşağıyı gösteriyor: kuzey aşağıda, güney yukarıda.', 'Kuzey aşağıdaysa doğu solda, batı sağda kalır.', 'Kuzeydoğu = aşağı ile solun buluştuğu köşe; güneydoğu = yukarı ile sol.'],
+      why: 'Kuzey aşağıda olduğu için her yön ters döner: kapı alt duvarda, masa kapının hemen üstünde (güneyinde), pencere sağ duvarda (batı), kitaplık sol üst köşede (güneydoğu), saksı sol alt köşede (kuzeydoğu).' },
+
+    /* ---------- 4. aşama: Hata avcısı ---------- */
+    { id: 'h1', asama: 4, tur: 'dokun', kroki: 'eceOda', baslik: 'Ece\'nin odası',
+      betimleme: ['Kapı güney duvarındadır.', 'Pencere kuzey duvarındadır.', 'Dolap odanın kuzeydoğu köşesindedir.', 'Yatak batı duvarının dibindedir.', 'Masa doğu duvarının önündedir.'],
+      betimlemeBaslik: 'Ece odasını böyle anlattı:',
+      soru: 'Ece krokisinde bir eşyayı yanlış yere çizmiş. O eşyaya dokun.',
+      dogru: 'dolap', yanlislar: { kapi: 'betimleme-okunmadi', pencere: 'betimleme-okunmadi', yatak: 'betimleme-okunmadi', masa: 'betimleme-okunmadi' },
+      ipucu: ['Betimlemedeki her cümleyi krokiyle tek tek karşılaştır.', 'Kuzeydoğu köşesi: yukarı ile sağın buluştuğu köşe. Orada ne var?'],
+      why: 'Betimlemeye göre dolap kuzeydoğu (sağ üst) köşede olmalı. Ece onu kuzeybatı (sol üst) köşeye çizmiş.' },
+    { id: 'h2', asama: 4, tur: 'secim', kroki: 'canSinif', lejantYok: true, baslik: 'Can\'ın sınıf krokisi',
+      soru: 'Can\'ın arkadaşları "Bu kareler ve çizgiler ne?" diye sordu. Can krokisine ne eklemeli?',
+      dogru: 'Simgelerin ne anlama geldiğini gösteren açıklama kutusu',
+      yanlislar: [['Eşyaların gerçek renkleri ve desenleri', 'kroki-resim-sanir'], ['Her eşyanın santimetre olarak ölçüsü', 'olcek-gerekir'], ['Eşyaların yandan görünüşleri', 'yandan-gorunus']],
+      ipucu: ['Arkadaşları simgeleri tanıyamıyor. Haritalarda simgelerin anlamı nerede yazar?', 'Bu kutuya "lejant" da denir.'],
+      why: 'Krokideki simgelerin anlamı açıklama kutusunda (lejant) yazılır. Açıklama kutusu olmazsa kimse hangi simgenin ne olduğunu anlayamaz.' },
+    { id: 'h3', asama: 4, tur: 'dokun', kroki: 'kantin', baslik: 'Okul kantini',
+      soru: 'Bu krokide bir çizim kroki kuralına uymuyor. O çizime dokun.',
+      dogru: 'masa2', yanlislar: { kapi: 'yandan-gorunus', pencere: 'yandan-gorunus', masa1: 'yandan-gorunus', dolap: 'yandan-gorunus', saksi: 'yandan-gorunus' },
+      ipucu: ['Krokide her şey yukarıdan görüldüğü gibi çizilir.', 'İki masayı karşılaştır: biri yukarıdan, öteki başka bir yerden bakılarak çizilmiş.'],
+      why: 'Sağdaki masa ayaklarıyla, yani yandan çizilmiş. Krokide masa yukarıdan bakınca göründüğü gibi bir dikdörtgenle çizilir.' },
+    { id: 'h4', asama: 4, tur: 'secim', kroki: 'selinOda', baslik: 'Selin\'in odası',
+      soru: 'Selin "Dolap kuzey duvarının dibinde." dedi. Arkadaşı "Krokine bakarak bunu bilemem." dedi. Krokide eksik olan nedir?',
+      dogru: 'Kuzeyi gösteren yön oku',
+      yanlislar: [['Simgeleri açıklayan açıklama kutusu', 'eksigi-goremedi'], ['Eşyaların metre olarak ölçüleri', 'olcek-gerekir'], ['Hiçbir şey; kâğıdın üst tarafı her zaman kuzeydir.', 'yon-ekrana-gore']],
+      ipucu: ['Açıklama kutusu krokinin altında duruyor. Başka ne eksik?', 'Kuzeyin nerede olduğunu krokide ne gösterir?'],
+      why: 'Yön oku olmadan krokide kuzeyin hangi tarafta olduğu bilinemez. Kâğıdın üstü her zaman kuzey değildir; bunu yön oku gösterir.' }
+  ]
+};
+
+/* ===================== ÇİZİMLER ===================== */
+const T = OYUN.tema;
+const HU = 60, KM = 16, ZEMIN = '#fffdf6', CIM = '#e3f4dc';
+function okSVG(cx, cy, a) {   // kuzey oku: a = derece (0 yukarı, saat yönünde)
+  const rad = a * Math.PI / 180, tx = cx + 33 * Math.sin(rad), ty = cy - 33 * Math.cos(rad) + 7;
+  return '<circle cx="' + cx + '" cy="' + cy + '" r="22" fill="#fff" stroke="#c0392b" stroke-width="2"/>' +
+    '<path transform="rotate(' + a + ' ' + cx + ' ' + cy + ')" d="M' + cx + ' ' + (cy - 19) + 'L' + (cx + 9) + ' ' + (cy + 12) + 'L' + cx + ' ' + (cy + 5) + 'L' + (cx - 9) + ' ' + (cy + 12) + 'Z" fill="#c0392b"/>' +
+    '<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" font-size="20" font-weight="800" text-anchor="middle" fill="#c0392b" font-family="system-ui,sans-serif">K</text>';
+}
+function duvarIc(t, L, zemin) {   // yerel çizim: duvar çizgisi x ekseninde (0..L), odanın içi +y yönünde
+  if (t === 'tahta') return '<rect x="6" y="5" width="' + (L - 12) + '" height="10" rx="2" fill="#2f6b4f" stroke="#1d4532" stroke-width="1.5"/>';
+  if (t === 'pencere') return '<rect x="10" y="-5" width="' + (L - 20) + '" height="10" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2"/><line x1="10" y1="0" x2="' + (L - 10) + '" y2="0" stroke="#2b6cb0" stroke-width="1.5"/>';
+  if (t === 'kapi') { const r = L - 18; return '<rect x="8" y="-6" width="' + (L - 16) + '" height="12" fill="' + zemin + '"/><line x1="9" y1="0" x2="9" y2="' + r + '" stroke="#7a4b22" stroke-width="3" stroke-linecap="round"/>' +
+    '<path d="M9 ' + r + 'A' + r + ' ' + r + ' 0 0 0 ' + (9 + r) + ' 0" fill="none" stroke="#7a4b22" stroke-width="1.6" stroke-dasharray="4 3"/>'; }
+  if (t === 'giris') return '<rect x="8" y="-6" width="' + (L - 16) + '" height="12" fill="' + zemin + '"/><rect x="3" y="-7" width="7" height="14" fill="#7a4b22"/><rect x="' + (L - 10) + '" y="-7" width="7" height="14" fill="#7a4b22"/>';
+  return '';
+}
+const DUVARLIK = { tahta: 1, pencere: 1, kapi: 1, giris: 1 };
+function duvarEsya(t, d, x, y, w, h, zemin) {
+  const [ox, oy, a, L] = d === 'e' ? [x + w, y, 90, h] : d === 's' ? [x + w, y + h, 180, w] : d === 'w' ? [x, y + h, 270, h] : [x, y, 0, w];
+  return '<g transform="translate(' + ox + ' ' + oy + ') rotate(' + a + ')">' + duvarIc(t, L, zemin) + '</g>';
+}
+function serbestEsya(t, x, y, w, h, yan) {
+  const cx = x + w / 2, cy = y + h / 2, K = 'stroke="#7a5230" stroke-width="2"';
+  if (yan) {   // YANDAN (önden) görünüş — krokiye uymayan çizim
+    if (t === 'masa') return '<rect x="' + (x + 6) + '" y="' + (y + 18) + '" width="' + (w - 12) + '" height="7" fill="#d9a66b" ' + K + '/><rect x="' + (x + 10) + '" y="' + (y + 25) + '" width="5" height="27" fill="#b98550"/><rect x="' + (x + w - 15) + '" y="' + (y + 25) + '" width="5" height="27" fill="#b98550"/>';
+    if (t === 'agac') return '<rect x="' + (cx - 4) + '" y="' + (y + 32) + '" width="8" height="24" fill="#8a5a2b"/><circle cx="' + cx + '" cy="' + (y + 22) + '" r="17" fill="#79c26d" stroke="#2f7a3a" stroke-width="2"/>';
+    if (t === 'bank') return '<rect x="' + (x + 6) + '" y="' + (y + 14) + '" width="' + (w - 12) + '" height="7" fill="#d79a62" ' + K + '/><rect x="' + (x + 6) + '" y="' + (y + 32) + '" width="' + (w - 12) + '" height="7" fill="#d79a62" ' + K + '/>' +
+      '<rect x="' + (x + 10) + '" y="' + (y + 21) + '" width="4" height="34" fill="#7a5230"/><rect x="' + (x + w - 14) + '" y="' + (y + 21) + '" width="4" height="34" fill="#7a5230"/>';
+    if (t === 'kaydirak') return '<path d="M' + (x + 12) + ' ' + (y + 56) + 'V' + (y + 12) + 'M' + (x + 20) + ' ' + (y + 56) + 'V' + (y + 12) + 'M' + (x + 12) + ' ' + (y + 22) + 'H' + (x + 20) + 'M' + (x + 12) + ' ' + (y + 32) + 'H' + (x + 20) + 'M' + (x + 12) + ' ' + (y + 42) + 'H' + (x + 20) + '" stroke="#555" stroke-width="2.5"/>' +
+      '<path d="M' + (x + 20) + ' ' + (y + 12) + 'Q' + (x + 36) + ' ' + (y + 22) + ' ' + (x + w - 4) + ' ' + (y + 56) + '" fill="none" stroke="#e0a800" stroke-width="5" stroke-linecap="round"/>';
+    if (t === 'dolap') return '<rect x="' + (x + 12) + '" y="' + (y + 4) + '" width="' + (w - 24) + '" height="' + (h - 12) + '" fill="#e8c49a" ' + K + '/><line x1="' + cx + '" y1="' + (y + 4) + '" x2="' + cx + '" y2="' + (y + h - 8) + '" stroke="#7a5230" stroke-width="1.5"/>';
+  }
+  switch (t) {
+    case 'dolap': return '<rect x="' + (x + 7) + '" y="' + (y + 7) + '" width="' + (w - 14) + '" height="' + (h - 14) + '" fill="#f0d3a8" stroke="#7a5230" stroke-width="2.5"/>' +
+      '<path d="M' + (x + 7) + ' ' + (y + 7) + 'L' + (x + w - 7) + ' ' + (y + h - 7) + 'M' + (x + w - 7) + ' ' + (y + 7) + 'L' + (x + 7) + ' ' + (y + h - 7) + '" stroke="#7a5230" stroke-width="1.5"/>';
+    case 'sira': return '<rect x="' + (x + 7) + '" y="' + (y + 12) + '" width="' + (w - 14) + '" height="17" rx="2" fill="#f6d28f" stroke="#8a5a2b" stroke-width="2"/>' +
+      '<circle cx="' + (x + w * 0.32) + '" cy="' + (y + 42) + '" r="7" fill="#a9cdfa" stroke="#2a5d9f" stroke-width="2"/><circle cx="' + (x + w * 0.68) + '" cy="' + (y + 42) + '" r="7" fill="#a9cdfa" stroke="#2a5d9f" stroke-width="2"/>';
+    case 'masa': return '<rect x="' + (x + 9) + '" y="' + (y + 8) + '" width="' + (w - 18) + '" height="' + (h * 0.45) + '" rx="2" fill="#d9a66b" ' + K + '/><circle cx="' + cx + '" cy="' + (y + h - 12) + '" r="8" fill="#a9cdfa" stroke="#2a5d9f" stroke-width="2"/>';
+    case 'omasa': return '<rect x="' + (x + 9) + '" y="' + (y + h * 0.4) + '" width="' + (w - 18) + '" height="' + (h * 0.45) + '" rx="2" fill="#c98f5a" ' + K + '/><circle cx="' + cx + '" cy="' + (y + 12) + '" r="8" fill="#ffd0a6" stroke="#b05f1d" stroke-width="2"/>';
+    case 'yatak': return '<rect x="' + (x + 10) + '" y="' + (y + 5) + '" width="' + (w - 20) + '" height="' + (h - 10) + '" rx="4" fill="#c9defc" stroke="#2a5d9f" stroke-width="2"/>' +
+      '<rect x="' + (x + 14) + '" y="' + (y + 9) + '" width="' + (w - 28) + '" height="10" rx="3" fill="#fff" stroke="#2a5d9f" stroke-width="1.5"/><line x1="' + (x + 10) + '" y1="' + (y + 25) + '" x2="' + (x + w - 10) + '" y2="' + (y + 25) + '" stroke="#2a5d9f" stroke-width="1.5"/>';
+    case 'saksi': return '<circle cx="' + cx + '" cy="' + cy + '" r="15" fill="#c56a3a" stroke="#7a3b1c" stroke-width="2"/><circle cx="' + cx + '" cy="' + cy + '" r="10" fill="#5fbf5a"/><circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#2f7a3a"/>';
+    case 'kitaplik': { let s = '<rect x="' + (x + 5) + '" y="' + (y + 18) + '" width="' + (w - 10) + '" height="22" fill="#d79a62" ' + K + '/>';
+      for (let i = x + 12; i < x + w - 8; i += 7) s += '<line x1="' + i + '" y1="' + (y + 20) + '" x2="' + i + '" y2="' + (y + 38) + '" stroke="#7a5230" stroke-width="1.5"/>';
+      return s; }
+    case 'agac': { let s = '';
+      for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; s += '<circle cx="' + (cx + 12 * Math.cos(a)).toFixed(1) + '" cy="' + (cy + 12 * Math.sin(a)).toFixed(1) + '" r="11" fill="#79c26d" stroke="#2f7a3a" stroke-width="1.5"/>'; }
+      return s + '<circle cx="' + cx + '" cy="' + cy + '" r="13" fill="#79c26d"/><circle cx="' + cx + '" cy="' + cy + '" r="3.5" fill="#7a4b22"/>'; }
+    case 'bank': return '<rect x="' + (x + 6) + '" y="' + (y + 22) + '" width="' + (w - 12) + '" height="16" rx="2" fill="#d79a62" ' + K + '/><line x1="' + (x + 6) + '" y1="' + (y + 30) + '" x2="' + (x + w - 6) + '" y2="' + (y + 30) + '" stroke="#7a5230" stroke-width="1.5"/>';
+    case 'kaydirak': return '<rect x="' + (x + 21) + '" y="' + (y + 6) + '" width="18" height="' + (h - 12) + '" rx="3" fill="#ffe08a" stroke="#b07d00" stroke-width="2"/>' +
+      '<path d="M' + (x + 21) + ' ' + (y + 12) + 'H' + (x + 39) + 'M' + (x + 21) + ' ' + (y + 18) + 'H' + (x + 39) + 'M' + (x + 21) + ' ' + (y + 24) + 'H' + (x + 39) + '" stroke="#b07d00" stroke-width="1.5"/>';
+  }
+  return '';
+}
+function esyaSVG(e, x, y, w, h, zemin) { return DUVARLIK[e.t] ? duvarEsya(e.t, e.d || 'n', x, y, w, h, zemin) : serbestEsya(e.t, x, y, w, h, e.yan); }
+function krokiAnlat(k) {   // ekran okuyucu için kısa betimleme: yön oku + eşyaların kâğıttaki yeri
+  const yatay = v => v < 1 / 3 ? 'sol' : v > 2 / 3 ? 'sağ' : 'orta', dikey = v => v < 1 / 3 ? 'üst' : v > 2 / 3 ? 'alt' : 'orta';
+  const DUV = { n: 'üst duvarda', s: 'alt duvarda', w: 'sol duvarda', e: 'sağ duvarda' };
+  const parcalar = [];
+  k.esya.forEach(e => {
+    let yer;
+    if (DUVARLIK[e.t]) yer = DUV[e.d || 'n'];
+    else { const y = yatay((e.c + (e.w || 1) / 2) / k.cols), d = dikey((e.r + (e.h || 1) / 2) / k.rows); yer = y === 'orta' && d === 'orta' ? 'ortada' : (d === 'orta' ? y + ' tarafta' : y === 'orta' ? d + ' ortada' : d === 'üst' ? y + ' üstte' : y + ' altta'); }
+    const s = AD[e.t] + (e.yan ? ' (ayaklarıyla, yandan çizilmiş)' : '') + ' ' + yer;
+    if (!parcalar.includes(s)) parcalar.push(s);
+  });
+  const ok = k.okYok ? 'Yön oku yok' : 'Yön oku: kuzey ' + ({ 0: 'yukarıda', 90: 'sağda', 180: 'aşağıda', 270: 'solda' }[k.kuzey || 0]);
+  return 'Kuşbakışı kroki' + (k.dis ? ' (bahçe)' : '') + '. ' + ok + '. ' + parcalar.join('; ') + '.';
+}
+function krokiCiz(k, yer) {
+  const W = k.cols * HU, H = k.rows * HU, okG = k.okYok ? 0 : 82, vbW = W + 2 * KM + okG, vbH = Math.max(H + 2 * KM, k.okYok ? 0 : 100);
+  const zemin = k.dis ? CIM : ZEMIN;
+  let s = '<svg ' + (yer ? 'x="' + yer.x + '" y="' + yer.y + '" width="' + yer.w + '" height="' + yer.h + '" ' : '') + 'viewBox="0 0 ' + vbW + ' ' + vbH + '" role="img" aria-label="' + esc(k.aria || krokiAnlat(k)) + '">';
+  s += k.dis ? '<rect x="' + KM + '" y="' + KM + '" width="' + W + '" height="' + H + '" rx="6" fill="' + CIM + '" stroke="#5a9e4b" stroke-width="4" stroke-dasharray="10 6"/>'
+    : '<rect x="' + KM + '" y="' + KM + '" width="' + W + '" height="' + H + '" fill="' + ZEMIN + '" stroke="#33415c" stroke-width="7"/>';
+  k.esya.forEach(e => { s += esyaSVG(e, KM + e.c * HU, KM + e.r * HU, (e.w || 1) * HU, (e.h || 1) * HU, zemin); });
+  if (!k.okYok) s += okSVG(KM + W + 44, KM + 42, k.kuzey || 0);
+  return { svg: s + '</svg>', vbW, vbH };
+}
+function ikonSVG(t, cerceve) {   // açıklama kutusu ve parça tepsisi simgesi (60x60)
+  const duvar = DUVARLIK[t] ? '<rect x="0" y="2" width="60" height="8" fill="' + (t === 'giris' ? '#5a9e4b' : '#33415c') + '"/>' : '';
+  const z = t === 'giris' || t === 'agac' || t === 'bank' || t === 'kaydirak' ? CIM : ZEMIN;
+  return '<svg viewBox="0 0 60 60" aria-hidden="true"' + (cerceve ? '' : '') + '><rect width="60" height="60" fill="' + z + '"/>' + duvar + esyaSVG({ t, d: 'n' }, 0, 6, 60, 54, z) + '</svg>';
+}
+function lejantHTML(k) {
+  const turler = []; k.esya.forEach(e => { if (!turler.includes(e.t)) turler.push(e.t); });
+  return '<div class="lejant" role="group" aria-label="Açıklama kutusu"><b>Açıklama kutusu (lejant)</b>' + turler.map(t => '<span>' + ikonSVG(t) + esc(AD[t]) + '</span>').join('') + '</div>';
+}
+function krokiKutu(k, dokun, lejantYok) {
+  const { svg, vbW, vbH } = krokiCiz(k);
+  const ust = dokun ? k.esya.filter(e => e.id).map(e => {
+    const x = KM + e.c * HU, y = KM + e.r * HU, w = (e.w || 1) * HU, h = (e.h || 1) * HU, p = v => (v * 100).toFixed(2) + '%';
+    return '<button class="dokun" data-id="' + e.id + '" style="left:' + p(x / vbW) + ';top:' + p(y / vbH) + ';width:' + p(w / vbW) + ';height:' + p(h / vbH) + '" aria-label="' + esc(e.aria || AD[e.t]) + '"></button>';
+  }).join('') : '';
+  return '<div class="kroki-kap"><div class="kroki-ic">' + svg + ust + '</div>' + (lejantYok ? '' : lejantHTML(k)) + '</div>';
+}
+
+/* Sahneler: "fotoğrafı andıran" yandan görünüşler ve karşılaştırma çizimleri */
+const SAHNE = {
+  oda() {   // odaya kapıdan bakış (perspektif)
+    return '<svg viewBox="0 0 320 200" role="img" aria-label="Odaya kapıdan bakış: arka duvarda pencere, solda arkada dolap, sağda arkada saksı, sağ önde masa ve sandalye">' +
+      '<rect width="320" height="200" fill="#fbf8f2"/><path d="M0 0H320L262 26H58Z" fill="#fdfbf7"/>' +
+      '<rect x="58" y="26" width="204" height="96" fill="#f3e3c3"/><path d="M0 0L58 26V122L0 200Z" fill="#e9d3a8"/><path d="M320 0L262 26V122L320 200Z" fill="#e9d3a8"/>' +
+      '<path d="M0 200L58 122H262L320 200Z" fill="#d9b48a"/><path d="M100 122L70 200M140 122L130 200M180 122L190 200M220 122L250 200" stroke="#c49b6e" stroke-width="1.5"/>' +
+      '<rect x="134" y="40" width="54" height="44" fill="#bfe6ff" stroke="#fff" stroke-width="4"/><path d="M161 40V84M134 62H188" stroke="#fff" stroke-width="3"/><path d="M130 38Q126 62 132 88" stroke="#e57373" stroke-width="5" fill="none"/><path d="M192 38Q196 62 190 88" stroke="#e57373" stroke-width="5" fill="none"/>' +
+      '<rect x="62" y="44" width="46" height="78" fill="#b07a48" stroke="#6b4423" stroke-width="2"/><line x1="85" y1="44" x2="85" y2="122" stroke="#6b4423" stroke-width="2"/><circle cx="81" cy="84" r="2.5" fill="#ffd166"/><circle cx="89" cy="84" r="2.5" fill="#ffd166"/>' +
+      '<path d="M232 106H252L249 122H235Z" fill="#d9653b"/><ellipse cx="236" cy="96" rx="7" ry="11" fill="#5fbf5a" transform="rotate(-25 236 96)"/><ellipse cx="248" cy="94" rx="7" ry="12" fill="#4caf50" transform="rotate(25 248 94)"/><ellipse cx="242" cy="90" rx="6" ry="12" fill="#66bb6a"/>' +
+      '<path d="M196 146H292L304 162H184Z" fill="#c98b5a" stroke="#7a5230" stroke-width="2"/><rect x="188" y="162" width="7" height="34" fill="#9a6a3f"/><rect x="292" y="162" width="7" height="34" fill="#9a6a3f"/><rect x="204" y="152" width="5" height="22" fill="#9a6a3f"/><rect x="280" y="152" width="5" height="22" fill="#9a6a3f"/>' +
+      '<rect x="150" y="136" width="6" height="40" fill="#5d7fb8"/><rect x="150" y="168" width="34" height="7" fill="#7aa0d8"/><rect x="152" y="175" width="5" height="22" fill="#5d7fb8"/><rect x="178" y="175" width="5" height="22" fill="#5d7fb8"/>' +
+      '<text x="8" y="14" font-size="11" fill="#7a5230" font-family="system-ui">📷 kapıdan bakış</text></svg>';
+  },
+  bahce() {   // okul bahçesine girişten bakış
+    return '<svg viewBox="0 0 320 200" role="img" aria-label="Okul bahçesine girişten bakış: solda arkada kaydırak, sağda arkada ağaç, sol önde bank">' +
+      '<defs><linearGradient id="gk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd8ff"/><stop offset="1" stop-color="#e2f5ff"/></linearGradient></defs>' +
+      '<rect width="320" height="92" fill="url(#gk)"/><circle cx="286" cy="26" r="14" fill="#ffd166"/><rect y="88" width="320" height="112" fill="#a7dc8a"/>' +
+      '<path d="M0 92H320" stroke="#8a6a4a" stroke-width="3"/>' + Array.from({ length: 21 }, (_, i) => '<rect x="' + (i * 16 + 2) + '" y="80" width="4" height="14" fill="#8a6a4a"/>').join('') +
+      '<path d="M146 200H178L166 94H156Z" fill="#ead9ac"/>' +
+      '<path d="M48 100V62M58 100V62M48 70H58M48 80H58M48 90H58" stroke="#666" stroke-width="2.5"/><path d="M58 62Q76 70 96 100" stroke="#f4b400" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="45" y="58" width="16" height="5" fill="#e53935"/>' +
+      '<rect x="245" y="66" width="9" height="32" fill="#8a5a2b"/><circle cx="250" cy="52" r="20" fill="#5fbf5a"/><circle cx="236" cy="62" r="14" fill="#4caf50"/><circle cx="264" cy="62" r="14" fill="#4caf50"/>' +
+      '<rect x="26" y="138" width="96" height="9" rx="2" fill="#c98b5a" stroke="#7a5230" stroke-width="2"/><rect x="26" y="160" width="96" height="10" rx="2" fill="#c98b5a" stroke="#7a5230" stroke-width="2"/>' +
+      '<rect x="34" y="147" width="6" height="46" fill="#5d4037"/><rect x="108" y="147" width="6" height="46" fill="#5d4037"/>' +
+      '<text x="8" y="14" font-size="11" fill="#1f4f7a" font-family="system-ui">📷 girişten bakış</text></svg>';
+  },
+  odaOnden() {   // seçenek: odanın önden (yandan) çizimi — kroki DEĞİL
+    return '<svg viewBox="0 0 274 212" role="img" aria-label="Odanın önden görünüş çizimi">' +
+      '<rect x="6" y="6" width="262" height="200" fill="#fff" stroke="#c9d1dc"/><rect x="20" y="22" width="234" height="160" fill="#fbf3e2" stroke="#33415c" stroke-width="3"/>' +
+      '<line x1="20" y1="182" x2="254" y2="182" stroke="#33415c" stroke-width="4"/>' +
+      '<rect x="113" y="40" width="48" height="40" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2.5"/><path d="M137 40V80M113 60H161" stroke="#2b6cb0" stroke-width="2"/>' +
+      '<rect x="30" y="60" width="44" height="122" fill="#f0d3a8" stroke="#7a5230" stroke-width="2.5"/><line x1="52" y1="60" x2="52" y2="182" stroke="#7a5230" stroke-width="2"/><circle cx="48" cy="120" r="3" fill="#7a5230"/><circle cx="56" cy="120" r="3" fill="#7a5230"/>' +
+      '<path d="M216 158H238L235 182H219Z" fill="#c56a3a" stroke="#7a3b1c" stroke-width="2"/><ellipse cx="221" cy="146" rx="6" ry="12" fill="#5fbf5a" transform="rotate(-20 221 146)"/><ellipse cx="233" cy="146" rx="6" ry="12" fill="#5fbf5a" transform="rotate(20 233 146)"/>' +
+      '<rect x="150" y="136" width="66" height="8" fill="#d9a66b" stroke="#7a5230" stroke-width="2"/><rect x="155" y="144" width="6" height="38" fill="#b98550"/><rect x="205" y="144" width="6" height="38" fill="#b98550"/></svg>';
+  },
+  krokiHarita() {   // kroki ile harita yan yana
+    const ev = (x, y, w, h, r) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + r + '" stroke="#33415c" stroke-width="2"/>';
+    const kroki = '<g><rect x="6" y="20" width="150" height="150" rx="8" fill="#fffdf6" stroke="#8aa4c8" stroke-width="2"/>' +
+      '<path d="M14 98Q60 92 90 100T150 96" stroke="#9aa3b2" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M78 28Q84 70 80 160" stroke="#9aa3b2" stroke-width="12" fill="none" stroke-linecap="round"/>' +
+      '<path d="M22 36L60 34L62 74L20 78Z" fill="#ffd8b0" stroke="#33415c" stroke-width="2"/><path d="M96 36L140 38L138 70L98 72Z" fill="#c7e3ff" stroke="#33415c" stroke-width="2"/>' +
+      '<path d="M20 116L62 118L60 156L24 152Z" fill="#d4f0c8" stroke="#33415c" stroke-width="2"/><path d="M98 118L140 114L142 154L100 156Z" fill="#ffe7a3" stroke="#33415c" stroke-width="2"/>' +
+      '<text x="81" y="14" font-size="15" font-weight="800" text-anchor="middle" fill="#1f2a44" font-family="system-ui">KROKİ</text>' +
+      '<text x="81" y="186" font-size="11" text-anchor="middle" fill="#55627a" font-family="system-ui">elle, yaklaşık</text></g>';
+    const harita = '<g transform="translate(176 0)"><rect x="6" y="20" width="150" height="150" rx="8" fill="#fff" stroke="#8aa4c8" stroke-width="2"/>' +
+      '<rect x="14" y="92" width="136" height="12" fill="#9aa3b2"/><rect x="74" y="28" width="12" height="134" fill="#9aa3b2"/>' +
+      ev(22, 36, 42, 42, '#ffd8b0') + ev(96, 36, 44, 42, '#c7e3ff') + ev(22, 116, 42, 40, '#d4f0c8') + ev(96, 116, 44, 40, '#ffe7a3') +
+      '<path d="M22 164H82" stroke="#1f2a44" stroke-width="3"/><path d="M22 160V168M52 160V168M82 160V168" stroke="#1f2a44" stroke-width="2"/>' +
+      '<text x="81" y="14" font-size="15" font-weight="800" text-anchor="middle" fill="#1f2a44" font-family="system-ui">HARİTA</text>' +
+      '<text x="110" y="168" font-size="10" fill="#1f2a44" font-family="system-ui">0 — 100 m</text>' +
+      '<text x="81" y="186" font-size="11" text-anchor="middle" fill="#55627a" font-family="system-ui">ölçekli</text></g>';
+    return '<svg viewBox="0 0 340 192" role="img" aria-label="Aynı mahallenin elle çizilmiş krokisi ve ölçekli haritası yan yana; haritanın altında 0 ile 100 metre ölçek çizgisi var">' + kroki + harita +
+      '<path d="M162 12l6-8 6 8h-4v8h-4v-8z" fill="#c0392b"/><text x="168" y="34" font-size="11" font-weight="800" text-anchor="middle" fill="#c0392b" font-family="system-ui">K</text></svg>';
+  }
+};
+function sahneSVG() {   // başlık sahnesi: kuş yukarıdan bakıyor, altta kroki kâğıdı
+  const ic = krokiCiz(KR.odaDogru, { x: 0, y: 0, w: 190, h: 150 }).svg;
+  return '<svg viewBox="0 0 400 190" style="width:100%;max-width:540px" aria-hidden="true">' +
+    '<rect x="0" y="0" width="400" height="190" rx="18" fill="#dceeff"/>' + Array.from({ length: 15 }, (_, i) => '<line x1="' + (i * 28) + '" y1="0" x2="' + (i * 28) + '" y2="190" stroke="#fff" stroke-opacity=".6"/>').join('') +
+    '<g transform="translate(190 26) rotate(-3)"><rect x="-6" y="-6" width="202" height="160" fill="#fff" stroke="#8aa4c8" stroke-width="2"/>' + ic + '</g>' +
+    '<g transform="translate(36 22) scale(.62)">' + karakterIc() + '</g>' +
+    '<path d="M110 70L210 86M106 92L196 150" stroke="#2a7fd4" stroke-width="2.5" stroke-dasharray="6 6"/>' +
+    '<g transform="translate(150 160) rotate(-35)"><rect x="0" y="-6" width="60" height="12" rx="2" fill="#ffd166" stroke="#b07d00"/><path d="M60 -6L74 0L60 6Z" fill="#f4a261"/><rect x="-8" y="-6" width="8" height="12" fill="#ef476f"/></g>' +
+    '<g transform="translate(44 150)"><rect x="0" y="0" width="90" height="14" fill="#7fb3ff" stroke="#2a5d9f"/>' + Array.from({ length: 9 }, (_, i) => '<line x1="' + (i * 10 + 5) + '" y1="0" x2="' + (i * 10 + 5) + '" y2="' + (i % 2 ? 5 : 8) + '" stroke="#2a5d9f"/>').join('') + '</g></svg>';
+}
+function karakterIc() {   // Kuş Pırpır (ruh hâli CSS sınıfıyla değişir)
+  return '<ellipse cx="60" cy="124" rx="28" ry="5" fill="#000" opacity=".08"/>' +
+    '<path d="M24 74Q2 64 6 40Q26 52 34 66Z" fill="#2f86d6"/><path d="M96 74Q118 64 114 40Q94 52 86 66Z" fill="#2f86d6"/>' +
+    '<path d="M50 32Q52 12 64 18Q60 24 60 32Z" fill="#2f86d6"/><path d="M58 30Q66 14 76 22Q68 26 64 32Z" fill="#ff8c42"/>' +
+    '<ellipse cx="60" cy="74" rx="38" ry="44" fill="#4aa3ff"/><ellipse cx="60" cy="88" rx="24" ry="27" fill="#e8f4ff"/>' +
+    '<circle cx="44" cy="58" r="14" fill="#fff"/><circle cx="76" cy="58" r="14" fill="#fff"/>' +
+    '<g class="goz-acik"><circle cx="46" cy="60" r="7" fill="#1f2a44"/><circle cx="78" cy="60" r="7" fill="#1f2a44"/><circle cx="48" cy="57" r="2.4" fill="#fff"/><circle cx="80" cy="57" r="2.4" fill="#fff"/></g>' +
+    '<g class="goz-mutlu" stroke="#1f2a44" stroke-width="4" fill="none" stroke-linecap="round"><path d="M35 62Q44 50 53 62"/><path d="M67 62Q76 50 85 62"/></g>' +
+    '<g class="kas" stroke="#1f2a44" stroke-width="3" stroke-linecap="round"><path d="M33 40L51 45"/><path d="M87 40L69 45"/></g>' +
+    '<path d="M52 70L68 70L60 82Z" fill="#ffb703"/><circle cx="31" cy="74" r="5" fill="#ff8fab" opacity=".6"/><circle cx="89" cy="74" r="5" fill="#ff8fab" opacity=".6"/>' +
+    '<path d="M48 116l-6 6M48 116l0 8M48 116l6 6M72 116l-6 6M72 116l0 8M72 116l6 6" stroke="#ff9f1c" stroke-width="3" stroke-linecap="round"/>' +
+    '<g transform="rotate(-28 104 96)"><rect x="100" y="74" width="8" height="32" fill="#ffd166" stroke="#b07d00"/><path d="M100 106L108 106L104 114Z" fill="#f4a261"/></g>';
+}
+function karakterSVG() { return '<svg viewBox="0 0 120 130" aria-hidden="true">' + karakterIc() + '</svg>'; }
+function okKucuk(a) { return '<svg viewBox="0 0 80 92" role="img" aria-label="Yön oku: kuzey ' + ({ 0: 'yukarıda', 90: 'sağda', 180: 'aşağıda', 270: 'solda' }[a || 0]) + '">' + okSVG(40, 46, a || 0) + '</svg>'; }
+
+/* ===================== MOTOR ===================== */
+const app = document.getElementById('app');
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+const rastgele = a => a[Math.floor(Math.random() * a.length)];
+const depo = (() => { const mem = {}; return {
+  oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
+  yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } } }; })();
+const DEPO_REKOR = 'rekor-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
+[['--ana', T.renkAna], ['--ikinci', T.renkIkinci]].forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+const azHareket = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+
+let sesAcik = depo.oku(DEPO_SES) !== '0', actx = null;
+function cal(tur) {
+  if (!sesAcik) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    const N = (f, s, d, tip) => { const o = actx.createOscillator(), g = actx.createGain(); o.type = tip || 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t + s); g.gain.exponentialRampToValueAtTime(0.16, t + s + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + s + d);
+      o.connect(g); g.connect(actx.destination); o.start(t + s); o.stop(t + s + d + 0.05); };
+    if (tur === 'dogru') { N(660, 0, 0.14); N(990, 0.11, 0.25); }
+    else if (tur === 'yanlis') { N(260, 0, 0.18, 'triangle'); N(200, 0.14, 0.22, 'triangle'); }
+    else if (tur === 'kutlama') { [523, 659, 784, 1047].forEach((f, i) => N(f, i * 0.12, 0.3)); }
+    else if (tur === 'koy') { N(520, 0, 0.06); }
+    else { N(880, 0, 0.07); }
+  } catch (e) { /* ses desteklenmiyor */ }
+}
+function sesDugmesi() { return '<button class="ses" id="ses" aria-label="Sesi ' + (sesAcik ? 'kapat' : 'aç') + '">' + (sesAcik ? '🔊' : '🔇') + '</button>'; }
+function sesBagla() { const b = document.getElementById('ses'); if (b) b.onclick = () => { sesAcik = !sesAcik; depo.yaz(DEPO_SES, sesAcik ? '1' : '0');
+  b.textContent = sesAcik ? '🔊' : '🔇'; b.setAttribute('aria-label', 'Sesi ' + (sesAcik ? 'kapat' : 'aç')); cal('tik'); }; }
+
+const cv = document.getElementById('konfeti'), cx = cv.getContext('2d');
+let parca = [], kosuyor = false;
+function konfeti(n, x, y) {
+  if (azHareket()) return;
+  const dpr = window.devicePixelRatio || 1; cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  x = x ?? innerWidth / 2; y = y ?? innerHeight / 3;
+  const renk = [T.renkAna, T.renkIkinci, '#ffd166', '#ef476f', '#06d6a0', '#7b5cff'];
+  for (let i = 0; i < n && parca.length < 60; i++) { const a = Math.random() * Math.PI * 2, h = 3 + Math.random() * 7;
+    parca.push({ x, y, vx: Math.cos(a) * h, vy: Math.sin(a) * h - 5, r: Math.random() * 6.3, vr: (Math.random() - 0.5) * 0.4, w: 7 + Math.random() * 6, c: renk[i % renk.length], t: 0 }); }
+  if (!kosuyor) { kosuyor = true; requestAnimationFrame(adim); }
+}
+function adim() {
+  cx.clearRect(0, 0, innerWidth, innerHeight);
+  parca.forEach(p => { p.t++; p.vy += 0.35; p.vx *= 0.98; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.globalAlpha = Math.max(0, 1 - p.t / 60); cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.w / 4, p.w, p.w / 2); cx.restore(); });
+  parca = parca.filter(p => p.t < 60);
+  if (parca.length) requestAnimationFrame(adim); else { kosuyor = false; cx.clearRect(0, 0, innerWidth, innerHeight); }
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) parca = []; });
+
+function ruh(mod, hareket, metin) {
+  const k = document.getElementById('krk'), b = document.getElementById('balon');
+  if (k) { k.className = 'krk kucuk ' + mod; if (hareket && !azHareket()) { void k.offsetWidth; k.classList.add(hareket); } }
+  if (b) { b.className = 'balon ' + mod; b.textContent = metin; }
+}
+let sira = [], idx = 0, durum = null, sonuclar = [], puan = 0, ilkTur = 0, sonAsama = 0, tekrarEklendi = false;
+function puanEkle(n) {
+  const el = document.getElementById('puanSayi'); if (!el) { puan += n; return; }
+  const bas = puan; puan += n; const t0 = performance.now();
+  if (azHareket()) { el.textContent = puan; return; }
+  const kos = t => { const p = Math.min(1, (t - t0) / 450); el.textContent = Math.round(bas + (puan - bas) * p); if (p < 1) requestAnimationFrame(kos); };
+  requestAnimationFrame(kos);
+  const kap = el.parentNode; kap.classList.remove('pop'); void kap.offsetWidth; kap.classList.add('pop');
+}
+function yolCiz() {
+  const s = { yildiz: '⭐', yarim: '✨', ogrendi: '📘' };
+  return '<div class="yol" role="img" aria-label="' + sonuclar.filter(Boolean).length + ' / ' + sira.length + ' görev tamamlandı">' + sira.map((x, i) => {
+    const d = sonuclar[i]; return (i ? '<span class="cizgi"></span>' : '') + '<span class="durak ' + (d || (i === idx ? 'simdi' : '')) + '">' + (d ? s[d] : (i + 1)) + '</span>';
+  }).join('') + '<span class="cizgi"></span><span class="durak son">' + esc(T.sonSimge) + '</span></div>';
+}
+function ustCiz() {
+  return '<div class="ust"><span class="baslik">📐 ' + esc(T.ad) + '</span><span class="sag"><span class="puan" aria-label="Toplanan ' + esc(T.odulAd) + '">' +
+    esc(T.odulSimge) + ' <b id="puanSayi">' + puan + '</b></span>' + sesDugmesi() + '</span></div>' + yolCiz();
+}
+const karakterSatir = metin => '<div class="karakter-satir"><div id="krk" class="krk kucuk">' + karakterSVG() + '</div><div id="balon" class="balon" aria-live="polite">' + esc(metin) + '</div></div>';
+
+function baslangic() {
+  const rekor = depo.oku(DEPO_REKOR);
+  durum = null;
+  app.innerHTML = '<div class="ust"><span></span><span class="sag">' + sesDugmesi() + '</span></div>' +
+    '<div class="kart gir">' + sahneSVG() + '<h1>📐 ' + esc(OYUN.ad) + '</h1>' +
+    '<div class="karakter-satir"><div id="krk" class="krk mutlu">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Merhaba! Ben ' +
+    esc(T.karakterAdi) + '. ' + esc(T.hikaye) + '</div></div>' +
+    '<p style="text-align:center;margin:4px 0">🔍 Kroki nedir? · 🧭 Krokiyi oku · 🧩 Krokini kur · 🕵️ Hata avcısı</p>' +
+    '<p style="text-align:center;margin:4px 0;color:var(--soluk)">📝 ' + OYUN.maddeler.length + ' görev · 💡 ipucu alabilirsin · ⭐ ilk denemede doğruya yıldız</p>' +
+    (rekor ? '<p style="text-align:center;margin:4px 0;color:var(--soluk)">🏆 Önceki en iyi sonucun: ' + esc(rekor) + ' yıldız</p>' : '') +
+    '<button class="buyuk" id="basla">Atölyeye gir ▶</button></div>';
+  sesBagla();
+  const b = document.getElementById('basla');
+  b.onclick = () => {
+    cal('tik');
+    RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+    sira = OYUN.maddeler.map(m => ({ m, tekrar: false }));   // kolaydan zora sabit sıra; seçenekler her seferinde karışır
+    ilkTur = sira.length; idx = 0; sonuclar = []; puan = 0; sonAsama = 0; tekrarEklendi = false; soru();
+  };
+  b.focus({ preventScroll: true });
+}
+
+function bilgiHTML(tur) {
+  if (tur === 'kiyas') return '<div class="kiyas">' +
+    '<div style="--k:#f4a300"><span class="em">📷</span><span class="bas">Resim / Fotoğraf</span><p>👀 önden, yandan</p><p>🎨 tüm ayrıntı, renk</p><p>✖ simge yok</p><p>✖ yön oku yok</p></div>' +
+    '<div style="--k:#ff8c42;background:#fff3ea"><span class="em">✏️</span><span class="bas">Kroki</span><p>⬇️ kuşbakışı</p><p>📏 ölçüsüz, yaklaşık</p><p>✔ simge + açıklama</p><p>✔ yön oku</p></div>' +
+    '<div style="--k:#2a7fd4"><span class="em">🗺️</span><span class="bas">Harita</span><p>⬇️ kuşbakışı</p><p>📏 ölçekli</p><p>✔ simge + açıklama</p><p>✔ yön oku</p></div></div>';
+  if (tur === 'oku') return '<ol class="adimlar"><li>🧭 Yön okunu bul: ok kuzeyi gösterir.</li><li>📋 Açıklama kutusundan simgeleri oku.</li><li>🚪 "Sağ, sol" sorulursa kendini kapıda, içeri bakarken düşün.</li></ol>' +
+    '<div class="ok-ornek"><figure>' + okKucuk(0) + '<figcaption>Kuzey yukarıda</figcaption></figure><figure>' + okKucuk(180) + '<figcaption>Kuzey aşağıda: doğu solda!</figcaption></figure></div>';
+  if (tur === 'kur') return '<ol class="adimlar"><li>🧭 Yön okuna bak.</li><li>🧱 Kapı, pencere, tahta duvara.</li><li>🪑 Eşyaları simgeyle yerleştir.</li><li>📋 Açıklama kutusu simgeleri anlatır.</li></ol>' +
+    '<p class="kural" style="background:#fff8e1">🖐️ Nasıl? Parçaya dokun, sonra kareye dokun. Ya da parçayı sürükleyip kareye bırak. Klavyede Tab ile gez, Enter ile seç. Yanlış koyduğun parçaya dokunursan geri alırsın.</p>';
+  return '<ol class="adimlar"><li>🐦 Kuşbakışı mı?</li><li>📍 Yerler doğru mu?</li><li>🧭 Yön oku var mı?</li><li>📋 Açıklama kutusu var mı?</li></ol>';
+}
+function asamaGiris(a) {
+  const s = OYUN.asamalar[a];
+  app.innerHTML = ustCiz() + '<div class="kart gir"><span class="asama-no">' + a + '. bölüm</span><h2>' + esc(s.ad) + '</h2>' +
+    '<div class="kural">📌 ' + esc(s.kural) + '</div>' + bilgiHTML(s.bilgi) + karakterSatir(rastgele(['Hazır mısın? Kanatlarımı açıyorum!', 'Yukarıdan bakınca her şey daha net görünür.', 'Haydi, birlikte yapalım!'])) +
+    '<button class="buyuk" id="dev">Haydi başlayalım →</button></div>';
+  sesBagla();
+  const d = document.getElementById('dev'); d.onclick = () => { cal('tik'); soru(); window.scrollTo(0, 0); }; d.focus({ preventScroll: true });
+}
+
+function soru() {
+  if (idx >= sira.length) {
+    if (!tekrarEklendi) {
+      tekrarEklendi = true;
+      const ek = sira.slice(0, ilkTur).filter(x => !x.ilkDogru).slice(0, 5).map(x => ({ m: x.m, tekrar: true }));
+      if (ek.length) {
+        sira = sira.concat(ek);
+        app.innerHTML = ustCiz() + '<div class="kart gir"><h2>🔁 Bir şans daha</h2><p>İlk denemede zorlandığın ' + ek.length + ' göreve yeniden bakalım. Bu kez ipuçlarını hatırla!</p>' +
+          karakterSatir('Hata yapmak öğrenmenin bir parçası. Hadi tekrar deneyelim!') + '<button class="buyuk" id="dev">Devam →</button></div>';
+        sesBagla();
+        const d = document.getElementById('dev'); d.onclick = soru; d.focus({ preventScroll: true });
+        return;
+      }
+    }
+    bitisEkrani(); return;
+  }
+  const x = sira[idx], m = x.m;
+  if (!x.tekrar && m.asama !== sonAsama) { sonAsama = m.asama; asamaGiris(m.asama); return; }
+  durum = { x, m, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+  let g = '<span class="etiket">' + (x.tekrar ? '🔁 Bir şans daha' : m.asama + '. bölüm · ' + esc(OYUN.asamalar[m.asama].ad)) + ' · Görev ' + (idx + 1) + ' / ' + sira.length + '</span>';
+  if (m.sahne) g += '<div class="gorsel">' + SAHNE[m.sahne]() + '</div>';
+  if (m.emoji) g += '<div class="emoji-gorsel" aria-hidden="true">' + m.emoji + '</div>';
+  if (m.tur !== 'kur') {
+    if (m.betimleme) g += '<div class="betim"><b>' + esc(m.betimlemeBaslik || 'Betimleme') + '</b><ul>' + m.betimleme.map(b => '<li>' + esc(b) + '</li>').join('') + '</ul></div>';
+    if (m.kroki) g += (m.baslik ? '<div style="text-align:center;font-weight:800;color:var(--soluk);margin-top:6px">✏️ ' + esc(m.baslik) + '</div>' : '') + krokiKutu(KR[m.kroki], m.tur === 'dokun', m.lejantYok);
+  }
+  g += '<div class="soru">' + esc(m.soru) + '</div>';
+  if (m.tur === 'secim') {
+    durum.sec = shuffle([[m.dogru, '']].concat(m.yanlislar));
+    g += '<div class="sec' + (m.resimli ? ' resimli' : '') + '">' + durum.sec.map((s, i) => {
+      const o = s[0];
+      if (typeof o === 'string') return '<button data-i="' + i + '" aria-label="Seçenek ' + (i + 1) + ': ' + esc(o) + '"><span class="no">' + (i + 1) + '</span>' + esc(o) + '</button>';
+      const resim = o.kroki ? krokiCiz(KR[o.kroki]).svg : SAHNE[o.cizim]();
+      return '<button data-i="' + i + '" aria-label="Çizim ' + (i + 1) + ': ' + esc(o.ad) + '"><span class="no">' + (i + 1) + '</span>' + resim + '</button>';
+    }).join('') + '</div>';
+  } else if (m.tur === 'kur') {
+    g += '<div class="betim"><b>📋 Betimleme</b><ol>' + m.betimleme.map(b => '<li>' + esc(b) + '</li>').join('') + '</ol></div>' +
+      '<div class="atolye"><div class="oda-sar"><div class="oda-ust"><span class="oda-ad">✏️ ' + esc(m.baslik) + '</span><span class="ok-kucuk">' + okKucuk(m.kuzey) + '</span></div>' +
+      '<div class="oda" id="oda" role="group" aria-label="Kroki alanı, ' + m.cols + ' sütun ' + m.rows + ' satır" style="grid-template-columns:repeat(' + m.cols + ',1fr)"></div></div>' +
+      '<div class="tepsi-sar"><b>Açıklama kutusu: parçalar</b><div class="tepsi" id="tepsi"></div></div></div>' +
+      '<div class="kur-dug"><button class="kontrol" id="kontrol">✔ Kontrol et</button><button class="temizle" id="temizle">↺ Temizle</button></div>';
+    durum.yer = new Array(m.cols * m.rows).fill(null); durum.secili = null; durum.isaret = {};
+  }
+  g += '<div class="alt"><button class="ipucu-btn" id="ip">💡 İpucu</button></div>';
+  app.innerHTML = ustCiz() + '<div class="kart gir">' + g + '</div>' +
+    karakterSatir(m.tur === 'kur' ? 'Betimlemeyi cümle cümle oku, sonra parçaları yerleştir.' : m.tur === 'dokun' ? 'Krokiye dikkatle bak ve doğru yere dokun.' :
+      rastgele(['Hadi bakalım, bunu çözebilirsin!', 'Yukarıdan bakmayı unutma.', 'Yön okuna göz at!', 'Acele etme, düşün.'])) + '<div class="devam-yer" id="devamYer"></div>';
+  sesBagla();
+  app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => sec_(+b.dataset.i); });
+  app.querySelectorAll('.dokun').forEach(b => { b.onclick = () => dokunSec(b.dataset.id); });
+  document.getElementById('ip').onclick = ipucuVer;
+  if (m.tur === 'kur') {
+    document.getElementById('kontrol').onclick = kontrol;
+    document.getElementById('temizle').onclick = () => { if (durum.kilit) return; durum.yer.fill(null); durum.secili = null; durum.isaret = {}; cal('tik'); kurCiz(); };
+    kurCiz();
+  }
+}
+
+function ipucuVer() {
+  if (!durum || durum.kilit) return;
+  const ip = durum.m.ipucu;
+  if (durum.ipucu < ip.length) durum.ipucu++;
+  cal('tik'); ruh('dusun', null, '💡 ' + ip.slice(0, durum.ipucu).join(' '));
+  const b = document.getElementById('ip');
+  if (durum.ipucu >= ip.length) { b.disabled = true; b.textContent = '💡 İpuçları bitti'; } else b.textContent = '💡 İpucu (' + (ip.length - durum.ipucu) + ' kaldı)';
+}
+function dogruGeldi(el) {
+  const ilk = durum.deneme === 1, r = el ? el.getBoundingClientRect() : null;
+  cal('dogru'); konfeti(ilk ? 45 : 22, r ? r.left + r.width / 2 : undefined, r ? r.top + r.height / 2 : undefined); puanEkle(ilk ? 10 : 5);
+  sonuclar[idx] = ilk ? 'yildiz' : 'yarim';
+  bitir(false, 'mutlu', 'zipla', (ilk ? '⭐ ' + rastgele(['Harika!', 'Süpersin!', 'Kuş gözü gibi!']) : '✨ Buldun!') + ' ' + durum.m.why);
+}
+function sec_(i) {
+  if (!durum || durum.kilit || durum.m.tur !== 'secim') return;
+  const btns = app.querySelectorAll('.sec button'), btn = btns[i];
+  if (!btn || btn.disabled) return;
+  const yan = durum.sec[i][1];
+  durum.deneme++;
+  if (yan === '') { btn.classList.add('dogru'); dogruGeldi(btn); return; }
+  btn.classList.add('yanlis', 'salla'); btn.disabled = true;
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = yan;
+  if (durum.deneme >= 2) {
+    btns.forEach((b, k) => { if (durum.sec[k][1] === '') b.classList.add('dogru'); });
+    cal('tik'); sonuclar[idx] = 'ogrendi'; bitir(true, 'dusun', null, '📘 Birlikte bakalım: ' + durum.m.why); return;
+  }
+  cal('yanlis'); ruh('uzgun', 'salla', '🤔 Henüz değil. Bir daha dene; istersen 💡 ipucu al.');
+}
+function dokunSec(id) {
+  if (!durum || durum.kilit || durum.m.tur !== 'dokun') return;
+  const btn = app.querySelector('.dokun[data-id="' + id + '"]');
+  if (!btn || btn.disabled) return;
+  durum.deneme++;
+  const isaretle = (b, s) => { b.classList.add(s); b.setAttribute('aria-label', b.getAttribute('aria-label').split(':')[0] + ': ' + (s === 'dogru' ? 'doğru ✔' : 'yanlış ✖')); };
+  if (id === durum.m.dogru) { isaretle(btn, 'dogru'); dogruGeldi(btn); return; }
+  isaretle(btn, 'yanlis'); btn.disabled = true;
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = durum.m.yanlislar[id] || 'betimleme-okunmadi';
+  const e = KR[durum.m.kroki].esya.find(x => x.id === id);
+  if (durum.deneme >= 2) {
+    isaretle(app.querySelector('.dokun[data-id="' + durum.m.dogru + '"]'), 'dogru');
+    cal('tik'); sonuclar[idx] = 'ogrendi'; bitir(true, 'dusun', null, '📘 Birlikte bakalım: ' + durum.m.why); return;
+  }
+  cal('yanlis'); ruh('uzgun', 'salla', '🤔 Henüz değil: burası ' + (e ? AD[e.t].toLocaleLowerCase('tr') : 'başka bir yer') + '. Bir daha bak; istersen 💡 ipucu al.');
+}
+
+/* ---- Kroki kurma: dokun-yerleştir, sürükle-bırak, klavye (Tab + Enter) aynı durumu günceller ---- */
+const hucreXY = i => [i % durum.m.cols, Math.floor(i / durum.m.cols)];
+const hedefVar = (m, t, c, r) => { const p = m.parcalar.find(p => p.t === t); return !!p && p.hedef.some(h => h[0] === c && h[1] === r); };
+const kalan = t => { const p = durum.m.parcalar.find(p => p.t === t); return p.n - durum.yer.filter(x => x === t).length; };
+function duvarYonu(c, r, m) { return r === 0 ? 'n' : r === m.rows - 1 ? 's' : c === 0 ? 'w' : c === m.cols - 1 ? 'e' : 'n'; }
+function hucreSimge(t, c, r, m) {
+  const d = duvarYonu(c, r, m), a = { n: 0, e: 90, s: 180, w: 270 }[d];
+  const ic = esyaSVG({ t, d: 'n' }, 0, 6, 60, 54, ZEMIN);
+  return '<svg viewBox="0 0 60 60" aria-hidden="true"><g' + (DUVARLIK[t] && a ? ' transform="rotate(' + a + ' 30 30)"' : '') + '>' + ic + '</g></svg>';
+}
+function kurCiz(odak) {
+  const m = durum.m, oda = document.getElementById('oda'), tepsi = document.getElementById('tepsi');
+  if (!oda) return;
+  const kilit = durum.kilit ? ' disabled' : '';
+  oda.innerHTML = durum.yer.map((t, i) => { const [c, r] = hucreXY(i), is = durum.isaret[i] || '';
+    return '<button class="hucre' + (is ? ' ' + is : '') + '" data-i="' + i + '"' + kilit + ' aria-label="' + (r + 1) + '. satır, ' + (c + 1) + '. sütun: ' + (t ? AD[t] : 'boş') +
+      (is === 'yanlis' ? ', yanlış yerde' : is === 'dogru' ? ', doğru' : '') + '">' + (t ? hucreSimge(t, c, r, m) : '') + '</button>'; }).join('');
+  tepsi.innerHTML = m.parcalar.map(p => { const k = kalan(p.t), s = durum.secili === p.t;
+    return '<button class="parca' + (s ? ' secili' : '') + '" data-t="' + p.t + '" aria-pressed="' + s + '"' + (k && !durum.kilit ? '' : ' disabled') +
+      ' aria-label="' + AD[p.t] + ', ' + k + ' tane kaldı' + (s ? ', seçili' : '') + '">' + ikonSVG(p.t) + '<span>' + AD[p.t] + '</span><b class="adet">' + k + '</b></button>'; }).join('');
+  oda.querySelectorAll('.hucre').forEach(b => {
+    b.onclick = () => { if (bastir) return; hucreTik(+b.dataset.i); };
+    b.onpointerdown = ev => { const t = durum.yer[+b.dataset.i]; if (t && !durum.kilit) surBasla(ev, t, +b.dataset.i); };
+  });
+  tepsi.querySelectorAll('.parca').forEach(b => {
+    b.onclick = () => { if (bastir) return; tepsiTik(b.dataset.t); };
+    b.onpointerdown = ev => { if (!durum.kilit && kalan(b.dataset.t) > 0) surBasla(ev, b.dataset.t, null); };
+  });
+  const kb = document.getElementById('kontrol'), tb = document.getElementById('temizle');
+  if (kb) kb.disabled = !!durum.kilit; if (tb) tb.disabled = !!durum.kilit;
+  if (odak) { const el = app.querySelector(odak); if (el && !el.disabled) el.focus({ preventScroll: true }); }
+}
+function tepsiTik(t) {
+  if (!durum || durum.kilit || kalan(t) <= 0) return;
+  durum.secili = durum.secili === t ? null : t; cal('tik');
+  ruh('dusun', null, durum.secili ? '👉 ' + AD[t] + ' seçildi. Şimdi krokide yerleştireceğin kareye dokun.' : 'Seçim kaldırıldı.');
+  kurCiz('.parca[data-t="' + t + '"]');
+}
+function yerlestir(t, i) {
+  delete durum.isaret[i];
+  durum.yer[i] = t; cal('koy');
+  if (durum.secili && kalan(durum.secili) <= 0) durum.secili = null;
+}
+function hucreTik(i) {
+  if (!durum || durum.kilit) return;
+  if (durum.secili) {
+    if (durum.yer[i] === durum.secili) { durum.secili = null; kurCiz('.hucre[data-i="' + i + '"]'); return; }
+    const t = durum.secili; yerlestir(t, i);
+    ruh('dusun', null, '✏️ ' + AD[t] + ' yerleşti.' + (durum.secili ? ' Bir tane daha koyabilirsin.' : ''));
+  } else if (durum.yer[i]) {
+    const t = durum.yer[i]; durum.yer[i] = null; delete durum.isaret[i]; durum.secili = t; cal('tik');
+    ruh('dusun', null, '✋ ' + AD[t] + ' elinde. Yeni yerine dokun ya da tepsiye geri bırakmak için parçaya dokun.');
+  } else { ruh('dusun', null, 'Önce açıklama kutusundan bir parça seç.'); }
+  kurCiz('.hucre[data-i="' + i + '"]');
+}
+let surukle = null, bastir = false;
+function surBasla(ev, t, kaynak) {
+  if (ev.button !== undefined && ev.button > 0) return;
+  surukle = { t, kaynak, x0: ev.clientX, y0: ev.clientY, basladi: false, hay: null, hedef: null };
+}
+function surBitir(iptal) {
+  const s = surukle; surukle = null;
+  if (!s || !s.basladi) return;
+  if (s.hay) s.hay.remove();
+  bastir = true; setTimeout(() => { bastir = false; }, 60);
+  if (!durum || durum.kilit) return;
+  if (!iptal && s.hedef !== null) { yerlestir(s.t, s.hedef); ruh('dusun', null, '✏️ ' + AD[s.t] + ' yerleşti.'); kurCiz(); return; }
+  if (s.kaynak !== null && durum.yer[s.kaynak] === null && iptal) durum.yer[s.kaynak] = s.t;   // iptal: geri koy
+  kurCiz();
+}
+document.addEventListener('pointermove', ev => {
+  const s = surukle; if (!s) return;
+  if (!s.basladi) {
+    if (Math.hypot(ev.clientX - s.x0, ev.clientY - s.y0) < 8) return;
+    s.basladi = true;
+    if (s.kaynak !== null) { durum.yer[s.kaynak] = null; delete durum.isaret[s.kaynak]; kurCiz(); }
+    s.hay = document.createElement('div'); s.hay.className = 'hayalet'; s.hay.innerHTML = ikonSVG(s.t); document.body.appendChild(s.hay);
+  }
+  ev.preventDefault();
+  s.hay.style.left = ev.clientX + 'px'; s.hay.style.top = ev.clientY + 'px';
+  const el = document.elementFromPoint(ev.clientX, ev.clientY), h = el && el.closest ? el.closest('.hucre') : null;
+  app.querySelectorAll('.hucre.hedef').forEach(x => x.classList.remove('hedef'));
+  if (h) { h.classList.add('hedef'); s.hedef = +h.dataset.i; } else s.hedef = null;
+}, { passive: false });
+document.addEventListener('pointerup', () => surBitir(false));
+document.addEventListener('pointercancel', () => surBitir(true));
+
+function kurYanilgi(m, t, c, r) {
+  const oz = m.ozel && m.ozel[t + '@' + c + ',' + r]; if (oz) return oz;
+  const ew = hedefVar(m, t, m.cols - 1 - c, r), ns = hedefVar(m, t, c, m.rows - 1 - r), rot = hedefVar(m, t, m.cols - 1 - c, m.rows - 1 - r);
+  if ((m.kuzey || 0) !== 0 && (ew || ns || rot)) return 'yon-ekrana-gore';
+  if (ew) return 'dogu-bati-ters';
+  if (ns) return 'kuzey-guney-ters';
+  return 'yer-iliskisi';
+}
+function kontrol() {
+  if (!durum || durum.kilit || durum.m.tur !== 'kur') return;
+  const m = durum.m, top = m.parcalar.reduce((s, p) => s + p.n, 0), yerlesen = durum.yer.filter(Boolean).length;
+  if (yerlesen < top) { cal('tik'); ruh('dusun', null, '🧩 Önce bütün parçaları yerleştir. Kalan parça: ' + (top - yerlesen)); return; }
+  const yanlis = [];
+  durum.yer.forEach((t, i) => { if (!t) return; const [c, r] = hucreXY(i); if (!hedefVar(m, t, c, r)) yanlis.push({ t, c, r, i }); });
+  durum.deneme++; durum.isaret = {};
+  if (!yanlis.length) {
+    durum.yer.forEach((t, i) => { if (t) durum.isaret[i] = 'dogru'; });
+    durum.kilit = true; kurCiz(); durum.kilit = false;
+    dogruGeldi(document.getElementById('oda')); return;
+  }
+  if (!durum.ilkYanilgi) { const et = yanlis.map(y => kurYanilgi(m, y.t, y.c, y.r)); durum.ilkYanilgi = et.find(e => e !== 'yer-iliskisi') || et[0]; }
+  if (durum.deneme >= 2) {
+    durum.yer.fill(null); durum.isaret = {};
+    m.parcalar.forEach(p => p.hedef.slice(0, p.n).forEach(([c, r]) => { const i = r * m.cols + c; durum.yer[i] = p.t; durum.isaret[i] = 'dogru'; }));
+    durum.secili = null; cal('tik'); sonuclar[idx] = 'ogrendi';
+    bitir(true, 'dusun', null, '📘 Doğru krokiye birlikte bakalım: ' + m.why); return;
+  }
+  yanlis.forEach(y => { durum.isaret[y.i] = 'yanlis'; });
+  kurCiz(); cal('yanlis');
+  ruh('uzgun', 'salla', '🤔 Henüz değil: ' + yanlis.length + ' parça yanlış yerde (✖ işaretli). Onları taşı, sonra yeniden kontrol et. İstersen 💡 ipucu al.');
+}
+
+function bitir(cozumGoruldu, mod, hareket, mesaj) {
+  durum.kilit = true;
+  const ilkDogru = durum.deneme === 1 && !cozumGoruldu;
+  durum.x.ilkDogru = ilkDogru;
+  RaporMotoru.kaydet({ kazanim: OYUN.kazanimlar[0].kod, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
+    ilkDenemeDogru: ilkDogru, deneme: durum.deneme, ipucu: durum.ipucu, cozumGoruldu, sureMs: Date.now() - durum.t0, tekrar: durum.x.tekrar });
+  ruh(mod, hareket, mesaj);
+  app.querySelectorAll('.sec button, .dokun, #ip').forEach(b => { b.disabled = true; });
+  if (durum.m.tur === 'kur') kurCiz();
+  const yol = app.querySelector('.yol'); if (yol) yol.outerHTML = yolCiz();
+  const dev = document.createElement('button'); dev.className = 'buyuk'; dev.id = 'dev';
+  dev.textContent = idx + 1 < sira.length || !tekrarEklendi ? 'Devam →' : T.sonSimge + ' Karnemi gör!';
+  dev.onclick = () => { idx++; soru(); window.scrollTo(0, 0); };
+  document.getElementById('devamYer').appendChild(dev); dev.focus({ preventScroll: true });
+}
+
+function yildizYol(cx0, cy0, R, r) { let d = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, u = i % 2 ? r : R;
+  d += (i ? 'L' : 'M') + (cx0 + Math.cos(a) * u).toFixed(1) + ' ' + (cy0 + Math.sin(a) * u).toFixed(1); } return d + 'Z'; }
+function bitisEkrani() {
+  durum = null;
+  const ilkSonuc = sonuclar.slice(0, ilkTur), yildiz = ilkSonuc.filter(x => x === 'yildiz').length, oran = yildiz / ilkTur;
+  const [rozetAd, rozetRenk] = oran >= 0.85 ? ['Altın Kroki Ustası', '#f4b400'] : oran >= 0.6 ? ['Gümüş Kroki Ustası', '#9aa5b1'] : ['Cesur Kroki Çırağı', '#cd7f32'];
+  app.innerHTML = ustCiz() + '<div class="kart gir bitis"><h1>🎉 ' + esc(T.bitisBaslik) + '</h1>' +
+    '<svg viewBox="0 0 120 150" class="rozet" role="img" aria-label="' + rozetAd + ' rozeti">' +
+    '<path d="M40 92 L26 146 L45 137 L56 150 L60 98Z" fill="#ef476f"/><path d="M80 92 L94 146 L75 137 L64 150 L60 98Z" fill="#118ab2"/>' +
+    '<circle cx="60" cy="60" r="46" fill="' + rozetRenk + '"/><circle cx="60" cy="60" r="36" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="4"/>' +
+    '<path d="' + yildizYol(60, 60, 24, 10) + '" fill="#fff"/></svg><div class="rozet-ad">' + rozetAd + '</div>' +
+    '<div class="yildizlar" aria-label="' + yildiz + ' yıldız">' + ilkSonuc.map(x => x === 'yildiz' ? '⭐' : x === 'yarim' ? '✨' : '📘').join('') + '</div>' +
+    '<div class="karakter-satir"><div id="krk" class="krk kucuk">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Tebrikler! ' + yildiz + ' yıldız ve ' + puan + ' ' + esc(T.odulAd) +
+    ' topladın. Şimdi sıra sende: evdeki odanın krokisini çiz!</div></div>' +
+    '<div class="unutma"><b>📌 Unutma: İyi bir kroki</b><ol><li>kuşbakışı (yukarıdan) çizilir,</li><li>ölçü kullanılmaz ama yerler doğru olur,</li><li>kuzeyi gösteren yön oku taşır,</li><li>simgeleri anlatan açıklama kutusu (lejant) taşır.</li></ol></div>' +
+    '<div id="karne"></div><button class="buyuk" id="yeniden">↻ Yeniden oyna</button></div>';
+  sesBagla();
+  RaporMotoru.ekranCiz(document.getElementById('karne'));   // karne + sonucu portala gönderir (oyun başına bir kez)
+  const eski = parseInt(depo.oku(DEPO_REKOR), 10) || 0;
+  if (yildiz > eski) depo.yaz(DEPO_REKOR, String(yildiz));
+  document.getElementById('yeniden').onclick = baslangic;
+  cal('kutlama'); ruh('mutlu', 'zipla', document.getElementById('balon').textContent);
+  konfeti(60); setTimeout(() => konfeti(40, innerWidth * 0.25, innerHeight * 0.3), 350);
+}
+
+document.addEventListener('keydown', e => {   // klavye: 1-4 seçenek, Esc seçimi bırak, Enter devam
+  const odak = document.activeElement, dugmede = odak && odak.tagName === 'BUTTON';
+  if (e.key >= '1' && e.key <= '4' && durum && !durum.kilit && document.querySelector('.sec')) sec_(+e.key - 1);
+  else if (e.key === 'Escape' && durum && durum.secili) { durum.secili = null; kurCiz(); }
+  else if (e.key === 'Enter' && !dugmede) { const d = document.getElementById('dev'); if (d) { e.preventDefault(); d.click(); } }
+});
+baslangic();
+</script>
+</body>
+</html>

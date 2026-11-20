@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ulaşım Araçları Karşılaştırma</title>
+<style>
+/* Renkler JS ile OYUN.tema'dan gelir (--ana, --ikinci, --gok1, --gok2). Buradakiler yedek değerdir. */
+:root{--ana:#f3722c;--ikinci:#118ab2;--gok1:#8fd8ff;--gok2:#eefaff;--kart:#fff;--yazi:#1f2a44;--soluk:#55627d;--ok:#1f9d5c;--hata:#c0392b;--sari:#ffd166}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;color:var(--yazi);font:18px/1.45 system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,var(--gok1) 0%,var(--gok2) 72%) fixed;background-color:var(--gok2);overflow-x:hidden}
+#app{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:12px 14px 120px}
+.dekor{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.dekor .bulut{position:absolute;opacity:.85}
+.dekor .sehir{position:absolute;left:0;bottom:0;width:100%;height:110px}
+#konfeti{position:fixed;inset:0;width:100%;height:100%;z-index:50;pointer-events:none}
+h1,h2,.baslik{font-family:"Trebuchet MS",system-ui,sans-serif;font-weight:800;letter-spacing:.2px}
+h1{font-size:clamp(1.5rem,4.8vw,2.2rem);margin:6px 0 4px;text-align:center}
+h2{font-size:clamp(1.25rem,4vw,1.6rem);margin:8px 0 6px;text-align:center}
+.kart{background:var(--kart);border-radius:24px;padding:16px;margin:12px 0;box-shadow:0 8px 0 rgba(31,42,68,.10),0 14px 30px rgba(31,42,68,.12)}
+button{font:inherit;cursor:pointer;color:var(--yazi)}
+button:disabled{cursor:default}
+button:focus-visible{outline:4px solid #7b5cff;outline-offset:3px}
+.buyuk{display:block;margin:14px auto 4px;background:var(--ana);color:#fff;border:0;border-radius:18px;padding:12px 28px;min-height:58px;
+  font-size:1.25rem;font-weight:800;box-shadow:0 6px 0 rgba(0,0,0,.22)}
+.buyuk:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.buyuk.ikincil{background:var(--ikinci)}
+/* Üst çubuk + yol haritası */
+.ust{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ust .baslik{font-size:1rem;background:#fffc;border-radius:999px;padding:4px 12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sag{display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.puan{background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;font-size:1.1rem;box-shadow:0 3px 0 rgba(0,0,0,.1);white-space:nowrap}
+.puan.pop{animation:pop .4s}
+.ses{background:#fff;border:0;border-radius:50%;width:48px;height:48px;font-size:1.3rem;box-shadow:0 3px 0 rgba(0,0,0,.1)}
+.yol{display:flex;align-items:center;flex-wrap:wrap;gap:3px;margin:10px 0 0;padding:8px 10px;background:#fffb;border-radius:18px}
+.durak{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:800;background:#fff;color:var(--soluk);border:3px dashed #b9c3d6}
+.durak.simdi{border:3px solid var(--ana);color:var(--ana);transform:scale(1.15)}
+.durak.yildiz,.durak.yarim,.durak.ogrendi{border:3px solid transparent;font-size:.95rem}
+.durak.yildiz{background:#fff3c4}.durak.yarim{background:#e2f7f4}.durak.ogrendi{background:#e8ecff}
+.cizgi{flex:1 1 4px;min-width:4px;max-width:16px;height:4px;border-radius:2px;background:#b9c3d6}
+.durak.son{width:38px;height:38px;font-size:1.3rem;border:3px solid var(--sari);background:#fff8e1}
+/* Soru kartı */
+.etiketler{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.etiket{display:inline-block;background:var(--ikinci);color:#fff;font-weight:800;border-radius:999px;padding:2px 12px;font-size:.88rem}
+.etiket.asama{background:var(--ana)}
+.gorsel{display:flex;justify-content:center;margin:10px 0 2px}
+.emoji-gorsel{font-size:clamp(2rem,7vw,2.8rem);line-height:1.2;text-align:center}
+.durum{background:#fff6d6;border:2px dashed #f4c24d;border-radius:16px;padding:10px 14px;margin:10px 0 4px;font-size:1.05rem}
+.soru{font-size:clamp(1.2rem,3.8vw,1.55rem);font-weight:800;margin:10px 0 12px;text-align:center}
+.sec{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sec.uzun{grid-template-columns:1fr}
+@media (max-width:460px){.sec{grid-template-columns:1fr}}
+.sec button{position:relative;min-height:62px;border-radius:18px;border:3px solid var(--c);background:var(--z);font-size:1.25rem;font-weight:800;
+  padding:8px 40px 8px 52px;text-align:left;box-shadow:0 5px 0 var(--c)}
+.sec.uzun button{font-size:1.05rem;font-weight:700}
+.sec button:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--c)}
+.sec button:nth-child(1){--c:#ff8a5c;--z:#fff0e9}.sec button:nth-child(2){--c:#2ec4b6;--z:#e4f8f6}
+.sec button:nth-child(3){--c:#f4a300;--z:#fff6dc}.sec button:nth-child(4){--c:#7b5cff;--z:#efeaff}
+.sec .no{position:absolute;left:10px;top:50%;margin-top:-17px;width:34px;height:34px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:1rem}
+.sec button.dogru{--c:var(--ok);--z:#e3f7ec}
+.sec button.dogru::after{content:"✔";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--ok);font-size:1.5rem}
+.sec button.yanlis{--c:#a7b0c0;--z:#f1f3f7;color:#6b7489;text-decoration:line-through}
+.sec button.yanlis::after{content:"✖";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--hata);font-size:1.3rem}
+.alt{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.ipucu-btn,.kucuk-btn{background:#fff8e1;border:3px solid var(--sari);border-radius:999px;padding:6px 18px;min-height:50px;font-weight:800;box-shadow:0 4px 0 var(--sari)}
+.kucuk-btn{background:#eef4ff;border-color:#9db7f5;box-shadow:0 4px 0 #9db7f5}
+.kontrol-btn{background:var(--ikinci);color:#fff;border:0;border-radius:999px;padding:8px 22px;min-height:52px;font-weight:800;font-size:1.1rem;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+/* Tablo, grafik, bilgi kartları */
+.tablo-kap{width:100%;overflow-x:auto}
+.tablo{width:100%;border-collapse:separate;border-spacing:0;font-size:1rem;border-radius:14px;overflow:hidden;border:2px solid #d4dcec}
+.tablo caption{font-weight:800;margin-bottom:6px;font-size:1.02rem}
+.tablo th{background:var(--ikinci);color:#fff;padding:7px 8px;text-align:left;font-size:.95rem}
+.tablo td{padding:7px 8px;border-top:1px solid #e3e8f2}
+.tablo tr:nth-child(even) td{background:#f4f8ff}
+.tablo .yildizlar-h{color:#e09f00;letter-spacing:1px;white-space:nowrap}
+.tablo-not{font-size:.85rem;color:var(--soluk);margin-top:4px;text-align:center}
+@media (max-width:420px){.tablo{font-size:.86rem}.tablo th{font-size:.82rem}.tablo th,.tablo td{padding:6px 5px}}
+.bilgi{width:100%}
+.bilgi .sahne-emo{font-size:clamp(1.9rem,7vw,2.6rem);text-align:center;letter-spacing:.06em}
+.ciplar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:6px}
+.cip{background:#eef6ff;border:2px solid #bcd7f7;border-radius:999px;padding:4px 12px;font-weight:700;font-size:.98rem}
+.olcutler{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:10px 0}
+.olcut{background:#f4f8ff;border-radius:16px;padding:8px;text-align:center;font-weight:700}
+.olcut b{display:block;font-size:1.8rem}
+.kural{background:#eaf6ff;border-left:6px solid var(--ikinci);border-radius:14px;padding:10px 14px;margin:10px 0;font-size:1.05rem}
+.uyari-k{background:#fff1e6;border-left:6px solid var(--ana);border-radius:14px;padding:10px 14px;margin:10px 0;font-weight:700}
+/* Sınıflama (sürükle-bırak / dokun-yerleştir) */
+.havuz{min-height:72px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:10px;border:3px dashed #c3cde0;border-radius:18px;background:#f8faff;margin:6px 0 12px}
+.havuz.bos::before{content:"Bütün kartlar yerleştirildi ✓";color:var(--soluk);font-weight:700;align-self:center}
+.kartc{display:inline-flex;align-items:center;gap:6px;background:#fff;border:3px solid #9db7f5;border-radius:14px;padding:6px 12px;min-height:50px;font-weight:800;font-size:1.02rem;
+  box-shadow:0 4px 0 #9db7f5;touch-action:none;user-select:none;-webkit-user-select:none}
+.kartc .emo{font-size:1.5rem}
+.kartc[aria-pressed="true"]{background:#fff3c4;border-color:var(--ana);box-shadow:0 4px 0 var(--ana);transform:translateY(-2px)}
+.kartc.geri{border-style:dashed;border-color:var(--hata);box-shadow:0 4px 0 #f1b0a8}
+.kartc.geri::after{content:"↩";color:var(--hata);font-weight:800}
+.kartc.duzeltildi{border-color:var(--ok);box-shadow:0 4px 0 #9ddbb8;background:#e9f9f0}
+.kartc.surukleniyor{opacity:.35}
+.hayalet{position:fixed;z-index:60;pointer-events:none;transform:translate(-50%,-60%) rotate(-3deg);box-shadow:0 10px 24px rgba(0,0,0,.25)!important}
+.kutular{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kutular.tek{grid-template-columns:1fr 1fr}
+.kutular.uc{grid-template-columns:1fr 1fr 1fr}
+@media (max-width:560px){.kutular.uc{grid-template-columns:1fr}}
+.kutu{border:3px solid var(--kc);border-radius:18px;background:var(--kz);min-height:120px;display:flex;flex-direction:column}
+.kutu:nth-child(1){--kc:#8d99ae;--kz:#f2f4f7}.kutu:nth-child(2){--kc:#4cc9f0;--kz:#e9f8fd}.kutu:nth-child(3){--kc:#b8a1ff;--kz:#f3efff}.kutu:nth-child(4){--kc:#e76f51;--kz:#fff0eb}
+.kutu-bas{border:0;background:var(--kc);color:#fff;font-weight:800;font-size:1.02rem;border-radius:14px 14px 0 0;padding:8px 6px;min-height:48px;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.kutu-ic{flex:1;display:flex;flex-wrap:wrap;gap:6px;padding:8px;align-content:flex-start;justify-content:center}
+.kutu-ic .kartc{font-size:.92rem;min-height:44px;padding:4px 8px}
+.kutu.hedef{outline:4px dashed var(--ana);outline-offset:2px}
+.yardim{font-size:.92rem;color:var(--soluk);text-align:center;margin:2px 0 4px}
+/* Sıralama */
+.uc{font-weight:800;color:var(--ikinci);font-size:.95rem;margin:4px 4px}
+.uc.son{text-align:right}
+.yuvalar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.yuvalar.n3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:520px){.yuvalar,.yuvalar.n3{grid-template-columns:1fr}}
+.yuva{position:relative;min-height:74px;border:3px dashed #b9c3d6;border-radius:16px;background:#f8faff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 26px 6px 34px;font-weight:800;text-align:center}
+.yuva .sira-no{position:absolute;left:8px;top:50%;margin-top:-13px;width:26px;height:26px;border-radius:50%;background:var(--ikinci);color:#fff;display:grid;place-items:center;font-size:.85rem}
+.yuva.dolu{border-style:solid;border-color:#9db7f5;background:#fff}
+.yuva .emo{font-size:1.6rem;line-height:1.1}
+.yuva .deger{font-size:.82rem;color:var(--soluk);font-weight:700}
+.yuva.dogru-y{border-color:var(--ok);background:#e9f9f0}
+.yuva.yanlis-y{border-color:var(--hata);background:#fdeceb}
+.yuva.dogru-y::after{content:"✔";position:absolute;right:8px;top:6px;color:var(--ok)}
+.yuva.yanlis-y::after{content:"✖";position:absolute;right:8px;top:6px;color:var(--hata)}
+/* Rehber karakter + konuşma balonu */
+.karakter-satir{display:flex;align-items:flex-end;gap:10px;margin-top:8px}
+.krk{flex:0 0 auto;width:104px}
+.krk.kucuk{width:84px}
+.krk svg{display:block;width:100%;height:auto;transform-origin:50% 100%}
+.krk .goz-mutlu,.krk .kas{display:none}
+.krk.mutlu .goz-mutlu{display:inline}.krk.mutlu .goz-acik{display:none}
+.krk.dusun .goz-acik{transform:translate(3px,-3px)}
+.krk.uzgun .kas{display:inline}.krk.uzgun .goz-acik{transform:translateY(2px)}
+.balon{position:relative;flex:1;min-width:0;background:#fff;border-radius:20px;padding:12px 14px;font-weight:600;min-height:3.2em;margin-bottom:24px;
+  box-shadow:0 5px 0 rgba(31,42,68,.10);border:3px solid #fff}
+.balon::before{content:"";position:absolute;left:-14px;bottom:16px;border:9px solid transparent;border-right:14px solid #fff;border-left:0}
+.balon.mutlu{border-color:#bfead2}.balon.uzgun{border-color:#ffd3cc}.balon.dusun{border-color:#ffe7a3}
+.devam-yer{text-align:center}
+/* Bitiş */
+.bitis{text-align:center}
+.rozet{width:126px;height:auto}
+.rozet-ad{font-weight:800;font-size:1.2rem;margin-top:-4px}
+.yildizlar{font-size:1.5rem;letter-spacing:3px;margin:6px 0;word-break:break-all}
+#karne .rm{padding:4px 0;text-align:left}
+#karne .rm h2{font-family:"Trebuchet MS",system-ui,sans-serif;text-align:center}
+#karne .rm-k{border:0;background:#f5f8ff;border-radius:16px}
+#karne .rm-bar{height:18px;border-radius:10px}
+.kod{font-size:.78rem;color:var(--soluk);text-align:center;margin-top:6px}
+/* Telefon (dar ekran) ayarları */
+@media (max-width:480px){
+  .durak{width:24px;height:24px;font-size:.68rem;border-width:2px!important}
+  .durak.yildiz,.durak.yarim,.durak.ogrendi{font-size:.75rem}
+  .durak.son{width:30px;height:30px;font-size:1rem}
+  .cizgi{min-width:2px;max-width:6px}
+  .krk{width:76px}.krk.kucuk{width:66px}
+  .kartc{font-size:.9rem;padding:4px 9px;min-height:44px;gap:4px}
+  .kartc .emo{font-size:1.2rem}
+  .yuva{flex-direction:row;gap:8px;min-height:54px}
+  .kart{padding:14px 12px}
+}
+/* Hareketler (her biri 1 saniyeden kısa; az hareket tercihinde kapanır) */
+@media (prefers-reduced-motion:no-preference){
+  .krk.zipla svg{animation:zipla .6s}
+  .krk.salla svg,.sec button.salla,.salla{animation:salla .45s}
+  .kart.gir{animation:gir .35s ease-out}
+  .sec button,.kartc{transition:transform .08s,box-shadow .08s,background .15s}
+  .durak{transition:transform .2s}
+}
+@keyframes zipla{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-16px) scale(1.05,.95)}60%{transform:translateY(0) scale(1.06,.94)}}
+@keyframes salla{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px) rotate(-2deg)}40%{transform:translateX(7px) rotate(2deg)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes gir{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pop{50%{transform:scale(1.25)}}
+</style>
+</head>
+<body>
+<div class="dekor" aria-hidden="true">
+  <svg class="bulut" style="top:4%;left:-2%;width:160px" viewBox="0 0 170 60"><g fill="#fff"><ellipse cx="50" cy="38" rx="45" ry="20"/><ellipse cx="90" cy="28" rx="40" ry="26"/><ellipse cx="128" cy="40" rx="38" ry="18"/></g></svg>
+  <svg class="bulut" style="top:14%;right:-3%;width:130px" viewBox="0 0 170 60"><g fill="#fff"><ellipse cx="50" cy="38" rx="45" ry="20"/><ellipse cx="90" cy="28" rx="40" ry="26"/><ellipse cx="128" cy="40" rx="38" ry="18"/></g></svg>
+  <svg class="sehir" viewBox="0 0 1200 110" preserveAspectRatio="none">
+    <g fill="#9ccbe8" opacity=".55"><rect x="20" y="30" width="70" height="80"/><rect x="100" y="10" width="50" height="100"/><rect x="160" y="45" width="90" height="65"/><rect x="330" y="20" width="60" height="90"/><rect x="400" y="50" width="80" height="60"/><rect x="560" y="5" width="55" height="105"/><rect x="625" y="40" width="85" height="70"/><rect x="800" y="25" width="70" height="85"/><rect x="880" y="55" width="60" height="55"/><rect x="1010" y="15" width="65" height="95"/><rect x="1085" y="45" width="90" height="65"/></g>
+    <rect x="0" y="88" width="1200" height="22" fill="#6c7a8c" opacity=".55"/>
+    <path d="M0 99 H1200" stroke="#fff" stroke-width="3" stroke-dasharray="26 18" opacity=".7"/>
+  </svg>
+</div>
+<canvas id="konfeti" aria-hidden="true"></canvas>
+<div id="app"></div>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 2;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+})();
+
+</script>
+<script>
+'use strict';
+/* ===================== VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda) =====================
+ * Madde türleri:
+ *   tur 'secim'    : dogru + yanlislar [[seçenek, yanılgı etiketi], ...]  (gerekçeli seçimde seçenek "Araç: neden" biçiminde)
+ *   tur 'siniflama': kutular [{id, ad}], kartlar [{t, e (emoji), k (doğru kutu id), y (yanlış kutuya konursa yanılgı)}]
+ *   tur 'siralama' : dogruSira [{t, e, d (çözümde gösterilen yaklaşık değer)}], uclar ['En az', 'En çok'], yanilgi
+ *   gorsel (isteğe bağlı): {tur:'tablo', baslik, sutunlar, satirlar, not} | {tur:'cubuk', baslik, veriler:[{ad, e, deger}], birim}
+ *                          | {tur:'bilgi', sahne:'emoji', ogeler:[[emoji, metin], ...]} | {tur:'emoji', metin}
+ *   durum: sarı kutudaki olay;  ipucu: en fazla 3 kademe;  why: neden doğru (her maddede)
+ * Sayılar YAKLAŞIKTIR (aracın türüne, yola ve hıza göre değişir); kesin istatistik değildir.
+ * Yanılgı etiketleri:
+ *   en-hizli-en-iyi       : en hızlı aracı her durumda en uygun sandı
+ *   toplu-yavas           : toplu taşımayı her zaman yavaş/kötü sandı
+ *   toplu-her-zaman       : toplu taşımayı her durumda en uygun sandı (duruma bakmadı)
+ *   bisiklet-ulasim-degil : bisikleti ulaşım aracı saymadı
+ *   motorsuz-arac-degil   : motoru olmayan aracı ulaşım aracı saymadı
+ *   oyun-ulasim-karisti   : oyun aracı ile ulaşım aracını birbirini dışlayan şeyler sandı
+ *   ucak-her-yere         : uçağın (hava yolunun) her yere gidebileceğini sandı
+ *   kara-her-yere         : kara yolunun denizi de aşıp her yere ulaştığını sandı
+ *   tren-her-yere         : trenin raysız yerlere de gidebileceğini sandı
+ *   ray-kara-sanir        : treni (demir yolunu) kara yolu sandı
+ *   feribot-kara-sanir    : araç taşıyan feribotu kara yolu aracı sandı
+ *   yol-turu-karisti      : aracın kullandığı yolu (kara/deniz/hava/demir) karıştırdı
+ *   toplu-bireysel-karisti: toplu taşıma ile bireysel ulaşımı karıştırdı
+ *   enerji-karisti        : aracın çalıştığı enerjiyi (insan gücü/akaryakıt/elektrik) karıştırdı
+ *   cevre-yanlis          : otomobili çevreye en az zarar veren araç sandı
+ *   kapasite-karisti      : aracın taşıdığı yolcu/yük miktarını karıştırdı
+ *   kapasite-her-zaman    : en çok yük taşıyanı her durumda en uygun sandı
+ *   tek-olcut             : yalnız bir ölçüte bakıp istenen ölçütleri gözden kaçırdı
+ *   tablo-yanlis-okudu    : tablodan/grafikten yanlış değer okudu
+ *   kisi-arac-karisti     : kişi sayısı ile araç sayısını karıştırdı
+ *   cikarma-unuttu        : farkı bulmak için çıkarma yapmadı
+ *   toplama-yapti         : fark yerine toplam buldu
+ *   kat-hesap-hatasi      : "kaç kat" hesabını yanlış yaptı
+ *   toplam-hatasi         : puanları yanlış topladı
+ *   gemi-yuk-bilmez       : geminin çok yük taşıdığını bilmedi
+ *   kapasite-sirasi / hiz-sirasi : sıralamada karıştırdı;  ters-sira : sırayı tersten yaptı
+ *   ucuzluk-tek-olcut     : yalnız ucuzluğa baktı, istenen ölçütleri gözden kaçırdı
+ *   sure-hesaplamadi      : verilen sürede yetişip yetişmeyeceğini hesaplamadı
+ *   sure-hiz-karisti      : süre ile hızı karıştırdı (gidilen yolu yanlış hesapladı)
+ *   trafik-gozden-kacti   : toplu taşıma aracının da trafiğe takılabileceğini düşünmedi
+ *   yuk-gozden-kacti      : taşınması gereken aracı/yükü gözden kaçırdı
+ *   fark-yerine-tek-sure  : iki sürenin farkı yerine yalnız birini verdi
+ *   carpma-unuttu         : kişi başı fiyatı kişi sayısıyla çarpmadı
+ */
+const OYUN = {
+  id: 'trafik-ulasim-araclari',
+  ad: 'Ulaşım Araçları Karşılaştırma',
+  tema: {
+    ad: 'Yolculuk Planlama Merkezi', karakterAdi: 'Rota',
+    hikaye: 'Şehrimizin Yolculuk Planlama Merkezi\'ne hoş geldin! İnsanlara ve yüklere en uygun ulaşım aracını birlikte seçeceğiz. Her doğru kararda bir bilet kazanırsın.',
+    odulSimge: '🎫', odulAd: 'bilet', sonSimge: '🏁',
+    bitisBaslik: 'Bütün yolculuklar planlandı!',
+    renkAna: '#f3722c', renkIkinci: '#118ab2', karakterRenk: '#ffb703', gok1: '#8fd8ff', gok2: '#eefaff'
+  },
+  kazanimlar: [
+    { kod: 'TG.4.1.7', ad: 'Ulaşım araçlarını çeşitli özellikleri açısından karşılaştırır' }
+  ],
+  asamalar: {
+    1: { ad: 'Araçları tanı ve sınıflandır', simge: '🗂️',
+      kural: 'Ulaşım araçları insanları ve yükleri bir yerden başka bir yere taşır. Kullandıkları yola göre dörde ayrılır. Bazıları çok yolcuyu birlikte taşır (toplu taşıma), bazıları bir ya da birkaç kişiyi (bireysel ulaşım).',
+      olcutler: [['🛣️', 'Kara yolu'], ['🌊', 'Deniz yolu'], ['☁️', 'Hava yolu'], ['🛤️', 'Demir yolu']] },
+    2: { ad: 'Tablo ve grafik oku', simge: '📊',
+      kural: 'Araçları birçok ölçüte göre karşılaştırırız. Tablolardaki sayılar yaklaşıktır; aracın türüne ve yola göre değişebilir.',
+      olcutler: [['⏱️', 'Hız'], ['👥', 'Yolcu / yük'], ['💰', 'Maliyet'], ['🌳', 'Çevreye etkisi'], ['🛡️', 'Güvenlik'], ['⚡', 'Enerji']] },
+    3: { ad: 'Hangisi daha uygun?', simge: '🤔',
+      kural: 'En uygun araç duruma göre değişir. Yolun uzunluğuna, yolcu ya da yük miktarına, acele olup olmadığına, maliyete ve çevreye etkisine birlikte bakılır.',
+      uyari: 'En hızlı araç her zaman en uygun araç değildir!',
+      olcutler: [['📏', 'Uzaklık'], ['📦', 'Yük'], ['⏰', 'Zaman'], ['💰', 'Maliyet'], ['🌳', 'Çevre']] },
+    4: { ad: 'Ölçütleri birleştir', simge: '⚖️',
+      kural: 'Bir araç bir ölçütte en iyi, başka bir ölçütte en zayıf olabilir. Karar verirken istenen ölçütlerin hepsine birlikte bakarız.',
+      olcutler: [['🔢', 'Sırala'], ['⚡', 'Enerji'], ['⭐', 'Puanla']] }
+  },
+  maddeler: [
+    /* ---------- 1. aşama: Araçları tanı ve sınıflandır ---------- */
+    { id: 'k1', asama: 1, tur: 'siniflama', soru: 'Her aracı kullandığı yolun kutusuna yerleştir.',
+      kutular: [{ id: 'kara', ad: '🛣️ Kara yolu' }, { id: 'deniz', ad: '🌊 Deniz yolu' }, { id: 'hava', ad: '☁️ Hava yolu' }, { id: 'demir', ad: '🛤️ Demir yolu' }],
+      kartlar: [
+        { t: 'Otobüs', e: '🚌', k: 'kara', y: 'yol-turu-karisti' }, { t: 'Bisiklet', e: '🚲', k: 'kara', y: 'yol-turu-karisti' },
+        { t: 'Kamyon', e: '🚚', k: 'kara', y: 'yol-turu-karisti' }, { t: 'Feribot', e: '⛴️', k: 'deniz', y: 'feribot-kara-sanir' },
+        { t: 'Yük gemisi', e: '🚢', k: 'deniz', y: 'yol-turu-karisti' }, { t: 'Uçak', e: '✈️', k: 'hava', y: 'yol-turu-karisti' },
+        { t: 'Helikopter', e: '🚁', k: 'hava', y: 'yol-turu-karisti' }, { t: 'Tren', e: '🚆', k: 'demir', y: 'ray-kara-sanir' }
+      ],
+      ipucu: ['Araç nerede ilerliyor: asfalt yolda mı, suda mı, havada mı, raylar üzerinde mi?', 'Tren de karada gider ama yalnız raylar üzerinde; bu yüzden demir yolu ayrı bir yoldur. Feribot araç taşısa da denizde gider.'],
+      why: 'Otobüs, bisiklet ve kamyon kara yolunu; feribot ve yük gemisi deniz yolunu; uçak ve helikopter hava yolunu; tren ise demir yolunu (rayları) kullanır.' },
+    { id: 'b1', asama: 1, tur: 'secim', gorsel: { tur: 'bilgi', sahne: '🏠 🚲 ➡️ 🏫', ogeler: [['🌅', 'Hafta içi: okula gidiş'], ['🌳', 'Hafta sonu: parkta oyun']] },
+      durum: 'Ece her sabah okuluna bisikletle gidiyor. Hafta sonu parkta da bisikletiyle oynuyor.', soru: 'Hangisi doğrudur?',
+      dogru: 'Bisiklet bir ulaşım aracıdır; Ece onu hem okula gitmek hem de oyun için kullanıyor.',
+      yanlislar: [['Bisiklet yalnız bir oyun aracıdır; ulaşım aracı sayılmaz.', 'bisiklet-ulasim-degil'], ['Motoru olmayan araçlar ulaşım aracı sayılmaz.', 'motorsuz-arac-degil'], ['Bisiklet yalnız parkta kullanılınca ulaşım aracı olur.', 'oyun-ulasim-karisti']],
+      ipucu: ['Ulaşım aracı, insanları ya da yükleri bir yerden başka bir yere taşıyan araçtır.', 'Ece okula nasıl gidiyor?'],
+      why: 'Bisiklet insanları bir yerden başka bir yere taşır; motoru olmasa da bir ulaşım aracıdır. Trafiğe kapalı alanda oyun için de kullanılabilir.' },
+    { id: 'k2', asama: 1, tur: 'siniflama', soru: 'Araçları toplu taşıma ve bireysel ulaşım olarak ayır.',
+      kutular: [{ id: 'toplu', ad: '👥 Toplu taşıma' }, { id: 'bireysel', ad: '🧍 Bireysel ulaşım' }],
+      kartlar: [
+        { t: 'Belediye otobüsü', e: '🚌', k: 'toplu', y: 'toplu-bireysel-karisti' }, { t: 'Metro', e: '🚇', k: 'toplu', y: 'toplu-bireysel-karisti' },
+        { t: 'Şehir hatları vapuru', e: '⛴️', k: 'toplu', y: 'toplu-bireysel-karisti' }, { t: 'Tramvay', e: '🚋', k: 'toplu', y: 'toplu-bireysel-karisti' },
+        { t: 'Aile otomobili', e: '🚗', k: 'bireysel', y: 'toplu-bireysel-karisti' }, { t: 'Motosiklet', e: '🏍️', k: 'bireysel', y: 'toplu-bireysel-karisti' },
+        { t: 'Bisiklet', e: '🚲', k: 'bireysel', y: 'toplu-bireysel-karisti' }
+      ],
+      ipucu: ['Toplu taşıma araçları belli bir güzergâhta birbirini tanımayan pek çok yolcuyu birlikte taşır.', 'Kendi otomobilimiz, motosikletimiz ya da bisikletimizle yalnız biz ve yanımızdakiler gideriz.'],
+      why: 'Belediye otobüsü, metro, vapur ve tramvay çok yolcuyu birlikte taşır: toplu taşıma. Otomobil, motosiklet ve bisiklet bir ya da birkaç kişiyi taşır: bireysel ulaşım.' },
+
+    /* ---------- 2. aşama: Tablo ve grafik oku ---------- */
+    { id: 't1', asama: 2, tur: 'secim',
+      gorsel: { tur: 'tablo', baslik: 'Bir seferde taşıdığı yolcu (yaklaşık)', sutunlar: ['Araç', 'Yolu', 'Yolcu'],
+        satirlar: [['🚲 Bisiklet', 'Kara', '1'], ['🚗 Otomobil', 'Kara', '5 (sürücü dahil)'], ['🚐 Minibüs', 'Kara', '15'], ['🚌 Otobüs', 'Kara', '45'], ['🚆 Yolcu treni', 'Demir', 'birkaç yüz']],
+        not: 'Sayılar yaklaşıktır; aracın büyüklüğüne göre değişir.' },
+      soru: '40 kişilik bir grup geziye yalnız otomobillerle giderse en az kaç otomobil gerekir?', dogru: '8',
+      yanlislar: [['40', 'kisi-arac-karisti'], ['5', 'tablo-yanlis-okudu'], ['1', 'kapasite-karisti']],
+      ipucu: ['Tabloya bak: bir otomobil kaç kişi taşıyor?', '40 kişiyi 5\'erli gruplara ayır: 40 ÷ 5 = ?'],
+      why: 'Bir otomobil sürücü dahil 5 kişi taşır: 40 ÷ 5 = 8 otomobil. Aynı grup tek bir otobüse sığar!' },
+    { id: 't2', asama: 2, tur: 'secim',
+      gorsel: { tur: 'cubuk', baslik: '60 öğrenciyi okula getirmek için gereken araç', birim: 'araç',
+        veriler: [{ ad: 'Otomobil (sürücü + 2 öğrenci)', e: '🚗', deger: 30 }, { ad: 'Okul servisi (sürücü + 15 öğrenci)', e: '🚌', deger: 4 }] },
+      soru: 'Grafiğe göre 60 öğrencinin hepsi otomobil yerine okul servisiyle gelirse okul önündeki araç sayısı kaç azalır?', dogru: '26',
+      yanlislar: [['30', 'cikarma-unuttu'], ['4', 'tablo-yanlis-okudu'], ['34', 'toplama-yapti']],
+      ipucu: ['Grafikte otomobille kaç araç, servisle kaç araç gerekiyor?', 'Ne kadar azaldığını bulmak için büyük sayıdan küçük sayıyı çıkar.'],
+      why: 'Otomobille 60 ÷ 2 = 30 araç, servisle 60 ÷ 15 = 4 araç gerekir. 30 − 4 = 26 araç azalır. Toplu taşıma trafiği rahatlatır.' },
+    { id: 't3', asama: 2, tur: 'secim',
+      gorsel: { tur: 'tablo', baslik: 'Bir saatte gidilen yol (yaklaşık)', sutunlar: ['Araç', 'Yolu', 'Hız'],
+        satirlar: [['🚲 Bisiklet', 'Kara', '15 km'], ['🚗 Otomobil (şehirlerarası)', 'Kara', '100 km'], ['🚄 Hızlı tren', 'Demir', '250 km'], ['✈️ Yolcu uçağı', 'Hava', '800 km']],
+        not: 'Hızlar yaklaşıktır; yola, hava durumuna ve kurallara göre değişir.' },
+      soru: 'Tabloya göre hangi karşılaştırma doğrudur?', dogru: 'Yolcu uçağı, otomobilden yaklaşık 8 kat hızlıdır.',
+      yanlislar: [['Hızlı tren, yolcu uçağından daha hızlıdır.', 'tablo-yanlis-okudu'], ['Yolcu uçağı, otomobilden yaklaşık 2 kat hızlıdır.', 'kat-hesap-hatasi'], ['Otomobil 3 saatte, uçağın 1 saatte gittiğinden daha çok yol gider.', 'sure-hiz-karisti']],
+      ipucu: ['Her seçeneği tablodaki sayılarla tek tek dene.', '"Kaç kat" için büyük sayıyı küçük sayıya böl. Otomobil 3 saatte kaç km gider?'],
+      why: '800 ÷ 100 = 8; uçak otomobilden yaklaşık 8 kat hızlıdır. Otomobil 3 saatte 3 × 100 = 300 km gider; uçak 1 saatte 800 km gider.' },
+    { id: 't4', asama: 2, tur: 'secim',
+      gorsel: { tur: 'tablo', baslik: 'Deniz\'in karşılaştırma tablosu', sutunlar: ['Araç', 'Yolu', 'Özelliği'],
+        satirlar: [['🚢 Yük gemisi', 'Deniz', 'Bir seferde çok fazla yük taşır.'], ['✈️ Uçak', 'Hava', 'Her yere iner, havalimanı gerekmez.'], ['🚆 Tren', 'Demir', 'Yalnız raylar üzerinde gider.'], ['🚌 Otobüs', 'Kara', 'Birçok yolcuyu birlikte taşır.']] },
+      soru: 'Deniz\'in tablosunda bir bilgi YANLIŞ. Hangisi?', dogru: 'Uçak satırı',
+      yanlislar: [['Yük gemisi satırı', 'gemi-yuk-bilmez'], ['Tren satırı', 'tren-her-yere'], ['Otobüs satırı', 'toplu-bireysel-karisti']],
+      ipucu: ['Her satırı ayrı ayrı oku ve kendine "Bu her zaman doğru mu?" diye sor.', 'Bir uçak nereden kalkar, nereye iner?'],
+      why: 'Uçaklar yalnız havalimanından kalkar ve havalimanına iner. Bu yüzden uçak her yere gidemez; havalimanından sonra başka bir araçla yola devam edilir.' },
+    { id: 'n1', asama: 2, tur: 'secim',
+      gorsel: { tur: 'tablo', baslik: 'İki şehir arası yaklaşık 500 km', sutunlar: ['Araç', 'Bir saatte gittiği yol'],
+        satirlar: [['🚗 Otomobil (şehirlerarası)', 'yaklaşık 100 km'], ['🚄 Hızlı tren', 'yaklaşık 250 km']],
+        not: 'Mola ve bekleme süreleri hesaba katılmıyor.' },
+      soru: 'Bu 500 km\'lik yolu otomobil ile hızlı tren kaç saat farkla gider?', dogru: '3 saat',
+      yanlislar: [['5 saat', 'fark-yerine-tek-sure'], ['2 saat', 'fark-yerine-tek-sure'], ['7 saat', 'toplama-yapti']],
+      ipucu: ['Önce her araç için ayrı ayrı süreyi bul.', 'Otomobil: 500 ÷ 100 = ? saat. Hızlı tren: 500 ÷ 250 = ? saat. Sonra farkı bul.'],
+      why: 'Otomobil 500 ÷ 100 = 5 saatte, hızlı tren 500 ÷ 250 = 2 saatte gider. Fark 5 − 2 = 3 saattir.' },
+
+    /* ---------- 3. aşama: Hangisi daha uygun? (gerekçeli seçim) ---------- */
+    { id: 'g1', asama: 3, tur: 'secim', gorsel: { tur: 'bilgi', sahne: '🏠 ➡️ 📚', ogeler: [['📏', 'Yol: 2 km'], ['👦', '1 kişi'], ['🚲', 'Bisiklet yolu var'], ['⏰', 'Acele yok']] },
+      durum: 'Kerem evinden mahallesindeki kütüphaneye gidecek.', soru: 'Kerem için en uygun seçim ve nedeni hangisi?',
+      dogru: 'Bisiklet: kısa yolda ucuz ve çevre dostu.',
+      yanlislar: [['Otomobil: Kerem kütüphaneye daha çabuk varır.', 'en-hizli-en-iyi'], ['Belediye otobüsü: toplu taşıma havayı daha az kirletir.', 'toplu-her-zaman'], ['Taksi: yol kısa olduğu için ücreti az tutar.', 'tek-olcut']],
+      ipucu: ['Durum kartındaki dört bilgiye birlikte bak: uzaklık, kişi sayısı, yol ve zaman.', 'Acele yokken hız en önemli ölçüt değildir. Hangisi hem para istemez hem havayı kirletmez?'],
+      why: 'Yol kısa, bisiklet yolu var ve acele yok. Bisiklet hem para istemez hem havayı kirletmez (kask takılır). Otomobil daha çabuk varır ama burada acele yok; otobüs ve taksi de yakıt harcar ve ücretlidir.' },
+    { id: 'g2', asama: 3, tur: 'secim', gorsel: { tur: 'bilgi', sahne: '🏭 📦 ➡️ 🌊 ➡️ 🏙️', ogeler: [['⚖️', '5000 ton tahıl'], ['🌊', 'Denizin karşı kıyısındaki ülke'], ['⏰', 'Acele yok'], ['💰', 'Ucuz olsun']] },
+      durum: 'Bir fabrika çok büyük bir tahıl yükünü denizin karşı kıyısındaki bir ülkeye gönderecek.', soru: 'Bu yük nasıl taşınmalı?',
+      dogru: 'Yük gemisi: çok yükü denizden ucuza taşır.',
+      yanlislar: [['Kargo uçağı: yük karşı kıyıya birkaç saatte ulaşır.', 'en-hizli-en-iyi'], ['Yük treni: bir seferde birçok vagon dolusu yük taşır.', 'tren-her-yere'], ['Tırlar: yük fabrikadan alınıp kapıya kadar götürülür.', 'kara-her-yere']],
+      ipucu: ['Durum kartındaki dört bilgiyi birlikte düşün: yükün miktarı, aradaki yol, zaman ve maliyet.', 'Arada deniz var ve yük çok fazla. Hangi araç denizi aşar ve çok yükü ucuza taşır?'],
+      why: 'Yük gemileri bir seferde binlerce ton yük taşır ve denizi aşar; acele yoksa en ucuz yol budur. Uçak hızlıdır ama bu kadar yük için çok pahalıdır. Trenin rayları ve tırların yolu denizde biter.' },
+    { id: 'g3', asama: 3, tur: 'secim', gorsel: { tur: 'bilgi', sahne: '💊 ⏱️ ➡️ 🏥', ogeler: [['📏', 'Uzaklık: 900 km'], ['⏱️', '3 saat içinde ulaşmalı'], ['📦', 'Küçük bir kutu']] },
+      durum: 'Bir hastaneye, 900 km uzaktaki bir şehirden acil bir ilaç 3 saat içinde ulaşmalı.', soru: 'İlaç nasıl gönderilmeli?',
+      dogru: 'Uçak: 900 km\'yi 3 saatten kısa sürede gider.',
+      yanlislar: [['Şehirlerarası otobüs: yol boyunca kesintisiz ve güvenli gider.', 'sure-hesaplamadi'], ['Otomobil: beklemeden hemen yola çıkabilir.', 'sure-hesaplamadi'], ['Kargo kamyonu: kutuyu sarsmadan ucuza taşır.', 'tek-olcut']],
+      ipucu: ['Bu durumda hangi ölçüt en önemli? Durum kartına bak.', 'Saatte yaklaşık 100 km giden bir araç 900 km\'yi kaç saatte gider?'],
+      why: 'Burada en önemli ölçüt zaman. Saatte yaklaşık 100 km giden otomobil ya da otobüs 900 km\'yi 9 saatten uzun sürede gider. 3 saatten kısa sürede ancak uçak ulaştırabilir. Hız bazen en önemli ölçüttür, ama her durumda değil.' },
+    { id: 'g4', asama: 3, tur: 'secim', gorsel: { tur: 'bilgi', sahne: '🏙️ 🚗🚗🚗🚗 🚦', ogeler: [['👥', 'Her sabah binlerce kişi'], ['🚦', 'Yollar çok kalabalık'], ['🚇', 'Metro hattı var']] },
+      durum: 'Büyük bir şehirde binlerce kişi her sabah aynı merkeze işe gidiyor.', soru: 'Bu insanlar için hangisi daha uygundur?',
+      dogru: 'Metro: çok yolcuyu trafiğe takılmadan taşır.',
+      yanlislar: [['Kendi otomobilleri: herkes istediği saatte yola çıkar.', 'toplu-yavas'], ['Belediye otobüsü: o da toplu taşımadır, çok yolcu alır.', 'trafik-gozden-kacti'], ['Taksi: yolcuyu evinin kapısından alıp işe bırakır.', 'kapasite-karisti']],
+      ipucu: ['Durum kartındaki üç bilgiyi birlikte düşün.', 'Yollar çok kalabalıksa hangi araç trafiğe takılmaz?'],
+      why: 'Metro kendi raylarında gider, trafiğe takılmaz ve bir seferde çok yolcu taşır. Otobüs de toplu taşımadır ama kalabalık yolda trafiğe takılır. Herkes otomobille ya da taksiyle gitse yollar tıkanır.' },
+    { id: 'g5', asama: 3, tur: 'secim', gorsel: { tur: 'bilgi', sahne: '🚗 ➡️ 🌊 ➡️ 🏝️', ogeler: [['🏝️', 'Adada havalimanı yok'], ['🌉', 'Adaya köprü yok'], ['🚗', 'Otomobillerini de götürecekler']] },
+      durum: 'Bir aile, otomobilleriyle birlikte bir adaya tatile gidecek.', soru: 'Aile adaya nasıl gitmeli?',
+      dogru: 'Feribot: aileyi ve otomobili birlikte taşır.',
+      yanlislar: [['Deniz otobüsü: aile adaya çabuk ve rahat geçer.', 'yuk-gozden-kacti'], ['Uçak ve kiralık otomobil: aile uçar, adada otomobil kiralar.', 'ucak-her-yere'], ['Otomobil: aile kendi otomobiliyle kıyı yolundan adaya gider.', 'kara-her-yere']],
+      ipucu: ['Durum kartındaki üç bilgiyi tek tek kontrol et: hangi yollar kapalı?', 'Deniz yolundan gidecekler. Hangi deniz aracı otomobilleri de taşır?'],
+      why: 'Adada havalimanı ve adaya köprü olmadığı için uçakla ya da otomobille gidilemez. Deniz otobüsü yalnız yolcu taşır; otomobili götüremez. Feribot insanları ve araçları birlikte denizden geçirir.' },
+
+    /* ---------- 4. aşama: Ölçütleri birleştir ---------- */
+    { id: 'r1', asama: 4, tur: 'siralama', soru: 'Araçları bir seferde taşıyabildiği yolcu sayısına göre AZDAN ÇOĞA sırala.', uclar: ['👤 En az yolcu', 'En çok yolcu 👥'],
+      dogruSira: [{ t: 'Motosiklet', e: '🏍️', d: '1–2 kişi' }, { t: 'Minibüs', e: '🚐', d: 'yaklaşık 15' }, { t: 'Yolcu uçağı', e: '✈️', d: 'yaklaşık 150–200' }, { t: 'Büyük yolcu gemisi', e: '🛳️', d: 'binlerce' }],
+      yanilgi: 'kapasite-sirasi',
+      ipucu: ['Önce en az yolcu alan aracı bul: kaç kişi binebilir?', 'Bir yolcu uçağında yaklaşık 150–200 kişi, büyük bir yolcu gemisinde binlerce kişi yolculuk eder.'],
+      why: 'Motosiklet 1–2, minibüs yaklaşık 15, yolcu uçağı yaklaşık 150–200, büyük yolcu gemisi binlerce kişi taşır (sayılar yaklaşıktır).' },
+    { id: 'r2', asama: 4, tur: 'siralama', soru: 'Araçları hızlarına göre YAVAŞTAN HIZLIYA sırala.', uclar: ['🐢 En yavaş', 'En hızlı 🚀'],
+      dogruSira: [{ t: 'Kürekli kayık', e: '🛶', d: 'saatte ~5 km' }, { t: 'Bisiklet', e: '🚲', d: 'saatte ~15 km' }, { t: 'Şehirlerarası otobüs', e: '🚌', d: 'saatte ~90 km' }, { t: 'Hızlı tren', e: '🚄', d: 'saatte ~250 km' }],
+      yanilgi: 'hiz-sirasi',
+      ipucu: ['Her aracın bir saatte yaklaşık kaç km gittiğini düşün.', 'Kürek çekmek mi, pedal çevirmek mi daha hızlı götürür? Otobüs ile hızlı trenden hangisi daha hızlı?'],
+      why: 'Kürekli kayık (saatte yaklaşık 5 km) < bisiklet (yaklaşık 15 km) < şehirlerarası otobüs (yaklaşık 90 km) < hızlı tren (yaklaşık 250 km).' },
+    { id: 'k3', asama: 4, tur: 'siniflama', soru: 'Her aracı çalıştığı enerjinin kutusuna yerleştir.',
+      kutular: [{ id: 'insan', ad: '💪 İnsan gücü' }, { id: 'yakit', ad: '⛽ Akaryakıt' }, { id: 'elektrik', ad: '🔌 Elektrik' }],
+      kartlar: [
+        { t: 'Bisiklet', e: '🚲', k: 'insan', y: 'enerji-karisti' }, { t: 'Kürekli kayık', e: '🛶', k: 'insan', y: 'enerji-karisti' },
+        { t: 'Benzinli otomobil', e: '🚗', k: 'yakit', y: 'enerji-karisti' }, { t: 'Kamyon', e: '🚚', k: 'yakit', y: 'enerji-karisti' },
+        { t: 'Yük gemisi', e: '🚢', k: 'yakit', y: 'enerji-karisti' }, { t: 'Metro', e: '🚇', k: 'elektrik', y: 'enerji-karisti' },
+        { t: 'Tramvay', e: '🚋', k: 'elektrik', y: 'enerji-karisti' }
+      ],
+      ipucu: ['Pedal ya da kürekle ilerleyen araçlar insan gücüyle gider.', 'Metro ve tramvay raylarının üstündeki ya da yanındaki elektrik hattından güç alır.'],
+      why: 'Bisiklet ve kayık insan gücüyle; benzinli otomobil, kamyon ve yük gemisi akaryakıtla; metro ve tramvay elektrikle çalışır. İnsan gücüyle giden araçlar havayı kirletmez.' },
+    { id: 'p1', asama: 4, tur: 'secim',
+      gorsel: { tur: 'tablo', baslik: 'Örnek puan tablosu (★★★ = en iyi)', sutunlar: ['Araç', 'Hız', 'Ucuzluk', 'Çevre', 'Güvenlik'], yildiz: true,
+        satirlar: [['✈️ Uçak', '★★★', '★', '★', '★★★'], ['🚌 Otobüs', '★', '★★★', '★★', '★★'], ['🚆 Tren', '★★', '★★', '★★★', '★★★']],
+        not: 'Puanlar yaklaşık bir karşılaştırmadır; yolculuğa göre değişebilir.' },
+      durum: 'Selin\'in ailesi başka bir şehre gidecek. Onlar için en önemli iki şey: güvenli olması ve çevreye az zarar vermesi. Hız ve fiyat önemli değil.',
+      soru: 'Puan tablosuna göre aile hangisini seçmeli?', dogru: 'Tren',
+      yanlislar: [['Uçak', 'en-hizli-en-iyi'], ['Otobüs', 'ucuzluk-tek-olcut'], ['Uçak ve otobüs eşit puan aldığı için karar verilemez.', 'toplam-hatasi']],
+      ipucu: ['Yalnız "Çevre" ve "Güvenlik" sütunlarına bak.', 'İki sütunu birlikte değerlendir: her araç için iki sütundaki yıldızları topla.'],
+      why: 'Çevre + güvenlik: Uçak 1 + 3 = 4, Otobüs 2 + 2 = 4, Tren 3 + 3 = 6 yıldız. En uygun seçim tren. En hızlı olan uçak burada en uygun değil.' },
+    { id: 'n2', asama: 4, tur: 'secim',
+      gorsel: { tur: 'tablo', baslik: '500 km\'lik yolculuk (örnek değerler)', sutunlar: ['Araç', 'Süre', 'Kişi başı bilet'],
+        satirlar: [['✈️ Uçak', '3 saat', '1500 TL'], ['🚄 Hızlı tren', '3 saat', '700 TL'], ['🚌 Otobüs', '6 saat', '600 TL']],
+        not: 'Süreye havalimanı ve garda bekleme dahildir. Fiyatlar örnektir.' },
+      durum: 'Ayşe\'nin ailesi 4 kişi. Toplam en çok 2500 TL harcayabilirler. Yolculuk 7 saatten uzun sürmesin.',
+      soru: 'Aile, iki koşulu da sağlayan hangi aracı seçmeli?', dogru: 'Otobüs',
+      yanlislar: [['Uçak', 'en-hizli-en-iyi'], ['Hızlı tren', 'carpma-unuttu'], ['Hiçbiri iki koşulu sağlamıyor.', 'toplam-hatasi']],
+      ipucu: ['Önce her araç için 4 kişinin toplam bilet parasını bul.', 'Sonra hem para (en çok 2500 TL) hem süre (en çok 7 saat) koşulunu sağlayanı seç.'],
+      why: 'Uçak 4 × 1500 = 6000 TL, hızlı tren 4 × 700 = 2800 TL: ikisi de 2500 TL\'yi aşar. Otobüs 4 × 600 = 2400 TL ve 6 saat sürer; iki koşulu da sağlar. Daha yavaş araç bazen en uygun seçimdir.' }
+  ]
+};
+
+/* ===================== TEMA ÇİZİMLERİ (başlık sahnesi + rehber karakter "Rota") ===================== */
+const T = OYUN.tema;
+function sahneSVG() {   // dört yol: hava (uçak), demir (tren), kara (otobüs, bisiklet), deniz (gemi)
+  const tekerlek = (x, y, r) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="#2b2d42"/><circle cx="' + x + '" cy="' + y + '" r="' + (r * 0.45) + '" fill="#d9dee8"/>';
+  return '<svg viewBox="0 0 400 180" style="display:block;width:100%;max-width:540px;margin:0 auto" aria-hidden="true">' +
+    '<rect x="0" y="0" width="400" height="180" rx="18" fill="#dff4ff"/>' +
+    '<circle cx="352" cy="34" r="17" fill="#ffd166"/>' +
+    '<g fill="#fff"><ellipse cx="250" cy="34" rx="26" ry="10"/><ellipse cx="268" cy="27" rx="18" ry="11"/></g>' +
+    // uçak + iz
+    '<path d="M18 46 H70" stroke="#fff" stroke-width="4" stroke-dasharray="8 6" stroke-linecap="round"/>' +
+    '<g transform="translate(72 26)"><path d="M0 14 Q4 8 14 8 L62 8 Q74 10 78 14 Q74 18 62 20 L14 20 Q4 20 0 14Z" fill="#fff" stroke="#1f2a44" stroke-width="2"/>' +
+    '<path d="M30 15 L52 15 L38 36Z" fill="#118ab2"/><path d="M8 9 L2 -6 L16 9Z" fill="#118ab2"/>' +
+    '<g fill="#8ecae6"><circle cx="46" cy="12" r="2.2"/><circle cx="54" cy="12" r="2.2"/><circle cx="62" cy="12" r="2.2"/></g></g>' +
+    // tepeler
+    '<path d="M0 98 Q60 70 120 92 T240 90 T300 96 V180 H0Z" fill="#9ad08a"/>' +
+    // demir yolu + tren
+    '<path d="M0 116 H290" stroke="#6d4c41" stroke-width="3"/>' + Array.from({ length: 15 }, (_, i) => '<rect x="' + (6 + i * 19) + '" y="113" width="4" height="8" fill="#8d6e63"/>').join('') +
+    '<g transform="translate(18 88)"><rect x="0" y="4" width="48" height="22" rx="5" fill="#e63946"/><rect x="52" y="4" width="48" height="22" rx="5" fill="#e63946"/>' +
+    '<path d="M104 4 H130 Q142 6 144 26 H104Z" fill="#e63946"/><g fill="#cdeffd"><rect x="6" y="9" width="12" height="8" rx="2"/><rect x="24" y="9" width="12" height="8" rx="2"/><rect x="58" y="9" width="12" height="8" rx="2"/><rect x="76" y="9" width="12" height="8" rx="2"/><rect x="110" y="9" width="16" height="9" rx="2"/></g>' +
+    '<rect x="0" y="22" width="144" height="4" fill="#9d0208"/></g>' +
+    // kara yolu + otobüs + bisiklet
+    '<rect x="0" y="134" width="290" height="34" fill="#6c7a8c"/><path d="M6 151 H290" stroke="#fff" stroke-width="3" stroke-dasharray="14 10"/>' +
+    '<g transform="translate(40 126)"><rect x="0" y="0" width="86" height="28" rx="7" fill="#f3722c"/><g fill="#cdeffd"><rect x="6" y="5" width="13" height="10" rx="2"/><rect x="23" y="5" width="13" height="10" rx="2"/><rect x="40" y="5" width="13" height="10" rx="2"/><rect x="57" y="5" width="13" height="10" rx="2"/><rect x="74" y="5" width="9" height="14" rx="2"/></g>' +
+    tekerlek(18, 29, 6) + tekerlek(68, 29, 6) + '</g>' +
+    '<g transform="translate(176 128)" stroke="#1f2a44" stroke-width="2.4" fill="none"><circle cx="0" cy="18" r="9"/><circle cx="34" cy="18" r="9"/><path d="M0 18 L12 4 L28 4 L34 18 M12 4 L17 18 L28 4 M10 0 H16 M26 0 L30 -2"/></g>' +
+    // deniz + gemi
+    '<rect x="290" y="100" width="110" height="80" fill="#4cc9f0"/><path d="M290 112 Q305 106 320 112 T350 112 T380 112 T410 112" stroke="#fff" stroke-width="2.5" fill="none" opacity=".8"/>' +
+    '<g transform="translate(304 76)"><path d="M0 26 H84 L74 42 H10Z" fill="#1d3557"/><rect x="14" y="10" width="50" height="16" rx="3" fill="#fff"/><rect x="24" y="0" width="12" height="10" fill="#e63946"/>' +
+    '<g fill="#8ecae6"><circle cx="24" cy="18" r="3"/><circle cx="36" cy="18" r="3"/><circle cx="48" cy="18" r="3"/></g></g>' +
+    '<path d="M300 150 Q315 144 330 150 T360 150 T390 150" stroke="#fff" stroke-width="2" fill="none" opacity=".6"/></svg>';
+}
+function karakterSVG() { // sevimli otobüs "Rota": ruh hâli CSS sınıfıyla değişir (mutlu / dusun / uzgun)
+  const r = T.karakterRenk;
+  return '<svg viewBox="0 0 120 132" aria-hidden="true">' +
+    '<rect x="40" y="4" width="40" height="12" rx="5" fill="' + T.renkIkinci + '"/>' +
+    '<rect x="3" y="34" width="10" height="20" rx="4" fill="#2b2d42"/><rect x="107" y="34" width="10" height="20" rx="4" fill="#2b2d42"/>' +
+    '<rect x="12" y="14" width="96" height="102" rx="20" fill="' + r + '"/>' +
+    '<rect x="20" y="24" width="80" height="44" rx="12" fill="#cdeffd"/><path d="M60 24 V68" stroke="' + r + '" stroke-width="4"/>' +
+    '<g class="goz-acik"><circle cx="40" cy="47" r="8" fill="#1f2a44"/><circle cx="80" cy="47" r="8" fill="#1f2a44"/>' +
+    '<circle cx="42.5" cy="44" r="2.6" fill="#fff"/><circle cx="82.5" cy="44" r="2.6" fill="#fff"/></g>' +
+    '<g class="goz-mutlu" stroke="#1f2a44" stroke-width="4" fill="none" stroke-linecap="round"><path d="M31 50 Q40 38 49 50"/><path d="M71 50 Q80 38 89 50"/></g>' +
+    '<g class="kas" stroke="#1f2a44" stroke-width="3" stroke-linecap="round"><path d="M30 32 L48 36"/><path d="M90 32 L72 36"/></g>' +
+    '<path d="M44 82 Q60 96 76 82" stroke="#1f2a44" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="28" cy="80" r="5" fill="#ff8fab" opacity=".7"/><circle cx="92" cy="80" r="5" fill="#ff8fab" opacity=".7"/>' +
+    '<circle cx="27" cy="100" r="7" fill="#fff3b0" stroke="#1f2a44" stroke-width="2"/><circle cx="93" cy="100" r="7" fill="#fff3b0" stroke="#1f2a44" stroke-width="2"/>' +
+    '<rect x="44" y="98" width="32" height="8" rx="3" fill="#fff" opacity=".7"/>' +
+    '<rect x="18" y="112" width="20" height="16" rx="5" fill="#2b2d42"/><rect x="82" y="112" width="20" height="16" rx="5" fill="#2b2d42"/></svg>';
+}
+
+/* ===================== SORU GÖRSELLERİ ===================== */
+const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const CIZ = {
+  tablo(g) {
+    return '<div class="tablo-kap"><table class="tablo"><caption>📋 ' + esc(g.baslik) + '</caption><thead><tr>' + g.sutunlar.map(s => '<th scope="col">' + esc(s) + '</th>').join('') +
+      '</tr></thead><tbody>' + g.satirlar.map(r => '<tr>' + r.map((h, i) => i === 0 ? '<th scope="row" style="background:none;color:inherit">' + esc(h) + '</th>'
+        : '<td' + (g.yildiz ? ' class="yildizlar-h" aria-label="' + String(h).length + ' yıldız"' : '') + '>' + esc(h) + '</td>').join('') + '</tr>').join('') +
+      '</tbody></table>' + (g.not ? '<div class="tablo-not">ℹ️ ' + esc(g.not) + '</div>' : '') + '</div>';
+  },
+  cubuk(g) {      // yatay çubuk grafik
+    const enb = Math.max(...g.veriler.map(v => v.deger)), satir = 64, H = 40 + g.veriler.length * satir, L = 12, W = 300;
+    let P = '<text x="170" y="22" text-anchor="middle" font-size="15" font-weight="800" fill="#1f2a44">' + esc(g.baslik) + '</text>';
+    g.veriler.forEach((v, i) => {
+      const y = 38 + i * satir, w = Math.max(10, Math.round(v.deger / enb * (W - 70))), renk = i % 2 ? T.renkIkinci : T.renkAna;
+      P += '<text x="' + L + '" y="' + (y + 14) + '" font-size="14" font-weight="700" fill="#1f2a44">' + esc(v.e + ' ' + v.ad) + '</text>' +
+        '<rect x="' + L + '" y="' + (y + 22) + '" width="' + w + '" height="24" rx="8" fill="' + renk + '"/>' +
+        '<text x="' + (L + w + 8) + '" y="' + (y + 40) + '" font-size="17" font-weight="800" fill="#1f2a44">' + v.deger + ' ' + esc(g.birim) + '</text>';
+    });
+    return '<svg viewBox="0 0 340 ' + H + '" style="width:100%;max-width:520px;background:#f8faff;border-radius:14px" role="img" aria-label="' +
+      esc(g.baslik + ': ' + g.veriler.map(v => v.ad + ' ' + v.deger + ' ' + g.birim).join(', ')) + '">' + P + '</svg>';
+  },
+  bilgi(g) {
+    return '<div class="bilgi"><div class="sahne-emo" aria-hidden="true">' + esc(g.sahne) + '</div><div class="ciplar">' +
+      g.ogeler.map(o => '<span class="cip"><span aria-hidden="true">' + esc(o[0]) + '</span> ' + esc(o[1]) + '</span>').join('') + '</div></div>';
+  },
+  emoji(g) { return '<div class="emoji-gorsel" aria-hidden="true">' + esc(g.metin) + '</div>'; }
+};
+const gorselCiz = g => (g && CIZ[g.tur]) ? '<div class="gorsel">' + CIZ[g.tur](g) + '</div>' : '';
+
+/* ===================== MOTOR ===================== */
+const app = document.getElementById('app');
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const rastgele = a => a[Math.floor(Math.random() * a.length)];
+let sira = [], idx = 0, durum = null, sonuclar = [], puan = 0, ilkTur = 0, sonAsama = 0, tekrarEklendi = false;
+const depo = (() => { const mem = {}; return {
+  oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
+  yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } } }; })();
+const DEPO_REKOR = 'rekor-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
+[['--ana', T.renkAna], ['--ikinci', T.renkIkinci], ['--gok1', T.gok1], ['--gok2', T.gok2]].forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+const azHareket = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+
+/* --- Ses --- */
+let sesAcik = depo.oku(DEPO_SES) !== '0', actx = null;
+function cal(tur) {
+  if (!sesAcik) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    const N = (f, s, d, tip) => { const o = actx.createOscillator(), g = actx.createGain(); o.type = tip || 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t + s); g.gain.exponentialRampToValueAtTime(0.16, t + s + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + s + d);
+      o.connect(g); g.connect(actx.destination); o.start(t + s); o.stop(t + s + d + 0.05); };
+    if (tur === 'dogru') { N(660, 0, 0.14); N(990, 0.11, 0.25); }
+    else if (tur === 'yanlis') { N(260, 0, 0.18, 'triangle'); N(200, 0.14, 0.22, 'triangle'); }
+    else if (tur === 'kutlama') { [523, 659, 784, 1047].forEach((f, i) => N(f, i * 0.12, 0.3)); }
+    else { N(880, 0, 0.07); }
+  } catch (e) { /* ses desteklenmiyor */ }
+}
+function sesDugmesi() { return '<button class="ses" id="ses" aria-label="Sesi ' + (sesAcik ? 'kapat' : 'aç') + '">' + (sesAcik ? '🔊' : '🔇') + '</button>'; }
+function sesBagla() { const b = document.getElementById('ses'); if (b) b.onclick = () => { sesAcik = !sesAcik; depo.yaz(DEPO_SES, sesAcik ? '1' : '0');
+  b.textContent = sesAcik ? '🔊' : '🔇'; b.setAttribute('aria-label', 'Sesi ' + (sesAcik ? 'kapat' : 'aç')); cal('tik'); }; }
+
+/* --- Konfeti --- */
+const cv = document.getElementById('konfeti'), cx = cv.getContext('2d');
+let parca = [], kosuyor = false;
+function konfeti(n, x, y) {
+  if (azHareket()) return;
+  const dpr = window.devicePixelRatio || 1; cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  x = x ?? innerWidth / 2; y = y ?? innerHeight / 3;
+  const renk = [T.renkAna, T.renkIkinci, '#ffd166', '#ef476f', '#06d6a0', '#7b5cff'];
+  for (let i = 0; i < n && parca.length < 60; i++) { const a = Math.random() * Math.PI * 2, h = 3 + Math.random() * 7;
+    parca.push({ x, y, vx: Math.cos(a) * h, vy: Math.sin(a) * h - 5, r: Math.random() * 6.3, vr: (Math.random() - 0.5) * 0.4, w: 7 + Math.random() * 6, c: renk[i % renk.length], t: 0 }); }
+  if (!kosuyor) { kosuyor = true; requestAnimationFrame(adim); }
+}
+function adim() {
+  cx.clearRect(0, 0, innerWidth, innerHeight);
+  parca.forEach(p => { p.t++; p.vy += 0.35; p.vx *= 0.98; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.globalAlpha = Math.max(0, 1 - p.t / 60); cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.w / 4, p.w, p.w / 2); cx.restore(); });
+  parca = parca.filter(p => p.t < 60);
+  if (parca.length) requestAnimationFrame(adim); else { kosuyor = false; cx.clearRect(0, 0, innerWidth, innerHeight); }
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) parca = []; });
+
+/* --- Karakter, puan, yol haritası --- */
+function ruh(mod, hareket, metin) {
+  const k = document.getElementById('krk'), b = document.getElementById('balon');
+  if (k) { k.className = 'krk kucuk ' + mod; if (hareket && !azHareket()) { void k.offsetWidth; k.classList.add(hareket); } }
+  if (b) { b.className = 'balon ' + mod; b.textContent = metin; }
+}
+function puanEkle(n) {
+  const el = document.getElementById('puanSayi'); if (!el) { puan += n; return; }
+  const bas = puan; puan += n; const t0 = performance.now();
+  if (azHareket()) { el.textContent = puan; return; }
+  const kos = t => { const p = Math.min(1, (t - t0) / 450); el.textContent = Math.round(bas + (puan - bas) * p); if (p < 1) requestAnimationFrame(kos); };
+  requestAnimationFrame(kos);
+  const kap = el.parentNode; kap.classList.remove('pop'); void kap.offsetWidth; kap.classList.add('pop');
+}
+function yolCiz() {
+  const s = { yildiz: '⭐', yarim: '✨', ogrendi: '📘' };
+  return '<div class="yol" role="img" aria-label="' + sonuclar.filter(Boolean).length + ' / ' + sira.length + ' görev tamamlandı">' + sira.map((x, i) => {
+    const d = sonuclar[i]; return (i ? '<span class="cizgi"></span>' : '') + '<span class="durak ' + (d || (i === idx ? 'simdi' : '')) + '">' + (d ? s[d] : (x.tekrar ? '🔁' : (i + 1))) + '</span>';
+  }).join('') + '<span class="cizgi"></span><span class="durak son">' + esc(T.sonSimge) + '</span></div>';
+}
+function ustCiz() {
+  return '<div class="ust"><span class="baslik">🗺️ ' + esc(T.ad) + '</span><span class="sag"><span class="puan" aria-label="Toplanan ' + esc(T.odulAd) + '">' +
+    esc(T.odulSimge) + ' <b id="puanSayi">' + puan + '</b></span>' + sesDugmesi() + '</span></div>' + yolCiz();
+}
+
+/* --- Başlangıç --- */
+function baslangic() {
+  durum = null;
+  const rekor = depo.oku(DEPO_REKOR);
+  app.innerHTML = '<div class="ust"><span></span><span class="sag">' + sesDugmesi() + '</span></div>' +
+    '<div class="kart gir">' + sahneSVG() + '<h1>' + esc(OYUN.ad) + '</h1>' +
+    '<div class="karakter-satir"><div id="krk" class="krk mutlu">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Merhaba! Ben ' +
+    esc(T.karakterAdi) + '. ' + esc(T.hikaye) + '</div></div>' +
+    '<div class="olcutler">' + [1, 2, 3, 4].map(a => '<div class="olcut"><b aria-hidden="true">' + OYUN.asamalar[a].simge + '</b>' + a + '. ' + esc(OYUN.asamalar[a].ad) + '</div>').join('') + '</div>' +
+    '<p style="text-align:center;margin:4px 0">📝 ' + OYUN.maddeler.length + ' görev &nbsp;·&nbsp; 💡 ipucu alabilirsin &nbsp;·&nbsp; ⭐ ilk denemede doğruya yıldız</p>' +
+    (rekor ? '<p style="text-align:center;margin:4px 0;color:var(--soluk)">🏆 Önceki en iyi sonucun: ' + esc(rekor) + ' yıldız</p>' : '') +
+    '<button class="buyuk" id="basla">Planlamaya başla ▶</button>' +
+    '<div class="kod">Kazanım: ' + esc(OYUN.kazanimlar[0].kod) + ' · ' + esc(OYUN.kazanimlar[0].ad) + '</div></div>';
+  sesBagla();
+  document.getElementById('basla').onclick = () => {
+    cal('tik');
+    RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+    sira = [1, 2, 3, 4].flatMap(a => shuffle(OYUN.maddeler.filter(m => m.asama === a))).map(m => ({ m, tekrar: false }));
+    ilkTur = sira.length; idx = 0; sonuclar = []; puan = 0; sonAsama = 0; tekrarEklendi = false; soru();
+  };
+}
+
+function asamaGiris(a, sonra) {
+  const s = OYUN.asamalar[a];
+  durum = null;
+  app.innerHTML = ustCiz() + '<div class="kart gir"><div class="etiketler"><span class="etiket asama">' + a + '. aşama</span></div><h2>' + s.simge + ' ' + esc(s.ad) + '</h2>' +
+    '<div class="olcutler">' + s.olcutler.map(o => '<div class="olcut"><b aria-hidden="true">' + o[0] + '</b>' + esc(o[1]) + '</div>').join('') + '</div>' +
+    '<div class="kural">📌 ' + esc(s.kural) + '</div>' + (s.uyari ? '<div class="uyari-k">⚠️ ' + esc(s.uyari) + '</div>' : '') +
+    '<button class="buyuk" id="dev">Hadi başlayalım →</button></div>';
+  sesBagla();
+  const d = document.getElementById('dev'); d.onclick = () => { cal('tik'); sonra(); window.scrollTo(0, 0); }; d.focus({ preventScroll: true });
+}
+
+/* --- Soru akışı --- */
+function soru() {
+  if (idx >= sira.length) {
+    if (!tekrarEklendi) {
+      tekrarEklendi = true;
+      const zor = sira.slice(0, ilkTur).filter((x, i) => sonuclar[i] !== 'yildiz');
+      const ek = shuffle(zor).slice(0, 4).map(x => ({ m: x.m, tekrar: true }));
+      if (ek.length) {
+        sira = sira.concat(ek);
+        durum = null;
+        app.innerHTML = ustCiz() + '<div class="kart gir"><h2>🔁 Bir şans daha</h2><div class="karakter-satir"><div id="krk" class="krk kucuk dusun">' + karakterSVG() +
+          '</div><div id="balon" class="balon dusun">İlk denemede zorlandığın ' + ek.length + ' göreve yeniden bakalım. Bu kez ölçütleri hatırla!</div></div>' +
+          '<button class="buyuk" id="dev">Devam →</button></div>';
+        sesBagla();
+        const d = document.getElementById('dev'); d.onclick = () => { cal('tik'); soru(); }; d.focus({ preventScroll: true });
+        return;
+      }
+    }
+    bitisEkrani(); return;
+  }
+  const x = sira[idx], m = x.m;
+  if (!x.tekrar && !x.ertelendi && m.asama !== sonAsama) { sonAsama = m.asama; asamaGiris(m.asama, soru); return; }
+  durum = { x, m, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+  const ertelenebilir = !x.tekrar && !x.ertelendi && idx < ilkTur - 1;
+  let govde = '';
+  if (m.tur === 'secim') {
+    durum.sec = shuffle([[m.dogru, '']].concat(m.yanlislar));
+    const uzun = durum.sec.some(s => s[0].length > 26);
+    govde = '<div class="sec' + (uzun ? ' uzun' : '') + '">' + durum.sec.map((s, i) => '<button data-i="' + i + '" aria-label="Seçenek ' + (i + 1) + ': ' + esc(s[0]) + '"><span class="no">' + (i + 1) + '</span>' + esc(s[0]) + '</button>').join('') + '</div>';
+  } else if (m.tur === 'siniflama') {
+    durum.kartlar = shuffle(m.kartlar.map((k, i) => i));   // gösterim sırası
+    durum.yer = m.kartlar.map(() => null); durum.secili = null; durum.geri = new Set(); durum.duzelt = new Set();
+    govde = '<p class="yardim">✋ Kartı sürükleyip kutuya bırak ya da önce karta, sonra kutunun başlığına dokun. Klavyede: Tab ile kart seç, Enter; sonra kutu, Enter.</p>' +
+      '<div id="sinif"></div><div class="alt"><button class="kontrol-btn" id="kontrol">✔ Kontrol et</button></div>';
+  } else if (m.tur === 'siralama') {
+    const n = m.dogruSira.length; let p;
+    do { p = shuffle(m.dogruSira.map((_, i) => i)); } while (p.every((v, i) => v === i));
+    durum.havuz = p; durum.yuva = Array(n).fill(null); durum.isaret = null; durum.cozum = false;
+    govde = '<p class="yardim">👆 Araçlara sırayla dokun; her biri sıradaki boş kutuya yerleşir. Yanlış koyduğun kutuya dokunursan geri alırsın.</p>' +
+      '<div id="sirala"></div><div class="alt"><button class="kontrol-btn" id="kontrol">✔ Kontrol et</button><button class="kucuk-btn" id="temizle">↺ Temizle</button></div>';
+  }
+  app.innerHTML = ustCiz() + '<div class="kart gir"><div class="etiketler"><span class="etiket asama">' + (x.tekrar ? '🔁 Bir şans daha' : m.asama + '. aşama') + '</span><span class="etiket">Görev ' + (idx + 1) + ' / ' + sira.length + '</span></div>' +
+    gorselCiz(m.gorsel) + (m.durum ? '<div class="durum">📍 ' + esc(m.durum) + '</div>' : '') + '<div class="soru">' + esc(m.soru) + '</div>' + govde +
+    '<div class="alt"><button class="ipucu-btn" id="ip">💡 İpucu</button>' + (ertelenebilir ? '<button class="kucuk-btn" id="atla">⏭ Sonra dön</button>' : '') + '</div></div>' +
+    '<div class="karakter-satir"><div id="krk" class="krk kucuk">' + karakterSVG() + '</div><div id="balon" class="balon" aria-live="polite">' +
+    esc(rastgele(['Hadi bakalım, bunu çözebilirsin!', 'Önce bilgileri dikkatle oku.', 'Tabloya ve kartlara iyi bak.', 'Acele etme, ölçütleri düşün.'])) + '</div></div><div class="devam-yer" id="devamYer"></div>';
+  sesBagla();
+  document.getElementById('ip').onclick = ipucuVer;
+  const atla = document.getElementById('atla'); if (atla) atla.onclick = sonraDon;
+  if (m.tur === 'secim') app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => sec_(+b.dataset.i); });
+  else if (m.tur === 'siniflama') { sinifCiz(); document.getElementById('kontrol').onclick = sinifKontrol; }
+  else { siraCiz(); document.getElementById('kontrol').onclick = siraKontrol; document.getElementById('temizle').onclick = siraTemizle; }
+}
+
+function sonraDon() {
+  if (!durum || durum.kilit) return;
+  const x = sira.splice(idx, 1)[0]; x.ertelendi = true;
+  sira.splice(ilkTur - 1, 0, x);
+  cal('tik'); soru(); window.scrollTo(0, 0);
+}
+
+function ipucuVer() {
+  if (!durum || durum.kilit) return;
+  const ip = durum.m.ipucu;
+  if (durum.ipucu < ip.length) durum.ipucu++;
+  cal('tik'); ruh('dusun', null, '💡 ' + ip.slice(0, durum.ipucu).join(' '));
+  if (durum.ipucu >= ip.length) { const b = document.getElementById('ip'); if (b) { b.disabled = true; b.textContent = '💡 İpuçları bitti'; } }
+}
+
+/* Doğru / yanlış / çözüm ortak sonuçları */
+function dogruOldu(el) {
+  const ilk = durum.deneme === 1, r = el ? el.getBoundingClientRect() : null;
+  cal('dogru'); konfeti(ilk ? 45 : 22, r ? r.left + r.width / 2 : undefined, r ? r.top + r.height / 2 : undefined); puanEkle(ilk ? 10 : 5);
+  sonuclar[idx] = ilk ? 'yildiz' : 'yarim';
+  bitir(false, 'mutlu', 'zipla', (ilk ? '⭐ ' + rastgele(['Harika!', 'Süpersin!', 'Tam isabet!', 'Usta planlamacı!']) : '✨ Buldun!') + ' ' + durum.m.why);
+}
+function cozumGoster() {
+  cal('tik'); sonuclar[idx] = 'ogrendi';
+  bitir(true, 'dusun', null, '📘 Birlikte bakalım: ' + durum.m.why);
+}
+function henuzDegil(metin) {
+  cal('yanlis'); ruh('uzgun', 'salla', '🤔 ' + metin); balonaKaydir();
+}
+function balonaKaydir() {   // telefonda geri bildirim balonu ekranın altında kalmasın
+  const b = document.getElementById('balon');
+  if (b && innerHeight < 900) try { b.scrollIntoView({ block: 'nearest', behavior: azHareket() ? 'auto' : 'smooth' }); } catch (e) { /* eski tarayıcı */ }
+}
+
+/* --- Seçmeli --- */
+function sec_(i) {
+  if (!durum || durum.kilit || durum.m.tur !== 'secim') return;
+  const btn = app.querySelectorAll('.sec button')[i];
+  if (!btn || btn.disabled) return;
+  const [metin, yan] = durum.sec[i];
+  durum.deneme++;
+  if (metin === durum.m.dogru) { btn.classList.add('dogru'); dogruOldu(btn); return; }
+  btn.classList.add('yanlis', 'salla'); btn.disabled = true;
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = yan;
+  if (durum.deneme >= 2) {
+    app.querySelectorAll('.sec button').forEach((b, k) => { if (durum.sec[k][0] === durum.m.dogru) b.classList.add('dogru'); });
+    cozumGoster(); return;
+  }
+  henuzDegil('Henüz değil. Bir daha dene; istersen 💡 ipucu al.');
+}
+
+/* --- Sınıflama: sürükle-bırak + dokun-yerleştir + klavye --- */
+function kartHTML(i) {
+  const k = durum.m.kartlar[i], s = durum.secili === i;
+  return '<button class="kartc' + (durum.geri.has(i) ? ' geri' : '') + (durum.duzelt.has(i) ? ' duzeltildi' : '') + '" data-k="' + i + '" aria-pressed="' + s + '"' +
+    (durum.kilit ? ' disabled' : '') + ' aria-label="' + esc(k.t) + (durum.yer[i] ? ' (' + esc(durum.m.kutular.find(b => b.id === durum.yer[i]).ad) + ' kutusunda)' : '') + '">' +
+    '<span class="emo" aria-hidden="true">' + k.e + '</span>' + esc(k.t) + '</button>';
+}
+function sinifCiz() {
+  const m = durum.m, kap = document.getElementById('sinif'); if (!kap) return;
+  const havuz = durum.kartlar.filter(i => !durum.yer[i]);
+  kap.innerHTML = '<div class="havuz' + (havuz.length ? '' : ' bos') + '" data-havuz="1">' + havuz.map(kartHTML).join('') + '</div>' +
+    '<div class="kutular' + (m.kutular.length === 3 ? ' uc' : '') + '">' + m.kutular.map(b => '<div class="kutu" data-kutu="' + b.id + '"><button class="kutu-bas" data-kutu="' + b.id + '"' +
+      (durum.kilit ? ' disabled' : '') + ' aria-label="' + esc(b.ad) + ' kutusuna yerleştir">' + esc(b.ad) + '</button><div class="kutu-ic">' +
+      durum.kartlar.filter(i => durum.yer[i] === b.id).map(kartHTML).join('') + '</div></div>').join('') + '</div>' +
+    (durum.secili !== null && durum.yer[durum.secili] && !durum.kilit ? '<div class="alt"><button class="kucuk-btn" id="havuzaDon">↩ Seçili kartı geri al</button></div>' : '');
+  kap.querySelectorAll('.kartc').forEach(b => {
+    b.onclick = () => { if (durum.surukledi) { durum.surukledi = false; return; } kartSec(+b.dataset.k); };
+    b.onpointerdown = e => surukleBasla(e, b);
+  });
+  kap.querySelectorAll('.kutu-bas').forEach(b => { b.onclick = () => kutuyaKoy(b.dataset.kutu); });
+  const hd = document.getElementById('havuzaDon'); if (hd) hd.onclick = () => kutuyaKoy(null);
+}
+function kartSec(i) {
+  if (!durum || durum.kilit) return;
+  durum.secili = durum.secili === i ? null : i; cal('tik'); sinifCiz();
+  const b = document.querySelector('.kartc[data-k="' + i + '"]'); if (b) b.focus({ preventScroll: true });
+}
+function kutuyaKoy(kutu, kart) {
+  if (!durum || durum.kilit) return;
+  const i = kart ?? durum.secili;
+  if (i === null || i === undefined) { ruh('dusun', null, '👆 Önce bir araç kartı seç, sonra kutuya dokun.'); return; }
+  durum.yer[i] = kutu; durum.geri.delete(i); durum.secili = null; cal('tik'); sinifCiz();
+  const ilk = document.querySelector('.havuz .kartc'); if (ilk && kart === undefined) ilk.focus({ preventScroll: true });
+}
+function surukleBasla(e, btn) {
+  if (!durum || durum.kilit || e.button > 0) return;
+  const i = +btn.dataset.k, x0 = e.clientX, y0 = e.clientY; let hayalet = null, hedef = null;
+  const hedefBul = (x, y) => { const el = document.elementFromPoint(x, y); return el ? el.closest('[data-kutu], [data-havuz]') : null; };
+  const hareket = ev => {
+    if (!hayalet) {
+      if (Math.hypot(ev.clientX - x0, ev.clientY - y0) < 8) return;
+      hayalet = btn.cloneNode(true); hayalet.classList.add('hayalet'); hayalet.removeAttribute('id'); document.body.appendChild(hayalet); btn.classList.add('surukleniyor');
+    }
+    hayalet.style.left = ev.clientX + 'px'; hayalet.style.top = ev.clientY + 'px';
+    const h = hedefBul(ev.clientX, ev.clientY), kutuEl = h && h.closest('.kutu');
+    if (hedef !== kutuEl) { if (hedef) hedef.classList.remove('hedef'); hedef = kutuEl; if (hedef) hedef.classList.add('hedef'); }
+  };
+  const bitis = ev => {
+    removeEventListener('pointermove', hareket); removeEventListener('pointerup', bitis); removeEventListener('pointercancel', bitis);
+    if (hedef) hedef.classList.remove('hedef');
+    if (!hayalet) return;                       // kıpırdamadı: dokunma (click) olarak işlenir
+    hayalet.remove(); btn.classList.remove('surukleniyor'); durum.surukledi = true;
+    setTimeout(() => { if (durum) durum.surukledi = false; }, 60);
+    const h = ev.type === 'pointerup' ? hedefBul(ev.clientX, ev.clientY) : null;
+    if (h && h.dataset.kutu) kutuyaKoy(h.dataset.kutu, i);
+    else if (h && h.dataset.havuz) kutuyaKoy(null, i);
+  };
+  addEventListener('pointermove', hareket); addEventListener('pointerup', bitis); addEventListener('pointercancel', bitis);
+}
+function sinifKontrol() {
+  if (!durum || durum.kilit) return;
+  const m = durum.m, bos = durum.yer.filter(v => !v).length;
+  if (bos) { ruh('dusun', null, '👆 Önce bütün kartları bir kutuya yerleştir. ' + bos + ' kart kaldı.'); return; }
+  const yanlis = m.kartlar.map((k, i) => i).filter(i => durum.yer[i] !== m.kartlar[i].k);
+  durum.deneme++;
+  if (!yanlis.length) { durum.secili = null; dogruOldu(document.getElementById('kontrol')); sinifCiz(); return; }
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = m.kartlar[yanlis[0]].y || 'yol-turu-karisti';
+  if (durum.deneme >= 2) {
+    yanlis.forEach(i => { durum.yer[i] = m.kartlar[i].k; durum.duzelt.add(i); });
+    durum.geri.clear(); durum.secili = null;
+    cozumGoster(); sinifCiz(); return;
+  }
+  yanlis.forEach(i => { durum.yer[i] = null; durum.geri.add(i); });
+  durum.secili = null; sinifCiz();
+  const kap = document.querySelector('.havuz'); if (kap && !azHareket()) { kap.classList.remove('salla'); void kap.offsetWidth; kap.classList.add('salla'); }
+  henuzDegil('Henüz değil. ' + yanlis.length + ' kart yanlış kutudaydı; ↩ işaretiyle havuza döndüler. Doğru kutuya yerleştirip yeniden "Kontrol et"e bas.');
+}
+
+/* --- Sıralama: dokunarak sıraya koy --- */
+function siraCiz() {
+  const m = durum.m, kap = document.getElementById('sirala'); if (!kap) return;
+  const n = m.dogruSira.length;
+  kap.innerHTML = '<div class="uc">1. sıra: ' + esc(m.uclar[0]) + '</div>' +
+    '<div class="yuvalar' + (n === 3 ? ' n3' : '') + '">' + durum.yuva.map((v, j) => {
+      const isr = durum.isaret ? (durum.isaret[j] ? ' dogru-y' : ' yanlis-y') : '';
+      if (v === null) return '<div class="yuva' + isr + '"><span class="sira-no">' + (j + 1) + '</span><span style="color:var(--soluk);font-weight:600">boş</span></div>';
+      const k = m.dogruSira[v];
+      return '<button class="yuva dolu' + isr + '" data-y="' + j + '"' + (durum.kilit ? ' disabled' : '') + ' aria-label="' + (j + 1) + '. sıra: ' + esc(k.t) + (durum.kilit ? '' : ', geri almak için dokun') + '">' +
+        '<span class="sira-no">' + (j + 1) + '</span><span class="emo" aria-hidden="true">' + k.e + '</span>' + esc(k.t) + (durum.cozum ? '<span class="deger">' + esc(k.d) + '</span>' : '') + '</button>';
+    }).join('') + '</div><div class="uc son">' + n + '. sıra: ' + esc(m.uclar[1]) + '</div>' +
+    '<div class="havuz' + (durum.havuz.length ? '' : ' bos') + '">' + durum.havuz.map(v => '<button class="kartc" data-h="' + v + '"' + (durum.kilit ? ' disabled' : '') +
+      ' aria-label="' + esc(m.dogruSira[v].t) + ' aracını sıradaki boş kutuya koy"><span class="emo" aria-hidden="true">' + m.dogruSira[v].e + '</span>' + esc(m.dogruSira[v].t) + '</button>').join('') + '</div>';
+  kap.querySelectorAll('[data-h]').forEach(b => { b.onclick = () => siraKoy(+b.dataset.h); });
+  kap.querySelectorAll('[data-y]').forEach(b => { b.onclick = () => siraGeriAl(+b.dataset.y); });
+}
+function siraKoy(v) {
+  if (!durum || durum.kilit) return;
+  const j = durum.yuva.indexOf(null); if (j < 0) return;
+  durum.yuva[j] = v; durum.havuz = durum.havuz.filter(x => x !== v); durum.isaret = null; cal('tik'); siraCiz();
+  const s = document.querySelector('#sirala [data-h]') || document.getElementById('kontrol'); if (s) s.focus({ preventScroll: true });
+}
+function siraGeriAl(j) {
+  if (!durum || durum.kilit || durum.yuva[j] === null) return;
+  durum.havuz.push(durum.yuva[j]); durum.yuva[j] = null; durum.isaret = null; cal('tik'); siraCiz();
+}
+function siraTemizle() {
+  if (!durum || durum.kilit) return;
+  durum.yuva.forEach(v => { if (v !== null) durum.havuz.push(v); }); durum.yuva = durum.yuva.map(() => null); durum.isaret = null; cal('tik'); siraCiz();
+}
+function siraKontrol() {
+  if (!durum || durum.kilit) return;
+  if (durum.yuva.includes(null)) { ruh('dusun', null, '👆 Önce bütün araçları kutulara yerleştir.'); return; }
+  durum.deneme++;
+  const n = durum.yuva.length, isaret = durum.yuva.map((v, j) => v === j);
+  if (isaret.every(Boolean)) { durum.isaret = isaret; durum.cozum = true; dogruOldu(document.getElementById('kontrol')); siraCiz(); return; }
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = durum.yuva.every((v, j) => v === n - 1 - j) ? 'ters-sira' : (durum.m.yanilgi || 'sira-karisti');
+  if (durum.deneme >= 2) {
+    durum.yuva = durum.m.dogruSira.map((_, j) => j); durum.havuz = []; durum.isaret = durum.yuva.map(() => true); durum.cozum = true;
+    cozumGoster(); siraCiz(); return;
+  }
+  durum.isaret = isaret; siraCiz();
+  const dogruSay = isaret.filter(Boolean).length;
+  henuzDegil('Henüz değil. ' + dogruSay + ' araç doğru yerde (✔), ' + (n - dogruSay) + ' araç yanlış yerde (✖). Yanlış olanlara dokunup geri al, yeniden sırala.');
+}
+
+/* --- Madde sonu --- */
+function bitir(cozumGoruldu, mod, hareket, mesaj) {
+  durum.kilit = true;
+  RaporMotoru.kaydet({ kazanim: durum.m.kaz || OYUN.kazanimlar[0].kod, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
+    ilkDenemeDogru: durum.deneme === 1 && !cozumGoruldu, deneme: durum.deneme, ipucu: durum.ipucu,
+    cozumGoruldu, sureMs: Date.now() - durum.t0, tekrar: durum.x.tekrar });
+  ruh(mod, hareket, mesaj);
+  app.querySelectorAll('.sec button, #ip, #atla, #kontrol, #temizle, .kartc, .kutu-bas, .yuva').forEach(b => { b.disabled = true; });
+  const yol = app.querySelector('.yol'); if (yol) yol.outerHTML = yolCiz();
+  const sonMu = idx + 1 >= sira.length && tekrarEklendi;
+  const dev = document.createElement('button'); dev.className = 'buyuk'; dev.textContent = sonMu ? T.sonSimge + ' Sonuçlarımı gör' : 'Devam →';
+  dev.id = 'dev'; dev.onclick = () => { idx++; soru(); window.scrollTo(0, 0); };
+  document.getElementById('devamYer').appendChild(dev); dev.focus({ preventScroll: true });
+  balonaKaydir();
+}
+
+function yildizYol(cx0, cy0, R, r) { let d = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, u = i % 2 ? r : R;
+  d += (i ? 'L' : 'M') + (cx0 + Math.cos(a) * u).toFixed(1) + ' ' + (cy0 + Math.sin(a) * u).toFixed(1); } return d + 'Z'; }
+function bitisEkrani() {
+  durum = null;
+  const ana = sonuclar.slice(0, ilkTur), yildiz = ana.filter(x => x === 'yildiz').length, oran = yildiz / ilkTur;
+  const [rozetAd, rozetRenk] = oran >= 0.85 ? ['Altın Yolculuk Planlamacısı', '#f4b400'] : oran >= 0.6 ? ['Gümüş Yolculuk Planlamacısı', '#9aa5b1'] : ['Cesur Yolculuk Planlamacısı', '#cd7f32'];
+  app.innerHTML = ustCiz() + '<div class="kart gir bitis"><h1>🎉 ' + esc(T.bitisBaslik) + '</h1>' +
+    '<svg viewBox="0 0 120 150" class="rozet" role="img" aria-label="' + rozetAd + ' rozeti">' +
+    '<path d="M40 92 L26 146 L45 137 L56 150 L60 98Z" fill="#ef476f"/><path d="M80 92 L94 146 L75 137 L64 150 L60 98Z" fill="#118ab2"/>' +
+    '<circle cx="60" cy="60" r="46" fill="' + rozetRenk + '"/><circle cx="60" cy="60" r="36" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="4"/>' +
+    '<path d="' + yildizYol(60, 60, 24, 10) + '" fill="#fff"/></svg><div class="rozet-ad">' + rozetAd + '</div>' +
+    '<div class="yildizlar" aria-label="' + yildiz + ' yıldız">' + ana.map(x => x === 'yildiz' ? '⭐' : x === 'yarim' ? '✨' : '📘').join('') + '</div>' +
+    '<div class="karakter-satir"><div id="krk" class="krk kucuk">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Tebrikler! ' + yildiz +
+    ' yıldız ve ' + puan + ' ' + esc(T.odulAd) + ' topladın. Aşağıda kazanım karneni görebilirsin.</div></div>' +
+    '<div class="uyari-k" style="text-align:left">🧠 Unutma: En uygun araç duruma göre değişir. Uzaklığa, yolcu ya da yük miktarına, zamana, maliyete, güvenliğe ve çevreye birlikte bak. Toplu taşıma trafiği ve hava kirliliğini azaltır.</div>' +
+    '<div id="karne"></div><button class="buyuk" id="yeniden">↻ Yeniden oyna</button></div>';
+  sesBagla();
+  RaporMotoru.ekranCiz(document.getElementById('karne'));            // karne + sonucu portala gönderir (oyun başına bir kez)
+  const eski = parseInt(depo.oku(DEPO_REKOR), 10) || 0;
+  if (yildiz > eski) depo.yaz(DEPO_REKOR, String(yildiz));
+  document.getElementById('yeniden').onclick = () => { baslangic(); window.scrollTo(0, 0); };
+  cal('kutlama'); ruh('mutlu', 'zipla', document.getElementById('balon').textContent);
+  konfeti(60); setTimeout(() => konfeti(40, innerWidth * 0.25, innerHeight * 0.3), 350);
+}
+
+document.addEventListener('keydown', e => {   // klavye: 1-4 seçenek, İ/i ipucu, Enter devam
+  const yazim = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA');
+  if (yazim) return;
+  if (e.key >= '1' && e.key <= '4' && durum && !durum.kilit && durum.m.tur === 'secim') sec_(+e.key - 1);
+  else if ((e.key === 'i' || e.key === 'İ' || e.key === 'ı') && durum && !durum.kilit) ipucuVer();
+  else if (e.key === 'Enter') { const d = document.getElementById('dev'); if (d && document.activeElement !== d) { e.preventDefault(); d.click(); } }
+});
+baslangic();
+</script>
+</body>
+</html>

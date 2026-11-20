@@ -1,14 +1,19 @@
 {
   "aciklama": "Öğrenci portalı ana sayfasındaki 'Bu Haftanın Etkinlikleri' şeridi. Her hafta yalnız bu dosya değişir (portal dalına dokunmaya gerek yok). 'bitis' tarihinden sonra şerit kendiliğinden gizlenir. 'etkinlikler' = sitedeki dosya yolları, en çok 12.",
-  "baslik": "9–10. hafta • 2–27 Kasım",
-  "bitis": "2026-11-27",
+  "baslik": "10–11. hafta • 23 Kasım–4 Aralık",
+  "bitis": "2026-12-04",
   "etkinlikler": [
-    "Turkce/kantindedektifi.html",
-    "Turkce/cikarimbaslik.html",
-    "Matematik/cikarmadatahmin.html",
+    "Turkce/gercekmihayalmi.html",
+    "Turkce/bilgidedektifi.html",
+    "Matematik/mat-toplama-problemleri-sinav.html",
+    "Matematik/carpmaustalari.html",
     "Fen/besinkasifleri.html",
+    "Fen/sagligimibenkorurum.html",
     "Sosyal/konumkasifi.html",
-    "Insanhaklari/farkliyasamlar.html",
-    "Trafik/oyunaraclari.html"
+    "Sosyal/krokiatolyesi.html",
+    "Insanhaklari/haklarimizinpesinde.html",
+    "Trafik/oyunaraclari.html",
+    "Trafik/ulasimaraclari.html",
+    "Turkce/cikarimbaslik.html"
   ]
 }

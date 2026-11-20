@@ -1,0 +1,40 @@
+{
+ "aciklama": "Defter notlarının son basım kaydı (tools/defter-bas.mjs yazar; elle düzenlemeyin).",
+ "notlar": {
+  "mat-carpma": {
+   "kaynak": "dc467fa9f793053c",
+   "sayfa": 3,
+   "tarih": "2026-11-20"
+  },
+  "tr-cumle-bilgisi": {
+   "kaynak": "8934d33e6c45068f",
+   "sayfa": 3,
+   "tarih": "2026-11-20"
+  },
+  "ih-hak-ihlali": {
+   "kaynak": "27f4b1117930e598",
+   "sayfa": 2,
+   "tarih": "2026-11-20"
+  },
+  "tr-bilgi-kaynagi": {
+   "kaynak": "4cac2bd54454d197",
+   "sayfa": 2,
+   "tarih": "2026-11-20"
+  },
+  "tr-cikarim-baslik": {
+   "kaynak": "4debeb0ae7589ce2",
+   "sayfa": 2,
+   "tarih": "2026-11-20"
+  },
+  "sos-kroki": {
+   "kaynak": "e8387209795745d8",
+   "sayfa": 2,
+   "tarih": "2026-11-20"
+  },
+  "tr-gercek-hayal": {
+   "kaynak": "8edbd39833c8b47f",
+   "sayfa": 2,
+   "tarih": "2026-11-20"
+  }
+ }
+}

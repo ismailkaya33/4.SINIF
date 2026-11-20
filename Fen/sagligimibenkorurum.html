@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sağlığımı Ben Korurum – Sigara ve Alkolün Zararları</title>
+<style>
+/* Renkler JS ile OYUN.tema'dan gelir (--ana, --ikinci, --gok1, --gok2). Buradakiler yedek değerdir. */
+:root{--ana:#1f8a70;--ikinci:#e76f51;--gok1:#b8f2e6;--gok2:#f1fff9;--kart:#fff;--yazi:#1f2a44;--soluk:#5b6782;--ok:#1f9d5c;--hata:#c0392b}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;color:var(--yazi);font:18px/1.45 system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,var(--gok1) 0%,var(--gok2) 70%) fixed;background-color:var(--gok2);overflow-x:hidden}
+#app{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:12px 14px 110px}
+.dekor{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.dekor svg{position:absolute}
+#konfeti{position:fixed;inset:0;width:100%;height:100%;z-index:50;pointer-events:none}
+h1,.baslik,h2{font-family:"Trebuchet MS",system-ui,sans-serif;font-weight:800;letter-spacing:.2px}
+h1{font-size:clamp(1.55rem,4.5vw,2.3rem);margin:6px 0 4px;text-align:center;color:var(--yazi)}
+h2{font-size:clamp(1.25rem,3.6vw,1.6rem);margin:4px 0 8px;text-align:center}
+.kart{background:var(--kart);border-radius:24px;padding:16px;margin:12px 0;box-shadow:0 8px 0 rgba(31,42,68,.10),0 14px 30px rgba(31,42,68,.12)}
+button{font:inherit;cursor:pointer;color:var(--yazi)}
+button:disabled{cursor:default}
+button:focus-visible{outline:4px solid #ffd166;outline-offset:3px}
+.buyuk{display:block;margin:14px auto 4px;background:var(--ana);color:#fff;border:0;border-radius:18px;padding:14px 30px;min-height:60px;
+  font-size:1.25rem;font-weight:800;box-shadow:0 6px 0 rgba(0,0,0,.22)}
+.buyuk:active:not(:disabled){transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.buyuk:disabled{opacity:.45}
+/* Üst çubuk + yol haritası */
+.ust{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ust .baslik{font-size:1rem;color:var(--yazi);background:#fffe;border-radius:999px;padding:4px 12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sag{display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.puan{background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;font-size:1.1rem;box-shadow:0 3px 0 rgba(0,0,0,.1);white-space:nowrap}
+.puan.pop{animation:pop .4s}
+.ses{background:#fff;border:0;border-radius:50%;width:48px;height:48px;font-size:1.3rem;box-shadow:0 3px 0 rgba(0,0,0,.1)}
+.yol{display:flex;align-items:center;flex-wrap:wrap;gap:3px;margin:10px 0 0;padding:8px 10px;background:#ffffffe6;border-radius:18px}
+.durak{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:800;background:#fff;color:var(--soluk);border:3px dashed #b9c3d6}
+.durak.simdi{border:3px solid var(--ana);color:var(--ana);transform:scale(1.15)}
+.durak.yildiz,.durak.yarim,.durak.ogrendi{border:3px solid transparent;font-size:.95rem}
+.durak.yildiz{background:#fff3c4}.durak.yarim{background:#e2f7f4}.durak.ogrendi{background:#e8ecff}
+.cizgi{flex:1 1 4px;min-width:4px;max-width:16px;height:4px;border-radius:2px;background:#b9c3d6}
+.durak.son{width:38px;height:38px;font-size:1.3rem;border:3px solid #ffd166;background:#fff8e1}
+/* Soru kartı */
+.etiket{display:inline-block;background:var(--ikinci);color:#fff;font-weight:800;border-radius:999px;padding:2px 12px;font-size:.88rem}
+.bolum-et{display:inline-block;margin-left:6px;background:#e7f6f1;color:#155e4c;font-weight:800;border-radius:999px;padding:2px 10px;font-size:.85rem}
+.gorsel{display:flex;justify-content:center;margin:10px 0 2px}
+.gorsel svg{max-width:100%;height:auto}
+.soru{font-size:clamp(1.2rem,3.6vw,1.55rem);font-weight:800;margin:10px 0 14px;text-align:center}
+.sec{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sec.uzun{grid-template-columns:1fr}
+@media (max-width:460px){.sec{grid-template-columns:1fr}}
+.sec button{position:relative;min-height:62px;border-radius:18px;border:3px solid var(--c);background:var(--z);font-size:1.12rem;font-weight:700;
+  padding:10px 44px 10px 52px;text-align:left;box-shadow:0 5px 0 var(--c);line-height:1.3}
+.sec button:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--c)}
+.sec button:nth-child(1){--c:#2a9d8f;--z:#e6f6f3}.sec button:nth-child(2){--c:#e76f51;--z:#fdeee9}
+.sec button:nth-child(3){--c:#e9a400;--z:#fff6dc}.sec button:nth-child(4){--c:#7b5cff;--z:#efeaff}
+.sec .no{position:absolute;left:10px;top:50%;margin-top:-17px;width:34px;height:34px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:1rem}
+.sec button.dogru{--c:var(--ok);--z:#e3f7ec}
+.sec button.dogru::after{content:"✔";position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--ok);font-size:1.5rem}
+.sec button.yanlis{--c:#a7b0c0;--z:#f1f3f7;color:#6b7489;text-decoration:line-through}
+.sec button.yanlis::after{content:"✖";position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--hata);font-size:1.3rem;text-decoration:none}
+.alt{display:flex;justify-content:center;margin-top:14px}
+.ipucu-btn{background:#fff8e1;border:3px solid #ffd166;border-radius:999px;padding:6px 20px;min-height:50px;font-weight:800;box-shadow:0 4px 0 #ffd166}
+/* Konuşma görseli */
+.konus{display:flex;align-items:flex-end;gap:10px;max-width:560px;width:100%}
+.konus .avatar{flex:0 0 auto;width:86px}
+.konus .avatar svg{display:block;width:100%;height:auto}
+.konus .soz{position:relative;flex:1;background:#fff7e6;border:3px solid #f4c27a;border-radius:20px;padding:10px 14px;margin-bottom:18px;font-weight:700;font-size:1.1rem}
+.konus .soz::before{content:"";position:absolute;left:-15px;bottom:14px;border:9px solid transparent;border-right:14px solid #f4c27a;border-left:0}
+.konus .kim{display:block;font-size:.82rem;font-weight:800;color:#9a5b00;margin-bottom:2px}
+/* Eşleştirme */
+.esl{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:12px;align-items:start}
+.esl .govde{display:flex;justify-content:center;position:sticky;top:8px}
+@media (max-width:640px){.esl{grid-template-columns:1fr}.esl .govde{position:static}}
+.esl .govde svg{width:100%;max-width:340px;height:auto}
+.ekart{list-style:none;border:3px solid #cfe9e1;background:#f6fcfa;border-radius:18px;padding:10px 12px;margin:0 0 10px}
+.ekart p{margin:0 0 8px;font-weight:700}
+.ekart .kno{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ikinci);color:#fff;font-weight:800;margin-right:6px;font-size:.95rem}
+.ekart.dogru{border-color:var(--ok);background:#e3f7ec}
+.ekart.yanlis{border-color:var(--hata);background:#fff0ee}
+.ekart .durumyazi{font-weight:800;font-size:.95rem;margin-top:6px}
+.ekart.dogru .durumyazi{color:var(--ok)}.ekart.yanlis .durumyazi{color:var(--hata)}
+.orgsec{display:flex;flex-wrap:wrap;gap:6px}
+.orgsec button{min-height:44px;border-radius:999px;border:2px solid #b9c3d6;background:#fff;padding:4px 12px 4px 8px;font-size:.98rem;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.orgsec button i{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid #0003}
+.orgsec button[aria-pressed="true"]{border-color:var(--ana);background:#dff5ee;box-shadow:0 0 0 3px #1f8a7033}
+.orgsec button[aria-pressed="true"]::after{content:"✓";font-weight:800;color:var(--ana)}
+.ols{padding:0;margin:0}
+/* Bölüm girişi ve bilgi kartları */
+.bgiris{text-align:center}
+.bgiris .ikon{font-size:3.2rem;line-height:1.1}
+.bgiris p{font-size:1.12rem;margin:8px auto;max-width:600px}
+.sefkat{background:#eef7ff;border:3px dashed #8ec5ff;border-radius:18px;padding:10px 14px;text-align:left;max-width:600px;margin:10px auto}
+.ozet{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+@media (max-width:560px){.ozet{grid-template-columns:1fr}}
+.ozet div{border-radius:16px;padding:10px;background:#f2fbf7;border:2px solid #bfe6d7;text-align:center;font-weight:700}
+.ozet b{display:block;font-size:1.8rem}
+.ozet.dort{grid-template-columns:repeat(4,1fr)}
+@media (max-width:560px){.ozet.dort{grid-template-columns:1fr 1fr}}
+.alter{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0}
+.alter span{background:#fff8e1;border:2px solid #ffd166;border-radius:999px;padding:4px 12px;font-weight:700}
+/* Rehber karakter + konuşma balonu */
+.karakter-satir{display:flex;align-items:flex-end;gap:10px;margin-top:8px}
+.krk{flex:0 0 auto;width:104px}
+.krk.kucuk{width:84px}
+.krk svg{display:block;width:100%;height:auto;transform-origin:50% 100%}
+.krk .goz-mutlu,.krk .kas{display:none}
+.krk.mutlu .goz-mutlu{display:inline}.krk.mutlu .goz-acik{display:none}
+.krk.dusun .goz-acik{transform:translate(3px,-3px)}
+.krk.uzgun .kas{display:inline}.krk.uzgun .goz-acik{transform:translateY(3px)}
+.balon{position:relative;flex:1;min-width:0;background:#fff;border-radius:20px;padding:12px 16px;font-weight:600;min-height:3.2em;margin-bottom:26px;
+  box-shadow:0 5px 0 rgba(31,42,68,.10);border:3px solid #fff}
+.balon::before{content:"";position:absolute;left:-14px;bottom:16px;border:9px solid transparent;border-right:14px solid #fff;border-left:0}
+.balon.mutlu{border-color:#bfead2}.balon.uzgun{border-color:#ffd3cc}.balon.dusun{border-color:#ffe7a3}
+.devam-yer{text-align:center}
+.kazanim-kod{font-size:.78rem;color:var(--soluk);text-align:center;margin:2px 0 0}
+/* Bitiş */
+.bitis{text-align:center}
+.rozet{width:130px;height:auto}
+.rozet-ad{font-weight:800;font-size:1.25rem;margin-top:-4px}
+.yildizlar{font-size:1.5rem;letter-spacing:3px;margin:6px 0;word-break:break-all}
+#karne .rm{padding:4px 0;text-align:left}
+#karne .rm h2{font-family:"Trebuchet MS",system-ui,sans-serif;text-align:center}
+#karne .rm-k{border:0;background:#f5f8ff;border-radius:16px}
+#karne .rm-bar{height:18px;border-radius:10px}
+/* Vücut şemasında vurgulanan organ */
+.org{transition:opacity .2s}
+.org.soluk{opacity:.28}
+.org.parla > :first-child{stroke:#ffb703;stroke-width:4}
+@media (prefers-reduced-motion:no-preference){
+  .org.parla{animation:nabiz 1.4s ease-in-out 2}
+  .krk.zipla svg{animation:zipla .6s}
+  .krk.salla svg,.sec button.salla,.ekart.salla{animation:salla .45s}
+  .kart.gir{animation:gir .35s ease-out}
+  .sec button{transition:transform .08s,box-shadow .08s,background .15s}
+  .durak{transition:transform .2s}
+}
+@keyframes nabiz{50%{opacity:.75}}
+@keyframes zipla{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-18px) scale(1.05,.95)}60%{transform:translateY(0) scale(1.06,.94)}}
+@keyframes salla{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-2deg)}40%{transform:translateX(8px) rotate(2deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes gir{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pop{50%{transform:scale(1.25)}}
+</style>
+</head>
+<body>
+<div class="dekor" aria-hidden="true">
+  <svg style="top:3%;left:-2%;width:170px" viewBox="0 0 170 60"><g fill="#fff"><ellipse cx="50" cy="38" rx="45" ry="20"/><ellipse cx="90" cy="28" rx="40" ry="26"/><ellipse cx="128" cy="40" rx="38" ry="18"/></g></svg>
+  <svg style="top:14%;right:-3%;width:130px" viewBox="0 0 170 60"><g fill="#fff"><ellipse cx="50" cy="38" rx="45" ry="20"/><ellipse cx="90" cy="28" rx="40" ry="26"/><ellipse cx="128" cy="40" rx="38" ry="18"/></g></svg>
+  <svg style="left:0;bottom:0;width:100%;height:90px" viewBox="0 0 1200 90" preserveAspectRatio="none"><path d="M0 50 Q200 10 400 45 T800 40 T1200 45 V90 H0Z" fill="#7fd1a8" opacity=".45"/><path d="M0 68 Q220 40 450 66 T900 62 T1200 64 V90 H0Z" fill="#52b788" opacity=".45"/></svg>
+</div>
+<canvas id="konfeti" aria-hidden="true"></canvas>
+<div id="app"></div>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 2;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+})();
+
+</script>
+<script>
+'use strict';
+/* ===== VERİ (öğretmen yalnızca burayı düzenler; motor aşağıda) =====
+   HASSAS KONU (öğretmenin onayıyla): bilgi + "Hayır diyebilirim". Hiçbir öğrencinin ailesi işaret edilmez, suçlanmaz;
+   korkutucu görsel ve uydurma sayısal istatistik yok; marka/logo yok.
+   Madde türleri:
+   - tur:'sec' (varsayılan): soru + dogru + yanlislar [[metin, yanılgı etiketi]] + ipucu [≤3] + why
+   - tur:'eslestir': kartlar [{t, org, yan:{organ: etiket}}] her kart bir organa eşlenir; 'Kontrol et' ile denetlenir.
+   gorsel: {tur:'govde', vurgu:[...], etiket:true, duman:true} | {tur:'oda', pencere:'acik'|'kapali'} |
+           {tur:'konusma', kim, soz, kisi:'cocuk'|'genc'|'grup'} | {tur:'futbol'} | {tur:'zincir'}               */
+const OYUN = {
+  id: 'fen-alkol-sigara', ad: 'Sağlığımı Ben Korurum',
+  tema: {
+    ad: 'Sağlığımı Ben Korurum', karakterAdi: 'Filiz',
+    hikaye: 'Vücudumuz bizim en değerli evimiz. Sigara ve alkolün bu eve neler yaptığını öğrenelim, “Hayır” demenin yollarını keşfedelim. Her doğru cevap sana bir sağlık kalkanı kazandırır!',
+    odulSimge: '🛡️', odulAd: 'kalkan', sonSimge: '🏆',
+    bitisBaslik: 'Sağlık kalkanın hazır!',
+    renkAna: '#1f8a70', renkIkinci: '#e76f51', karakterRenk: '#52b788', gok1: '#b8f2e6', gok2: '#f1fff9'
+  },
+  kazanimlar: [
+    { kod: 'F.4.2.1.5', ad: 'Alkol ve sigara kullanımının insan sağlığına olan olumsuz etkilerinin farkına varır' }
+  ],
+  bolumler: {
+    1: { ikon: '🗺️', ad: 'Vücut Haritası', metin: 'Sigara dumanı ve alkol vücudumuzda hangi organları yorar? Şemayı incele, kartları doğru organla eşleştir.' },
+    2: { ikon: '🌬️', ad: 'Dumansız Hava', metin: 'Sigara içmeyen biri de dumanlı bir ortamda zarar görebilir mi? Bu bölümde dumanlı ortamları düşüneceğiz.',
+         sefkat: 'Çevrende sigara içen biri olabilir. Bu senin suçun değil; o kişi de kötü biri değil. Dumandan uzak durabilirsin; güvendiğin bir yetişkinle konuşabilirsin.' },
+    3: { ikon: '🔍', ad: 'Yanılgı Avcısı', metin: 'Etrafta yanlış bilgiler dolaşır. Her sözün doğru mu yanlış mı olduğunu, gerekçesiyle birlikte bul.' },
+    4: { ikon: '✋', ad: 'Hayır Diyebilirim', metin: 'Bazen birileri ısrar edebilir. Her durumda seni en iyi koruyan tepkiyi seç. Unutma: Hayır demek senin hakkın.' }
+  },
+  maddeler: [
+    /* ---- Bölüm 1: Vücut Haritası ---- */
+    { id: 'v1', kaz: 'F.4.2.1.5', bolum: 1, tur: 'eslestir', gorsel: { tur: 'govde', etiket: true },
+      soru: 'Sigara dumanı vücutta nerelere zarar verir? Her kartı doğru organla eşleştir.',
+      kartlar: [
+        { t: 'Nefes almayı zorlaştırır; öksürük ve nefes darlığı yapar.', org: 'akciger', yan: { kalp: 'nefes-kalpte-sanir' } },
+        { t: 'Kalbi yorar, damarlara zarar verir.', org: 'kalp', yan: { akciger: 'kalp-akciger-karisik' } },
+        { t: 'Dişleri sarartır, ağız kokusu yapar, cildi erken yaşlandırır.', org: 'agiz', yan: { akciger: 'dis-ten-etkilenmez' } }
+      ],
+      yanilgi: 'sigara-organ-karisik',
+      ipucu: ['Duman ağızdan girer ve soluk borusundan aşağı iner. Nefes alıp verdiğimiz organ hangisi?',
+              'Kanı bütün vücuda pompalayan organ kalptir; damarlar ona bağlıdır.'],
+      why: 'Duman önce akciğerlere dolar ve nefes almayı zorlaştırır. Dumandaki zararlı maddeler kana geçer; kalbi ve damarları yorar. Duman dişleri sarartır, kötü koku bırakır, cildi yıpratır.' },
+    { id: 'v2', kaz: 'F.4.2.1.5', bolum: 1, tur: 'eslestir', gorsel: { tur: 'govde', etiket: true },
+      soru: 'Alkol vücutta nerelere zarar verir? Her kartı doğru organla eşleştir.',
+      kartlar: [
+        { t: 'Alkolü vücuttan temizlemeye çalışırken yorulur ve zarar görür.', org: 'karaciger', yan: { akciger: 'alkol-akcigere-gider', kalp: 'temizleyen-kalp-sanir' } },
+        { t: 'Dikkat dağılır, doğru karar vermek zorlaşır.', org: 'beyin', yan: { kalp: 'duygu-kalpte-sanir' } },
+        { t: 'Denge bozulur, tepkiler yavaşlar; yürürken sendeleme olur.', org: 'beyin', yan: { karaciger: 'denge-karaciger-sanir' } }
+      ],
+      yanilgi: 'alkol-organ-karisik',
+      ipucu: ['Vücuttaki zararlı maddeleri temizleyen büyük organ karnın sağ üst tarafındadır.',
+              'Dikkati, kararlarımızı ve dengemizi yöneten organ başımızın içindedir. İki kart aynı organa gidebilir!'],
+      why: 'Karaciğer alkolü vücuttan atmaya çalışır; çok çalışınca yorulur ve hasar görür. Alkol beyni de etkiler: dikkat, karar verme ve denge bozulur.' },
+    { id: 'v3', kaz: 'F.4.2.1.5', bolum: 1, gorsel: { tur: 'govde', duman: true },
+      soru: 'Sigara dumanı vücuda nereden girer ve ilk olarak hangi organa ulaşır?',
+      dogru: 'Ağızdan girer; soluk borusundan geçip akciğerlere ulaşır.',
+      yanlislar: [['Ağızdan girer; yemek gibi yutulup önce mideye ulaşır.', 'duman-mideye-gider'],
+                  ['Deriden girer; oradan doğrudan kalbe ulaşır.', 'deriden-girer'],
+                  ['Burundan girer; hiçbir yere uğramadan beyne ulaşır.', 'burundan-beyne']],
+      ipucu: ['Duman bir gazdır. Biz havayı hangi organımıza çekeriz?'],
+      why: 'Duman, soluduğumuz hava gibi soluk borusundan akciğerlere gider. Oradan zararlı maddeler kana karışıp bütün vücuda yayılır.' },
+    { id: 'v4', kaz: 'F.4.2.1.5', bolum: 1, gorsel: { tur: 'futbol' },
+      soru: 'Hızlı koşan bir futbolcu sigara içmeye başlarsa bir süre sonra maçlarda ne olur? Nedeniyle seç.',
+      dogru: 'Çabuk yorulur; akciğerleri az hava alır, kalbi daha çok çalışır.',
+      yanlislar: [['Daha hızlı koşar; çünkü sigara kalbi hızlandırıp vücuda güç verir.', 'sigara-guc-verir'],
+                  ['Hiçbir şey değişmez; çünkü düzenli spor yapan birine sigara zarar vermez.', 'sporcu-etkilenmez'],
+                  ['Yalnız dişleri sararır; çünkü duman ağızda kalır, akciğere inmez.', 'duman-agizda-kalir']],
+      ipucu: ['Koşarken vücudun daha çok temiz havaya ihtiyaç duyar. Bu havayı hangi organlar alır?',
+              'Az hava alan bir vücutta kalp ne yapmak zorunda kalır?'],
+      why: 'Sigara akciğerlere zarar verir, vücuda daha az hava (oksijen) girer. Kalp de bu yüzden daha çok çalışır. Sonuç: çabuk yorulma ve nefes darlığı.' },
+
+    /* ---- Bölüm 2: Dumansız Hava (pasif içicilik) ---- */
+    { id: 'p1', kaz: 'F.4.2.1.5', bolum: 2, gorsel: { tur: 'oda', pencere: 'kapali' },
+      soru: 'Hiç sigara içmeyen bir çocuk, sigara içilen kapalı bir odada oturuyor. Bu durum için hangisi doğrudur?',
+      dogru: 'Buna pasif içicilik denir; içmese de dumanı soluyarak zarar görür.',
+      yanlislar: [['Sigarayı eline almadığı sürece hiçbir zarar görmez.', 'eline-almazsa-zararsiz'],
+                  ['Buna pasif içicilik denir; günde yalnız bir sigara içmek demektir.', 'pasif-az-icmek'],
+                  ['Duman tavana çıktığı için oturan kişiye hiç ulaşmaz.', 'duman-yukari-cikar']],
+      ipucu: ['Odadaki herkes aynı havayı solur. Duman havaya karışınca ne olur?'],
+      why: 'Sigara içilen ortamda bulunan herkes dumanı solur. Buna pasif içicilik denir; sigara içmeyen kişi de zarar görür.' },
+    { id: 'p2', kaz: 'F.4.2.1.5', bolum: 2, gorsel: { tur: 'konusma', kisi: 'cocuk', kim: 'Bir çocuk diyor ki:', soz: 'Duman bana bir şey yapmaz. Sigara yalnızca içen büyüklere zarar verir.' },
+      soru: 'Bu düşüncenin hatası nedir?',
+      dogru: 'Çocukların akciğerleri hâlâ gelişir; duman onlara daha da çok zarar verir.',
+      yanlislar: [['Hata yok; sigara yalnızca onu içen kişiye zarar verir.', 'yalniz-icene-zarar'],
+                  ['Hata yok; çocuklar kısa olduğu için duman onlara ulaşmaz.', 'kisa-ulasmaz'],
+                  ['Tek hata şu: duman yalnız bebeklere zarar verir, okul çağındakilere vermez.', 'yalniz-bebek']],
+      ipucu: ['Çocukların vücudu, akciğerleri de dahil, hâlâ büyümektedir.'],
+      why: 'Çocukların akciğerleri büyümeye devam eder ve çocuklar daha sık nefes alır. Bu yüzden dumanlı ortamdan çocuklar daha çok etkilenir.' },
+    { id: 'p3', kaz: 'F.4.2.1.5', bolum: 2, gorsel: { tur: 'oda', pencere: 'acik' },
+      soru: '“Odada sigara içilirken pencereyi açtık, artık duman hiç zarar vermez.” Bu söz doğru mu? Gerekçesiyle seç.',
+      dogru: 'Yanlış; dumanın bir kısmı odada kalır, eşyalara ve giysilere siner.',
+      yanlislar: [['Doğru; pencere açılınca duman birkaç dakikada tamamen dışarı çıkar.', 'pencere-yeter'],
+                  ['Doğru; vantilatör de açılırsa odada hiç zararlı madde kalmaz.', 'vantilator-yeter'],
+                  ['Yanlış; ama kapı da açılırsa duman tamamen yok olur.', 'kapi-acilirsa-yeter']],
+      ipucu: ['Sigara içilen bir evden çıkınca giysilerin neden kokuyor?'],
+      why: 'Pencere açmak dumanı azaltır ama yok etmez. Duman koltuklara, perdelere, giysilere siner. Çocuklar için en güvenlisi dumansız ortamdır.' },
+    { id: 'p4', kaz: 'F.4.2.1.5', bolum: 2, gorsel: { tur: 'oda', pencere: 'kapali', kapi: true },
+      soru: 'Misafirlikte bir büyük, oturduğun odada sigara yaktı. En uygun davranış hangisi?',
+      dogru: 'Dumanın beni rahatsız ettiğini söyler, başka odaya geçerim.',
+      yanlislar: [['Sigara içtiği için ona kızar, kötü bir şey yaptığını yüksek sesle söylerim.', 'suclama'],
+                  ['Kimse bozulmasın diye sesimi çıkarmaz, odada oturmaya devam ederim.', 'az-duman-zararsiz'],
+                  ['Pencereyi açar, dumanın hemen çıkacağını düşünüp yerimde otururum.', 'pencere-yeter']],
+      ipucu: ['Hem kendini koruyan hem de karşındakine saygılı olan davranışı ara.'],
+      why: 'Sigara içen kişi kötü biri değildir; zararlı bir alışkanlığı vardır. Kibarca rica edebilir ve dumandan uzak durabilirsin. Kendini korumak senin hakkın.' },
+
+    /* ---- Bölüm 3: Yanılgı Avcısı ---- */
+    { id: 'y1', kaz: 'F.4.2.1.5', bolum: 3, gorsel: { tur: 'konusma', kisi: 'genc', kim: 'Biri diyor ki:', soz: 'Bir tane içmekle bir şey olmaz.' },
+      soru: 'Bu söz doğru mu? Gerekçesiyle birlikte seç.',
+      dogru: 'Yanlış; bağımlılık çoğu zaman “bir tane” ile başlar.',
+      yanlislar: [['Doğru; sigaranın zararı ancak yıllar sonra başlar.', 'zarar-sonra-baslar'],
+                  ['Doğru; çocuklarda bağımlılık hiç olmaz.', 'cocuk-bagimli-olmaz'],
+                  ['Yanlış; ama yalnızca her gün içilirse zarar verir.', 'hergun-icerse-zarar']],
+      ipucu: ['Nikotin ilk denemede bile bağımlılığı başlatabilir. Bir şeyi bırakmak zor olunca ne olur?'],
+      why: 'Sigaradaki nikotin bağımlılık yapar. İlk sigarada da zararlı maddeler akciğere girer. En güvenli sayı sıfırdır: hiç başlamamak.' },
+    { id: 'b1', kaz: 'F.4.2.1.5', bolum: 3, gorsel: { tur: 'zincir' },
+      soru: 'Aşağıdakilerden hangisi bağımlılığı en iyi anlatır?',
+      dogru: 'Zararlı olduğunu bilse de bir şeyi bırakmakta çok zorlanmak.',
+      yanlislar: [['Bir şeyi çok sevmek ve her fırsatta sık sık yapmak istemek.', 'sevmek-bagimlilik'],
+                  ['Bir alışkanlığı istediği an hiç zorlanmadan kolayca bırakabilmek.', 'kolay-birakir'],
+                  ['Yalnızca çok yaşlı insanlarda görülen bir durum.', 'yalniz-yaslilarda']],
+      ipucu: ['Kitap okumayı çok seven biri istediğinde ara verebilir. Bağımlı kişi ise ne yaşar?'],
+      why: 'Bağımlı kişi zararını bilse de o maddeyi ister ve bırakmakta zorlanır. Sigaradaki nikotin ve alkol bağımlılık yapar. Bu yüzden en kolay yol hiç başlamamaktır.' },
+    { id: 'y2', kaz: 'F.4.2.1.5', bolum: 3, gorsel: { tur: 'konusma', kisi: 'genc', kim: 'Bir genç diyor ki:', soz: 'Nargilenin dumanı suyun içinden geçiyor, o yüzden zararsız.' },
+      soru: 'Bu düşüncedeki hata nedir?',
+      dogru: 'Su dumanı temizlemez; nargile de tütün içerir ve zarar verir.',
+      yanlislar: [['Hata yok; su, dumandaki bütün zararlı maddeleri süzüp içinde tutar.', 'su-suzer'],
+                  ['Hata yok; meyve kokulu olduğu için zararsızdır.', 'meyve-aroma'],
+                  ['Hata yok; nargile sigara olmadığı için bağımlılık yapmaz.', 'nargile-bagimlilik-yok']],
+      ipucu: ['Bir maddenin güzel kokması ya da sudan geçmesi, içindeki tütünü yok eder mi?'],
+      why: 'Su dumanı soğutur ama zararlı maddeleri temizlemez. Nargile de tütün içerir, akciğere zarar verir ve bağımlılık yapabilir. Meyve kokusu zararı gizler, yok etmez.' },
+    { id: 'y4', kaz: 'F.4.2.1.5', bolum: 3, gorsel: { tur: 'konusma', kisi: 'genc', kim: 'Bir filmde biri alkol içip diyor ki:', soz: 'Şimdi daha güçlü ve cesurum!' },
+      soru: 'Bu söz doğru mu? Gerekçesiyle seç.',
+      dogru: 'Yanlış; alkol dikkati ve dengeyi bozar, tepkileri yavaşlatır.',
+      yanlislar: [['Doğru; alkol kasları güçlendirir, insan daha ağır yükler kaldırır.', 'alkol-guclendirir'],
+                  ['Doğru; alkol vücudu ısıtır ve hastalıklardan korur.', 'alkol-isitir'],
+                  ['Yanlış; ama az alkol zihni açar, ders çalışmaya yardım eder.', 'az-alkol-zihin-acar']],
+      ipucu: ['Vücut Haritası\'nı hatırla: alkol hangi organı etkiliyordu?', 'O organ dikkat, karar ve dengeyi yönetir.'],
+      why: 'Alkol beyni etkiler: dikkat, karar verme ve denge bozulur. Bu yüzden insan kendini cesur sanıp tehlikeli şeyler yapabilir. Alkol güç vermez; karaciğeri de yorar.' },
+
+    /* ---- Bölüm 4: Hayır Diyebilirim ---- */
+    { id: 'h1', kaz: 'F.4.2.1.5', bolum: 4, gorsel: { tur: 'konusma', kisi: 'genc', kim: 'Parkta tanımadığın, senden büyük bir genç:', soz: 'Al, bir tane dene. Kimse görmez.' },
+      soru: 'Sana sigara uzatılıyor. En uygun tepki hangisi?',
+      dogru: 'Teşekkür eder, içmeyeceğimi söyleyip yanından ayrılırım.',
+      yanlislar: [['Bir kere denerim ki bana kırılmasın, sonra hiç içmem.', 'kirilmasin-dener'],
+                  ['Bir kere denerim; tanımadığım biri, kimse öğrenmez nasılsa.', 'gizlice-dener'],
+                  ['“Belki sonra denerim.” der, ortamı bozmadan konuyu kapatırım.', 'erteleme-kapi-acik']],
+      ipucu: ['Hangi cevap konuyu gerçekten kapatır, hangisi ısrarın sürmesine kapı aralar?'],
+      why: 'Kısa, kibar ve kararlı bir “Hayır” yeterlidir; uzun açıklama yapmak zorunda değilsin. Sonra oradan uzaklaş. “Belki sonra” demek ısrarın sürmesine yol açar.' },
+    { id: 'h2', kaz: 'F.4.2.1.5', bolum: 4, gorsel: { tur: 'konusma', kisi: 'grup', kim: 'Bir grup genç:', soz: 'Bu elektronik sigara meyve kokulu, zararsız. Herkes denedi, yoksa korkuyor musun?' },
+      soru: 'En uygun tepki hangisi?',
+      dogru: 'Denemeyeceğimi açıkça söyler, ısrar sürerse gruptan ayrılırım.',
+      yanlislar: [['Grupta yalnız kalmamak için bir nefes çeker, sonra bırakırım.', 'akran-baskisi'],
+                  ['Meyve kokulu ve dumansız olduğu için bir kez denemekte sakınca görmem.', 'koku-guzel-zararsiz'],
+                  ['Önce zararlı mı diye internetten araştırır, sonra denemeye karar veririm.', 'arastirip-dener']],
+      ipucu: ['Bir şeyi çok kişinin yapması onu zararsız yapar mı?', 'Israr sürerken orada kalmak seni korur mu?'],
+      why: 'Hayır demek cesaret ister; asıl güçlü olan sensin. Elektronik sigaraların çoğunda nikotin vardır, bağımlılık yapar ve akciğere zarar verebilir. Güzel koku zararı gizler. Israr eden gruptan uzaklaşmak doğru bir yoldur.' },
+    { id: 'h3', kaz: 'F.4.2.1.5', bolum: 4, gorsel: { tur: 'konusma', kisi: 'cocuk', kim: 'Arkadaşın sana fısıldıyor:', soz: 'Dün biri bana sigara verdi, ben de denedim. Kimseye söyleme, olur mu?' },
+      soru: 'En doğru davranış hangisi?',
+      dogru: 'Dinler, birlikte güvendiğimiz bir büyüğe anlatmayı öneririm.',
+      yanlislar: [['Söz verdiğim için sırrını saklarım; arkadaşlık bunu gerektirir.', 'sir-tutar'],
+                  ['Başka arkadaşlarıma da anlatırım ki onu birlikte uyaralım.', 'teshir'],
+                  ['Ona bir daha yapmamasını söylerim, bu yeter; kimseye anlatmam.', 'tek-basina-cozer']],
+      ipucu: ['Bu sır arkadaşının sağlığıyla ilgili. Bir çocuk bunu tek başına çözebilir mi?', 'Arkadaşını utandırmadan kimden destek alabilirsiniz?'],
+      why: 'Sağlığımızı tehlikeye atan sırlar saklanmaz. Arkadaşını suçlamadan dinle; öğretmenine, rehber öğretmenine ya da güvendiğin bir yetişkine birlikte anlatın. Bu, arkadaşına yardım etmektir.' },
+    { id: 'h4', kaz: 'F.4.2.1.5', bolum: 4, gorsel: { tur: 'konusma', kisi: 'genc', kim: 'Bir kutlamada yan masadaki bir genç:', soz: 'Bir yudum tadına bak, bir şey olmaz.' },
+      soru: 'Sana alkollü bir içecek uzatılıyor. En uygun tepki hangisi?',
+      dogru: 'İçmeyeceğimi söyler, ısrar olursa bir büyüğe haber veririm.',
+      yanlislar: [['Bir yudum içerim; ayıp olmasın, kimse de bir şey demesin.', 'ayip-olmasin-dener'],
+                  ['Kimse görmeden küçük bir yudum alır, sonra bardağı geri veririm.', 'gizlice-dener'],
+                  ['Bir yudumun bir zararı olmaz diye düşünüp tadına bakarım.', 'bir-tane-olmaz']],
+      ipucu: ['Alkol, gelişmekte olan beyne ve karaciğere zarar verir. “Bir yudum” da alkoldür.'],
+      why: 'Alkol çocukların gelişen beynine ve karaciğerine zarar verir; bir yudum bile “bir şey olmaz” değildir. Ülkemizde 18 yaşından küçüklere alkol ve sigara satmak yasaktır.' }
+  ]
+};
+
+/* ===== TEMA ÇİZİMLERİ ===== */
+const T = OYUN.tema;
+const ORGAN = {
+  beyin:     { ad: 'Beyin', renk: '#f7a8c4' },
+  agiz:      { ad: 'Diş, ağız, ten', renk: '#ffffff' },
+  akciger:   { ad: 'Akciğerler', renk: '#8ecae6' },
+  kalp:      { ad: 'Kalp ve damarlar', renk: '#e63946' },
+  karaciger: { ad: 'Karaciğer', renk: '#a0522d' }
+};
+const ORGAN_SIRA = ['beyin', 'agiz', 'akciger', 'kalp', 'karaciger'];
+
+function sahneSVG() {   // başlık: güneşli park, ağaç, uçurtma, top, "sigara içilmez" işareti (marka yok)
+  return '<svg viewBox="0 0 400 180" style="width:100%;max-width:540px" aria-hidden="true">' +
+    '<g fill="#ffd166"><circle cx="345" cy="38" r="22"/>' + [0, 45, 90, 135, 180, 225, 270, 315].map(a =>
+      '<rect x="342" y="4" width="6" height="12" rx="3" transform="rotate(' + a + ' 345 38)"/>').join('') + '</g>' +
+    '<g fill="#fff" opacity=".95"><ellipse cx="70" cy="34" rx="34" ry="13"/><ellipse cx="96" cy="27" rx="25" ry="15"/></g>' +
+    '<path d="M0 132 Q90 96 190 126 T400 118 V180 H0Z" fill="#95d5b2"/><path d="M0 150 Q120 128 240 150 T400 146 V180 H0Z" fill="#52b788"/>' +
+    '<rect x="62" y="88" width="12" height="48" rx="4" fill="#8d5a3b"/><circle cx="68" cy="78" r="30" fill="#40916c"/><circle cx="48" cy="92" r="18" fill="#2d6a4f"/><circle cx="90" cy="90" r="19" fill="#2d6a4f"/>' +
+    '<g transform="translate(250 30) rotate(12)"><path d="M0 0 L22 -26 L44 0 L22 34Z" fill="#e76f51"/><path d="M0 0 H44 M22 -26 V34" stroke="#fff" stroke-width="2"/>' +
+    '<path d="M22 34 q-8 16 4 28 q12 12 -2 26" stroke="#264653" stroke-width="2" fill="none"/><path d="M14 50 l8 4 l-8 4z M18 70 l8 3 l-8 4z" fill="#f4a261"/></g>' +
+    '<path d="M269 66 Q230 120 190 150" stroke="#264653" stroke-width="1.2" fill="none" stroke-dasharray="3 3"/>' +
+    '<g transform="translate(170 140)"><circle r="14" fill="#fff" stroke="#264653" stroke-width="2"/><path d="M-5 -13 L0 -4 L8 -9 M0 -4 L-2 6 L-12 6 M-2 6 L6 11" stroke="#264653" stroke-width="2" fill="none"/></g>' +
+    '<g transform="translate(330 128)"><rect x="-3" y="0" width="6" height="40" fill="#6c757d"/><circle cy="-6" r="24" fill="#fff" stroke="#d62828" stroke-width="5"/>' +
+    '<rect x="-15" y="-9" width="26" height="6" rx="2" fill="#adb5bd"/><rect x="11" y="-9" width="5" height="6" fill="#f4a261"/>' +
+    '<path d="M-17 -23 L17 11" stroke="#d62828" stroke-width="5" stroke-linecap="round"/></g>' +
+    '<g fill="#fff" opacity=".9"><circle cx="130" cy="60" r="3"/><circle cx="210" cy="72" r="2.5"/><circle cx="300" cy="96" r="2"/></g></svg>';
+}
+function karakterSVG() { // Filiz: yaprak başlı sevimli fidan; ruh hâli CSS sınıfıyla (mutlu / dusun / uzgun)
+  const r = T.karakterRenk;
+  return '<svg viewBox="0 0 120 134" aria-hidden="true">' +
+    '<path d="M60 30 Q34 2 14 14 Q30 36 60 32Z" fill="#74c69d" stroke="#2d6a4f" stroke-width="2"/>' +
+    '<path d="M60 30 Q88 0 108 12 Q92 36 60 32Z" fill="#95d5b2" stroke="#2d6a4f" stroke-width="2"/>' +
+    '<path d="M60 32 V44" stroke="#2d6a4f" stroke-width="4" stroke-linecap="round"/>' +
+    '<ellipse cx="60" cy="82" rx="40" ry="40" fill="' + r + '"/>' +
+    '<ellipse cx="60" cy="96" rx="25" ry="20" fill="#d8f3dc"/>' +
+    '<circle cx="44" cy="74" r="13" fill="#fff"/><circle cx="76" cy="74" r="13" fill="#fff"/>' +
+    '<g class="goz-acik"><circle cx="46" cy="76" r="6" fill="#1f2a44"/><circle cx="78" cy="76" r="6" fill="#1f2a44"/>' +
+    '<circle cx="48" cy="73" r="2.2" fill="#fff"/><circle cx="80" cy="73" r="2.2" fill="#fff"/></g>' +
+    '<g class="goz-mutlu" stroke="#1f2a44" stroke-width="4" fill="none" stroke-linecap="round"><path d="M36 78 Q44 67 52 78"/><path d="M68 78 Q76 67 84 78"/></g>' +
+    '<g class="kas" stroke="#1f2a44" stroke-width="3" stroke-linecap="round"><path d="M34 58 L52 62"/><path d="M86 58 L68 62"/></g>' +
+    '<path d="M50 94 Q60 102 70 94" stroke="#1f2a44" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="32" cy="90" r="5" fill="#ff8fab" opacity=".6"/><circle cx="88" cy="90" r="5" fill="#ff8fab" opacity=".6"/>' +
+    '<path d="M22 86 Q8 96 14 110" stroke="' + r + '" stroke-width="9" fill="none" stroke-linecap="round"/>' +
+    '<path d="M98 86 Q112 96 106 110" stroke="' + r + '" stroke-width="9" fill="none" stroke-linecap="round"/>' +
+    '<ellipse cx="46" cy="124" rx="10" ry="6" fill="#2d6a4f"/><ellipse cx="74" cy="124" rx="10" ry="6" fill="#2d6a4f"/></svg>';
+}
+
+/* ===== SORU GÖRSELLERİ ===== */
+// Sade insan silueti + organlar. secim: {organ: [kart no...]} eşleştirmede rozet; vurgu: parlayan organlar.
+function govdeSVG(g, secim) {
+  g = g || {}; secim = secim || {};
+  const vurgu = g.vurgu || Object.keys(secim);
+  const sinif = k => 'org' + (vurgu.length ? (vurgu.includes(k) ? ' parla' : (g.vurgu ? ' soluk' : '')) : '');
+  const ad = g.etiket ? 'Vücut şeması: beyin, ağız ve dişler, akciğerler, kalp, karaciğer' : 'Vücut şeması, ağzın yanında duman bulutu';
+  let s = '<svg viewBox="0 0 380 330" role="img" aria-label="' + ad + '"><g transform="translate(30 0)">' +
+    '<path d="M104 120 Q78 160 74 222" stroke="#ffd9b8" stroke-width="20" fill="none" stroke-linecap="round"/>' +
+    '<path d="M216 120 Q242 160 246 222" stroke="#ffd9b8" stroke-width="20" fill="none" stroke-linecap="round"/>' +
+    '<rect x="128" y="236" width="28" height="78" rx="13" fill="#5b7db1"/><rect x="164" y="236" width="28" height="78" rx="13" fill="#5b7db1"/>' +
+    '<path d="M104 114 Q160 98 216 114 L222 244 Q160 262 98 244 Z" fill="#d8f3dc" stroke="#95d5b2" stroke-width="3"/>' +
+    '<rect x="150" y="92" width="20" height="18" fill="#ffd9b8"/>' +
+    '<circle cx="160" cy="56" r="40" fill="#ffd9b8" stroke="#e8b48f" stroke-width="2"/>' +
+    '<path d="M122 46 Q126 14 160 14 Q194 14 198 46 Q184 28 160 28 Q136 28 122 46Z" fill="#6d4c41"/>' +
+    // beyin
+    '<g class="' + sinif('beyin') + '"><ellipse cx="160" cy="40" rx="27" ry="14" fill="#f7a8c4" stroke="#d9789c" stroke-width="2"/>' +
+    '<path d="M140 38 q6 -8 12 0 q6 8 12 0 q6 -8 12 0 M146 46 q6 -5 12 0 q6 5 12 0" stroke="#d9789c" stroke-width="2" fill="none"/></g>' +
+    '<circle cx="146" cy="62" r="3.5" fill="#1f2a44"/><circle cx="174" cy="62" r="3.5" fill="#1f2a44"/>' +
+    // ağız ve dişler
+    '<g class="' + sinif('agiz') + '"><rect x="146" y="72" width="28" height="13" rx="6" fill="#c0392b" stroke="#8e2a20" stroke-width="1.5"/>' +
+    '<rect x="149" y="73" width="22" height="5" rx="1.5" fill="#fff"/><path d="M156 73 v5 M160 73 v5 M164 73 v5" stroke="#ddd" stroke-width="1"/></g>' +
+    // soluk borusu + akciğerler
+    '<path d="M160 100 V130 M160 130 L144 140 M160 130 L176 140" stroke="#7fb8d6" stroke-width="5" fill="none" stroke-linecap="round"/>' +
+    '<g class="' + sinif('akciger') + '"><path d="M150 132 Q120 120 116 156 Q114 186 136 188 Q152 188 152 168 Z" fill="#8ecae6" stroke="#4a9cc4" stroke-width="2"/>' +
+    '<path d="M170 132 Q200 120 204 156 Q206 186 184 188 Q168 188 168 168 Z" fill="#8ecae6" stroke="#4a9cc4" stroke-width="2"/></g>' +
+    // kalp
+    '<g class="' + sinif('kalp') + '"><path d="M172 166 C172 156 186 154 188 164 C190 154 204 156 204 166 C204 178 188 186 188 190 C188 186 172 178 172 166Z" fill="#e63946" stroke="#9d0208" stroke-width="2"/></g>' +
+    // karaciğer
+    '<g class="' + sinif('karaciger') + '"><path d="M112 200 Q150 188 186 198 Q176 222 132 222 Q112 218 112 200Z" fill="#a0522d" stroke="#6f3a1e" stroke-width="2"/></g>';
+  if (g.duman) s += '<g fill="#9aa3ad" opacity=".55"><circle cx="198" cy="80" r="9"/><circle cx="214" cy="70" r="12"/><circle cx="234" cy="62" r="15"/><circle cx="256" cy="56" r="11"/></g>';
+  s += '</g>';
+  if (g.etiket) {
+    // Etiket sütunları: solda x 4–100, sağda x 280–376. [satır y, organdaki hedef nokta x, y, taraf, satırlar]
+    const E = { beyin: [34, 163, 40, 'sol', ['Beyin']], agiz: [64, 204, 78, 'sag', ['Diş, ağız,', 'ten']],
+      akciger: [140, 150, 158, 'sol', ['Akciğerler']], kalp: [160, 234, 172, 'sag', ['Kalp ve', 'damarlar']],
+      karaciger: [228, 146, 212, 'sol', ['Karaciğer']] };
+    for (const k of ORGAN_SIRA) {
+      const [y, lx, ly, taraf, satir] = E[k], o = ORGAN[k], sol = taraf === 'sol';
+      s += '<path d="M' + (sol ? 110 : 272) + ' ' + (y - 5) + ' L' + lx + ' ' + ly + '" stroke="#5b6782" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>' +
+        '<circle cx="' + (sol ? 10 : 370) + '" cy="' + (y - 5) + '" r="6" fill="' + o.renk + '" stroke="#5b6782" stroke-width="1.5"/>' +
+        '<text x="' + (sol ? 20 : 360) + '" y="' + y + '" font-size="16" font-weight="700" fill="#1f2a44" text-anchor="' + (sol ? 'start' : 'end') + '">' +
+        satir.map((t, i) => '<tspan x="' + (sol ? 20 : 360) + '" dy="' + (i ? 16 : 0) + '">' + esc(t) + '</tspan>').join('') + '</text>';
+      if (secim[k]) secim[k].forEach((no, j) => {
+        const rx = sol ? 14 + j * 26 : 366 - j * 26, ry = y + 16 * (satir.length - 1) + 18;
+        s += '<circle cx="' + rx + '" cy="' + ry + '" r="11" fill="' + T.renkIkinci + '"/><text x="' + rx + '" y="' + (ry + 5) + '" font-size="14" font-weight="800" fill="#fff" text-anchor="middle">' + no + '</text>';
+      });
+    }
+  }
+  return s + '</svg>';
+}
+function odaSVG(g) {     // oda: duvar, pencere, koltuk, çocuk ve gri duman bulutları (sigara içen kişi çizilmez)
+  const acik = g.pencere === 'acik';
+  return '<svg viewBox="0 0 340 180" style="width:100%;max-width:520px" role="img" aria-label="Dumanlı bir oda' + (acik ? ', pencere açık' : '') + (g.kapi ? ', yanda açık bir kapı' : '') + '">' +
+    '<rect width="340" height="180" rx="14" fill="#fdf0d5"/><rect y="138" width="340" height="42" fill="#e9c46a"/>' +
+    '<rect x="238" y="22" width="78" height="64" rx="4" fill="#bde0fe" stroke="#8d5a3b" stroke-width="5"/>' +
+    (acik ? '<path d="M277 24 L300 34 L300 92 L277 84Z" fill="#e3f2fd" stroke="#8d5a3b" stroke-width="3"/><path d="M262 40 q8 -6 16 0 M250 58 q8 -6 16 0" stroke="#fff" stroke-width="2.5" fill="none"/>'
+          : '<path d="M277 24 V84 M240 54 H314" stroke="#8d5a3b" stroke-width="4"/>') +
+    (g.kapi ? '<rect x="12" y="34" width="54" height="104" fill="#e8f7ee" stroke="#8d5a3b" stroke-width="4"/><path d="M66 34 L86 44 L86 146 L66 138Z" fill="#c08457"/>' +
+              '<g fill="#52b788"><circle cx="38" cy="96" r="12"/><circle cx="30" cy="84" r="9"/><circle cx="46" cy="84" r="9"/></g><rect x="33" y="106" width="10" height="14" fill="#bc6c25"/>' : '') +
+    '<rect x="' + (g.kapi ? 104 : 30) + '" y="98" width="110" height="40" rx="12" fill="#e76f51"/><rect x="' + (g.kapi ? 96 : 22) + '" y="86" width="20" height="54" rx="8" fill="#d0583b"/><rect x="' + (g.kapi ? 202 : 128) + '" y="86" width="20" height="54" rx="8" fill="#d0583b"/>' +
+    // çocuk
+    '<g transform="translate(' + (g.kapi ? 252 : 196) + ' 112)"><rect x="-13" y="2" width="26" height="30" rx="9" fill="#4895ef"/><circle cy="-10" r="13" fill="#ffd9b8"/>' +
+    '<path d="M-13 -14 Q0 -30 13 -14 Q6 -20 0 -20 Q-6 -20 -13 -14Z" fill="#6d4c41"/><circle cx="-4.5" cy="-10" r="1.8" fill="#1f2a44"/><circle cx="4.5" cy="-10" r="1.8" fill="#1f2a44"/>' +
+    '<path d="M-4 -3 h8" stroke="#1f2a44" stroke-width="1.8" stroke-linecap="round"/></g>' +
+    // duman
+    '<g fill="#8d99ae" opacity="' + (acik ? '.35' : '.5') + '"><ellipse cx="' + (g.kapi ? 170 : 90) + '" cy="60" rx="46" ry="16"/><ellipse cx="' + (g.kapi ? 210 : 140) + '" cy="44" rx="38" ry="14"/>' +
+    '<ellipse cx="' + (g.kapi ? 230 : 190) + '" cy="74" rx="34" ry="12"/><ellipse cx="' + (g.kapi ? 150 : 60) + '" cy="90" rx="28" ry="10"/></g>' +
+    (acik ? '<path d="M240 58 q14 -4 26 2" stroke="#8d99ae" stroke-width="3" fill="none" opacity=".6"/>' : '') + '</svg>';
+}
+function avatarSVG(kisi, renk) {
+  const bir = (x, y, k, gom, sac) => '<g transform="translate(' + x + ' ' + y + ') scale(' + k + ')"><path d="M-30 60 Q-30 26 0 26 Q30 26 30 60Z" fill="' + gom + '"/>' +
+    '<circle cy="0" r="22" fill="#ffd9b8"/><path d="M-22 -4 Q-20 -26 0 -26 Q20 -26 22 -4 Q12 -16 0 -16 Q-12 -16 -22 -4Z" fill="' + sac + '"/>' +
+    '<circle cx="-8" cy="2" r="2.6" fill="#1f2a44"/><circle cx="8" cy="2" r="2.6" fill="#1f2a44"/><path d="M-6 11 Q0 15 6 11" stroke="#1f2a44" stroke-width="2.2" fill="none" stroke-linecap="round"/></g>';
+  if (kisi === 'grup') return '<svg viewBox="0 0 120 110" aria-hidden="true">' + bir(32, 46, .8, '#8338ec', '#3d2b1f') + bir(88, 46, .8, '#ff006e', '#1f1f1f') + bir(60, 50, .95, '#3a86ff', '#6d4c41') + '</svg>';
+  if (kisi === 'cocuk') return '<svg viewBox="0 0 120 110" aria-hidden="true">' + bir(60, 46, .9, '#4895ef', '#6d4c41') + '</svg>';
+  return '<svg viewBox="0 0 120 110" aria-hidden="true">' + bir(60, 42, 1.05, renk || '#e76f51', '#3d2b1f') + '</svg>';
+}
+const CIZ = {
+  govde(g) { return govdeSVG(g); },
+  oda(g) { return odaSVG(g); },
+  konusma(g) {
+    return '<div class="konus"><div class="avatar">' + avatarSVG(g.kisi) + '</div><div class="soz"><span class="kim">' + esc(g.kim) + '</span>“' + esc(g.soz) + '”</div></div>';
+  },
+  futbol() {
+    return '<svg viewBox="0 0 340 150" style="width:100%;max-width:500px" role="img" aria-label="Futbol sahasında topla koşan bir oyuncu">' +
+      '<rect width="340" height="150" rx="14" fill="#74c69d"/><path d="M0 40 H340 M0 110 H340" stroke="#95d5b2" stroke-width="22"/>' +
+      '<path d="M170 0 V150" stroke="#fff" stroke-width="3" opacity=".8"/><circle cx="170" cy="75" r="28" stroke="#fff" stroke-width="3" fill="none" opacity=".8"/>' +
+      '<path d="M300 40 H330 V110 H300" stroke="#fff" stroke-width="4" fill="none"/><path d="M304 44 H326 V106 H304" stroke="#fff" stroke-width="1" fill="none" stroke-dasharray="4 4"/>' +
+      '<g transform="translate(130 70)"><path d="M-6 26 L-20 52 M6 26 L18 50" stroke="#1d3557" stroke-width="8" stroke-linecap="round"/>' +
+      '<rect x="-14" y="-6" width="28" height="36" rx="9" fill="#e63946"/><text x="0" y="18" font-size="16" font-weight="800" fill="#fff" text-anchor="middle">9</text>' +
+      '<path d="M-14 2 L-30 18 M14 2 L30 -10" stroke="#ffd9b8" stroke-width="7" stroke-linecap="round"/>' +
+      '<circle cy="-20" r="14" fill="#ffd9b8"/><path d="M-14 -24 Q0 -40 14 -24 Q6 -30 0 -30 Q-6 -30 -14 -24Z" fill="#3d2b1f"/>' +
+      '<circle cx="-4" cy="-20" r="1.8" fill="#1f2a44"/><circle cx="6" cy="-20" r="1.8" fill="#1f2a44"/>' +
+      '<path d="M-2 -13 h7" stroke="#1f2a44" stroke-width="1.8" stroke-linecap="round"/></g>' +
+      '<g fill="#4cc9f0"><path d="M152 38 q4 7 0 10 q-4 -3 0 -10Z"/><path d="M160 30 q4 7 0 10 q-4 -3 0 -10Z"/></g>' +
+      '<path d="M84 64 H104 M80 78 H100 M86 92 H106" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>' +
+      '<g transform="translate(172 124)"><circle r="11" fill="#fff" stroke="#1d3557" stroke-width="2"/><path d="M-4 -10 L0 -3 L6 -7 M0 -3 L-2 5 L-10 5" stroke="#1d3557" stroke-width="2" fill="none"/></g></svg>';
+  },
+  zincir() {
+    return '<svg viewBox="0 0 340 120" style="width:100%;max-width:460px" role="img" aria-label="Birbirine kenetlenmiş zincir halkaları">' +
+      '<rect width="340" height="120" rx="14" fill="#f1f3f5"/>' +
+      [40, 100, 160, 220].map((x, i) => '<rect x="' + x + '" y="' + (i % 2 ? 46 : 36) + '" width="80" height="' + (i % 2 ? 28 : 48) + '" rx="' + (i % 2 ? 14 : 24) + '" fill="none" stroke="' + (i % 2 ? '#6c757d' : '#868e96') + '" stroke-width="11"/>').join('') +
+      '<g transform="translate(300 60)"><rect x="-16" y="-4" width="32" height="28" rx="5" fill="#f4a261"/><path d="M-10 -4 V-14 Q0 -28 10 -14 V-4" stroke="#6c757d" stroke-width="5" fill="none"/><circle cy="9" r="4" fill="#6f3a1e"/></g></svg>';
+  }
+};
+const gorselCiz = g => (g && CIZ[g.tur]) ? '<div class="gorsel">' + CIZ[g.tur](g) + '</div>' : '';
+
+/* ===== MOTOR ===== */
+const app = document.getElementById('app');
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+const rastgele = a => a[Math.floor(Math.random() * a.length)];
+let sira = [], idx = 0, durum = null, sonuclar = [], puan = 0;
+const depo = (() => { const mem = {}; return {
+  oku(k) { try { const v = localStorage.getItem(k); return v === null ? (mem[k] ?? null) : v; } catch (e) { return mem[k] ?? null; } },
+  yaz(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* depolama kapalı */ } } }; })();
+const DEPO_REKOR = 'rekor-' + OYUN.id, DEPO_SES = 'ses-' + OYUN.id;
+[['--ana', T.renkAna], ['--ikinci', T.renkIkinci], ['--gok1', T.gok1], ['--gok2', T.gok2]].forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+const azHareket = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+
+/* --- Ses --- */
+let sesAcik = depo.oku(DEPO_SES) !== '0', actx = null;
+function cal(tur) {
+  if (!sesAcik) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    const N = (f, s, d, tip) => { const o = actx.createOscillator(), g = actx.createGain(); o.type = tip || 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t + s); g.gain.exponentialRampToValueAtTime(0.16, t + s + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + s + d);
+      o.connect(g); g.connect(actx.destination); o.start(t + s); o.stop(t + s + d + 0.05); };
+    if (tur === 'dogru') { N(660, 0, 0.14); N(990, 0.11, 0.25); }
+    else if (tur === 'yanlis') { N(260, 0, 0.18, 'triangle'); N(200, 0.14, 0.22, 'triangle'); }
+    else if (tur === 'kutlama') { [523, 659, 784, 1047].forEach((f, i) => N(f, i * 0.12, 0.3)); }
+    else { N(880, 0, 0.07); }
+  } catch (e) { /* ses desteklenmiyor */ }
+}
+function sesDugmesi() { return '<button class="ses" id="ses" aria-label="Sesi ' + (sesAcik ? 'kapat' : 'aç') + '">' + (sesAcik ? '🔊' : '🔇') + '</button>'; }
+function sesBagla() { const b = document.getElementById('ses'); if (b) b.onclick = () => { sesAcik = !sesAcik; depo.yaz(DEPO_SES, sesAcik ? '1' : '0');
+  b.textContent = sesAcik ? '🔊' : '🔇'; b.setAttribute('aria-label', 'Sesi ' + (sesAcik ? 'kapat' : 'aç')); cal('tik'); }; }
+
+/* --- Konfeti --- */
+const cv = document.getElementById('konfeti'), cx = cv.getContext('2d');
+let parca = [], kosuyor = false;
+function konfeti(n, x, y) {
+  if (azHareket()) return;
+  const dpr = window.devicePixelRatio || 1; cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  x = x ?? innerWidth / 2; y = y ?? innerHeight / 3;
+  const renk = [T.renkAna, T.renkIkinci, '#ffd166', '#ef476f', '#06d6a0', '#7b5cff'];
+  for (let i = 0; i < n && parca.length < 60; i++) { const a = Math.random() * Math.PI * 2, h = 3 + Math.random() * 7;
+    parca.push({ x, y, vx: Math.cos(a) * h, vy: Math.sin(a) * h - 5, r: Math.random() * 6.3, vr: (Math.random() - 0.5) * 0.4, w: 7 + Math.random() * 6, c: renk[i % renk.length], t: 0 }); }
+  if (!kosuyor) { kosuyor = true; requestAnimationFrame(adim); }
+}
+function adim() {
+  cx.clearRect(0, 0, innerWidth, innerHeight);
+  parca.forEach(p => { p.t++; p.vy += 0.35; p.vx *= 0.98; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.globalAlpha = Math.max(0, 1 - p.t / 60); cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.w / 4, p.w, p.w / 2); cx.restore(); });
+  parca = parca.filter(p => p.t < 60);
+  if (parca.length) requestAnimationFrame(adim); else { kosuyor = false; cx.clearRect(0, 0, innerWidth, innerHeight); }
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) parca = []; });
+
+/* --- Rehber karakter --- */
+function ruh(mod, hareket, metin) {
+  const k = document.getElementById('krk'), b = document.getElementById('balon');
+  if (k) { k.className = 'krk kucuk ' + mod; if (hareket && !azHareket()) { void k.offsetWidth; k.classList.add(hareket); } }
+  if (b) { b.className = 'balon ' + mod; b.textContent = metin; }
+}
+function puanEkle(n) {
+  const el = document.getElementById('puanSayi'); if (!el) return;
+  const bas = puan; puan += n; const t0 = performance.now();
+  if (azHareket()) { el.textContent = puan; return; }
+  const kos = t => { const p = Math.min(1, (t - t0) / 450); el.textContent = Math.round(bas + (puan - bas) * p); if (p < 1) requestAnimationFrame(kos); };
+  requestAnimationFrame(kos);
+  const kap = el.parentNode; kap.classList.remove('pop'); void kap.offsetWidth; kap.classList.add('pop');
+}
+function yolCiz() {
+  const s = { yildiz: '⭐', yarim: '✨', ogrendi: '📘' };
+  return '<div class="yol" role="img" aria-label="' + sonuclar.filter(Boolean).length + ' / ' + sira.length + ' soru tamamlandı">' + sira.map((m, i) => {
+    const d = sonuclar[i]; return (i ? '<span class="cizgi"></span>' : '') + '<span class="durak ' + (d || (i === idx ? 'simdi' : '')) + '">' + (d ? s[d] : (i + 1)) + '</span>';
+  }).join('') + '<span class="cizgi"></span><span class="durak son">' + esc(T.sonSimge) + '</span></div>';
+}
+function ustCiz() {
+  return '<div class="ust"><span class="baslik">' + esc(T.ad) + '</span><span class="sag"><span class="puan" aria-label="Toplanan ' + esc(T.odulAd) + '">' +
+    esc(T.odulSimge) + ' <b id="puanSayi">' + puan + '</b></span>' + sesDugmesi() + '</span></div>' + yolCiz();
+}
+const karakterSatir = (mod, metin) => '<div class="karakter-satir"><div id="krk" class="krk kucuk ' + (mod || '') + '">' + karakterSVG() +
+  '</div><div id="balon" class="balon ' + (mod || '') + '" aria-live="polite">' + esc(metin) + '</div></div>';
+
+function baslangic() {
+  const rekor = depo.oku(DEPO_REKOR);
+  app.innerHTML = '<div class="ust"><span></span><span class="sag">' + sesDugmesi() + '</span></div>' +
+    '<div class="kart gir">' + sahneSVG() + '<h1>' + esc(OYUN.ad) + '</h1>' +
+    '<div class="karakter-satir"><div id="krk" class="krk mutlu">' + karakterSVG() + '</div><div id="balon" class="balon mutlu">Merhaba! Ben ' +
+    esc(T.karakterAdi) + '. ' + esc(T.hikaye) + '</div></div>' +
+    '<div class="ozet dort" aria-label="Bölümler">' + Object.values(OYUN.bolumler).map(b => '<div><b aria-hidden="true">' + b.ikon + '</b>' + esc(b.ad) + '</div>').join('') + '</div>' +
+    '<p style="text-align:center;margin:4px 0">📝 ' + OYUN.maddeler.length + ' görev &nbsp;·&nbsp; 💡 ipucu alabilirsin &nbsp;·&nbsp; ⭐ ilk denemede doğruya yıldız</p>' +
+    (rekor ? '<p style="text-align:center;margin:4px 0;color:var(--soluk)">🏆 Önceki en iyi sonucun: ' + esc(rekor) + ' yıldız</p>' : '') +
+    '<button class="buyuk" id="basla">Başlayalım ▶</button>' +
+    '<p class="kazanim-kod">' + esc(OYUN.kazanimlar[0].kod) + ' · ' + esc(OYUN.kazanimlar[0].ad) + '</p></div>';
+  sesBagla();
+  document.getElementById('basla').onclick = () => {
+    cal('tik');
+    RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+    // Bölümler sırayla gelir (bilgiden davranışa); bölüm içindeki maddeler karışır.
+    sira = [1, 2, 3, 4].flatMap(b => shuffle(OYUN.maddeler.filter(m => m.bolum === b)));
+    idx = 0; sonuclar = []; puan = 0; soru();
+  };
+}
+
+function bolumGiris(b, sonra) {
+  const B = OYUN.bolumler[b];
+  app.innerHTML = ustCiz() + '<div class="kart gir bgiris"><div class="ikon" aria-hidden="true">' + B.ikon + '</div><h2>Bölüm ' + b + ': ' + esc(B.ad) + '</h2>' +
+    '<p>' + esc(B.metin) + '</p>' + (B.sefkat ? '<div class="sefkat">💙 ' + esc(B.sefkat) + '</div>' : '') +
+    (b === 1 ? '<div class="gorsel">' + govdeSVG({ etiket: true }) + '</div>' : '') +
+    '<button class="buyuk" id="bdev">Bölüme başla ▶</button></div>';
+  sesBagla();
+  const d = document.getElementById('bdev'); d.onclick = () => { cal('tik'); sonra(); window.scrollTo(0, 0); }; d.focus({ preventScroll: true });
+}
+
+function soru() {
+  if (idx >= sira.length) { bitisEkrani(); return; }
+  const m = sira[idx];
+  if (!durum || durum.bolumGosterildi !== m.bolum) {
+    if (idx === 0 || sira[idx - 1].bolum !== m.bolum) { durum = { bolumGosterildi: m.bolum }; bolumGiris(m.bolum, soru); return; }
+  }
+  const ipucuSayisi = (m.ipucu || []).length;
+  const ust = ustCiz() + '<div class="kart gir"><span class="etiket">Görev ' + (idx + 1) + ' / ' + sira.length + '</span><span class="bolum-et">' +
+    OYUN.bolumler[m.bolum].ikon + ' ' + esc(OYUN.bolumler[m.bolum].ad) + '</span>';
+  const altKisim = '<div class="alt"><button class="ipucu-btn" id="ip">💡 İpucu' + (ipucuSayisi > 1 ? ' (0/' + ipucuSayisi + ')' : '') + '</button></div></div>' +
+    karakterSatir('', rastgele(['Hadi bakalım, bunu çözebilirsin!', 'Soruyu dikkatle oku.', 'Resme bakmak işine yarayabilir.', 'Acele etme, düşün.'])) +
+    '<div class="devam-yer" id="devamYer"></div>';
+  if (m.tur === 'eslestir') {
+    durum = { m, bolumGosterildi: m.bolum, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now(), atama: m.kartlar.map(() => null), tamam: m.kartlar.map(() => false) };
+    app.innerHTML = ust + '<div class="soru">' + esc(m.soru) + '</div><div class="esl"><div class="govde" id="govde">' + govdeSVG(m.gorsel, {}) + '</div>' +
+      '<ol class="ols">' + m.kartlar.map((k, i) => '<li class="ekart" id="ek' + i + '"><p><span class="kno">' + (i + 1) + '</span>' + esc(k.t) + '</p>' +
+        '<div class="orgsec" role="group" aria-label="Kart ' + (i + 1) + ' için organ seç">' + ORGAN_SIRA.map(o => '<button data-k="' + i + '" data-o="' + o + '" aria-pressed="false">' +
+        '<i style="background:' + ORGAN[o].renk + '"></i>' + esc(ORGAN[o].ad) + '</button>').join('') + '</div><div class="durumyazi" id="ed' + i + '"></div></li>').join('') + '</ol></div>' +
+      '<button class="buyuk" id="kontrol" disabled>Kontrol et ✔</button>' + altKisim;
+    app.querySelectorAll('.orgsec button').forEach(b => { b.onclick = () => organSec(+b.dataset.k, b.dataset.o); });
+    document.getElementById('kontrol').onclick = eslestirKontrol;
+  } else {
+    const sec = shuffle([[m.dogru, '']].concat(m.yanlislar));
+    const uzun = sec.some(s => s[0].length > 26);
+    durum = { m, bolumGosterildi: m.bolum, sec, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now() };
+    app.innerHTML = ust + gorselCiz(m.gorsel) + '<div class="soru">' + esc(m.soru) + '</div><div class="sec' + (uzun ? ' uzun' : '') + '">' +
+      sec.map((s, i) => '<button data-i="' + i + '" aria-label="Seçenek ' + (i + 1) + ': ' + esc(s[0]) + '"><span class="no">' + (i + 1) + '</span>' + esc(s[0]) + '</button>').join('') +
+      '</div>' + altKisim;
+    app.querySelectorAll('.sec button').forEach(b => { b.onclick = () => sec_(+b.dataset.i); });
+  }
+  sesBagla();
+  document.getElementById('ip').onclick = ipucuVer;
+}
+
+function ipucuVer() {
+  if (!durum || durum.kilit || !durum.m) return;
+  const liste = durum.m.ipucu || []; if (!liste.length) return;
+  durum.ipucu = Math.min(liste.length, durum.ipucu + 1);
+  cal('tik'); ruh('dusun', null, '💡 ' + liste[durum.ipucu - 1]);
+  const b = document.getElementById('ip');
+  if (b && liste.length > 1) b.textContent = '💡 İpucu (' + durum.ipucu + '/' + liste.length + ')';
+}
+
+/* --- Eşleştirme --- */
+function organSec(k, o) {
+  if (!durum || durum.kilit || durum.tamam[k]) return;
+  durum.atama[k] = o; cal('tik');
+  document.querySelectorAll('#ek' + k + ' .orgsec button').forEach(b => b.setAttribute('aria-pressed', b.dataset.o === o ? 'true' : 'false'));
+  const kart = document.getElementById('ek' + k); kart.classList.remove('yanlis'); document.getElementById('ed' + k).textContent = '';
+  govdeYenile();
+  document.getElementById('kontrol').disabled = durum.atama.some(a => !a);
+}
+function govdeYenile() {
+  const secim = {};
+  durum.atama.forEach((o, i) => { if (o) (secim[o] = secim[o] || []).push(i + 1); });
+  document.getElementById('govde').innerHTML = govdeSVG(durum.m.gorsel, secim);
+}
+function eslestirKontrol() {
+  if (!durum || durum.kilit || durum.atama.some(a => !a)) return;
+  const m = durum.m; durum.deneme++;
+  const yanlis = [];
+  m.kartlar.forEach((k, i) => {
+    if (durum.tamam[i]) return;
+    const kart = document.getElementById('ek' + i), ed = document.getElementById('ed' + i);
+    if (durum.atama[i] === k.org) { durum.tamam[i] = true; kart.classList.remove('yanlis'); kart.classList.add('dogru'); ed.textContent = '✔ Doğru eşleşme';
+      kart.querySelectorAll('button').forEach(b => { b.disabled = true; }); }
+    else { yanlis.push(i); if (!durum.ilkYanilgi) durum.ilkYanilgi = (k.yan && k.yan[durum.atama[i]]) || m.yanilgi; }
+  });
+  if (!yanlis.length) {
+    const ilk = durum.deneme === 1, r = document.getElementById('kontrol').getBoundingClientRect();
+    cal('dogru'); konfeti(ilk ? 45 : 22, r.left + r.width / 2, r.top); puanEkle(ilk ? 10 : 5);
+    sonuclar[idx] = ilk ? 'yildiz' : 'yarim';
+    bitir(false, 'mutlu', 'zipla', (ilk ? '⭐ ' + rastgele(['Harika!', 'Süpersin!', 'Tam isabet!']) : '✨ Buldun!') + ' ' + m.why); return;
+  }
+  if (durum.deneme >= 2) {           // 2. yanlış → çözümü göster
+    yanlis.forEach(i => { const k = m.kartlar[i]; durum.atama[i] = k.org; const kart = document.getElementById('ek' + i);
+      kart.classList.remove('yanlis'); kart.classList.add('dogru');
+      kart.querySelectorAll('.orgsec button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.o === k.org ? 'true' : 'false'); b.disabled = true; });
+      document.getElementById('ed' + i).textContent = '📘 Doğrusu: ' + ORGAN[k.org].ad; });
+    govdeYenile(); cal('tik'); sonuclar[idx] = 'ogrendi';
+    bitir(true, 'dusun', null, '📘 Birlikte bakalım: ' + m.why); return;
+  }
+  yanlis.forEach(i => { const kart = document.getElementById('ek' + i); kart.classList.add('yanlis');
+    if (!azHareket()) { kart.classList.remove('salla'); void kart.offsetWidth; kart.classList.add('salla'); }
+    document.getElementById('ed' + i).textContent = '✖ Henüz değil, başka bir organ seç.'; });
+  document.getElementById('kontrol').disabled = true;
+  cal('yanlis');
+  if (durum.ipucu < 1) { durum.ipucu = 1; ruh('uzgun', 'salla', '🤔 Bazı kartlar yanlış organda. 💡 ' + m.ipucu[0]);
+    const b = document.getElementById('ip'); if (b && m.ipucu.length > 1) b.textContent = '💡 İpucu (1/' + m.ipucu.length + ')'; }
+  else ruh('uzgun', 'salla', '🤔 Bazı kartlar yanlış organda. Kırmızı kartları değiştirip yeniden kontrol et.');
+}
+
+/* --- Çoktan seçmeli --- */
+function sec_(i) {
+  if (!durum || durum.kilit || !durum.sec) return;
+  const [metin, yan] = durum.sec[i], btn = app.querySelectorAll('.sec button')[i];
+  if (!btn || btn.disabled) return;
+  durum.deneme++;
+  if (metin === durum.m.dogru) {
+    btn.classList.add('dogru'); const r = btn.getBoundingClientRect();
+    const ilk = durum.deneme === 1;
+    cal('dogru'); konfeti(ilk ? 45 : 22, r.left + r.width / 2, r.top + r.height / 2); puanEkle(ilk ? 10 : 5);
+    sonuclar[idx] = ilk ? 'yildiz' : 'yarim';
+    bitir(false, 'mutlu', 'zipla', (ilk ? '⭐ ' + rastgele(['Harika!', 'Süpersin!', 'Tam isabet!']) : '✨ Buldun!') + ' ' + durum.m.why); return;
+  }
+  btn.classList.add('yanlis'); btn.disabled = true;
+  if (!azHareket()) { btn.classList.remove('salla'); void btn.offsetWidth; btn.classList.add('salla'); }
+  if (!durum.ilkYanilgi) durum.ilkYanilgi = yan;
+  if (durum.deneme >= 2) {
+    app.querySelectorAll('.sec button').forEach((b, k) => { if (durum.sec[k][0] === durum.m.dogru) b.classList.add('dogru'); });
+    cal('tik'); sonuclar[idx] = 'ogrendi';
+    bitir(true, 'dusun', null, '📘 Birlikte bakalım: ' + durum.m.why); return;
+  }
+  cal('yanlis');
+  // 1. yanlışta ipucu kendiliğinden gelir (henüz alınmadıysa), sonra ikinci şans
+  if (durum.ipucu < 1 && (durum.m.ipucu || []).length) { durum.ipucu = 1; ruh('uzgun', 'salla', '🤔 Henüz değil. 💡 ' + durum.m.ipucu[0]);
+    const b = document.getElementById('ip'); if (b && durum.m.ipucu.length > 1) b.textContent = '💡 İpucu (1/' + durum.m.ipucu.length + ')'; }
+  else ruh('uzgun', 'salla', '🤔 Henüz değil. Bir daha dene.');
+}
+
+function bitir(cozumGoruldu, mod, hareket, mesaj) {
+  durum.kilit = true;
+  RaporMotoru.kaydet({ kazanim: durum.m.kaz, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
+    ilkDenemeDogru: durum.deneme === 1 && !cozumGoruldu, deneme: durum.deneme, ipucu: durum.ipucu,
+    cozumGoruldu, sureMs: Date.now() - durum.t0 });
+  ruh(mod, hareket, mesaj);
+  app.querySelectorAll('.sec button, #ip, #kontrol, .orgsec button').forEach(b => { b.disabled = true; });
+  const yol = app.querySelector('.yol'); if (yol) yol.outerHTML = yolCiz();
+  const dev = document.createElement('button'); dev.className = 'buyuk'; dev.textContent = idx + 1 < sira.length ? 'Devam →' : T.sonSimge + ' Sonuca git!';
+  dev.id = 'dev'; dev.onclick = () => { idx++; soru(); window.scrollTo(0, 0); };
+  document.getElementById('devamYer').appendChild(dev); dev.focus({ preventScroll: true });
+}
+
+function yildizYol(cx0, cy0, R, r) { let d = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, u = i % 2 ? r : R;
+  d += (i ? 'L' : 'M') + (cx0 + Math.cos(a) * u).toFixed(1) + ' ' + (cy0 + Math.sin(a) * u).toFixed(1); } return d + 'Z'; }
+function bitisEkrani() {
+  durum = null;
+  const yildiz = sonuclar.filter(x => x === 'yildiz').length, oran = yildiz / sira.length;
+  const [rozetAd, rozetRenk] = oran >= 0.85 ? ['Altın Sağlık Kalkanı', '#f4b400'] : oran >= 0.6 ? ['Gümüş Sağlık Kalkanı', '#9aa5b1'] : ['Cesur Sağlık Kalkanı', '#cd7f32'];
+  app.innerHTML = ustCiz() + '<div class="kart gir bitis"><h1>🎉 ' + esc(T.bitisBaslik) + '</h1>' +
+    '<svg viewBox="0 0 120 150" class="rozet" role="img" aria-label="' + rozetAd + ' rozeti">' +
+    '<path d="M40 92 L26 146 L45 137 L56 150 L60 98Z" fill="#e76f51"/><path d="M80 92 L94 146 L75 137 L64 150 L60 98Z" fill="#1f8a70"/>' +
+    '<path d="M60 12 L100 26 Q100 80 60 106 Q20 80 20 26Z" fill="' + rozetRenk + '"/><path d="M60 22 L90 33 Q90 76 60 96 Q30 76 30 33Z" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="4"/>' +
+    '<path d="' + yildizYol(60, 56, 20, 8) + '" fill="#fff"/></svg><div class="rozet-ad">' + rozetAd + '</div>' +
+    '<div class="yildizlar" aria-label="' + yildiz + ' yıldız">' + (sonuclar.map(x => x === 'yildiz' ? '⭐' : x === 'yarim' ? '✨' : '📘').join('')) + '</div>' +
+    karakterSatir('mutlu', 'Tebrikler! ' + yildiz + ' yıldız ve ' + puan + ' ' + T.odulAd + ' topladın. Sağlığını korumayı öğrendin!') +
+    '<h2>✋ Hayır demenin 3 yolu</h2><div class="ozet">' +
+    '<div><b aria-hidden="true">🙅</b>Kibar ve kararlı bir “Hayır, teşekkürler.”</div>' +
+    '<div><b aria-hidden="true">🚶</b>Israr edilirse ortamdan uzaklaş.</div>' +
+    '<div><b aria-hidden="true">🧑‍🏫</b>Güvendiğin bir yetişkine anlat.</div></div>' +
+    '<h2>🌱 Sağlıklı seçimler</h2><div class="alter"><span>⚽ Spor</span><span>🚲 Bisiklet</span><span>🌳 Temiz hava</span><span>💧 Su</span><span>🍎 Meyve</span><span>😴 Yeterli uyku</span><span>📚 Kitap</span><span>🎨 Hobi</span></div>' +
+    '<p style="font-size:.95rem;color:var(--soluk)">Yeşilay, ülkemizde bağımlılıklara karşı çalışan bir kuruluştur.</p>' +
+    '<div id="karne"></div><button class="buyuk" id="yeniden">↻ Yeniden oyna</button></div>';
+  sesBagla();
+  RaporMotoru.ekranCiz(document.getElementById('karne'));
+  const eski = parseInt(depo.oku(DEPO_REKOR), 10) || 0;
+  if (yildiz > eski) depo.yaz(DEPO_REKOR, String(yildiz));
+  document.getElementById('yeniden').onclick = () => { durum = null; baslangic(); };
+  cal('kutlama'); ruh('mutlu', 'zipla', document.getElementById('balon').textContent);
+  konfeti(60); setTimeout(() => konfeti(40, innerWidth * 0.25, innerHeight * 0.3), 350);
+}
+
+document.addEventListener('keydown', e => {   // klavye: 1-4 seçenek, İ/i ipucu, Enter devam
+  if (e.key >= '1' && e.key <= '4' && durum && durum.sec && !durum.kilit && document.querySelector('.sec')) sec_(+e.key - 1);
+  else if ((e.key === 'i' || e.key === 'İ' || e.key === 'ı') && document.getElementById('ip')) ipucuVer();
+  else if (e.key === 'Enter') { const d = document.getElementById('dev'); if (d && document.activeElement !== d) { e.preventDefault(); d.click(); } }
+});
+baslangic();
+</script>
+</body>
+</html>
