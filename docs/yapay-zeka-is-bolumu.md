@@ -12,7 +12,8 @@ Hazırlanma: 2026-11-20. Neden: 7 paralel Opus alt ajanı 5 saatlik Claude kotas
 | Claude | Alt ajan | Haiku (hafif) | Tek dosyada basit arama/sayım | Yorum gerektiren işe uygun değil |
 | ChatGPT Plus | Codex CLI (`codex exec`) | Codex kod modeli; akıl yürütme düşük/orta/yüksek | Uzun HTML/JS yazma, brife göre düzeltme | Plus'ın kendi 5 saatlik pencereleri |
 | ChatGPT Plus | ChatGPT web (Chrome) | Görsel üretimi | Sahne/nesne resmi | Görsel başına birkaç dakika |
-| Gemini Pro | Gemini CLI (`gemini -p`) | Pro (ağır) / Flash (hafif) | Çok uzun bağlam: yıllık plan + birçok dosyayı birlikte okuma, Türkçe dil incelemesi | Günlük istek kotası |
+| Gemini Pro | **Antigravity CLI (`agy`)** — 2026-11-21 kuruldu, öğretmenin Google AI Pro girişiyle | Gemini 4 Neon (high) | Türkçe dil/yazım denetimi, uzun okuma, metin/soru üretimi | Abonelik kotası |
+| Gemini (ücretsiz anahtar) | Gemini CLI (`gemini -p`) | yalnız Flash | Çok hafif işler (artık gerek yok) | Ücretsiz katman |
 | Gemini Pro | Gemini web (Chrome) | Görsel (yedek) | ChatGPT kotası bitince | — |
 | — | Komutlar (node/python) | Model yok | Test, sayı doğrulama, katalog, baskı | — |
 
@@ -25,8 +26,8 @@ Hazırlanma: 2026-11-20. Neden: 7 paralel Opus alt ajanı 5 saatlik Claude kotas
 | Denetçi bulgularını uygulamak (düzeltme turu) | **Codex** | düşük/orta | Claude bulgu listesini verir, diff'i okur |
 | Pedagojik denetim (son sürüme bir kez) | `pedagojik-denetci` | Sonnet | Hassas konuda (sağlık, hak ihlali, aile) Claude ana da okur |
 | İkinci göz: cevap doğruluğu, ipucu sızıntısı (salt okuma) | **Codex** | orta | Denemede güvenilir çıktı |
-| Türkçe yazım/dil denetimi | Claude ana / denetçi | Opus / Sonnet | Gemini Flash denemede TDK'ye aykırı öneriler verdi |
-| Uzun belge karşılaştırması (yıllık plan, çok dosya) | Gemini web (Chrome) | Pro | CLI'da Pro kapalı |
+| Türkçe yazım/dil denetimi | **Antigravity (Gemini 4 Neon)** | high | 2026-11-21 denemesi: 3 tuzaklı hatanın 3'ünü buldu, doğruya dokunmadı. Flash bu işe verilmez. Claude son kararı verir |
+| Uzun belge karşılaştırması (yıllık plan, çok dosya) | **Antigravity** | Neon high | Dosya içeriği istemin içine gömülür |
 | Kısa metin taslağı (yönerge, ipucu metni çeşitlemesi) | **Gemini CLI** | Flash | Claude seçer ve düzeltir |
 | Defter notu kaynağı (`tools/sketchnote/notlar/*.js`) | Claude ana | Opus | Kısa ama doğruluk kritik; kod çizim kurallarına bağlı |
 | Sahne/nesne görseli (gerçekten gerekiyorsa) | ChatGPT web | — | Basit kutu, cümle, liste için görsel yok |
@@ -88,3 +89,12 @@ Claude'un kendi kotası bitince öğretmen `Promptlar/` klasöründeki hazır pr
 | 5 | `4d-dis-yapay-zeka` skill'i: brif şablonu, komutlar, verilecek/verilmeyecek dosyalar, çıktı kontrol listesi | deneme iyi giderse |
 | 6 | `CLAUDE.md`'ye tek satır yönlendirme (bu belgeye) | 5 ile birlikte |
 | 7 | Sonraki haftalık hazırlıkta (12. hafta) bu düzenle ilk gerçek kullanım | — |
+
+## Antigravity CLI (Gemini Pro) nasıl çağrılır? (2026-11-21)
+- Program: `C:\Users\ismai\AppData\Local\Microsoft\WinGet\Packages\Google.AntigravityCLI_Microsoft.Winget.Source_8wekyb3d8bbwe\agy.exe`
+  (winget `Google.AntigravityCLI`, sürüm 1.5.13). Giriş öğretmenin Google hesabıyla bir kez yapıldı.
+- İstem **stdin'den** verilir, `-p` yazılmaz (PowerShell 5.1 tırnaklı uzun argümanı bozar):
+  `[Console]::OutputEncoding=[Text.Encoding]::UTF8; Get-Content istem.txt -Raw -Encoding UTF8 | & $agy --mode plan --print-timeout 240s --model gemini-4-neon-high`
+- Başsız modda araç izni sorulamaz: dosyayı kendisi okumaya kalkarsa "auto-denied" der. Bu yüzden incelenecek metin
+  **istem dosyasının içine** konur; scratchpad'de çalıştırılır. `--dangerously-skip-permissions` kullanılmaz.
+- Öğrenci verisi, `portal/`, anahtar, `KVKK/`, `VeliRaporlari/` istemlere konmaz.
