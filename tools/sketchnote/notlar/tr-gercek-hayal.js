@@ -3,7 +3,7 @@
 // T.4.3.27 kahramanların özelliklerini karşılaştırır. Etkinlik: Turkce/gercekmihayalmi.html (örnek kahramanlar oradan).
 // Görsel 1 ChatGPT (resim yuvası; Türkçe etiketleri kod yazar), Görsel 2 kodla (Venn şeması).
 // Karşılaştırma tablosu bilerek görsel yapılmadı ("gereksiz görsel yok": öğrenci tabloyu deftere kendisi çizer).
-const ORTAK = ' Yatay 3:2. Tarz: temiz ve olgun eğitim illüstrasyonu, yumuşak düz renkler, ince koyu kontur, sade arka plan; 10–13 yaş için olgun görünüm; boyama sayfası gibi kalın çizgiler, büyük sevimli çizgi film karakterleri ve aşırı süs olmasın. Resimde hiçbir yazı, harf, sayı ya da konuşma balonu olmasın (yazıları sonradan ben ekleyeceğim). Alt kenarda yazı için sade boşluk bırak.';
+const ORTAK = ' Yatay 3:2. Tarz: renkli karikatür tarzı (çocuk dergisindeki esprili karikatürler gibi); karakterlerin yüz ifadeleri abartılı ve canlı, başları ve elleri biraz büyük, pozları hareketli ve neşeli; canlı doygun renkler, yumuşak gölge, orta kalınlıkta koyu kontur, sade açık arka plan; 10–13 yaş için eğlenceli ama özenli. Boyama sayfası gibi renksiz olmasın; bilinen bir çizgi film karakterine ya da stüdyo tarzına benzemesin; kimseyle alay eden ya da korkutucu öğe olmasın. Resimde hiçbir yazı, harf, sayı ya da konuşma balonu olmasın (yazıları sonradan ben ekleyeceğim). Alt kenarda yazı için sade boşluk bırak.';
 const IKI_PANEL = ' Resim ortadan ince beyaz bir boşlukla iki eşit panele bölünsün.';
 
 Sketchnote.defterNotu({
@@ -43,7 +43,7 @@ Sketchnote.defterNotu({
   gorseller: [
     // 1 — Aynı sincap: gerçek / hayalî (ChatGPT)
     { ad: 'Gerçek mi, hayalî mi?', resim: 'Baski/Turkce/resimler/gercek-hayal-sincap.png',
-      istem: 'Bir görsel oluştur: Aynı kızıl sincabın iki hâli. Sol panel: sonbahar ormanında gerçekçi bir kızıl sincap, ön patileriyle toprağa bir fındık gömüyor, yerde sararmış yapraklar. Sağ panel: aynı sincap küçük bir koltukta oturmuş, yuvarlak gözlük takmış, patilerinde açık bir kitap okuyor, yanındaki küçük masada bir çay fincanı var; masal havası.' + IKI_PANEL + ORTAK,
+      istem: 'Bir görsel oluştur: Aynı kızıl sincabın iki hâli. Sol panel: sonbahar ormanında gerçekte yapabileceği bir şeyi yapan, kıyafetsiz, dört ayaklı kızıl sincap, ön patileriyle toprağa bir fındık gömüyor, yerde sararmış yapraklar. Sağ panel: aynı sincap küçük bir koltukta oturmuş, yuvarlak gözlük takmış, patilerinde açık bir kitap okuyor, yanındaki küçük masada bir çay fincanı var; masal havası.' + IKI_PANEL + ORTAK,
       etiketler: [{ x: 128, y: 336, t: 'GERÇEK: fındık saklar', boy: 20, renk: '#2a9d8f' }, { x: 383, y: 336, t: 'HAYALÎ: kitap okur', boy: 20 }] },
     // 2 — Venn şeması (kodla)
     { ad: 'Kahramanları karşılaştırma', ciz(S) {

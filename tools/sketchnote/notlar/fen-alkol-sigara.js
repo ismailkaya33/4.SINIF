@@ -5,7 +5,7 @@
 // 3–4 ChatGPT (resim yuvası; Baski/Fen/resimler/, GitHub'a gitmez).
 // Bilgi kontrolü: 18 yaş altına tütün ve alkol satışı Türkiye'de yasaktır; nargile tütün içerir; elektronik sigaraların
 // çoğu nikotin içerir; pencere açmak dumanı yok etmez (eşyaya/giysiye siner).
-const ORTAK = ' Yatay 3:2. Tarz: temiz ve olgun eğitim illüstrasyonu, yumuşak düz renkler, ince koyu kontur, sade açık arka plan; 10–13 yaş için olgun görünüm; boyama sayfası gibi kalın çizgiler, büyük sevimli çizgi film karakterleri ve aşırı süs olmasın. Resimde hiçbir yazı, harf, sayı, logo ya da marka olmasın. Alt kenarda yazı için sade boşluk bırak.';
+const ORTAK = ' Yatay 3:2. Tarz: renkli karikatür tarzı (çocuk dergisindeki esprili karikatürler gibi); karakterlerin yüz ifadeleri abartılı ve canlı, başları ve elleri biraz büyük, pozları hareketli ve neşeli; canlı doygun renkler, yumuşak gölge, orta kalınlıkta koyu kontur, sade açık arka plan; 10–13 yaş için eğlenceli ama özenli. Boyama sayfası gibi renksiz olmasın; bilinen bir çizgi film karakterine ya da stüdyo tarzına benzemesin; kimseyle alay eden ya da korkutucu öğe olmasın. Resimde hiçbir yazı, harf, sayı, logo ya da marka olmasın. Alt kenarda yazı için sade boşluk bırak.';
 
 // Sade vücut şeması (510 × 360 alanın sol yarısı). vurgu: renklendirilecek organlar; ötekiler soluk kesik çizgi.
 function govde(S, vurgu) {

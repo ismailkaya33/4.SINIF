@@ -27,7 +27,8 @@ istemediği öneriyi orada "reddedildi" yapar; bir daha önerilmez.
 **Görsel üretimi** (boyama, poster, resimli not): Claude in Chrome ile öğretmenin ChatGPT Plus (yedek: Gemini Pro) hesabında çizdirilir,
 tam boyutlu resmi Claude indirir (öğretmenin kararı 2026-11-14), Claude A4 PDF yapar (`node tools/gorsel-uret.mjs --pdf-yap`). API anahtarı
 (`GEMİNİ_API_KEY`) kurulu ama faturalandırma yok → araçla doğrudan çizim kapalı. Ayrıntı: `4d-icerik-uret` 4.2.
-Tarz: boyama sayfası gibi değil, olgun görünüm; konuya göre **el yazısı defter** ya da **sketchnote** (Claude seçer).
+Tarz: çizimler **renkli karikatür** (abartılı ifade, canlı renk; öğretmenin kararı 2026-11-21), boyama sayfası değil;
+tam sayfa notta zemin konuya göre **el yazısı defter** ya da **sketchnote** (Claude seçer).
 **Kavram haritası / şema / süreç** gibi yazının doğru olması gereken sketchnote'lar ChatGPT'siz, kodla çizilir:
 `node tools/sketchnote-yap.mjs tools/sketchnote/notlar/<ad>.js --png … --pdf …` (öğretmenin kararı 2026-11-13; ayrıntı `4d-icerik-uret` 4.3).
 **Defter notu** de aynı araçla: not sayfasında görsellerin yapıştırılacağı yer belli, ayrıca kes-yapıştır sayfası

@@ -3,7 +3,7 @@
 // Görsel 1, 3, 5, 8, 9 kodla; 2, 4, 6, 7 ChatGPT (resim yuvası; cümleler resmin üstüne kodla yazılır → yazım hatası olmaz).
 // Not: Türkçede sözcük sırası esnektir (devrik cümle); bu yüzden "cümle değildir" örneği olarak sıra bozukluğu değil,
 // anlamı tamamlanmamış söz grubu ("Elif kitap") kullanıldı.
-const ORTAK = ' Yatay 3:2. Tarz: temiz ve olgun eğitim illüstrasyonu, yumuşak düz renkler, ince koyu kontur, sade arka plan; 10–13 yaş için olgun görünüm; boyama sayfası gibi kalın çizgiler, büyük sevimli çizgi film karakterleri ve aşırı süs olmasın. Resimde hiçbir yazı, harf, sayı ya da konuşma balonu olmasın (yazıları sonradan ben ekleyeceğim). Alt kenarda yazı için sade boşluk bırak.';
+const ORTAK = ' Yatay 3:2. Tarz: renkli karikatür tarzı (çocuk dergisindeki esprili karikatürler gibi); karakterlerin yüz ifadeleri abartılı ve canlı, başları ve elleri biraz büyük, pozları hareketli ve neşeli; canlı doygun renkler, yumuşak gölge, orta kalınlıkta koyu kontur, sade açık arka plan; 10–13 yaş için eğlenceli ama özenli. Boyama sayfası gibi renksiz olmasın; bilinen bir çizgi film karakterine ya da stüdyo tarzına benzemesin; kimseyle alay eden ya da korkutucu öğe olmasın. Resimde hiçbir yazı, harf, sayı ya da konuşma balonu olmasın (yazıları sonradan ben ekleyeceğim). Alt kenarda yazı için sade boşluk bırak.';
 const IKI_PANEL = ' Resim ortadan ince beyaz bir boşlukla iki eşit panele bölünsün.';
 
 Sketchnote.defterNotu({
@@ -131,7 +131,7 @@ Sketchnote.defterNotu({
       etiketler: [{ x: 255, y: 336, t: 'Öğretmenim, bu soruyu tekrar anlatır mısınız?', boy: 19, renk: '#1d3557' }] },
     // 7 — Ünlem: şaşkınlık ve sevinç (ChatGPT)
     { ad: 'Ünlem cümlesi', resim: 'Baski/Turkce/resimler/cumle-7-unlem.png',
-      istem: 'Bir görsel oluştur: Doğum günü masasında 10 yaşında bir kız çocuğu, yeni açtığı hediye kutusundan çıkan bir teleskobu görünce sevinç ve şaşkınlıkla iki elini yanaklarına götürmüş; yüz ifadesi net ve doğal.' + ORTAK,
+      istem: 'Bir görsel oluştur: Doğum günü masasında 10 yaşında bir kız çocuğu, yeni açtığı hediye kutusundan çıkan bir teleskobu görünce sevinç ve şaşkınlıkla iki elini yanaklarına götürmüş; yüz ifadesi abartılı ve çok net.' + ORTAK,
       etiketler: [{ x: 255, y: 336, t: 'Ne güzel bir hediye!', boy: 26 }] },
     // 8 — Kurallı / devrik (kodla)
     { ad: 'Kurallı ve devrik cümle', ciz(S) {

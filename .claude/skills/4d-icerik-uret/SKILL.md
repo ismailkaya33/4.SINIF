@@ -108,21 +108,28 @@ node tools/gorsel-uret.mjs --istem <istem.txt> --cikti Baski/<Ders>/<konu>-boyam
 `--modeller` ile güncel görsel modeli bulunur, `--model` ile verilir. Yedek: `--saglayici openai` (`OPENAI_API_KEY`).
 Çıktı resmi Claude açıp (Read) bölüm 3'teki gibi kontrol eder.
 
-**Görsel tarz (öğretmenin kararı, 2026-11-12):** Resimli defter notu, poster ve resimli çalışma kâğıdı **boyama sayfası
-gibi olmaz**: kalın siyah dış çizgi, büyük sevimli çizgi film karakteri ve aşırı süs yok. Konu 4. sınıf düzeyinde kalır
-ama görünüm olgun ve düzenlidir (10–13 yaş). İki tarzdan biri kullanılır; hangisi olacağına konuya göre Claude karar
+**Çizim tarzı = KARİKATÜR (öğretmenin kararı, 2026-11-21; 2026-11-12'deki "olgun, karakter yok" kuralının yerine):**
+ChatGPT'ye çizdirilen her sahne/nesne resmi (kes-yapıştır görseli, poster, resimli kâğıt) **renkli karikatür** tarzında
+olur. İstemdeki tarz cümlesi (not dosyalarında `ORTAK`): "Tarz: renkli karikatür tarzı (çocuk dergisindeki esprili
+karikatürler gibi); karakterlerin yüz ifadeleri abartılı ve canlı, başları ve elleri biraz büyük, pozları hareketli ve
+neşeli; canlı doygun renkler, yumuşak gölge, orta kalınlıkta koyu kontur, sade açık arka plan; 10–13 yaş için eğlenceli
+ama özenli. Boyama sayfası gibi renksiz olmasın; bilinen bir çizgi film karakterine ya da stüdyo tarzına benzemesin;
+kimseyle alay eden ya da korkutucu öğe olmasın." Sonuç gerçekçi/ciddi gelirse aynı sohbette "daha karikatürvari,
+ifadeler daha abartılı olsun" diye bir tur düzeltme istenir.
+**Tam sayfa defter notu ChatGPT'ye çizdirilirse** (6.1) zemin aşağıdaki iki düzenden biri olur ama içindeki küçük
+çizimler yine karikatür tarzındadır ("karakter yok" ifadesi istemden çıkarılır). Düzen konuya göre Claude karar
 verir ve öğretmene hangisini seçtiğini bir cümleyle söyler:
 - **El yazısı defter** (işlem, kural, adım adım çözüm ağırlıklı konular: Matematik işlemleri, yazım/noktalama, dil
   bilgisi). İstemin tarz kısmı: "kareli defter sayfası üzerine öğrencinin kendi el yazısıyla tuttuğu düzenli ders notu
   (bullet journal), koyu mavi tükenmez kalem yazısı, önemli kelimelerin altında sarı ve pembe fosforlu kalem vurgusu,
-  başlığın üstünde yarı saydam yeşil washi bant, kenarlarda küçük el çizimi oklar ve kesik çizgili not kutusu; karakter
-  yok, temiz illüstrasyon."
+  başlığın üstünde yarı saydam yeşil washi bant, kenarlarda küçük el çizimi oklar ve kesik çizgili not kutusu; köşelerde
+  küçük renkli karikatür figürler."
 - **Sketchnote** (kavram, süreç, ilişki ağırlıklı konular: Fen, Sosyal, İnsan Hakları, Trafik, metin türleri, kavram
   haritası). İstemin tarz kısmı: "sketchnote (görsel not) tarzı, beyaz zemin üzerinde ince siyah kalem çizgileri, yalnız
   sarı ve mavi iki vurgu rengi, el çizimi düzensiz çerçeveler ve konuşma bulutları, kıvrımlı oklar, küçük fikir çizimleri
-  (ampul, büyüteç, konuyla ilgili nesne), el yazısı görünümlü ama okunaklı yazı; sevimli karakter yok."
-- Her istemde ayrıca: "Hedef kitle 10–13 yaş: görünüm olgun, düzenli ve okunaklı olsun; boyama sayfası gibi kalın siyah
-  dış çizgiler, büyük sevimli çizgi film karakterleri ve aşırı süs olmasın."
+  (ampul, büyüteç, konuyla ilgili nesne), el yazısı görünümlü ama okunaklı yazı; ifadeli küçük karikatür figürler."
+- Her istemde ayrıca: "Hedef kitle 10–13 yaş: düzenli ve okunaklı olsun; çizimler esprili renkli karikatür tarzında,
+  boyama sayfası gibi renksiz değil."
 - Öğretmen açıkça **boyama sayfası** isterse yalnız o iş için aşağıdaki boyama tarifi kullanılır.
 
 Tarayıcı yolu:
@@ -194,6 +201,14 @@ indirme adımı yoktur, tek HTML dosyası internetsiz açılır. Simgeler basit 
 - Defter notu görselleri `<Ders>/DefterNotlari/` altına gider ve **tek listeye** (`defter-notlari.json`, site kökü; `{ders, dosya, ad, surum?}`)
   bir satır eklenir. `materyaller.html` bu listeyi kendisi okur. Resim yenilenince `surum` değiştirilir (önbellek). Portal ve öğretmen raporu
   için portal dalında `node tools/katalog-esitle.mjs` çalıştırılır (portal gönderimi ayrıca onay ister).
+
+### 6.0a Konu etkinlik sayfaları (öğretmenin isteği, 2026-11-21)
+Defter notu yapılan **her konu için 2 sayfalık basılı etkinlik sayfası** + ayrı cevap anahtarı hazırlanır (Oyunlar hariç).
+A4 verimli kullanılır: iki sütun, 11 pt gövde, sıkı satır arası, sayfa altında boşluk kalmaz (araç doluluk yüzdesini
+yazar; hedef %85–100). Etkinlik çeşitli olur: boşluk doldurma, D/Y, eşleştirme, sınıflandırma, okuma parçası + sorular,
+tablo, alt alta işlem, problem, kelime avı; zorluk kuralı (çok adımlı, hata bulma) geçerlidir. Araç ve konu dosyası biçimi:
+`tools/etkinlik-sayfasi/OKU-BENI.md`. Çıktı `Baski/<Ders>/etkinlik-sayfalari/` (portala gitmez). Yeni defter notu
+eklenince aynı konunun etkinlik dosyası da yazılır.
 
 ### 6.0 Defter notu + kes-yapıştır görselleri — VARSAYILAN YOL (öğretmenin kararı, 2026-11-13)
 Defter notu kodla üretilir (`Sketchnote.defterNotu`, bkz. 4.3); her not iki çıktı verir:

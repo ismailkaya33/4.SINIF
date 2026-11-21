@@ -2,7 +2,7 @@
 // Görsel 3, 5, 8 kodla (şema); 1, 2, 4, 6, 7 ChatGPT (resim yuvası). Resimler: Baski/Fen/resimler/ (GitHub'a gitmez).
 // Bilgi kontrolü: anahtarların çoğu pirinçtir (çekilmez) → örnek olarak kullanılmadı; alüminyum kutu, bakır, altın çekilmez;
 // mıknatıs etkisi kâğıt/cam/su/plastikten geçer; çekim kutuplarda en güçlü.
-const ORTAK = ' Yatay 3:2. Tarz: temiz ve olgun eğitim illüstrasyonu, yumuşak düz renkler, ince koyu kontur, sade açık arka plan; 10–13 yaş için olgun görünüm; boyama sayfası gibi kalın çizgiler, büyük sevimli çizgi film karakterleri ve aşırı süs olmasın. Resimde hiçbir yazı, harf (mıknatıs üzerinde N ve S harfleri dahil), sayı ya da ok olmasın; mıknatısın iki ucu kırmızı ve mavi renkle ayrılsın. Alt kenarda yazı için sade boşluk bırak.';
+const ORTAK = ' Yatay 3:2. Tarz: renkli karikatür tarzı (çocuk dergisindeki esprili karikatürler gibi); karakterlerin yüz ifadeleri abartılı ve canlı, başları ve elleri biraz büyük, pozları hareketli ve neşeli; canlı doygun renkler, yumuşak gölge, orta kalınlıkta koyu kontur, sade açık arka plan; 10–13 yaş için eğlenceli ama özenli. Boyama sayfası gibi renksiz olmasın; bilinen bir çizgi film karakterine ya da stüdyo tarzına benzemesin; kimseyle alay eden ya da korkutucu öğe olmasın. Resimde hiçbir yazı, harf (mıknatıs üzerinde N ve S harfleri dahil), sayı ya da ok olmasın; mıknatısın iki ucu kırmızı ve mavi renkle ayrılsın. Alt kenarda yazı için sade boşluk bırak.';
 
 Sketchnote.defterNotu({
   baslik: 'MIKNATISLAR',
