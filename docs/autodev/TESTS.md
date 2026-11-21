@@ -6,3 +6,4 @@ Güvenlik taraması: kod değişmedi, test çalıştırılmadı (2026-11-19).
 
 - 2026-11-19: panel tests/*.cjs ve verify-appsscript geçti; site icerik-denetle çalıştı (yalnız büyük-dosya uyarıları); kurtulus.html 360 px taşma ölçümü temiz.
 - 2026-11-20: Fen besin sayfaları 360 px Playwright kontrolü (taşma/konsol) geçti; icerik-denetle yalnız eski büyük-dosya uyarıları.
+- 2026-11-21: Tailwind CDN'e bağlı sayfalarda (örn. Insanhaklari/farkliyasamlar.html) bu ortamda dokunma boyu ölçülemez (CDN erişimi yok); yerelde Edge ile ölçülmeli.

@@ -49,3 +49,11 @@ Engel yok.
 1. Düzeltme canlıda değil; claude/site-gelistirme dalında, main'e alma kararı sizin.
 2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
 Engel yok.
+
+## 2026-11-21 00:15 UTC (altıncı çalışma)
+- ONAYLI boştu. Güvenli küçük düzeltme olarak Insanhaklari/farkliyasamlar.html düğme boyu denendi; sayfa Tailwind'i internetten (CDN) yüklüyor, bu ortamda erişim yok, ölçüm güvenilmez çıktı. Test edemediğim değişikliği göndermemek için kod değiştirilmedi.
+- Test: kod değişmediği için çalıştırılmadı.
+Öğretmenin bakmasi gerekenler:
+1. Bu çalışmada hiçbir şey değişmedi; ONAYLI liste hâlâ boş, ONERI'den seçip onaylayabilirsiniz.
+2. Önceki site düzeltmeleri hâlâ yalnız claude/site-gelistirme dalında; main'e alma kararı sizin.
+Engel yok.
