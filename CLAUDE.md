@@ -14,6 +14,12 @@ Ayrı bir sohbet projesi kullanılmaz. Kurallar burada ve `.claude/skills/` alt�
 | `4d-canli-kontrol` | Gönderilen değişikliğin canlıda çalıştığını kontrol etmek |
 | `4d-haftalik-hatirlatma` | Yıllık plana göre bu/sıradaki haftanın konuları ve portalda eksik etkinlik/defter notu |
 
+**Önce diğer yapay zekâlar (öğretmenin kararı 2026-11-21):** Claude kotası çabuk bitiyor. Uzun üretim işini (etkinlik/oyun
+HTML'i, etkinlik sayfası konu dosyaları, çok sayıda soru/metin, toplu düzeltme) **önce Codex CLI** (öğretmenin ChatGPT Plus
+hesabı) yapar; çizim ChatGPT/Gemini web'de. Claude yalnız kısa brif yazar, çıktıyı araçla denetler (`etkinlik-sayfasi-yap.mjs`,
+`html_kontrol.py`, hesap denetimi), düzeltme turunu yine Codex'e verir ve yayınlar. Çağrı yolu ve sınırlar:
+`docs/yapay-zeka-is-bolumu.md`. Codex çalışmazsa öğretmene söylenir, iş sessizce Claude'a kaymaz.
+
 **Kota bitince başka yapay zekâ:** her iş türü için hazır prompt `Promptlar/` klasöründe (`00-OKU-BENI.txt`). Öğretmen dışarıda
 yaptırdığı işi getirince `4d-icerik-uret` bölüm 9'a göre kontrol edilip sisteme alınır; portal kodu için dış prompt yoktur (bilerek).
 
