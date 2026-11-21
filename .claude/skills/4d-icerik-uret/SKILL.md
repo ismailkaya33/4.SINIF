@@ -116,6 +116,13 @@ neşeli; canlı doygun renkler, yumuşak gölge, orta kalınlıkta koyu kontur, 
 ama özenli. Boyama sayfası gibi renksiz olmasın; bilinen bir çizgi film karakterine ya da stüdyo tarzına benzemesin;
 kimseyle alay eden ya da korkutucu öğe olmasın." Sonuç gerçekçi/ciddi gelirse aynı sohbette "daha karikatürvari,
 ifadeler daha abartılı olsun" diye bir tur düzeltme istenir.
+**Renk kuralı (öğretmenin kararı, 2026-11-21; yalnız yeni çizimler, mevcutlar kalır):** öğretmen her çıktıyı renkli
+basamıyor. Kes-yapıştır görselleri **varsayılan siyah-beyaz karikatür** çizdirilir; istemdeki tarz cümlesinde "renkli…canlı
+doygun renkler, yumuşak gölge" yerine: "siyah-beyaz karikatür: beyaz zemin, net siyah kontur, renk ve gri dolgu yok
+(gerekirse çok az ince tarama), fotokopide temiz çıkacak; boyama sayfası kadar kalın çizgili değil". **Renkli** yalnız
+rengin bilgi taşıdığı görsellerde: renk değişimi (bozulan besin, mevsim), bayrak, harita/bölge renkleri, mıknatısın
+kırmızı-mavi uçları, trafik ışığı gibi. Claude her görsel için karar verir, not dosyasında görselin yanına
+`// renkli: neden` yazar ve öğretmene hangilerinin renkli basılması gerektiğini tek satırla söyler.
 **Tam sayfa defter notu ChatGPT'ye çizdirilirse** (6.1) zemin aşağıdaki iki düzenden biri olur ama içindeki küçük
 çizimler yine karikatür tarzındadır ("karakter yok" ifadesi istemden çıkarılır). Düzen konuya göre Claude karar
 verir ve öğretmene hangisini seçtiğini bir cümleyle söyler:

@@ -10,6 +10,11 @@ BİÇİM: [yatay 3:2  /  A4 dikey]
 
 HEDEF KİTLE: 10–13 yaş ilkokul öğrencileri. Düzenli ve okunaklı olsun.
 
+RENK: Deftere yapıştırılacak resimler VARSAYILAN olarak SİYAH-BEYAZ çizilir (öğretmen renkli çıktı alamıyor).
+Aşağıdaki karikatür paragrafında renk cümlesi yerine şunu yaz: "siyah-beyaz karikatür: beyaz zemin, net siyah kontur,
+renk ve gri dolgu yok, fotokopide temiz çıkacak; boyama sayfası kadar kalın çizgili değil." Renkli yalnız rengin bilgi
+taşıdığı resimlerde (bozulan besinin rengi, bayrak, harita renkleri, mıknatısın kırmızı-mavi uçları, trafik ışığı).
+
 TARZ — KARİKATÜR (sahne, nesne, kes-yapıştır resmi, poster için; VARSAYILAN): renkli karikatür tarzı (çocuk
 dergisindeki esprili karikatürler gibi); karakterlerin yüz ifadeleri abartılı ve canlı, başları ve elleri biraz büyük,
 pozları hareketli ve neşeli; canlı doygun renkler, yumuşak gölge, orta kalınlıkta koyu kontur, sade açık arka plan;
