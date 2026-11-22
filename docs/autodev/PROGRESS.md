@@ -66,3 +66,11 @@ Engel yok.
 2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
 3. claude/site-gelistirme ve claude/ogretmen-paneli-gelistirme dalındaki düzeltmeler canlıda değil; alma kararı sizin.
 Engel yok.
+
+## 2026-11-22 10:15 UTC (sekizinci çalışma)
+- ONAYLI boştu; yeni güvenli küçük düzeltme bulunmadı (ilk taramalar zaten yapılmış, kalanlar ONERI'de onay bekliyor). Kod değişmedi, test çalıştırılmadı.
+Öğretmenin bakmasi gerekenler:
+1. Bu çalışmada hiçbir şey değişmedi.
+2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
+3. claude/ dallarındaki düzeltmeler canlıda değil; alma kararı sizin.
+Engel yok.
