@@ -57,3 +57,12 @@ Engel yok.
 1. Bu çalışmada hiçbir şey değişmedi; ONAYLI liste hâlâ boş, ONERI'den seçip onaylayabilirsiniz.
 2. Önceki site düzeltmeleri hâlâ yalnız claude/site-gelistirme dalında; main'e alma kararı sizin.
 Engel yok.
+
+## 2026-11-22 00:15 UTC (yedinci çalışma)
+- ONAYLI boştu. Güvenli küçük düzeltme aranarak tüm site HTML'lerinde kırık bağlantı/görsel taraması yapıldı (yalnız okuma): kırık bağlantı yok. Kod değişmedi.
+- Test: kod değişmediği için çalıştırılmadı.
+Öğretmenin bakmasi gerekenler:
+1. Bu çalışmada hiçbir şey değişmedi; site bağlantıları sağlam.
+2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
+3. claude/site-gelistirme ve claude/ogretmen-paneli-gelistirme dalındaki düzeltmeler canlıda değil; alma kararı sizin.
+Engel yok.
