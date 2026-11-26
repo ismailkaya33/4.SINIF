@@ -12,7 +12,10 @@ const ilerlemeYolu = resolve(alan, 'kaynak-kitap/ilerleme.json');
 const programYolu = resolve(alan, 'kaynak-kitap/ders-programi.json');
 const dosyalar = ['kitaplar.json', 'ilerleme.json', 'ders-programi.json'];
 const orijinaller = await Promise.all(dosyalar.map(f => readFile(new URL(`kaynak-kitap/${f}`, kok), 'utf8')));
-const [harita, ilerleme, program] = orijinaller.map(s => JSON.parse(s));
+const [harita, , program] = orijinaller.map(s => JSON.parse(s));
+// Testler gerçek "kaldığımız yer"e bağlı kalmasın: 2026-11-26 başlangıç durumu sabit tutulur.
+const ilerleme = { aciklama: 'test', guncelleme: '2026-11-26', haftaSonuSon: 7,
+  sonSayfa: { 'tr-avci': 80, 'tr-oy': 34, 'mat-avci': 84, 'mat-oy': 40, 'fen-avci': 30, 'fen-oy': 18, 'sos-avci': 28, 'sos-oy': 20 } };
 const yaz = (p, v) => writeFile(p, JSON.stringify(v), 'utf8');
 let kontrol = 0;
 function calistir(args, kod = 0) {
@@ -41,7 +44,7 @@ try {
   await mkdir(resolve(alan, 'tools'));
   await mkdir(resolve(alan, 'kaynak-kitap'));
   await copyFile(new URL('kaynak-odev-oner.mjs', import.meta.url), resolve(alan, 'tools/kaynak-odev-oner.mjs'));
-  await Promise.all(dosyalar.map((f, i) => writeFile(resolve(alan, `kaynak-kitap/${f}`), orijinaller[i])));
+  await Promise.all(dosyalar.map((f, i) => writeFile(resolve(alan, `kaynak-kitap/${f}`), f === 'ilerleme.json' ? JSON.stringify(ilerleme, null, 2) : orijinaller[i])));
   calistir(['--denetle']);
   const { sonuc, cikti } = plan(['--konu', 'tr=1,mat=2,fen=0,sos=2', '--kadar', 'mat-oy=42']);
   assert.equal(sonuc.baslik, '30 Kasım–4 Aralık');

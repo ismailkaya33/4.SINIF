@@ -159,7 +159,6 @@ async function main() {
   const sonuc = {
     aciklama: "Öğrenci portalındaki 'Kaynak Kitap Ödevlerim' kartı. Her hafta tools/kaynak-odev-oner.mjs ile üretilir; 'bitis'ten sonra kart gizlenir.",
     baslik: sec.baslik ?? baslik, baslangic: tarih(bas), bitis: tarih(gunEkle(bas, 6)),
-    not: 'Kaynak kitabı olan öğrenciler için zorunludur.',
     paket: [],
     gunler: gunler.map((gun, i) => ({ gun, tarih: tarih(gunEkle(bas, i)), odevler: [] })), haftaSonu: null
   };
