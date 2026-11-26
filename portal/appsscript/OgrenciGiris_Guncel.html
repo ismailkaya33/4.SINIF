@@ -412,7 +412,33 @@ body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.starsCa
 #dersIzgarasi>.course>summary>.subjectIcon{width:58px;height:58px}
 #dersIzgarasi>.course>summary>strong{align-self:start;font-size:20px;line-height:1.15}
 #dersIzgarasi>.course>summary>.newLight{grid-area:ikon;justify-self:end;align-self:start}
-body.anaAramada :is(#anaHafta,.dashboardTitle,#oturumAlani>.hint,#dersIzgarasi,#dersGeriSatiri,#anaKose){display:none!important}
+/* Kaynak Kitap Ödevlerim: kaynak-odev.json'dan gün gün sayfa listesi */
+.kkGunler{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;padding:4px 2px 14px}
+.kkGun{padding:12px 14px 14px;border:3px solid transparent;border-radius:18px;background:var(--yuzey);box-shadow:var(--golge)}
+.kkGun.bugun{border-color:var(--mor)}
+.kkGun.gecti{opacity:.62}
+.kkGun h4{margin:0 0 8px;font-size:19px;font-weight:900}
+.kkGun ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.kkOdev{padding:3px 0 3px 10px;border-left:6px solid var(--renk,var(--mor));border-radius:4px}
+.kkOdev b{display:block;font-size:17px;line-height:1.25}
+.kkSayfa{white-space:nowrap}
+.kkOdev small{display:block;color:var(--soluk);font-weight:700;font-size:14px}
+.kkNot{margin:-4px 0 8px;color:var(--soluk);font-weight:700;font-size:15px}
+.kkAlt{margin:6px 0 8px;font-size:17px;font-weight:900}
+.kkGun.ders{border-top:8px solid var(--renk,var(--mor))}
+.kkOdev.yesil{border-left-color:#1f9d55}
+.kkOdev.yesil b{color:#13763f}
+.anaProgram{margin:14px 0 4px;padding:12px 16px;border-radius:18px;background:var(--yuzey);box-shadow:var(--golge)}
+.anaProgram>summary{cursor:pointer;font-size:clamp(20px,2vw,25px);font-weight:900;min-height:40px;display:flex;align-items:center}
+.anaProgram>small{display:block;color:var(--soluk);font-weight:700;margin:2px 0 8px}
+.kkTabloKap{overflow-x:auto}
+.kkTablo{width:100%;min-width:560px;border-collapse:separate;border-spacing:4px;font-size:15px}
+.kkTablo th{padding:6px;border-radius:8px;background:var(--cizgi);font-weight:900}
+.kkTablo th.bugun{background:var(--mor);color:#fff}
+.kkTablo td{padding:6px;border-radius:8px;text-align:center;font-weight:700;background:#f4f7fb;border-top:4px solid var(--renk,transparent)}
+.kkTablo td.bugun{outline:3px solid var(--mor)}
+.kkTablo td.saat{background:none;border:0;color:var(--soluk);white-space:pre-line;font-size:13px}
+body.anaAramada :is(#anaHafta,#anaKaynak,#anaProgram,.dashboardTitle,#oturumAlani>.hint,#dersIzgarasi,#dersGeriSatiri,#anaKose){display:none!important}
 body.lessonView :is(#anaUst,#anaKose){display:none!important}
 @media(min-width:620px){.anaSerit{grid-auto-columns:minmax(260px,42%)}#dersIzgarasi{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(min-width:1000px){.anaSerit{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible}}
@@ -438,6 +464,8 @@ body.lessonView :is(#anaUst,#anaKose){display:none!important}
  <div class="anaArama" role="search"><span class="anaBuyutec" aria-hidden="true">🔎</span><input id="anaAra" type="search" placeholder="Etkinlik ara…" aria-label="Etkinlik ara" autocomplete="off" enterkeyhint="search"><button id="anaTemizle" class="anaTemizle" type="button" aria-label="Aramayı temizle" hidden>×</button></div>
  <div id="anaFiltreler" class="anaFiltreler" role="group" aria-label="Derse göre süz"></div>
  <section id="anaHafta" class="anaHafta" aria-labelledby="anaHaftaBaslik" hidden><div class="anaBolumBas"><h3 id="anaHaftaBaslik">⭐ Bu Haftanın Etkinlikleri</h3><small id="anaHaftaYazi"></small></div><div id="anaHaftaSerit" class="anaSerit"></div></section>
+ <section id="anaKaynak" class="anaKaynak" aria-labelledby="anaKaynakBaslik" hidden><div class="anaBolumBas"><h3 id="anaKaynakBaslik">📚 Kaynak Kitap Ödevlerim</h3><small id="anaKaynakYazi"></small></div><p id="anaKaynakNot" class="kkNot" hidden></p><div id="anaKaynakPaketBolum" hidden><h4 class="kkAlt">📎 Okula getir — ders ders zımbala, hafta boyunca ödev dosyanda olsun</h4><div id="anaKaynakPaket" class="kkGunler"></div></div><div id="anaKaynakEvBolum" hidden><h4 class="kkAlt">🏠 Ev ödevi — Ödev Yaprakları</h4><div id="anaKaynakGunler" class="kkGunler"></div></div></section>
+ <details id="anaProgram" class="anaProgram" hidden><summary>🗓️ Ders Programım</summary><small id="anaProgramYazi"></small><div class="kkTabloKap"><table id="anaProgramTablo" class="kkTablo"></table></div></details>
  <section id="anaSonuc" class="anaSonuc" aria-live="polite" hidden><button id="anaGeri" class="anaGeri" type="button">← Ana sayfaya dön</button><div class="anaBolumBas"><h3 id="anaSonucBaslik">Sonuçlar</h3><small id="anaSonucSay"></small></div><ul id="anaSonucListe" class="anaListe"></ul></section>
 </section>
 <h3 class="dashboardTitle">Derslerim</h3>
@@ -1351,6 +1379,79 @@ function anaHaftaCiz_(){
  document.getElementById("anaHaftaSerit").replaceChildren(...secim.map(anaKart_));
  kutu.hidden=false;
 }
+/* Kaynak Kitap Ödevlerim: sitedeki kaynak-odev.json (tools/kaynak-odev-oner.mjs üretir). Yalnız kitap adı, sayfa ve konu;
+ * öğrenci verisi yok. Dosya yoksa ya da 'bitis' geçtiyse kart gizlenir. */
+var anaKaynak_=null;
+const KAYNAK_ODEV_ADRESI_="https://ismailkaya33.github.io/4.SINIF/kaynak-odev.json";
+function anaYerelTarih_(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function anaKaynakOge_(ders,kitap,sayfa,alt){
+ const li=anaEl_("li","kkOdev"+(ders?" ders-"+anaKisa_(ders):"")),b=anaEl_("b","",kitap+" • ");
+ b.append(anaEl_("span","kkSayfa",sayfa));li.append(b);if(alt)li.append(anaEl_("small","",alt));return li;
+}
+function anaKaynakCiz_(){
+ const kutu=document.getElementById("anaKaynak"),h=anaKaynak_;
+ if(!kutu)return;
+ if(!h||typeof h!=="object"){kutu.hidden=true;return}
+ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(h.bitis||""));
+ if(!m||Date.now()>new Date(+m[1],+m[2]-1,+m[3],23,59,59).getTime()){kutu.hidden=true;return}
+ const bugun=anaYerelTarih_(new Date());
+ /* Okula getirilen paket: ders başına Avcı sayfaları ve sınıfta çözülecek yeşil test */
+ const paket=(Array.isArray(h.paket)?h.paket:[]).slice(0,6).filter(p=>p&&p.sayfa).map(p=>{
+  const ders=String(p.ders||""),k=anaEl_("article","kkGun ders"+(ders?" ders-"+anaKisa_(ders):"")),ul=anaEl_("ul");
+  ul.append(anaKaynakOge_(ders,String(p.kitap||"").slice(0,40),"s. "+String(p.sayfa).slice(0,30),String(p.konu||"").slice(0,90)));
+  if(p.yesilTest){const y=anaKaynakOge_("","🟢 Yeşil test","s. "+String(p.yesilTest).slice(0,30),"Sınıfta birlikte çözeceğiz");y.classList.add("yesil");ul.append(y);}
+  k.append(anaEl_("h4","",ders.slice(0,30)),ul);return k;
+ });
+ document.getElementById("anaKaynakPaket").replaceChildren(...paket);
+ document.getElementById("anaKaynakPaketBolum").hidden=!paket.length;
+ const gunler=(Array.isArray(h.gunler)?h.gunler:[]).slice(0,7).filter(g=>g&&Array.isArray(g.odevler)&&g.odevler.length);
+ const kartlar=gunler.map(g=>{
+  const t=String(g.tarih||""),buGun=t===bugun;
+  const k=anaEl_("article","kkGun"+(buGun?" bugun":(t&&t<bugun?" gecti":"")));
+  const ul=anaEl_("ul");
+  g.odevler.slice(0,8).forEach(o=>ul.append(anaKaynakOge_(String(o.ders||""),String(o.kitap||"").slice(0,40),"s. "+String(o.sayfa||"").slice(0,15),String(o.konu||"").slice(0,70))));
+  k.append(anaEl_("h4","",String(g.gun||"").slice(0,12)+(buGun?" • Bugün":"")),ul);
+  return k;
+ });
+ const hs=h.haftaSonu;
+ if(hs&&hs.kitap){
+  const sonGun=String((gunler[gunler.length-1]||{}).tarih||"");
+  const k=anaEl_("article","kkGun"+(sonGun&&bugun>sonGun?" bugun":"")),ul=anaEl_("ul");
+  const konular=hs.konular&&typeof hs.konular==="object"?Object.values(hs.konular).map(String).filter(Boolean).join(" · ").slice(0,160):"";
+  ul.append(anaKaynakOge_("",String(hs.kitap).slice(0,40),String(hs.sayfa||"").slice(0,15),konular));
+  k.append(anaEl_("h4","","Hafta sonu"),ul);
+  kartlar.push(k);
+ }
+ document.getElementById("anaKaynakGunler").replaceChildren(...kartlar);
+ document.getElementById("anaKaynakEvBolum").hidden=!kartlar.length;
+ if(!kartlar.length&&!paket.length){kutu.hidden=true;return}
+ document.getElementById("anaKaynakYazi").textContent=String(h.baslik||"").slice(0,60);
+ const not=document.getElementById("anaKaynakNot");not.textContent=String(h.not||"").slice(0,140);not.hidden=!h.not;
+ kutu.hidden=false;
+}
+/* Ders Programım: sitedeki kaynak-kitap/ders-programi.json; bugünün sütunu vurgulu. Kapalı başlar, kısayoldan açılır. */
+var anaProgram_=null;
+const DERS_PROGRAMI_ADRESI_="https://ismailkaya33.github.io/4.SINIF/kaynak-kitap/ders-programi.json";
+const ANA_GUN_ADLARI_=["Pazartesi","Salı","Çarşamba","Perşembe","Cuma"];
+function anaProgramCiz_(){
+ const kutu=document.getElementById("anaProgram"),p=anaProgram_;
+ if(!kutu)return;
+ if(!p||!p.gunler||typeof p.gunler!=="object"||!Array.isArray(p.saatler)){kutu.hidden=true;return}
+ const bugunAd=ANA_GUN_ADLARI_[new Date().getDay()-1]||"";
+ const tablo=document.getElementById("anaProgramTablo"),bas=anaEl_("tr");
+ bas.append(anaEl_("th","","Saat"));
+ ANA_GUN_ADLARI_.forEach(g=>bas.append(anaEl_("th",g===bugunAd?"bugun":"",g)));
+ const satirlar=p.saatler.slice(0,8).map((s,i)=>{
+  const tr=anaEl_("tr");tr.append(anaEl_("td","saat",(i+1)+". ders\n"+String(s.bas||"")+"–"+String(s.bit||"")));
+  ANA_GUN_ADLARI_.forEach(g=>{const ders=String(((p.gunler[g]||[])[i])||"");
+   const kisa=ANA_DERSLER_.find(x=>x[0]===ders||ders.startsWith(x[0].split(" ")[0]+" "));
+   tr.append(anaEl_("td",(kisa?"ders-"+kisa[1]:"")+(g===bugunAd?" bugun":""),ders.slice(0,45)));});
+  return tr;
+ });
+ tablo.replaceChildren(bas,...satirlar);
+ document.getElementById("anaProgramYazi").textContent=String(p.baslik||"").slice(0,80);
+ kutu.hidden=false;
+}
 function anaFiltreleriCiz_(){
  const kutu=document.getElementById("anaFiltreler");
  kutu.replaceChildren(...[["Tümü",""]].concat(ANA_DERSLER_).map(([ad,kisa])=>{
@@ -1391,7 +1492,8 @@ const ANA_KISAYOLLAR_=[
  ["📈 İlerlemem","ilerlemePanel",function(e){e.open=true;return e}],
  ["🏆 Ayın Yıldızları","yildizPanel",function(e){return e}],
  ["📝 Deneme Sınavları","denemeSinavlariBtn",function(e){if(e.getAttribute("aria-expanded")!=="true")e.click();return e.closest("section")}],
- ["🌟 Aylık Raporum","veliRaporPanel",function(e){e.open=true;return e}]
+ ["🌟 Aylık Raporum","veliRaporPanel",function(e){e.open=true;return e}],
+ ["🗓️ Ders Programım","anaProgram",function(e){e.open=true;return e}]
 ];
 function anaKisayollariCiz_(){
  const nav=document.getElementById("anaKisayollar");
@@ -1430,7 +1532,7 @@ function anaFiltreRozet_(){
 }
 function anaYenile_(){
  if(!anaHazir_)return;
- try{anaSirala_();anaFiltreRozet_();anaHaftaCiz_();if(document.body.classList.contains("anaAramada"))anaGuncelle_();}catch(e){}
+ try{anaSirala_();anaFiltreRozet_();anaHaftaCiz_();anaKaynakCiz_();anaProgramCiz_();if(document.body.classList.contains("anaAramada"))anaGuncelle_();}catch(e){}
 }
 (function anaKur_(){
  try{
@@ -1443,6 +1545,8 @@ function anaYenile_(){
   document.getElementById("anaGeri").addEventListener("click",anaAramayiKapat_);
   anaHazir_=true;
   fetch(BU_HAFTA_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(function(j){anaBuHafta_=j;anaYenile_();}).catch(function(){});
+  fetch(KAYNAK_ODEV_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(function(j){anaKaynak_=j;anaYenile_();}).catch(function(){});
+  fetch(DERS_PROGRAMI_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(function(j){anaProgram_=j;anaYenile_();}).catch(function(){});
  }catch(e){/* ana sayfa kurulamazsa portal eskisi gibi çalışır */}
 })();
 </script></body></html>
