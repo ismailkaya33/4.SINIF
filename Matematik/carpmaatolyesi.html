@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Çarpma Atölyesi — Alt Alta Çarpma</title>
+<style>
+:root{--ana:#ff7a45;--ikinci:#2ec4b6;--gok1:#7fd8ff;--gok2:#e6f9ff;--kart:#fff;--yazi:#1f2a44;--soluk:#5b6782;--ok:#167b45;--hata:#bd302e;--tahta:#164f43;--tebesir:#f4fff9;--sari:#ffe697;--hucre:56px;--aralik:5px}
+*{box-sizing:border-box}body{margin:0;color:var(--yazi);font:16px/1.4 system-ui,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,var(--gok1),var(--gok2) 75%) fixed}button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}button:disabled{cursor:default}button:focus-visible{outline:4px solid #ffca39;outline-offset:3px}h1,h2,h3,.baslik{font-family:"Trebuchet MS",sans-serif}h1{font-size:clamp(21px,2.4vw,30px);margin:0}h2{font-size:22px;margin:0 0 10px}p{margin:6px 0}#app{max-width:1160px;margin:auto;padding:12px 20px 112px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.ustnot{font-size:13px;color:#34516b}.yardim{border:0;background:white;border-radius:50%;width:42px;height:42px;flex:none;font-size:23px;font-weight:800;box-shadow:0 4px 0 #1f2a441a}.sekmeler{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.sekme{border:2px solid #fff9;background:#ffffffb8;min-height:44px;border-radius:14px;font-weight:800;padding:7px}.sekme[aria-selected=true]{background:var(--yazi);color:white;border-color:var(--yazi)}.seviyeler{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:10px 0}.seviye{border:2px solid #fff;background:#ffffffa8;border-radius:20px;padding:6px 14px;font-size:14px;font-weight:700;min-height:36px}.seviye[aria-pressed=true]{background:white;border-color:var(--ana);box-shadow:0 2px 0 var(--ana)}.kart{background:var(--kart);border-radius:24px;padding:16px;box-shadow:0 7px 0 #1f2a4414,0 12px 25px #1f2a4412}.calisma{display:grid;grid-template-columns:245px 1fr;gap:20px;align-items:center;min-height:365px}.yan{padding:6px}.etiket{display:inline-block;border-radius:15px;background:#e0f7f3;color:#17675e;font-weight:800;font-size:13px;padding:4px 10px;margin-bottom:7px}.yan p{color:var(--soluk)}.ilerleme{font-size:14px;font-weight:700;margin:12px 0}.iz{height:7px;background:#e7edf2;border-radius:8px;overflow:hidden}.iz i{display:block;height:100%;background:var(--ikinci);transition:width .2s}.islemler{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.buyuk{background:var(--ana);color:white;border:0;border-radius:16px;min-height:48px;padding:10px 19px;font-weight:800;font-size:17px;box-shadow:0 4px 0 #c75429}.buyuk:active{transform:translateY(2px);box-shadow:0 2px 0 #c75429}.dugme{background:#eef7fb;border:2px solid #d7e9ef;border-radius:13px;min-height:42px;padding:7px 13px;font-weight:700}.dugme:disabled{opacity:.45}.sayac{margin:12px 0;padding:10px;border:2px solid #dcefeb;border-radius:15px;font-size:15px;font-weight:700}.tahta{background:radial-gradient(ellipse at top left,#28695b,transparent 70%),var(--tahta);border:5px solid white;border-radius:20px;color:var(--tebesir);padding:12px 15px;box-shadow:0 0 0 2px #d6e8e2,0 6px 0 #1b413c26;max-width:100%;position:relative;width:max-content;margin:auto}.tahta-ust{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:5px;font-size:13px;color:#d2e9de}.bilgi{background:#ffffff14;color:#fff0b0;border:1px solid #ebdc9166;border-radius:20px;min-height:30px;padding:3px 10px;font-weight:700}.satir{display:grid;grid-template-columns:58px 20px repeat(var(--sutun),var(--hucre));gap:var(--aralik);align-items:center;min-height:var(--hucre);position:relative}.satir.et{min-height:28px}.satir.top-elde{min-height:24px}.ad{font-size:12px;color:#cfdfd8;line-height:1.1}.isaret{text-align:center;font-size:27px}.sabit{height:var(--hucre);display:grid;place-items:center;font-size:34px;font-weight:700;font-variant-numeric:tabular-nums}.hucre{width:var(--hucre);height:var(--hucre);padding:0;background:#ffffff0d;border:2px solid #e6fff596;border-radius:10px;color:white;font-size:30px;font-weight:700;position:relative;touch-action:none;user-select:none;display:grid;place-items:center;font-variant-numeric:tabular-nums}.hucre.kilit{background:#a6b0af50;border-color:#b4c1be70;color:#d1d7d2bf;font-size:27px}.hucre.bekle{opacity:.32}.hucre.secili{background:#fff6d032;border-color:#ffe18b;box-shadow:0 0 0 3px #ffdb7366}.hucre.hedef{border-color:#ffe18b;background:#fff6d025}.hucre.elde{width:calc(var(--hucre) - 15px);height:24px;justify-self:center;background:#ffe69715;color:var(--sari);border:1px solid #ffe69760;font-size:18px;border-radius:5px}.top-elde .hucre.elde{height:20px;width:calc(var(--hucre) - 21px);font-size:15px;opacity:.8}.cizgi{height:3px;background:#eafff5c9;border-radius:4px;margin:3px 0 6px 78px}.satir+.satir:not(.et):not(.top-elde){margin-top:5px}.basamaklar{display:grid;grid-template-columns:58px 20px repeat(var(--sutun),var(--hucre));gap:var(--aralik);color:#c2ded3;font-size:12px;text-align:center;margin-bottom:3px}.dogru{border-color:#70f5aa!important;background:#186f48!important}.yanlis{border-color:#ff9b92!important;background:#783a3555!important}.durum{position:absolute;right:2px;top:0;font-size:12px;line-height:1}.vurgu{color:#ffe697!important;text-shadow:0 0 14px #ffdd5e99}.balon{background:white;border:2px solid #dcece7;border-radius:17px;padding:10px 15px;min-height:48px;display:flex;align-items:center;gap:9px;margin-top:12px;font-weight:600;line-height:1.45}.balon::before{content:'✦';color:#218e7d;font-size:24px;flex:none}.balon .ayni{color:#946000;background:#fff0b9;border-radius:5px;padding:0 3px}.balon.uyari{border-color:#ffba99}.alt-not{font-size:13px;color:var(--soluk);margin-top:8px}.rakamlik{position:fixed;z-index:10;bottom:0;left:0;right:0;background:#f7fdfff5;border-top:2px solid #c6e8ee;box-shadow:0 -6px 25px #164f4312;padding:7px 16px 11px;backdrop-filter:blur(8px)}.rakam-ic{max-width:1000px;margin:auto;display:flex;align-items:center;justify-content:center;gap:7px}.cip{width:58px;height:55px;flex:none;background:white;border:2px solid #b8dcde;border-bottom:5px solid #8ec5c7;border-radius:14px;font-weight:800;font-size:27px;touch-action:none;user-select:none}.cip.aktif{background:#fff0c6;border-color:var(--ana)}.rakam-aciklama{text-align:center;font-size:12px;color:var(--soluk);margin-bottom:5px}.sil{margin-left:7px;background:#ffe9df;border-color:#f4bc9e;min-height:52px}.suruklenen{position:fixed;width:52px;height:52px;display:grid;place-items:center;background:#ffe697;color:#1f2a44;border:3px solid white;border-radius:14px;font-size:30px;font-weight:800;pointer-events:none;z-index:100;box-shadow:0 8px 25px #0005;transform:translate(-50%,-50%)}.birak{outline:4px dashed #ffe697;outline-offset:3px}.tablo-alani{display:grid;grid-template-columns:minmax(340px,1fr) auto;gap:22px;align-items:center}.tablo-kart h2{margin-bottom:4px}.parcala{width:100%;border-collapse:separate;border-spacing:5px;text-align:center;font-variant-numeric:tabular-nums}.parcala th{font-size:17px;padding:7px 3px}.parcala th.satir-bas{background:#ddf5ee;border-radius:12px}.tablo-hucre{width:100%;min-width:56px;min-height:58px;padding:8px 3px;border:2px solid #bcdcd5;background:#f4fbf8;border-radius:12px;font-size:23px;font-weight:800;position:relative}.tablo-hucre.secili{outline:3px solid var(--ana);outline-offset:1px}.tablo-hucre.dogru{color:white}.tablo-hucre .durum{font-size:13px}.tablo-top{background:#fff5d8}.tablo-editor{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:8px 5px}.giris{min-width:100px;padding:5px 12px;min-height:42px;border:2px solid #ffbf92;border-radius:10px;font-size:24px;font-weight:700;background:#fff7ed}.esitlik{font-size:21px;font-weight:800;text-align:center;background:#e2f7ed;border-radius:15px;padding:12px;margin-top:10px}.ikili{display:flex;justify-content:center;gap:20px;align-items:flex-start;flex-wrap:wrap}.hata-kart{text-align:center}.hata-kart h3{font-size:17px;margin:0 0 8px}.hatasec{cursor:pointer;border-radius:10px}.hatasec:hover{background:#ffffff12}.hatasec:focus-visible{outline:3px solid #ffe697}.hatasec .hucre{pointer-events:none}.satir-secimi{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}.dogru-satir{box-shadow:0 0 0 3px #70f5aa}.hatali-satir{box-shadow:0 0 0 3px #ff9b92}.kesik-sifir{border:2px dashed #ccd7d080;border-radius:6px;line-height:1;width:70%;opacity:.65}.konfeti{position:fixed;z-index:40;pointer-events:none;width:10px;height:16px;top:20%;left:50%;background:var(--ana)}dialog{max-width:500px;width:calc(100% - 30px);border:0;border-radius:23px;padding:25px;color:var(--yazi);box-shadow:0 15px 80px #0004}dialog::backdrop{background:#102f3b88}dialog li{margin:12px 0}dialog .dugme{float:right}.ekran-okuyucu{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%)}
+@media(prefers-reduced-motion:no-preference){.hedef{animation:nabiz 1.4s ease-in-out infinite}.salla{animation:salla .32s}.parla{animation:parla .9s}.konfeti{animation:uc 1s ease-out forwards}@keyframes nabiz{50%{box-shadow:0 0 0 4px #ffe69755}}@keyframes salla{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}@keyframes parla{50%{background:#ffe69788}}@keyframes uc{to{transform:translate(var(--x),var(--y)) rotate(230deg);opacity:0}}}
+@media(min-width:1050px) and (min-height:850px){:root{--hucre:64px}.calisma{min-height:430px}#app{padding-top:22px}.sekmeler{margin-top:16px}.seviyeler{margin:16px 0}}
+@media(min-width:951px) and (max-height:849px){#app{padding-top:8px}h1{line-height:1.15}header{margin-bottom:7px}.seviyeler{margin:7px 0}.kart{padding:12px}.calisma{min-height:0}.tahta{padding:8px 12px}.tahta-ust{height:0;margin:0}.tahta-ust>span,.basamaklar{display:none}.tahta .bilgi{position:absolute;left:9px;top:8px;min-height:24px;font-size:12px;padding:2px 6px}.tahta:not(:has(.et)) .bilgi,.hata-kart .tahta .bilgi{display:none}.et .ad{visibility:hidden}.satir+.satir:not(.et):not(.top-elde){margin-top:2px}.hata-kart>.etiket{display:none}.hata-kart h2{font-size:20px;margin-bottom:3px}.hata-kart>p{font-size:14px;margin:3px 0}.hata-kart h3{margin-bottom:4px}}
+@media(max-width:950px){.calisma{grid-template-columns:185px 1fr;gap:8px}.tablo-alani{grid-template-columns:1fr}.tablo-kart{max-width:560px;width:100%;margin:auto}.rakam-ic{gap:5px}.cip{width:51px}.sil{margin-left:2px;padding:7px}.tahta{padding:10px}.calisma .yan{font-size:15px}}
+@media(max-width:680px){:root{--hucre:46px;--aralik:3px}#app{padding:10px 10px 165px}header{align-items:flex-start}.ustnot{font-size:12px}.sekmeler{gap:4px}.sekme{font-size:13px;padding:6px 3px;min-height:48px}.seviyeler{gap:5px}.seviye{width:calc(50% - 3px);font-size:12px;padding:6px 2px}.kart{padding:12px;border-radius:19px}.calisma{display:flex;flex-direction:column;gap:10px;min-height:0}.yan{width:100%;padding:0}.yan p{font-size:14px}.yan h2{font-size:19px;margin-bottom:3px}.etiket{margin-bottom:4px}.ilerleme{margin:6px 0}.islemler{margin-top:8px}.buyuk{font-size:15px;min-height:42px;padding:8px 13px}.dugme{font-size:14px;min-height:40px}.tahta{padding:9px 8px;border-width:4px;border-radius:15px}.satir,.basamaklar{grid-template-columns:43px 15px repeat(var(--sutun),var(--hucre))}.ad{font-size:12px}.sabit{font-size:29px}.hucre{font-size:27px;border-radius:8px}.cizgi{margin-left:61px}.balon{font-size:15px;padding:9px 10px;min-height:61px}.rakam-ic{max-width:390px;display:grid;grid-template-columns:repeat(5,1fr) 50px;gap:5px}.cip{width:100%;height:48px;font-size:25px;border-radius:10px}.cip:nth-child(n+6){grid-row:2}.sil{grid-column:6;grid-row:1 / 3;min-height:101px;margin:0;padding:5px}.rakamlik{padding:6px 12px 9px}.rakam-aciklama{font-size:12px}.sayac{display:inline-block;margin:6px 0;padding:5px 9px}.tablo-alani{gap:14px}.parcala{border-spacing:3px}.parcala th{font-size:14px}.tablo-hucre{min-width:43px;min-height:52px;font-size:20px}.basamaklar{font-size:12px}.ikili{gap:16px}.alt-not{font-size:12px}}
+@media(max-width:390px){:root{--hucre:40px;--aralik:3px}.tahta{padding:8px 5px}.satir,.basamaklar{grid-template-columns:38px 13px repeat(var(--sutun),var(--hucre))}.cizgi{margin-left:55px}.tahta-ust{font-size:12px}.bilgi{font-size:12px}.sabit{font-size:27px}.hucre{font-size:25px}.parcala th{font-size:13px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+/* Dar ekranda gerçek yerleşim; sabit rakam dizisinin üstünde içerik payı. */
+#app{padding-bottom:calc(var(--rakam-yukseklik,145px) + 20px)}
+#balon{scroll-margin-bottom:calc(var(--rakam-yukseklik,145px) + 12px)}
+.calisma>*,.tablo-alani>*,.ikili>*{min-width:0;max-width:100%}
+.tahta .hucre.yazili{opacity:1;color:#fff;-webkit-text-fill-color:#fff}
+.hata-aciklama{background:#e0f7ed;border:2px solid #98d9b7;border-radius:12px;padding:8px 12px;margin:6px 0;text-align:left;font-weight:700}
+@media(min-width:1050px) and (max-height:849px){
+ :root{--hucre:68px}
+ .calisma{grid-template-columns:190px minmax(0,1fr);gap:12px}
+ .calisma .satir:has(>.sabit){min-height:46px;height:46px}
+ .calisma .sabit{height:46px}
+ .hata-kart .satir.et,.hata-kart .satir.top-elde{display:none}
+ .hata-kart .satir:has(>.sabit){min-height:32px;height:32px}
+ .hata-kart .sabit{height:32px;font-size:30px}
+ .hata-kart>p{display:none}
+ .hata-kart .ikili{margin-top:6px!important;gap:12px}
+ .hata-kart .satir-secimi{margin-top:8px}
+}
+@media(min-width:1250px) and (max-height:849px){
+ #app{max-width:1326px}
+ .hata-kart{display:grid;grid-template-columns:150px minmax(0,1fr);gap:8px 12px;align-items:start}
+ .hata-kart>h2{grid-column:1;grid-row:2}
+ .hata-kart>.hata-aciklama{grid-column:1 / -1;grid-row:1;margin:0}
+ .hata-kart>.ikili{grid-column:2;grid-row:2 / span 3;margin-top:0!important}
+ .hata-kart>.satir-secimi{grid-column:1;grid-row:3;margin-top:0}
+ .hata-kart>.alt-not{display:block;grid-column:1;grid-row:4}
+}
+@media(max-width:680px){
+ .sekmeler,.seviyeler{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .sekme,.seviye{width:100%;min-width:0;overflow-wrap:anywhere}
+ .rakam-ic{grid-template-columns:repeat(5,minmax(0,1fr)) 44px}
+ .rakam-ic .sil{grid-column:6;grid-row:1 / 3}
+ .tahta{--hucre:clamp(24px,calc((100vw - 127px)/5),46px);--aralik:3px}
+ .satir,.basamaklar{grid-template-columns:32px 12px repeat(var(--sutun),var(--hucre))}
+ .cizgi{margin-left:50px}
+ .tahta-ust{flex-wrap:wrap}
+ .tablo-hucre{min-width:0;overflow-wrap:anywhere}
+ .parcala{table-layout:fixed}
+ .parcala th{overflow-wrap:anywhere}
+}
+</style>
+</head>
+<body>
+<div id="app">
+ <header><div><h1>Çarpma Atölyesi — Alt Alta Çarpma</h1><div class="ustnot">4. sınıf · Düşün, yerleştir, keşfet.</div></div><button class="yardim" id="yardim" aria-label="Nasıl oynanır?">?</button></header>
+ <nav class="sekmeler" role="tablist" aria-label="Atölye bölümleri">
+  <button class="sekme" id="tab0" role="tab" aria-controls="bolum" aria-selected="true" data-tab="0">1 · Öğren</button>
+  <button class="sekme" id="tab1" role="tab" aria-controls="bolum" aria-selected="false" tabindex="-1" data-tab="1">2 · Neden kayıyoruz?</button>
+  <button class="sekme" id="tab2" role="tab" aria-controls="bolum" aria-selected="false" tabindex="-1" data-tab="2">3 · Alıştırma</button>
+  <button class="sekme" id="tab3" role="tab" aria-controls="bolum" aria-selected="false" tabindex="-1" data-tab="3">4 · Hatayı bul</button>
+ </nav>
+ <div class="seviyeler" role="group" aria-label="Seviye seçimi"></div>
+ <main id="bolum" role="tabpanel" aria-labelledby="tab0"></main>
+ <div id="balon" class="balon" role="status" aria-live="polite" aria-atomic="true"></div>
+ <div class="alt-not" id="altNot"></div>
+</div>
+<div class="rakamlik" aria-label="Rakam araçları"><div class="rakam-aciklama" id="rakamNot">Bir kutu seç, rakama dokun. İstersen rakamı sürükle.</div><div class="rakam-ic" id="rakamlar"></div></div>
+<dialog id="bilgiDialog" aria-labelledby="dialogBaslik"><h2 id="dialogBaslik"></h2><div id="dialogIcerik"></div><button class="dugme" id="dialogKapat">Anladım</button></dialog>
+<script>
+'use strict';
+/* HESAP MOTORU: DOM'a, arayüz durumuna veya saklamaya erişmez.
+   Seviye 0..3; uret(seviye, onceki, rng), coz(a,b) / coz({a,b}),
+   hataliUret(islemVeyaSeviye, onceki, rng). rng testte verilebilir.
+   Bütün sütun numaraları sağdan başlar: 0=birler, 1=onlar. */
+const BASAMAK=['birler','onlar','yüzler','binler','on binler','yüz binler'];
+function rakamlar(n){return String(n).split('').reverse().map(Number)}
+function carpSatiri(a,d,unut=-1){
+ const ds=rakamlar(a),adimlar=[];let elde=0,deger=0;
+ ds.forEach((x,k)=>{const gelen=elde,eklenen=k===unut?0:gelen,ham=x*d,t=ham+eklenen;elde=Math.floor(t/10);deger+=(k===ds.length-1?t:t%10)*10**k;adimlar.push({k,x,d,ham,gelen,eklenen,t,yaz:t%10,elde,son:k===ds.length-1});});
+ return {deger,adimlar};
+}
+function toplaSatirlari(p1,p2,unut=-1){
+ const adimlar=[];let elde=0,sonuc=0,k=0;
+ while(k<Math.max(String(p1).length,String(p2).length)||elde){const x=Math.floor(p1/10**k)%10,y=Math.floor(p2/10**k)%10,gelen=elde,t=x+y+(k===unut?0:gelen);elde=Math.floor(t/10);sonuc+=(t%10)*10**k;adimlar.push({k,x,y,gelen,t,yaz:t%10,elde});k++;}
+ return {sonuc,adimlar};
+}
+function coz(a,b){
+ if(typeof a==='object'){b=a.b;a=a.a}a=Number(a);b=Number(b);
+ if(!Number.isInteger(a)||a<10||a>999||!Number.isInteger(b)||b<2||b>99)throw Error('İşlem sınırları: 10–999 ile 2–99.');
+ const d=rakamlar(b),satirlar=d.map((x,i)=>({...carpSatiri(a,x),kayma:i})),p1=satirlar[0].deger,p2=satirlar[1]?satirlar[1].deger*10:0,toplama=toplaSatirlari(p1,p2);
+ const tablo=d.map((x,i)=>{const carpan=x*10**i;return {carpan,hucreler:String(a).split('').map((v,j)=>({basamak:Number(v)*10**(String(a).length-1-j),carpan,deger:Number(v)*10**(String(a).length-1-j)*carpan})),toplam:satirlar[i].deger*10**i}});
+ return {a,b,satirlar,p1,p2,sonuc:a*b,toplama,tablo,sutun:String(a*b).length,carpmaEldesi:satirlar.some(s=>s.adimlar.some(t=>t.elde>0)),toplamaEldesi:toplama.adimlar.some(t=>t.elde>0)};
+}
+function seviyeCoz(s){if(Array.isArray(s))return s;if(typeof s==='string'&&s.includes('x'))return s.split('x').map(Number);return [[2,1],[3,1],[2,2],[3,2]][Number(s)]||[2,1]}
+function uret(seviye=0,onceki=null,rng=Math.random){
+ const [n,m]=seviyeCoz(seviye),istek=m===2&&rng()<.7;let aday;
+ for(let i=0;i<4000;i++){
+  const a=10**(n-1)+Math.floor(rng()*9*10**(n-1)),b=m===1?2+Math.floor(rng()*8):(2+Math.floor(rng()*8))*10+2+Math.floor(rng()*8);aday={a,b};
+  if(onceki&&a===onceki.a&&b===onceki.b)continue;
+  const c=coz(aday),kullanilan=c.satirlar.some(s=>s.adimlar.some(t=>t.gelen>0));
+  if(c.carpmaEldesi&&kullanilan&&(!istek||c.toplamaEldesi||i>2000))return aday;
+ }
+ // Sabit rng ile yapılan testlerde de geçerli, farklı bir işlem döner.
+ const a=n===2?87:687,b=m===1?7:77;return onceki&&onceki.a===a&&onceki.b===b?{a:a-1,b}:{a,b};
+}
+function hataliUret(islemVeyaSeviye=2,onceki=null,rng=Math.random){
+ let op=typeof islemVeyaSeviye==='object'?{a:islemVeyaSeviye.a,b:islemVeyaSeviye.b}:uret(islemVeyaSeviye,onceki,rng),c=coz(op);
+ const sec=rng();
+ if(typeof islemVeyaSeviye!=='object'&&c.b>=10&&sec>=.8&&!c.toplamaEldesi){
+  for(let i=0;i<100&&!c.toplamaEldesi;i++){op=uret(islemVeyaSeviye,onceki,rng);c=coz(op)}
+  if(!c.toplamaEldesi){op={a:c.a>99?678:78,b:78};if(onceki?.a===op.a&&onceki?.b===op.b)op.a++;c=coz(op)}
+ }
+ const adayCarp=c.satirlar.flatMap((s,r)=>s.adimlar.filter(t=>t.gelen>0).map(t=>({r,k:t.k,gelen:t.gelen}))),adayTop=c.toplama.adimlar.filter(t=>t.gelen>0);
+ let tur=c.b<10?'elde':sec<.5?'kayma':sec<.8?'elde':'toplama';
+ if(tur==='elde'&&!adayCarp.length)tur=c.b>=10?'kayma':'elde';if(tur==='toplama'&&!adayTop.length)tur='kayma';
+ if(tur==='elde'&&!adayCarp.length){op=uret(c.a>99?1:0,op,rng);c=coz(op);return hataliUret(op,null,()=>.6)}
+ let p1=c.p1,p2=c.p2,sonuc=c.sonuc,hataSatiri=1,yer=null,aciklama='',yanlisSatirlar=c.satirlar;
+ if(tur==='kayma'){p2=c.satirlar[1].deger;sonuc=p1+p2;aciklama=`2. satır bir basamak sola kaymalı. ${c.a} × ${Math.floor(c.b/10)*10} = ${c.p2}. Sola kaymak, sonuna 0 koymakla aynı şeydir.`;}
+ if(tur==='elde'){
+  yer=adayCarp[Math.min(adayCarp.length-1,Math.floor(rng()*adayCarp.length))];const s=carpSatiri(c.a,rakamlar(c.b)[yer.r],yer.k);hataSatiri=yer.r;yanlisSatirlar=c.satirlar.map((v,i)=>i===yer.r?{...s,kayma:i}:v);
+  if(yer.r===0)p1=s.deger;else p2=s.deger*10;sonuc=p1+p2;
+  aciklama=c.b<10?`${BASAMAK[yer.k].charAt(0).toLocaleUpperCase('tr')+BASAMAK[yer.k].slice(1)} sütununu hesaplarken elde olan ${yer.gelen} eklenmemiş. Doğru sonuç: ${c.sonuc}.`:`${yer.r+1}. satırda ${BASAMAK[yer.k+yer.r]} sütununu hesaplarken elde olan ${yer.gelen} eklenmemiş. Doğru satır: ${c.satirlar[yer.r].deger}${yer.r?' (bir basamak solda)':''}.`;
+ }
+ if(tur==='toplama'){yer=adayTop[Math.min(adayTop.length-1,Math.floor(rng()*adayTop.length))];sonuc=toplaSatirlari(p1,p2,yer.k).sonuc;hataSatiri=2;aciklama=`Toplamda ${BASAMAK[yer.k]} sütununa elde olan ${yer.gelen} eklenmemiş. ${p1} + ${p2} = ${c.sonuc}.`;}
+ return {...op,tur,hataSatiri,yer,p1,p2,sonuc,aciklama,dogru:c,yanlisSatirlar};
+}
+/* ARAYÜZ */
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const SEVIYE=['2 basamak × 1 basamak','3 basamak × 1 basamak','2 basamak × 2 basamak','3 basamak × 2 basamak'];
+const KAYMA='Burası boş kalır, çünkü orada görünmeyen bir 0 var. Şimdi ONLAR basamağıyla çarpıyoruz, bu yüzden bir basamak sola kayarız.';
+const ELDE="Çarpım 10 veya daha büyükse birler rakamını kutuya yaz, onlar rakamını bir sol sütundaki elde kutusuna koy. Sonraki çarpmada, çarpımın üstüne bu eldeyi ekle.";
+let tab=0,seviye=0,oturumlar=[null,null,null,null],durum=null,secili=null,hazirRakam=null,basarili=0,seri=0,suruk=null,hayalet=null,vurgulu=null;
+function soyle(m,uyari=false){$('#balon').innerHTML='<span>'+m+'</span>';$('#balon').classList.toggle('uyari',uyari)}
+function dialog(baslik,icerik){$('#dialogBaslik').textContent=baslik;$('#dialogIcerik').innerHTML=icerik;$('#bilgiDialog').showModal()}
+function kutla(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;for(let i=0;i<24;i++){const e=document.createElement('i');e.className='konfeti';e.style.cssText=`--x:${(Math.random()-.5)*600}px;--y:${60+Math.random()*300}px;background:${['#ff7a45','#2ec4b6','#ffd166'][i%3]};left:${40+Math.random()*20}%;animation-delay:${Math.random()*.15}s`;document.body.append(e);setTimeout(()=>e.remove(),1300)}}
+function adimlariYap(c){
+ const adimlar=[];
+ c.satirlar.forEach((s,r)=>{
+  if(r===1){const d=Math.floor(c.b/10);adimlar.push({tur:'kay',r,mesaj:`Şimdi çarpanın onlar basamağındaki ${d} ile çarpıyoruz. Bu ${d}, aslında ${d} onluktur (${d*10}). Bir basamak SOLA kay: birler kutusu boş kalır!`,renk:{r,k:0}})}
+  s.adimlar.forEach(t=>{
+   const k=t.k+r,hesap=`<span class="ayni">${t.d} × ${t.x}</span> = ${t.ham}`+(t.gelen?`, elde ${t.gelen} ekle: ${t.ham} + ${t.gelen} = ${t.t}`:'');
+   const ilkMesaj=t.son&&t.t>9?'Bu son çarpım. Sonucun tamamını yaz: önce sağdaki rakam, sonra soldaki.':`${t.d} × ${t.x} kaç eder? ${t.gelen?`Üstüne elde ${t.gelen}'i ekle.`:'Elde varsa ekle.'} Birler rakamını parlayan kutuya yaz.`;
+   let mesaj=hesap+'. ';
+   if(t.son){mesaj+=t.t>9?`En soldayız: ${t.t} sayısını iki kutuya yaz. Önce sağdaki ${t.t%10}, sonra soldaki ${Math.floor(t.t/10)}.`:`${t.t} rakamını yaz. Bu satır tamamlanıyor.`;}
+   else mesaj+=`${BASAMAK[k][0].toLocaleUpperCase('tr-TR')+BASAMAK[k].slice(1)} kutusuna ${t.yaz} yaz`+(t.elde?`, ${t.elde} rakamını eldeye koy.`:'. Elde yok.');
+   adimlar.push({tur:'rakam',id:`r${r}-${k}`,deger:t.yaz,r,ilkMesaj,mesaj,renk:{r,k:t.k}});
+   if(t.son&&t.t>9)adimlar.push({tur:'rakam',id:`r${r}-${k+1}`,deger:Math.floor(t.t/10),r,ilkMesaj,mesaj:`${hesap}. Şimdi ${t.t} sayısının soldaki rakamını (${Math.floor(t.t/10)}) yaz.`,renk:{r,k:t.k}});
+   if(!t.son&&t.elde)adimlar.push({tur:'elde',id:`c-${t.k+1}`,deger:t.elde,r,ilkMesaj:'Çarpımın onlar rakamı elde olur. Onu bir sol sütunun küçük sarı elde kutusuna yaz.',mesaj:`${hesap}. Elde ${t.elde} rakamını bir sol sütunun küçük sarı kutusuna koy.`,renk:{r,k:t.k}});
+  });
+ });
+ if(c.b>=10)c.toplama.adimlar.forEach(t=>{
+  const x=t.k>=String(c.p1).length?'boş (0)':t.x,y=t.k===0||t.k>=String(c.p2).length?'boş (0)':t.y,hesap=`${x} + ${y}`+(t.gelen?` + elde ${t.gelen}`:'')+` = ${t.t}`;
+  adimlar.push({tur:'rakam',id:`t-${t.k}`,deger:t.yaz,r:2,ilkMesaj:'Bu sütundaki rakamları topla (boş kutu 0 sayılır). Elde varsa ekle.',mesaj:(t.k===0?'Şimdi iki satırı topla. Birler basamağından başla: ':'Sıradaki sütunu topla: ')+hesap+`. ${t.yaz} yaz.`,renk:{top:t.k}});
+  if(t.elde)adimlar.push({tur:'elde',id:`s-${t.k+1}`,deger:t.elde,r:2,ilkMesaj:'Toplamın onlar rakamı elde olur. Onu bir sol sütunun küçük sarı toplam eldesi kutusuna yaz.',mesaj:`${hesap}. Elde ${t.elde} rakamını bir sol sütunun toplam eldesine yaz.`,renk:{top:t.k}});
+ });return adimlar;
+}
+function baslat(yeni=true){
+ const onceki=oturumlar[tab]?.op;
+ if(!yeni&&oturumlar[tab])durum=oturumlar[tab];
+ else{
+  const kullan=tab===1&&seviye<2?2:seviye,hata=tab===3?hataliUret(kullan,onceki):null;let op=hata?{a:hata.a,b:hata.b}:uret(kullan,onceki);
+  if(tab===1&&String(op.a).includes('0')){let deneme=0;do{op=uret(kullan,op)}while(String(op.a).includes('0')&&++deneme<100);if(String(op.a).includes('0'))op={a:kullan===3?687:87,b:op.b}}
+  const c=coz(op);
+  durum={op,c,giris:{},isaret:{},kontrol:0,yanlis:0,tamam:false,sayildi:false,gosterildi:false,adim:0,adimlar:adimlariYap(c),kaymaDenendi:false,tabloGiris:{},tabloDogru:{},tabloYanlis:{},taslak:'',hata,bulundu:false};
+  oturumlar[tab]=durum;
+ }
+ secili=null;hazirRakam=null;ciz();
+ if(tab===0)rehber();else if(tab===1)soyle('Önce bir tablo kutusu seç. Rakamlarla sayıyı yaz ve “Tamam”a dokun.');else if(tab===2)soyle('Kutuları doldur. Hazır olunca “Kontrol et”e dokun. Elde kutuları not yerindir.');else soyle(durum.hata.b<10?'İşlemi incele. Sağdan sola ilk hatalı rakam kutusuna dokun.':'İşlemi incele. İlk hatanın olduğu satıra dokun; sonraki satırlar o hataya göre hesaplanmış.');
+}
+function mevcutAdim(){return durum.adimlar[durum.adim]}
+function beklenen(c){const m={};c.satirlar.forEach((s,r)=>rakamlar(s.deger).forEach((v,k)=>m[`r${r}-${k+r}`]=v));if(c.b>=10)rakamlar(c.sonuc).forEach((v,k)=>m[`t-${k}`]=v);return m}
+function hucre(id,k,opts={}){
+ const {sabit=false,v='',kilit=false,zero=false}=opts,hedef=tab===0&&mevcutAdim()?.id===id,not=id.startsWith('c-')||id.startsWith('s-'),acik=!sabit&&(tab===2||tab===0&&hedef),deger=sabit?v:(durum.giris[id]??''),isaret=!sabit?durum.isaret[id]:null;
+ const kutuSec=opts.hataKutusu&&!durum.bulundu,kutuDogru=opts.hataKutusu&&durum.bulundu&&k===ilkHataliKutu();
+ const satir=kilit?'2. satır':id.startsWith('r0')?'1. satır':id.startsWith('r1')?'2. satır':id.startsWith('t-')?'toplam':id.startsWith('s-')?'toplam eldesi':'çarpma eldesi';
+ return `<button type="button" class="hucre ${not?'elde ':''}${kilit?'kilit ':''}${!sabit&&!acik&&!kilit&&deger===''?'bekle ':''}${!sabit&&deger!==''?'yazili ':''}${hedef?'hedef ':''}${secili===id?'secili ':''}${isaret||''} ${kutuDogru?'dogru':''}" ${kutuSec?`data-error-cell="${k}"`:''} data-cell="${id}" data-col="${k}" data-open="${acik?1:0}" ${!acik&&!kilit&&!kutuSec?'tabindex="-1"':''} aria-disabled="${!acik&&!kutuSec}" aria-label="${satir}, ${BASAMAK[k]} basamağı, ${kilit?'kayma için boş bırakılır':deger===''?'boş':deger}${isaret==='dogru'?', doğru':isaret==='yanlis'?', yanlış':''}">${kilit?(zero?'<span class="kesik-sifir">0</span>':'←'):deger}${kutuDogru?'<span class="durum" aria-hidden="true">✓</span>':''}${isaret?`<span class="durum" aria-hidden="true">${isaret==='dogru'?'✓':'✗'}</span>`:''}</button>`;
+}
+function tahta(c,opts={}){
+ const sabit=!!opts.sabit,vals=opts.vals||{p1:c.p1,p2:c.p2,sonuc:c.sonuc},n=Math.max(c.sutun,String(vals.sonuc).length),cols=Array.from({length:n},(_,i)=>n-1-i),renk=tab===0?mevcutAdim()?.renk:null;
+ const et=(prefix,ad,kucuk=false)=>`<div class="satir ${kucuk?'top-elde':'et'}"><span class="ad">${ad}</span><span></span>${cols.map(k=>hucre(`${prefix}-${k}`,k,{sabit,v:opts.elde?.[`${prefix}-${k}`]??''})).join('')}</div>`;
+ const fixed=(num,carpan=false)=>`<div class="satir"><span class="ad">${carpan?'çarpan':'çarpılan'}</span><span class="isaret">${carpan?'×':''}</span>${cols.map(k=>{const ds=rakamlar(num),aktif=renk&&(carpan?k===renk.r:!renk.top&&k===renk.k);return `<span class="sabit ${aktif?'vurgu':''}">${ds[k]??''}</span>`}).join('')}</div>`;
+ const row=(r,num,shift,ad)=>{
+  const ds=rakamlar(num),len=tab===1?String(r===0?c.p1:r===1?c.satirlar[1].deger:c.sonuc).length:ds.length,select=opts.hata&&c.b>=10&&!durum.bulundu,etiket=select?`role="button" tabindex="0" data-error-row="${r}" aria-label="${ad}: hatayı bu satırda buldum"`:'';
+  return `<div class="satir ${select?'hatasec':''} ${opts.dogru&&r===durum.hata?.hataSatiri?'dogru-satir':''} ${opts.hata&&durum.bulundu&&r===durum.hata.hataSatiri?'hatali-satir':''}" ${etiket}><span class="ad">${ad}</span><span class="isaret">${r===1?'+':''}</span>${cols.map(k=>{if(r===1&&shift&&k===0)return hucre('kilit',0,{kilit:true,sabit,zero:opts.zero});if(k-shift<0||k-shift>=len)return '<span></span>';const v=ds[k-shift]??'',id=r===2?`t-${k}`:`r${r}-${k}`;return hucre(id,k,{sabit,v,hataKutusu:opts.hata&&c.b<10&&r===0})}).join('')}</div>`;
+ };
+ const p2=opts.kaymamis?vals.p2:Math.floor(vals.p2/10);
+ return `<div class="tahta" style="--sutun:${n}"><div class="tahta-ust"><span>${opts.baslik||'Sağdan başla, sola ilerle.'}</span><button class="bilgi" data-action="elde" aria-label="Elde nasıl kullanılır?">elde ?</button></div><div class="basamaklar"><span></span><span></span>${cols.map(k=>`<span>${BASAMAK[k]}</span>`).join('')}</div>${et('c','elde')}${fixed(c.a)}${fixed(c.b,true)}<div class="cizgi"></div>${row(0,vals.p1,0,c.b<10?'sonuç':'1. satır')}${c.b>=10?row(1,p2,opts.kaymamis?0:1,'2. satır')+et('s','elde',true)+'<div class="cizgi"></div>'+row(2,vals.sonuc,0,'toplam'):''}</div>`;
+}
+function yanPanel(){
+ if(tab===0)return `<div class="yan"><span class="etiket">BİRLİKTE YAPALIM</span><h2>Her kutu bir adım.</h2><p>Parlayan kutuyu doldur. Hep sağdan sola ilerle.</p><div class="ilerleme">${durum.tamam?'Tamamlandı ✓':`Adım ${durum.adim+1} / ${durum.adimlar.length}`}</div><div class="iz"><i style="width:${100*durum.adim/durum.adimlar.length}%"></i></div><div class="islemler">${mevcutAdim()?.tur==='kay'?'<button class="buyuk" data-action="kay">Sola kaydım</button>':''}<button class="${durum.tamam?'buyuk':'dugme'}" data-action="yeni">${durum.tamam?'Bir tane daha':'Yeni işlem'}</button><button class="dugme" data-action="temizle">Temizle</button></div></div>`;
+ return `<div class="yan"><span class="etiket">SIRA SENDE</span><h2>Kendi yolunla çöz.</h2><p>İstediğin kutudan başla. Elde kutuları not yerindir; boş kalabilir.</p><div class="sayac">Doğru işlem: ${basarili}<br>Seri: ${seri}</div><div class="islemler"><button class="buyuk" data-action="kontrol" ${durum.tamam?'disabled':''}>Kontrol et</button><button class="dugme" data-action="yeni">Yeni işlem</button><button class="dugme" data-action="temizle">Temizle</button><button class="dugme" data-action="cevap" ${durum.yanlis<2||durum.tamam?'disabled':''}>Cevabı göster</button></div>${durum.yanlis<2?'<p class="alt-not">“Cevabı göster” 2 yanlış kontrolden sonra açılır.</p>':''}</div>`;
+}
+function tabloCiz(){
+ const c=durum.c,ds=String(c.a).length;
+ let rows=c.tablo.map((r,i)=>`<tr><th scope="row" class="satir-bas">× ${r.carpan}</th>${r.hucreler.map((v,j)=>tabloKutusu(`b${i}-${j}`,`${v.basamak} × ${r.carpan}`)).join('')}${tabloKutusu(`b${i}-top`,`${i+1}. satır toplamı`,true)}</tr>`).join('');
+ const tamam=Object.keys(durum.tabloDogru).length===2*(ds+1),r1=!!durum.tabloDogru['b0-top'],r2=!!durum.tabloDogru['b1-top'];
+ let vals={p1:r1?c.p1:0,p2:r2?c.p2:0,sonuc:tamam?c.sonuc:0};
+ return `<div class="kart tablo-alani"><div class="tablo-kart"><span class="etiket">BASAMAKLARI AYIR</span><h2>${c.a} × ${c.b}: kaymanın sırrı</h2><p>Önce ${c.tablo[0].carpan} ile çarp. Sonra ${c.tablo[1].carpan} ile çarp.</p><table class="parcala"><caption class="ekran-okuyucu">Basamak değerleriyle çarpma tablosu</caption><thead><tr><th scope="col">×</th>${c.tablo[0].hucreler.map(v=>`<th scope="col">${v.basamak}</th>`).join('')}<th scope="col">Satır<br>toplamı</th></tr></thead><tbody>${rows}</tbody></table><div class="tablo-editor"><span>Yazdığın:</span><output class="giris" aria-live="polite">${durum.taslak||'—'}</output><button class="buyuk" data-action="tamam" ${!secili?'disabled':''}>Tamam</button></div>${tamam?`<div class="esitlik">${c.p1} + ${c.p2} = ${c.sonuc} ✓<br><small>İki yol, aynı sonuç!</small></div>`:''}<div class="islemler"><button class="dugme" data-action="yeni">Başka örnek</button><button class="dugme" data-action="temizle">Temizle</button></div><p class="alt-not">${seviye<2?'Bu bölümde iki basamaklı çarpanı keşfediyoruz. Seçtiğin seviye saklanır.':'Satır toplamları, alt alta yazdığın satırlara karşılık gelir.'}</p></div><div id="tabloTahta">${tahta(c,{sabit:true,vals,zero:r2,baslik:'Aynı işlem, alt alta'})}</div></div>`;
+}
+function tabloKutusu(id,ad,top=false){const ok=durum.tabloDogru[id],v=ok?durum.tabloGiris[id]:secili===id?durum.taslak:durum.tabloGiris[id]??'';return `<td><button class="tablo-hucre ${top?'tablo-top ':''}${ok?'dogru ':''}${secili===id?'secili ':''}${durum.isaret[id]==='yanlis'?'yanlis':''}" data-table="${id}" ${ok?'disabled':''} aria-label="${ad}, ${v===''?'boş':v}${ok?', doğru':''}">${v===''?'·':v}${ok?'<span class="durum" aria-hidden="true">✓</span>':durum.isaret[id]==='yanlis'?'<span class="durum" aria-hidden="true">✗</span>':''}</button></td>`}
+function hataCiz(){const h=durum.hata;return `<div class="kart hata-kart"><span class="etiket">BİR HATANIN İZİNİ SÜR</span><h2>${h.b<10?'Hangi kutuda hata var?':'İlk hata hangi satırda?'}</h2><p>Bir yerde hata yapılmış. Sonrası o hataya göre hesaplanmış.</p>${durum.bulundu?`<div class="hata-aciklama" role="status">✓ ${h.aciklama}</div>`:''}<div class="ikili" style="margin-top:12px"><div><h3>${durum.bulundu?'Hatayı bulduğun çözüm':h.b<10?'İncele ve bir kutu seç':'İncele ve bir satır seç'}</h3>${tahta(h.dogru,{sabit:true,hata:true,vals:h,kaymamis:h.tur==='kayma',baslik:'Dedektif tahtası'})}</div>${durum.bulundu?`<div><h3>Doğru çözüm ✓</h3>${tahta(h.dogru,{sabit:true,dogru:true,baslik:'Doğru adımlarla'})}</div>`:''}</div><div class="satir-secimi">${!durum.bulundu&&h.b>=10?[0,1,2].map(r=>`<button class="dugme" data-error-row="${r}">${r===2?'Toplam':`${r+1}. satır`}</button>`).join(''):''}<button class="${durum.bulundu?'buyuk':'dugme'}" data-action="yeni">Yeni işlem</button></div>${seviye<2?'<p class="alt-not">Bu seviyede çarpmada unutulan eldeyi bul.</p>':''}</div>`}
+function ciz(){
+ $('#app').dataset.tab=tab;
+ $('.seviyeler').innerHTML=SEVIYE.map((s,i)=>`<button class="seviye" data-level="${i}" aria-pressed="${i===seviye}">${s}</button>`).join('');
+ $$('.sekme').forEach((e,i)=>{e.setAttribute('aria-selected',i===tab);e.tabIndex=i===tab?0:-1});$('#bolum').setAttribute('aria-labelledby',`tab${tab}`);
+ $('#bolum').innerHTML=tab===1?tabloCiz():tab===3?hataCiz():`<div class="kart calisma">${yanPanel()}${tahta(durum.c)}</div>`;
+ $('#altNot').textContent=tab===1?'Rakamlar yazdığın sırayla dizilir. Sil, son rakamı kaldırır.':tab===3?(durum.hata.b<10?'Hatalı kutuyu dokunarak, fareyle veya klavyede Tab ve Enter ile seç.':'Satırı dokunarak, fareyle veya klavyede Tab ve Enter ile seç.'):'Klavye: rakamlar · oklarla gezin · Backspace ile sil. Dolu rakamı dışarı sürükleyerek de silebilirsin.';
+ $('#rakamNot').textContent=tab===3?(durum.hata.b<10?'Hatayı bulmak için sonuç satırındaki bir rakam kutusunu seç.':'Hatayı bulmak için tahtadaki satırlardan birini seç.'):tab===1?'Tabloda kutu seç → sayıyı yaz → Tamam.':'Bir kutu seç, rakama dokun. İstersen rakamı sürükle.';
+ $('#rakamlar').innerHTML=Array.from({length:10},(_,i)=>`<button class="cip ${hazirRakam===i?'aktif':''}" data-digit="${i}" aria-label="${i} rakamı" ${tab===3?'disabled':''}>${i}</button>`).join('')+`<button class="dugme sil" data-action="sil" aria-label="Seçili kutuyu sil" ${tab===3?'disabled':''}>Sil</button>`;
+ if(tab===0&&mevcutAdim()?.tur==='kay')$('.kilit')?.classList.add('parla');
+ if(tab===1){const board=$('#tabloTahta');['r0','r1','t'].forEach((pre,i)=>{const show=i===0?durum.tabloDogru['b0-top']:i===1?durum.tabloDogru['b1-top']:Object.keys(durum.tabloDogru).length===2*(String(durum.c.a).length+1);if(!show)board.querySelectorAll(`[data-cell^="${pre}-"]`).forEach(e=>{e.textContent='';e.setAttribute('aria-label',e.getAttribute('aria-label').replace(/, \d+$/,', henüz bulunmadı'))})});if(durum.tabloDogru['b1-top'])board.querySelector('[data-cell^="r1-"]')?.parentElement.classList.add('dogru-satir')}
+}
+function rehber(){
+ const s=mevcutAdim();if(!s){durum.tamam=true;secili=null;ciz();soyle('Harika! İşlemi adım adım tamamladın. ✓ Bir tane daha deneyebilirsin.');kutla();return}
+ secili=s.id||null;soyle(s.ilkMesaj||s.mesaj);ciz();
+}
+function ilerle(){durum.adim++;const s=mevcutAdim();if(s?.tur==='kay'){Object.keys(durum.giris).filter(k=>k.startsWith('c-')).forEach(k=>delete durum.giris[k]);rehber();soyle('Yeni satır, yeni elde: eski eldeyi sildik. '+s.mesaj)}else rehber()}
+function sec(id){
+ const el=$(`[data-cell="${id}"]`);if(id==='kilit'){durum.kaymaDenendi=true;soyle(KAYMA,true);el?.classList.add('parla');setTimeout(()=>el?.classList.remove('parla'),950);return}
+ if(!el||el.dataset.open!=='1')return;
+ secili=id;if(hazirRakam!==null){const d=hazirRakam;hazirRakam=null;yaz(d)}else{ciz();$(`[data-cell="${id}"]`)?.focus({preventScroll:true})}
+}
+function solaGec(id){const [pre,k]=id.split('-'),n=Number(k);for(let j=n+1;j<durum.c.sutun;j++){const id2=`${pre}-${j}`;if($(`[data-cell="${id2}"][data-open="1"]`)&&durum.giris[id2]===undefined)return id2}return null}
+function yaz(d,id=secili){
+ if(tab===3)return;
+ if(tab===1){if(!secili){hazirRakam=d;ciz();soyle('Rakam hazır. Şimdi bir tablo kutusuna dokun.');return}if(durum.taslak.length<6){durum.taslak+=d;durum.tabloGiris[secili]=durum.taslak;delete durum.isaret[secili];ciz()}return}
+ if(!id){hazirRakam=d;ciz();soyle('Rakam hazır. Şimdi bir kutuya dokun.');return}
+ if(id==='kilit'){sec(id);return}
+ const el=$(`[data-cell="${id}"]`);if(!el||el.dataset.open!=='1')return;
+ if(tab===0){const s=mevcutAdim();if(s.id!==id)return;if(Number(d)!==s.deger){el.classList.remove('salla');void el.offsetWidth;el.classList.add('salla');soyle('Bir daha düşün: '+s.mesaj,true);return}durum.giris[id]=Number(d);ilerle();return}
+ durum.giris[id]=Number(d);delete durum.isaret[id];secili=solaGec(id);ciz();if(secili)$(`[data-cell="${secili}"]`)?.focus({preventScroll:true});
+ if(id.startsWith('r1-')&&!durum.ikinci){durum.ikinci=true;Object.keys(durum.giris).filter(k=>k.startsWith('c-')).forEach(k=>delete durum.giris[k]);ciz();soyle('Yeni satır, yeni elde: eski eldeyi sildik.')}
+}
+function sil(){if(tab===1){if(secili){durum.taslak=durum.taslak.slice(0,-1);durum.tabloGiris[secili]=durum.taslak;delete durum.isaret[secili];ciz()}}else if(tab===2&&secili){delete durum.giris[secili];delete durum.isaret[secili];ciz();$(`[data-cell="${secili}"]`)?.focus({preventScroll:true})}else if(tab===0)soyle('Parlayan kutu sıradaki adımın. Baştan denemek için “Temizle”ye dokun.')}
+function temizle(){
+ if(tab===2){durum.giris={};durum.isaret={};durum.tamam=false;secili=null;hazirRakam=null;durum.ikinci=false;ciz();soyle('Kutuları temizledik. Yeniden deneyebilirsin.');return}
+ if(tab===0){durum.giris={};durum.adim=0;durum.tamam=false;rehber();return}
+ if(tab===1){durum.tabloGiris={};durum.tabloDogru={};durum.tabloYanlis={};durum.isaret={};durum.taslak='';secili=null;ciz();soyle('Tablo temizlendi. Bir kutu seç.')}hazirRakam=null;
+}
+function satirDegeri(pre){let sayi=0;for(const [id,v] of Object.entries(durum.giris)){if(id.startsWith(pre+'-'))sayi+=v*10**Number(id.split('-')[1])}return sayi}
+function kontrol(){
+ if(tab!==2||durum.tamam)return;durum.kontrol++;const exp=beklenen(durum.c);let ok=true;
+ for(const [id,v] of Object.entries(exp)){const dogru=durum.giris[id]===v;durum.isaret[id]=dogru?'dogru':'yanlis';if(!dogru)ok=false}
+ if(ok){durum.tamam=true;if(!durum.sayildi&&!durum.gosterildi){basarili++;seri=durum.kontrol===1?seri+1:0;durum.sayildi=true}ciz();soyle('Hepsi doğru! ✓ Sağdan sola, adım adım başardın.');kutla();return}
+ durum.yanlis++;seri=0;const c=durum.c,son=satirDegeri('t'),ilk=satirDegeri('r0'),ikinci=satirDegeri('r1');
+ const unuttu=c.satirlar.some((s,r)=>s.adimlar.some(t=>t.gelen>0&&durum.giris[`r${r}-${t.k+r}`]!==undefined&&durum.giris[`r${r}-${t.k+r}`]===t.ham%10&&exp[`r${r}-${t.k+r}`]!==t.ham%10));
+ let msg='✗ işaretli kutulara yeniden bak. ✓ işaretliler doğru. Yazdıkların silinmedi.';
+ if(c.b>=10&&(durum.kaymaDenendi||son===c.p1+c.satirlar[1].deger||ikinci===c.satirlar[1].deger))msg='2. satırı bir basamak sola kaydırmayı unutma! '+msg;
+ else if(unuttu||(ilk===c.p1&&c.b>=10&&c.p2-ikinci>=1&&c.p2-ikinci<=8))msg='Eldeyi eklemeyi unutmuş olabilir misin? '+msg;
+ ciz();soyle(msg,true);
+}
+function cevap(){if(tab!==2||durum.yanlis<2||durum.tamam)return;durum.giris={...durum.giris,...beklenen(durum.c)};durum.gosterildi=true;durum.tamam=true;seri=0;durum.isaret={};ciz();soyle('Çözümü açtık. Her satırı sağdan sola incele. Bu işlem sayaca eklenmedi; yeni bir işlemde sen dene.')}
+function tabloSec(id){if(durum.tabloDogru[id])return;secili=id;durum.taslak=String(durum.tabloGiris[id]??'');if(hazirRakam!==null){const d=hazirRakam;hazirRakam=null;yaz(d)}else ciz()}
+function tabloTamam(){
+ if(tab!==1||!secili)return;const [r,col]=secili.slice(1).split('-'),row=durum.c.tablo[Number(r)],top=col==='top',v=top?row.toplam:row.hucreler[Number(col)].deger;
+ if(durum.taslak!==''&&Number(durum.taslak)===v){
+  durum.tabloDogru[secili]=true;durum.tabloGiris[secili]=String(v);delete durum.isaret[secili];const ikinci=secili==='b1-top';secili=null;durum.taslak='';ciz();
+  if(ikinci){soyle(`Bak! ${durum.c.a} × ${row.carpan} = ${v}. Alt alta çarparken ${durum.c.a} × ${row.carpan/10} yazar, satırı bir basamak sola kaydırırız. Kayınca birler basamağına bir 0 gelir; onu yazmayız, boş bırakırız. Sola kaymak, sonuna 0 koymakla aynı şeydir.`);requestAnimationFrame(()=>$('#balon').scrollIntoView({block:'nearest'}))}
+  else if(Object.keys(durum.tabloDogru).length===2*(String(durum.c.a).length+1)){soyle(`${durum.c.p1} + ${durum.c.p2} = ${durum.c.sonuc}. İki yöntem aynı sonucu verdi! ✓`);kutla()}
+  else soyle(`Doğru! ✓ ${top?'Bu sayı, alt alta işlemin '+(Number(r)+1)+'. satırı.':'Şimdi başka bir kutuyu bul.'}`);
+ }else{
+  const yanlis=durum.tabloYanlis[secili]=(durum.tabloYanlis[secili]||0)+1;
+  durum.isaret[secili]='yanlis';ciz();
+  if(top)soyle(`Bu satırdaki sayıları topla: ${row.hucreler.map(h=>h.deger).join(' + ')}${yanlis>=2?` = ${v}`:''}.`,true);
+  else soyle(tabloIpucu(row.hucreler[Number(col)],yanlis>=2),true)
+ }
+}
+function tabloIpucu(h,tam=true){
+ const a=h.basamak,b=h.carpan;
+ if(!tam){
+  if(a>=10){const birim=a>=100?100:10,ad=birim===100?'yüzlük':'onluk';return `${a/birim} ${ad} × ${b} kaç ${ad} eder? Sonra ${birim===100?'yüzlüğü':'onluğu'} sayıya çevir.`}
+  if(b>=10)return `${a} × ${b/10} kaç onluk eder? Sonra onluğu sayıya çevir.`;
+  return `${a} × ${b} kaç eder?`;
+ }
+ if(a>=10){const birim=a>=100?100:10,ad=birim===100?'yüzlük':'onluk';return `${a/birim} ${ad} × ${b} = ${a/birim*b} ${ad} = ${h.deger}.`}
+ if(b>=10)return `${a} × ${b/10} onluk = ${a*b/10} onluk = ${h.deger}.`;
+ return `${a} × ${b} = ${h.deger}.`;
+}
+function ilkHataliKutu(){const h=durum.hata;for(let k=0;k<h.dogru.sutun;k++)if(Math.floor(h.p1/10**k)%10!==Math.floor(h.dogru.p1/10**k)%10)return k;return -1}
+function hataKutuSec(k){
+ if(tab!==3||durum.hata.b>=10||durum.bulundu)return;
+ if(Number(k)===ilkHataliKutu()){durum.bulundu=true;ciz();soyle('Buldun! ✓ '+durum.hata.aciklama);kutla()}
+ else soyle(Number(k)<ilkHataliKutu()?'Bu kutu doğru. İlk hata daha solda.':'Bu kutudan önce başka bir hata var. Sağdan başla, her kutuyu kendin hesapla; eldeyi unutma.',true);
+}
+function hataSec(r){if(tab!==3||durum.bulundu)return;if(Number(r)===durum.hata.hataSatiri){durum.bulundu=true;ciz();soyle('Buldun! ✓ '+durum.hata.aciklama);kutla()}else soyle(Number(r)<durum.hata.hataSatiri?'Bu satır doğru. Sonraki satırlara bak.':'Bundan önce başka bir hata var. İlk hatayı bul: 1. satırdan başla.',true)}
+function eylem(a){({elde:()=>dialog('Elde ne işe yarar?',`<p>${ELDE}</p><p>Alıştırmada elde kutularını boş bırakabilirsin. Kontrol edilmez.</p>`),yeni:()=>{if(tab===2&&!durum.tamam){seri=0}baslat()},temizle,sil,kontrol,cevap,tamam:tabloTamam,kay:()=>{if(tab===0&&mevcutAdim()?.tur==='kay')ilerle()}}[a]||(()=>{}))()}
+document.addEventListener('click',e=>{
+ if(performance.now()<tikEngel)return;const el=e.target.closest('button,[data-error-row]');if(!el)return;
+ if(el.dataset.tab!==undefined){tab=Number(el.dataset.tab);baslat(false);return}
+ if(el.dataset.level!==undefined){const s=Number(el.dataset.level);if(s!==seviye){seviye=s;oturumlar=[null,null,null,null];seri=0;baslat()}return}
+ if(el.dataset.action){eylem(el.dataset.action);return}
+ if(el.dataset.errorCell!==undefined){hataKutuSec(el.dataset.errorCell);return}
+ if(el.dataset.errorRow!==undefined){hataSec(el.dataset.errorRow);return}
+ if(el.dataset.cell){if(tab===0||tab===2)sec(el.dataset.cell);return}
+ if(el.dataset.table){tabloSec(el.dataset.table);return}
+ if(el.dataset.digit!==undefined&&!el.disabled){yaz(Number(el.dataset.digit));return}
+});
+$('#yardim').addEventListener('click',()=>dialog('Nasıl oynanır?','<ol><li>Bir bölüm ve seviye seç. Öğren bölümünde parlayan kutuyu izle.</li><li>Kutuya ve rakama dokun; istersen rakamı sürükle. Klavyeyi de kullanabilirsin.</li><li>Alt alta işlemde sağdan sola yaz. 2. satırda bir basamak sola kay. Elde kutuları küçük not yerleridir.</li></ol>'));
+$('#dialogKapat').addEventListener('click',()=>$('#bilgiDialog').close());
+document.addEventListener('keydown',e=>{
+ if($('#bilgiDialog').open)return;
+ if(e.target.matches('[role="tab"]')&&['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();tab=e.key==='Home'?0:e.key==='End'?3:(tab+(e.key==='ArrowRight'?1:3))%4;baslat(false);$(`#tab${tab}`).focus();return}
+ if(e.target.closest('[data-error-row]')&&(e.key==='Enter'||e.key===' ')){e.preventDefault();hataSec(e.target.closest('[data-error-row]').dataset.errorRow);return}
+ if(/^[0-9]$/.test(e.key)){e.preventDefault();yaz(Number(e.key));return}
+ if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();sil();return}
+ if(tab===1&&e.key==='Enter'&&!e.target.closest('button')){e.preventDefault();tabloTamam();return}
+ if(tab===1&&e.key==='Enter'&&e.target.closest('[data-table]')){e.preventDefault();tabloTamam();return}
+ if(tab===1&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){
+  e.preventDefault();const boxes=$$('[data-table]'),w=String(durum.c.a).length+1,i=boxes.findIndex(b=>b.dataset.table===secili),delta={ArrowLeft:-1,ArrowRight:1,ArrowUp:-w,ArrowDown:w}[e.key];
+  let j=i<0?boxes.findIndex(b=>!b.disabled):i+delta;
+  while(j>=0&&j<boxes.length&&boxes[j].disabled)j+=delta;
+  if(j>=0&&j<boxes.length&&(!['ArrowLeft','ArrowRight'].includes(e.key)||i<0||Math.floor(i/w)===Math.floor(j/w)))boxes[j].focus();return;
+ }
+ if((tab===0||tab===2)&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){
+  e.preventDefault();const cells=$$('[data-cell][data-open="1"]');if(!cells.length)return;let el=$(`[data-cell="${secili}"]`),next;
+  if(!el)next=cells[cells.length-1];else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){const k=Number(el.dataset.col)+(e.key==='ArrowLeft'?1:-1),pre=secili.split('-')[0];next=cells.find(x=>x.dataset.cell===`${pre}-${k}`)}else{const col=el.dataset.col,list=cells.filter(x=>x.dataset.col===col),idx=list.indexOf(el);next=list[idx+(e.key==='ArrowUp'?-1:1)]}
+  if(next){secili=next.dataset.cell;hazirRakam=null;ciz();$(`[data-cell="${secili}"]`).focus({preventScroll:true})}
+ }
+});
+document.addEventListener('focusin',e=>{
+ if(e.target.dataset.open==='1'){secili=e.target.dataset.cell;$$('[data-cell]').forEach(x=>x.classList.toggle('secili',x===e.target))}
+ if(tab===1&&e.target.dataset.table&&!e.target.disabled){secili=e.target.dataset.table;durum.taslak=String(durum.tabloGiris[secili]??'');$$('[data-table]').forEach(x=>x.classList.toggle('secili',x===e.target));$('.giris').textContent=durum.taslak||'—';$('[data-action="tamam"]').disabled=false}
+});
+/* Pointer Events: fare, dokunmatik ekran ve kalem aynı yolu kullanır. */
+let tikEngel=0;
+document.addEventListener('pointerdown',e=>{
+ if(e.button!==0||tab===3||$('#bilgiDialog').open)return;const chip=e.target.closest('[data-digit]'),cell=e.target.closest('[data-cell][data-open="1"]');
+ if(!chip&&!cell)return;if(chip?.disabled)return;const id=cell?.dataset.cell,v=chip?Number(chip.dataset.digit):durum.giris[id];if(v===undefined)return;
+ suruk={pid:e.pointerId,x:e.clientX,y:e.clientY,v,source:id||null,moved:false,el:chip||cell};suruk.el.setPointerCapture(e.pointerId);
+});
+document.addEventListener('pointermove',e=>{
+ if(!suruk||e.pointerId!==suruk.pid)return;if(!suruk.moved&&Math.hypot(e.clientX-suruk.x,e.clientY-suruk.y)>7){suruk.moved=true;hayalet=document.createElement('div');hayalet.className='suruklenen';hayalet.textContent=suruk.v;hayalet.setAttribute('aria-hidden','true');document.body.append(hayalet)}
+ if(!suruk.moved)return;e.preventDefault();hayalet.style.left=e.clientX+'px';hayalet.style.top=e.clientY+'px';const hit=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-cell],[data-table]');if(vurgulu!==hit){vurgulu?.classList.remove('birak');vurgulu=hit;vurgulu?.classList.add('birak')}
+},{passive:false});
+function surukBitir(e,iptal=false){
+ if(!suruk||e.pointerId!==suruk.pid)return;const s=suruk;suruk=null;hayalet?.remove();hayalet=null;vurgulu?.classList.remove('birak');vurgulu=null;
+ if(s.el.hasPointerCapture?.(e.pointerId))s.el.releasePointerCapture(e.pointerId);if(!s.moved||iptal)return;tikEngel=performance.now()+400;
+ const hit=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-cell],[data-table]');
+ if(hit?.dataset.cell==='kilit'){sec('kilit');return}
+ if(hit?.dataset.table&&tab===1){if(!durum.tabloDogru[hit.dataset.table]){tabloSec(hit.dataset.table);yaz(s.v)}return}
+ if(hit?.dataset.open==='1'){
+  const hedef=hit.dataset.cell;if(s.source===hedef)return;hazirRakam=null;yaz(s.v,hedef);
+  if(tab===2&&s.source&&durum.giris[hedef]===s.v){delete durum.giris[s.source];delete durum.isaret[s.source];ciz()}
+ }else if(!hit&&s.source&&tab===2){delete durum.giris[s.source];delete durum.isaret[s.source];secili=s.source;ciz();soyle('Rakamı kaldırdın. Yeni bir rakam yerleştirebilirsin.')}
+}
+document.addEventListener('pointerup',e=>surukBitir(e));document.addEventListener('pointercancel',e=>surukBitir(e,true));
+const rakamBoyutu=new ResizeObserver(([entry])=>document.documentElement.style.setProperty('--rakam-yukseklik',`${entry.target.getBoundingClientRect().height}px`));
+rakamBoyutu.observe($('.rakamlik'));
+baslat();
+window.CARPMA = {uret, coz, hataliUret};
+</script>
+</body>
+</html>
