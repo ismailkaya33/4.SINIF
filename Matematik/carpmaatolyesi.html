@@ -54,6 +54,7 @@
  .parcala{table-layout:fixed}
  .parcala th{overflow-wrap:anywhere}
 }
+@media(max-width:680px){#app{padding-bottom:16px!important}.rakamlik{position:sticky;bottom:0;margin:10px -10px 10px;border:2px solid #c6e8ee;border-radius:16px}.calisma>.tahta{order:-1}}
 </style>
 </head>
 <body>
@@ -67,10 +68,10 @@
  </nav>
  <div class="seviyeler" role="group" aria-label="Seviye seçimi"></div>
  <main id="bolum" role="tabpanel" aria-labelledby="tab0"></main>
+ <div class="rakamlik" aria-label="Rakam araçları"><div class="rakam-aciklama" id="rakamNot">Bir kutu seç, rakama dokun. İstersen rakamı sürükle.</div><div class="rakam-ic" id="rakamlar"></div></div>
  <div id="balon" class="balon" role="status" aria-live="polite" aria-atomic="true"></div>
  <div class="alt-not" id="altNot"></div>
 </div>
-<div class="rakamlik" aria-label="Rakam araçları"><div class="rakam-aciklama" id="rakamNot">Bir kutu seç, rakama dokun. İstersen rakamı sürükle.</div><div class="rakam-ic" id="rakamlar"></div></div>
 <dialog id="bilgiDialog" aria-labelledby="dialogBaslik"><h2 id="dialogBaslik"></h2><div id="dialogIcerik"></div><button class="dugme" id="dialogKapat">Anladım</button></dialog>
 <script>
 'use strict';
