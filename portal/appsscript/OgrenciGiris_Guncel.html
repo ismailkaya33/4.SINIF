@@ -128,24 +128,6 @@ body.loginView .kutu{min-height:min(640px,calc(100vh - 48px));display:flex;flex-
 .anketMesaj{margin:10px 0 0;font-size:18px;font-weight:800;color:var(--kirmizi)}
 .anketMesaj:empty{display:none}
 .anketTesekkur{margin:0;padding:18px;border-radius:var(--r-kucuk);background:var(--yesil-acik);color:var(--yesil);font-size:22px;font-weight:900;text-align:center}
-/* ---------- Sosyometri: "Sınıf Arkadaşlarım" (soru soru, sınıf listesinden seçim) ---------- */
-.sosyoKart{border-color:#9fd6c9;background:linear-gradient(160deg,#eefaf6,#fff)}
-.sosyoGiris{margin:0 0 14px;font-size:19px;font-weight:700;line-height:1.45}
-.sosyoAdim{margin:0 0 8px;color:var(--soluk);font-size:16px;font-weight:900;letter-spacing:.02em}
-.sosyoSayac{margin:-2px 0 10px;font-size:18px;font-weight:800;color:var(--mor)}
-.sosyoAra{display:block;width:100%;max-width:420px;min-height:52px;margin:0 0 12px;padding:10px 14px;border:2px solid var(--cizgi);border-radius:var(--r-kucuk);font:inherit;font-size:19px;background:#fff;color:var(--murekkep)}
-.sosyoAra:focus{outline:3px solid #6a4fc644;border-color:var(--mor)}
-.sosyoIsimler{grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));max-height:min(62vh,560px);overflow:auto;padding:2px}
-.sosyoIsim{min-height:54px;font-size:18px;font-weight:800}
-.sosyoIsim[hidden]{display:none}
-.sosyoSecilen{margin:12px 0 0;font-size:17px;font-weight:700;color:var(--murekkep)}
-.sosyoAlt{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-.sosyoAlt .anketGonder{flex:1 1 220px;width:auto}
-.sosyoGeri{min-height:60px;padding:10px 18px;border:2px solid var(--cizgi);background:#fff;color:var(--murekkep);font-size:19px}
-.sosyoGeri:hover:not(:disabled){background:var(--mor-acik)}
-.sosyoDegistir{margin-top:12px;min-height:52px;padding:10px 18px;border:2px solid #cbbcf5;background:#fff;color:var(--mor);font-size:18px}
-.sosyoDegistir:hover:not(:disabled){background:var(--mor-acik)}
-.sosyoNot{margin:10px 0 0;color:var(--soluk);font-size:16px;font-weight:700;text-align:center}
 
 /* ---------- İlerleme şeridi ---------- */
 .progressCompact{margin:0 0 16px;border:1px solid var(--cizgi);border-radius:var(--r-orta);background:var(--yuzey-mavi);overflow:hidden}
@@ -412,7 +394,36 @@ body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.starsCa
 #dersIzgarasi>.course>summary>.subjectIcon{width:58px;height:58px}
 #dersIzgarasi>.course>summary>strong{align-self:start;font-size:20px;line-height:1.15}
 #dersIzgarasi>.course>summary>.newLight{grid-area:ikon;justify-self:end;align-self:start}
-body.anaAramada :is(#anaHafta,.dashboardTitle,#oturumAlani>.hint,#dersIzgarasi,#dersGeriSatiri,#anaKose){display:none!important}
+/* Kaynak Kitap Ödevlerim: kaynak-odev.json'dan gün gün sayfa listesi */
+.anaKaynak{margin:0 0 12px;padding:10px 14px 12px;border-radius:18px;background:var(--yuzey);box-shadow:var(--golge)}
+.anaKaynak .anaBolumBas{margin:0 0 4px}
+.anaKaynak .anaBolumBas h3{font-size:clamp(18px,1.8vw,21px)}
+.anaKaynak .anaBolumBas small{font-size:13px}
+.kkGunler{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}
+.kkGun{padding:7px 10px 8px;border:2px solid transparent;border-radius:12px;background:#f4f7fb}
+.kkGun.bugun{border-color:var(--mor);background:var(--yuzey)}
+.kkGun.gecti{opacity:.55}
+.kkGun h4{margin:0 0 4px;font-size:15px;font-weight:900}
+.kkGun ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.kkOdev{padding:1px 0 1px 8px;border-left:4px solid var(--renk,var(--mor));border-radius:3px}
+.kkOdev b{display:block;font-size:14px;line-height:1.25}
+.kkSayfa{white-space:nowrap}
+.kkOdev small{display:block;color:var(--soluk);font-weight:700;font-size:12px}
+.kkAlt{margin:8px 0 5px;font-size:14px;font-weight:900;color:var(--soluk)}
+.kkGun.ders{border-top:5px solid var(--renk,var(--mor))}
+.kkOdev.yesil{border-left-color:#1f9d55}
+.kkOdev.yesil b{color:#13763f}
+.anaProgram{margin:14px 0 4px;padding:12px 16px;border-radius:18px;background:var(--yuzey);box-shadow:var(--golge)}
+.anaProgram>summary{cursor:pointer;font-size:clamp(20px,2vw,25px);font-weight:900;min-height:40px;display:flex;align-items:center}
+.anaProgram>small{display:block;color:var(--soluk);font-weight:700;margin:2px 0 8px}
+.kkTabloKap{overflow-x:auto}
+.kkTablo{width:100%;min-width:560px;border-collapse:separate;border-spacing:4px;font-size:15px}
+.kkTablo th{padding:6px;border-radius:8px;background:var(--cizgi);font-weight:900}
+.kkTablo th.bugun{background:var(--mor);color:#fff}
+.kkTablo td{padding:6px;border-radius:8px;text-align:center;font-weight:700;background:#f4f7fb;border-top:4px solid var(--renk,transparent)}
+.kkTablo td.bugun{outline:3px solid var(--mor)}
+.kkTablo td.saat{background:none;border:0;color:var(--soluk);white-space:pre-line;font-size:13px}
+body.anaAramada :is(#anaHafta,#anaKaynak,#anaProgram,.dashboardTitle,#oturumAlani>.hint,#dersIzgarasi,#dersGeriSatiri,#anaKose){display:none!important}
 body.lessonView :is(#anaUst,#anaKose){display:none!important}
 @media(min-width:620px){.anaSerit{grid-auto-columns:minmax(260px,42%)}#dersIzgarasi{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(min-width:1000px){.anaSerit{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible}}
@@ -426,7 +437,6 @@ body.lessonView :is(#anaUst,#anaKose){display:none!important}
 <div class="portalTopStrip">
 <section class="noticeTopCard" aria-labelledby="notice-heading"><h3 id="notice-heading">📌 Duyurular</h3><p class="hint" id="duyuruDurum">Duyurular girişten sonra yüklenir.</p><div id="duyuruListe"></div></section>
 <div id="anketAlani" hidden></div>
-<div id="sosyometriAlani" hidden></div>
 <div class="welcomeBar"><div class="welcomeIdentity"><span class="welcomeAvatar" aria-hidden="true">🎓</span><div><span class="welcomeLabel">Hoş geldin,</span><strong id="welcomeName">Öğrenci</strong><small class="sessionActive">● Oturum açık</small></div></div><button id="cikis" type="button" hidden>Güvenli Çıkış Yap</button></div>
 </div>
 <dialog id="newContentDialog" class="newContentDialog" aria-labelledby="newContentHeading">
@@ -434,10 +444,12 @@ body.lessonView :is(#anaUst,#anaKose){display:none!important}
  <div id="newContentDialogBody" class="newContentDialogBody"><div id="newContentAlerts" class="newContentAlerts" aria-live="polite"></div></div>
 </dialog>
 <section id="anaUst" class="anaUst" aria-label="Ana sayfa">
+ <section id="anaKaynak" class="anaKaynak" aria-labelledby="anaKaynakBaslik" hidden><div class="anaBolumBas"><h3 id="anaKaynakBaslik">📚 Kaynak Kitap Ödevlerim</h3><small id="anaKaynakYazi"></small></div><div id="anaKaynakPaketBolum" hidden><h4 class="kkAlt">📎 Okula getir (ders ders zımbala, hafta boyunca ödev dosyanda olsun)</h4><div id="anaKaynakPaket" class="kkGunler"></div></div><div id="anaKaynakEvBolum" hidden><h4 class="kkAlt">🏠 Evde (Ödev Yaprakları)</h4><div id="anaKaynakGunler" class="kkGunler"></div></div></section>
  <nav id="anaKisayollar" class="anaKisayollar" aria-label="Kısayollar"></nav>
  <div class="anaArama" role="search"><span class="anaBuyutec" aria-hidden="true">🔎</span><input id="anaAra" type="search" placeholder="Etkinlik ara…" aria-label="Etkinlik ara" autocomplete="off" enterkeyhint="search"><button id="anaTemizle" class="anaTemizle" type="button" aria-label="Aramayı temizle" hidden>×</button></div>
  <div id="anaFiltreler" class="anaFiltreler" role="group" aria-label="Derse göre süz"></div>
  <section id="anaHafta" class="anaHafta" aria-labelledby="anaHaftaBaslik" hidden><div class="anaBolumBas"><h3 id="anaHaftaBaslik">⭐ Bu Haftanın Etkinlikleri</h3><small id="anaHaftaYazi"></small></div><div id="anaHaftaSerit" class="anaSerit"></div></section>
+ <details id="anaProgram" class="anaProgram" hidden><summary>🗓️ Ders Programım</summary><small id="anaProgramYazi"></small><div class="kkTabloKap"><table id="anaProgramTablo" class="kkTablo"></table></div></details>
  <section id="anaSonuc" class="anaSonuc" aria-live="polite" hidden><button id="anaGeri" class="anaGeri" type="button">← Ana sayfaya dön</button><div class="anaBolumBas"><h3 id="anaSonucBaslik">Sonuçlar</h3><small id="anaSonucSay"></small></div><ul id="anaSonucListe" class="anaListe"></ul></section>
 </section>
 <h3 class="dashboardTitle">Derslerim</h3>
@@ -762,95 +774,6 @@ function duyurulariYukle(){
   if(kartlar.length>3){const eski=document.createElement("details"),ozet=document.createElement("summary"),ic=document.createElement("div");eski.className="eskiDuyurular";ozet.textContent="📂 Önceki duyurular ("+(kartlar.length-3)+")";ic.append.apply(ic,kartlar.slice(3));eski.append(ozet,ic);liste.appendChild(eski)}
  }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)===token)durum.textContent="Duyurular yüklenemedi."}).ogrenciDuyurulari(token);
 }
-/* Sosyometri ("Sınıf Arkadaşlarım"): sınıf listesi oturumla sunucudan gelir; öğrenci numarası tarayıcıya gelmez.
-   Soru soru ilerler; her soruda tam "secim" kadar arkadaş seçilir. Cevap anket açıkken bir kez değiştirilebilir. */
-let sosyoIstekSirasi=0;
-function sosyoKartiYap_(v,token){
- const kart=document.createElement("section"),baslik=document.createElement("h3"),not=document.createElement("p"),govde=document.createElement("div"),mesaj=document.createElement("p");
- kart.className="anketKart sosyoKart";kart.setAttribute("aria-label",v.tur.baslik);
- baslik.textContent="👫 "+v.tur.baslik;not.className="anketGizlilik";not.textContent="🔒 Cevaplarını yalnız öğretmenin görür; arkadaşların göremez. Doğru ya da yanlış cevap yok.";
- mesaj.className="anketMesaj";mesaj.setAttribute("role","status");
- const adIle={};v.arkadaslar.forEach(function(a){adIle[a.id]=a.ad});
- let secimler={},adim=0,cevapladi=v.cevapladi===true,duzeltebilir=v.duzeltebilir===true;
- if(v.cevap&&typeof v.cevap==="object")v.sorular.forEach(function(s){secimler[s.id]=(v.cevap[s.id]||[]).filter(function(id){return adIle[id]})});
- function dugme(metin,sinif){const b=document.createElement("button");b.type="button";b.textContent=metin;if(sinif)b.className=sinif;return b}
- function kucuk(t){return String(t).toLocaleLowerCase("tr")}
- function basaKaydir(){try{kart.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}}
- function bilgiCiz(tesekkur){
-  govde.replaceChildren();mesaj.textContent="";
-  if(!cevapladi){
-   const p=document.createElement("p"),b=dugme("Başla ▶","anketGonder");
-   p.className="sosyoGiris";p.textContent="Öğretmenin sana "+v.sorular.length+" kısa soru soruyor. Her soruda "+v.secim+" arkadaşını seçeceksin.";
-   b.addEventListener("click",function(){adim=0;soruCiz();basaKaydir()});
-   govde.append(p,b);return;
-  }
-  const t=document.createElement("p");t.className="anketTesekkur";t.textContent=tesekkur?"🎉 Teşekkürler! Cevabın öğretmenine ulaştı.":"✅ Bu anketi cevapladın. Teşekkürler!";govde.appendChild(t);
-  if(duzeltebilir){
-   const n=document.createElement("p"),b=dugme("✏️ Cevabımı değiştir","sosyoDegistir");
-   n.className="sosyoNot";n.textContent="Fikrin değişirse cevabını bir kez değiştirebilirsin.";
-   b.addEventListener("click",function(){adim=0;soruCiz();basaKaydir()});
-   govde.append(n,b);
-  }
- }
- function soruCiz(){
-  const s=v.sorular[adim];
-  govde.replaceChildren();mesaj.textContent="";
-  const ilerleme=document.createElement("p"),fs=document.createElement("fieldset"),lg=document.createElement("legend"),num=document.createElement("span"),sayac=document.createElement("p"),ara=document.createElement("input"),kutu=document.createElement("div"),secilen=document.createElement("p"),alt=document.createElement("div");
-  ilerleme.className="sosyoAdim";ilerleme.textContent="Soru "+(adim+1)+" / "+v.sorular.length;
-  fs.className="anketSoru";num.textContent=adim+1;lg.append(num,document.createTextNode((s.simge?s.simge+" ":"")+s.metin));
-  sayac.className="sosyoSayac";sayac.setAttribute("aria-live","polite");
-  ara.type="search";ara.className="sosyoAra";ara.placeholder="🔎 İsim ara";ara.autocomplete="off";ara.setAttribute("aria-label","İsim ara");
-  kutu.className="anketSecenekler sosyoIsimler";secilen.className="sosyoSecilen";alt.className="sosyoAlt";
-  const ileri=dugme(adim===v.sorular.length-1?"Gönder ✅":"İleri ▶","anketGonder");
-  function guncelle(){
-   const c=secimler[s.id]||[];
-   sayac.textContent=v.secim+" arkadaşını seç · "+c.length+" / "+v.secim+" seçildi";
-   secilen.textContent=c.length?"Seçtiklerin: "+c.map(function(id){return adIle[id]}).join(", "):"";
-   kutu.querySelectorAll("button").forEach(function(b){b.setAttribute("aria-pressed",c.indexOf(b.dataset.id)>=0?"true":"false")});
-   ileri.disabled=c.length!==v.secim;
-  }
-  v.arkadaslar.forEach(function(a){
-   const b=dugme(a.ad,"anketSecenek sosyoIsim");b.dataset.id=a.id;b.dataset.ara=kucuk(a.ad);
-   b.addEventListener("click",function(){
-    const c=(secimler[s.id]||[]).slice(),i=c.indexOf(a.id);
-    if(i>=0)c.splice(i,1);
-    else{if(c.length>=v.secim){mesaj.textContent="En çok "+v.secim+" arkadaş seçebilirsin. Değiştirmek için seçtiğin birine tekrar dokun.";return}c.push(a.id)}
-    secimler[s.id]=c;mesaj.textContent="";guncelle();
-   });
-   kutu.appendChild(b);
-  });
-  ara.addEventListener("input",function(){const q=kucuk(ara.value.trim());kutu.querySelectorAll("button").forEach(function(b){b.hidden=!!q&&b.dataset.ara.indexOf(q)<0})});
-  if(adim>0){const geri=dugme("◀ Geri","sosyoGeri");geri.addEventListener("click",function(){adim--;soruCiz();basaKaydir()});alt.appendChild(geri)}
-  ileri.addEventListener("click",function(){
-   if((secimler[s.id]||[]).length!==v.secim){mesaj.textContent=v.secim+" arkadaşını seç.";return}
-   if(adim<v.sorular.length-1){adim++;soruCiz();basaKaydir();return}
-   gonder(ileri);
-  });
-  alt.appendChild(ileri);
-  fs.append(lg,sayac,ara,kutu,secilen);govde.append(ilerleme,fs,alt);guncelle();
- }
- function gonder(b){
-  const veri={};v.sorular.forEach(function(s){veri[s.id]=(secimler[s.id]||[]).slice()});
-  b.disabled=true;b.textContent="Gönderiliyor...";
-  google.script.run.withSuccessHandler(function(r){
-   if(sessionStorage.getItem(anahtarAdi)!==token)return;
-   if(r&&r.basarili===true){cevapladi=true;duzeltebilir=r.duzeltebilir===true;bilgiCiz(true);basaKaydir();return}
-   b.disabled=false;b.textContent="Gönder ✅";mesaj.textContent=r&&r.mesaj?r.mesaj:"Cevap kaydedilemedi. Tekrar dene.";
-  }).withFailureHandler(function(){if(sessionStorage.getItem(anahtarAdi)!==token)return;b.disabled=false;b.textContent="Gönder ✅";mesaj.textContent="Bağlantı sorunu. Tekrar dene."}).sosyometriCevapla(token,v.tur.kimlik,veri);
- }
- bilgiCiz(false);
- kart.append(baslik,not,govde,mesaj);
- return kart;
-}
-function sosyometriYukle(){
- const istek=++sosyoIstekSirasi,token=sessionStorage.getItem(anahtarAdi),alan=document.getElementById("sosyometriAlani");
- if(!token)return;
- google.script.run.withSuccessHandler(function(r){
-  if(sessionStorage.getItem(anahtarAdi)!==token||istek!==sosyoIstekSirasi)return;
-  const goster=!!(r&&r.basarili===true&&r.acik===true&&r.tur&&Array.isArray(r.arkadaslar)&&r.arkadaslar.length&&Array.isArray(r.sorular)&&r.sorular.length&&!(r.cevapladi&&!r.duzeltebilir));
-  alan.replaceChildren();if(goster)alan.appendChild(sosyoKartiYap_(r,token));alan.hidden=!goster;
- }).withFailureHandler(function(){}).ogrenciSosyometri(token);
-}
 /* Anket: yayındaki, henüz cevaplanmamış anket kart olarak gösterilir.
    Bağlı soru (ör. "o dersteki konu") önceki cevaba göre açılır; cevap oturumla kaydedilir. */
 let anketIstekSirasi=0;
@@ -913,7 +836,7 @@ function anketleriYukle(){
   alan.hidden=anketler.length===0;
  }).withFailureHandler(function(){}).ogrenciAnketleri(token);
 }
-function tokenTemizle(){menuyeDon();veliRaporTemizle_();yildizTemizle_();anketIstekSirasi++;document.getElementById("anketAlani").replaceChildren();document.getElementById("anketAlani").hidden=true;sosyoIstekSirasi++;document.getElementById("sosyometriAlani").replaceChildren();document.getElementById("sosyometriAlani").hidden=true;yazilanNotlar.clear();bitirilenEtkinlikler.clear();kaydedilenEtkinlikler.clear();baslatilanEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
+function tokenTemizle(){menuyeDon();veliRaporTemizle_();yildizTemizle_();anketIstekSirasi++;document.getElementById("anketAlani").replaceChildren();document.getElementById("anketAlani").hidden=true;yazilanNotlar.clear();bitirilenEtkinlikler.clear();kaydedilenEtkinlikler.clear();baslatilanEtkinlikler.clear();seciliEtkinlikButonlariYenile();hosGeldinAdiGoster_("Öğrenci");oturumNesli++;sessionStorage.removeItem(anahtarAdi);document.getElementById("duyuruListe").replaceChildren();document.getElementById("duyuruDurum").textContent="Duyurular girişten sonra yüklenir.";ekranGoster(false);kodAlani.value=""}
 function girisYap(){
  if(buton.disabled)return;
  const kod=kodAlani.value.trim().toUpperCase();
@@ -924,7 +847,7 @@ function girisYap(){
   if(istekNesli!==oturumNesli)return;
   buton.disabled=false;
   if(cevap&&cevap.basarili===true&&typeof cevap.token==="string"&&tokenFormat.test(cevap.token)){
-   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();anketleriYukle();sosyometriYukle();ilerlemeYukle();veliRaporuYukle();yildizlariYukle();defterDurumYukle();seciliEtkinlikDurumYukle();
+   sessionStorage.setItem(anahtarAdi,cevap.token);kodAlani.value="";ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();anketleriYukle();ilerlemeYukle();veliRaporuYukle();yildizlariYukle();defterDurumYukle();seciliEtkinlikDurumYukle();
    sonuc.textContent="";
   }else{sonuc.textContent=cevap&&cevap.mesaj?cevap.mesaj:"Giriş doğrulanamadı."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Giriş sırasında hata oluştu. Tekrar dene."}).ogrenciGirisiYap(kod);
@@ -1013,7 +936,7 @@ const defterKatalog={
 "Sosyal Bilgiler":{dir:"Sosyal",files:[["ailemcocuk.jpg","Ailem ve Çocuk"],["ailetarihi.png","Aile Tarihi"],["cocukoyun.png","Çocuk Oyunları"],["farkliliklarimizvesaygi.png","Farklılıklara Saygı"],["mersinkultur.png","Mersin Kültürü"],["millikultur.png","Millî Kültür"],["millimucadele1.png","Millî Mücadele 1"],["millimucadele2.png","Millî Mücadele 2"],["millimucadele3.png","Millî Mücadele 3"],["millimucadele4.png","Millî Mücadele 4"],["millimucadele5.png","Millî Mücadele 5"],["millimucadele6.png","Millî Mücadele 6"],["millimucadele7.png","Millî Mücadele 7"],["sos-yonler-1.png","Yönler 1"],["sos-yonler-2.png","Yönler 2"],["sos-kroki-1.png","Kroki 1"],["sos-kroki-2.png","Kroki 2"]]},
 "İnsan Hakları":{dir:"Insanhaklari",files:[["ih-hak-ihlali-1.png","Haklarım Kısıtlanırsa 1"],["ih-hak-ihlali-2.png","Haklarım Kısıtlanırsa 2"]]}
 };
-const DEFTER_SURUMLERI={"Turkce/ozdeyisler.png":"20261112","Turkce/tr-cumle-bilgisi-1.png":"20261120","Turkce/tr-cumle-bilgisi-2.png":"20261120","Turkce/tr-cumle-bilgisi-3.png":"20261120","Fen/hareketliyasam.png":"20261105b","Fen/dengelibeslenme.png":"20261105b"};
+const DEFTER_SURUMLERI={"Turkce/ozdeyisler.png":"20261112","Turkce/tr-cumle-bilgisi-1.png":"20261121","Turkce/tr-cumle-bilgisi-2.png":"20261121","Turkce/tr-cumle-bilgisi-3.png":"20261121","Turkce/tr-cikarim-baslik-1.png":"20261121","Turkce/tr-cikarim-baslik-2.png":"20261121","Turkce/tr-gercek-hayal-1.png":"20261121","Turkce/tr-gercek-hayal-2.png":"20261121","Fen/hareketliyasam.png":"20261105b","Fen/dengelibeslenme.png":"20261105b","Fen/fen-kuvvetin-etkileri-1.png":"20261121","Fen/fen-kuvvetin-etkileri-2.png":"20261121","Fen/fen-alkol-sigara-1.png":"20261121","Fen/fen-alkol-sigara-2.png":"20261121","Sosyal/sos-yonler-2.png":"20261121"};
 /* KATALOG BITIR: portal-defter-notlari */
 /* KATALOG BASLA: portal-secili-etkinlikler — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
 const seciliEtkinlikler=new Set(["Turkce/ikilemeler.html","Turkce/pekistirme.html","Turkce/sozavcıları.html","Matematik/cikarmaislemi.html","Fen/besinkasifleri.html","Fen/besinlerdegerlendirme.html","Sosyal/oyunzamani.html","Sosyal/kurtulus.html","Oyunlar/carpmaordekvurma.html","Matematik/dogalsayilardegerlendirme.html","Matematik/toplamacikarmaproblem1.html","Matematik/toplamacikarmaproblem2.html","Insanhaklari/insanolmasorumlulugu.html","Trafik/yayaolaraktrafikkurallarietkinligi.html","Insanhaklari/farkliyasamlar.html","Matematik/cikarmadatahmin.html","Matematik/mat-toplama-problemleri-sinav.html","Sosyal/konumkasifi.html","Turkce/tur-atasozu-deyim-sinav.html","Turkce/cikarimbaslik.html","Trafik/oyunaraclari.html","Turkce/kantindedektifi.html","Turkce/ozdeyisler.html","Sosyal/sos-gecmistebiz-sinav.html","Insanhaklari/haklarimizinpesinde.html","Turkce/gercekmihayalmi.html","Turkce/bilgidedektifi.html","Matematik/carpmaustalari.html","Sosyal/krokiatolyesi.html","Trafik/ulasimaraclari.html","Fen/sagligimibenkorurum.html"]);
@@ -1280,7 +1203,7 @@ if(mevcutToken){
  google.script.run.withSuccessHandler(function(cevap){
   if(istekNesli!==oturumNesli||sessionStorage.getItem(anahtarAdi)!==mevcutToken)return;
   buton.disabled=false;
-  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();anketleriYukle();sosyometriYukle();ilerlemeYukle();veliRaporuYukle();yildizlariYukle();defterDurumYukle();seciliEtkinlikDurumYukle();sonuc.textContent=""}
+  if(cevap&&cevap.basarili===true){ekranGoster(true);hosGeldinAdiGoster_(cevap.ogrenciAdi);duyurulariYukle();anketleriYukle();ilerlemeYukle();veliRaporuYukle();yildizlariYukle();defterDurumYukle();seciliEtkinlikDurumYukle();sonuc.textContent=""}
   else{tokenTemizle();sonuc.textContent="Oturum süresi dolmuş. Yeniden giriş yap."}
  }).withFailureHandler(function(){if(istekNesli!==oturumNesli)return;buton.disabled=false;sonuc.textContent="Oturum kontrol edilemedi. Sayfayı yenile."}).oturumBilgisi(mevcutToken);
 }
@@ -1351,6 +1274,78 @@ function anaHaftaCiz_(){
  document.getElementById("anaHaftaSerit").replaceChildren(...secim.map(anaKart_));
  kutu.hidden=false;
 }
+/* Kaynak Kitap Ödevlerim: sitedeki kaynak-odev.json (tools/kaynak-odev-oner.mjs üretir). Yalnız kitap adı, sayfa ve konu;
+ * öğrenci verisi yok. Dosya yoksa ya da 'bitis' geçtiyse kart gizlenir. */
+var anaKaynak_=null;
+const KAYNAK_ODEV_ADRESI_="https://ismailkaya33.github.io/4.SINIF/kaynak-odev.json";
+function anaYerelTarih_(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function anaKaynakOge_(ders,kitap,sayfa,alt){
+ const li=anaEl_("li","kkOdev"+(ders?" ders-"+anaKisa_(ders):"")),b=anaEl_("b","",kitap+" • ");
+ b.append(anaEl_("span","kkSayfa",sayfa));li.append(b);if(alt)li.append(anaEl_("small","",alt));return li;
+}
+function anaKaynakCiz_(){
+ const kutu=document.getElementById("anaKaynak"),h=anaKaynak_;
+ if(!kutu)return;
+ if(!h||typeof h!=="object"){kutu.hidden=true;return}
+ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(h.bitis||""));
+ if(!m||Date.now()>new Date(+m[1],+m[2]-1,+m[3],23,59,59).getTime()){kutu.hidden=true;return}
+ const bugun=anaYerelTarih_(new Date());
+ /* Okula getirilen paket: ders başına Avcı sayfaları ve sınıfta çözülecek yeşil test */
+ const paket=(Array.isArray(h.paket)?h.paket:[]).slice(0,6).filter(p=>p&&p.sayfa).map(p=>{
+  const ders=String(p.ders||""),k=anaEl_("article","kkGun ders"+(ders?" ders-"+anaKisa_(ders):"")),ul=anaEl_("ul");
+  ul.append(anaKaynakOge_(ders,"Avcı","s. "+String(p.sayfa).slice(0,30),String(p.konu||"").slice(0,90)));
+  if(p.yesilTest){const y=anaKaynakOge_("","🟢 Yeşil test","s. "+String(p.yesilTest).slice(0,30),"Sınıfta çözeceğiz");y.classList.add("yesil");ul.append(y);}
+  k.append(anaEl_("h4","",ders.slice(0,30)),ul);return k;
+ });
+ document.getElementById("anaKaynakPaket").replaceChildren(...paket);
+ document.getElementById("anaKaynakPaketBolum").hidden=!paket.length;
+ const gunler=(Array.isArray(h.gunler)?h.gunler:[]).slice(0,7).filter(g=>g&&Array.isArray(g.odevler)&&g.odevler.length);
+ const kartlar=gunler.map(g=>{
+  const t=String(g.tarih||""),buGun=t===bugun;
+  const k=anaEl_("article","kkGun"+(buGun?" bugun":(t&&t<bugun?" gecti":"")));
+  const ul=anaEl_("ul");
+  g.odevler.slice(0,8).forEach(o=>ul.append(anaKaynakOge_(String(o.ders||""),String(o.ders||"").slice(0,20),"s. "+String(o.sayfa||"").slice(0,15),"")));
+  k.append(anaEl_("h4","",String(g.gun||"").slice(0,12)+(buGun?" • Bugün":"")),ul);
+  return k;
+ });
+ const hs=h.haftaSonu;
+ if(hs&&hs.kitap){
+  const sonGun=String((gunler[gunler.length-1]||{}).tarih||"");
+  const k=anaEl_("article","kkGun"+(sonGun&&bugun>sonGun?" bugun":"")),ul=anaEl_("ul");
+  const konular=hs.konular&&typeof hs.konular==="object"?Object.values(hs.konular).map(String).filter(Boolean).join(" · ").slice(0,160):"";
+  ul.append(anaKaynakOge_("",String(hs.kitap).slice(0,40),String(hs.sayfa||"").slice(0,15),konular));
+  k.append(anaEl_("h4","","Hafta sonu"),ul);
+  kartlar.push(k);
+ }
+ document.getElementById("anaKaynakGunler").replaceChildren(...kartlar);
+ document.getElementById("anaKaynakEvBolum").hidden=!kartlar.length;
+ if(!kartlar.length&&!paket.length){kutu.hidden=true;return}
+ document.getElementById("anaKaynakYazi").textContent=String(h.baslik||"").slice(0,60);
+ kutu.hidden=false;
+}
+/* Ders Programım: sitedeki kaynak-kitap/ders-programi.json; bugünün sütunu vurgulu. Kapalı başlar, kısayoldan açılır. */
+var anaProgram_=null;
+const DERS_PROGRAMI_ADRESI_="https://ismailkaya33.github.io/4.SINIF/kaynak-kitap/ders-programi.json";
+const ANA_GUN_ADLARI_=["Pazartesi","Salı","Çarşamba","Perşembe","Cuma"];
+function anaProgramCiz_(){
+ const kutu=document.getElementById("anaProgram"),p=anaProgram_;
+ if(!kutu)return;
+ if(!p||!p.gunler||typeof p.gunler!=="object"||!Array.isArray(p.saatler)){kutu.hidden=true;return}
+ const bugunAd=ANA_GUN_ADLARI_[new Date().getDay()-1]||"";
+ const tablo=document.getElementById("anaProgramTablo"),bas=anaEl_("tr");
+ bas.append(anaEl_("th","","Saat"));
+ ANA_GUN_ADLARI_.forEach(g=>bas.append(anaEl_("th",g===bugunAd?"bugun":"",g)));
+ const satirlar=p.saatler.slice(0,8).map((s,i)=>{
+  const tr=anaEl_("tr");tr.append(anaEl_("td","saat",(i+1)+". ders\n"+String(s.bas||"")+"–"+String(s.bit||"")));
+  ANA_GUN_ADLARI_.forEach(g=>{const ders=String(((p.gunler[g]||[])[i])||"");
+   const kisa=ANA_DERSLER_.find(x=>x[0]===ders||ders.startsWith(x[0].split(" ")[0]+" "));
+   tr.append(anaEl_("td",(kisa?"ders-"+kisa[1]:"")+(g===bugunAd?" bugun":""),ders.slice(0,45)));});
+  return tr;
+ });
+ tablo.replaceChildren(bas,...satirlar);
+ document.getElementById("anaProgramYazi").textContent=String(p.baslik||"").slice(0,80);
+ kutu.hidden=false;
+}
 function anaFiltreleriCiz_(){
  const kutu=document.getElementById("anaFiltreler");
  kutu.replaceChildren(...[["Tümü",""]].concat(ANA_DERSLER_).map(([ad,kisa])=>{
@@ -1391,7 +1386,8 @@ const ANA_KISAYOLLAR_=[
  ["📈 İlerlemem","ilerlemePanel",function(e){e.open=true;return e}],
  ["🏆 Ayın Yıldızları","yildizPanel",function(e){return e}],
  ["📝 Deneme Sınavları","denemeSinavlariBtn",function(e){if(e.getAttribute("aria-expanded")!=="true")e.click();return e.closest("section")}],
- ["🌟 Aylık Raporum","veliRaporPanel",function(e){e.open=true;return e}]
+ ["🌟 Aylık Raporum","veliRaporPanel",function(e){e.open=true;return e}],
+ ["🗓️ Ders Programım","anaProgram",function(e){e.open=true;return e}]
 ];
 function anaKisayollariCiz_(){
  const nav=document.getElementById("anaKisayollar");
@@ -1430,7 +1426,7 @@ function anaFiltreRozet_(){
 }
 function anaYenile_(){
  if(!anaHazir_)return;
- try{anaSirala_();anaFiltreRozet_();anaHaftaCiz_();if(document.body.classList.contains("anaAramada"))anaGuncelle_();}catch(e){}
+ try{anaSirala_();anaFiltreRozet_();anaHaftaCiz_();anaKaynakCiz_();anaProgramCiz_();if(document.body.classList.contains("anaAramada"))anaGuncelle_();}catch(e){}
 }
 (function anaKur_(){
  try{
@@ -1443,6 +1439,8 @@ function anaYenile_(){
   document.getElementById("anaGeri").addEventListener("click",anaAramayiKapat_);
   anaHazir_=true;
   fetch(BU_HAFTA_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(function(j){anaBuHafta_=j;anaYenile_();}).catch(function(){});
+  fetch(KAYNAK_ODEV_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(function(j){anaKaynak_=j;anaYenile_();}).catch(function(){});
+  fetch(DERS_PROGRAMI_ADRESI_+"?t="+Math.floor(Date.now()/300000),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(function(j){anaProgram_=j;anaYenile_();}).catch(function(){});
  }catch(e){/* ana sayfa kurulamazsa portal eskisi gibi çalışır */}
 })();
 </script></body></html>

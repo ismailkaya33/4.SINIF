@@ -1,4 +1,4 @@
-// Sosyometri ("Sınıf Arkadaşlarım"): öğrenci API'si + öğretmen paneli aynı sahte tablo üzerinde uçtan uca.
+// Sosyometri ("Sınıf Arkadaşlarım") portaldan KALDIRILDI (2026-11-26): öğrenci tarafı kapalı, panel yalnız eski sonuçları gösterir/siler.
 // Sahte veri: gerçek öğrenci adı/kodu YOKTUR.
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
 const disp=v=>v===undefined||v===null?'':v instanceof Date?'01.01.2026':String(v).replace(/^'/,'');
@@ -41,120 +41,55 @@ vm.runInContext(['OgretmenVeliOnaylari.gs','OgretmenSosyometri.gs'].map(p=>fs.re
 const J=x=>x===undefined?x:JSON.parse(JSON.stringify(x));
 const wrap=ctx=>new Proxy({},{get:(_,k)=>typeof ctx[k]==='function'?(...a)=>J(ctx[k](...a)):ctx[k]});
 const S=wrap(student),T=wrap(teacher);
-// 1) Tur yokken kart görünmez; geçersiz oturum reddedilir.
-assert.equal(S.ogrenciSosyometri('tok-ada').acik,false);
-assert.equal(S.ogrenciSosyometri('kotu').basarili,false);
-assert.equal(S.ogrenciSosyometri('tok-yok').basarili,false);
-assert.deepEqual(JSON.parse(JSON.stringify(T.ogretmenSosyometri().turlar)),[]);
-// 2) Öğretmen hazırlar: TASLAK, öğrenci görmez; ikinci hazırlık reddedilir.
-T.ogretmenSosyometriHazirla();assert.equal(locked,false);
-assert.throws(()=>T.ogretmenSosyometriHazirla(),/Zaten/);
-let turlar=T.ogretmenSosyometri().turlar;assert.equal(turlar.length,1);assert.equal(turlar[0].durum,'TASLAK');
-const kimlik=turlar[0].kimlik;assert.match(kimlik,/^[0-9]{13}$/);
-assert.equal(S.ogrenciSosyometri('tok-ada').acik,false);
-// 3) Yayımlanınca öğrenci 4 soruyu, 3 seçimi ve kendisi/TEST/çift numara hariç arkadaşları görür.
-T.ogretmenSosyometriDurumDegistir(kimlik,'YAYINDA');
-const v=S.ogrenciSosyometri('tok-ada');
-assert.equal(v.acik,true);assert.equal(v.secim,3);assert.equal(v.cevapladi,false);assert.equal(v.duzeltebilir,true);
-assert.deepEqual(v.sorular.map(s=>s.id),['grup','oyun','oturma','yardim']);
-assert.deepEqual(v.arkadaslar.map(a=>a.ad),['BORA KAYA','CEM ÖZ','DENİZ ŞEN','EFE ARSLAN','FUNDA ÇAKIR']);
-const json=JSON.stringify(v);
-for(const gizli of ['ADA YILMAZ','DENEME HESABI','İKİZ','KOD00','"101"','"102"','"no"'])assert.ok(!json.includes(gizli),'Tarayıcıya gitmemeli: '+gizli);
-v.arkadaslar.forEach(a=>{assert.deepEqual(Object.keys(a).sort(),['ad','id']);assert.match(a.id,/^[0-9a-f]{16}$/)});
-const id=ad=>v.arkadaslar.find(a=>a.ad===ad).id;
-const uc=[id('BORA KAYA'),id('CEM ÖZ'),id('DENİZ ŞEN')];
+
 const hepsi=x=>({grup:x,oyun:x,oturma:x,yardim:x});
-// 4) Hatalı cevaplar kaydedilmez.
-const kotu=[
- hepsi(uc.slice(0,2)),                              // eksik seçim
- hepsi([uc[0],uc[0],uc[1]]),                        // aynı kişi iki kez
- hepsi([uc[0],uc[1],'ffffffffffffffff']),           // bilinmeyen kimlik
- hepsi([uc[0],uc[1],'101']),                        // numara gönderilemez
- {grup:uc,oyun:uc,oturma:uc},                       // eksik soru
- {...hepsi(uc),fazla:uc},                           // fazla soru
- hepsi([uc[0],uc[1],uc[2],id('EFE ARSLAN')]),       // fazla seçim
- null,[]];
-for(const c of kotu)assert.equal(S.sosyometriCevapla('tok-ada',kimlik,c).basarili,false);
-assert.equal(S.sosyometriCevapla('tok-ada','123',hepsi(uc)).basarili,false);
-assert.equal(S.sosyometriCevapla('kotu',kimlik,hepsi(uc)).basarili,false);
-assert.equal(sheets.SOSYOMETRI,undefined,'Hatalı cevapta sayfa bile açılmamalı');
-// Kendini seçemez: Bora'nın listesindeki Ada kimliği Ada'nın kendi listesinde yoktur.
-const vb=S.ogrenciSosyometri('tok-bora');
-assert.ok(!vb.arkadaslar.some(a=>a.ad==='BORA KAYA'));
-const adaKimligi=vb.arkadaslar.find(a=>a.ad==='ADA YILMAZ').id;
-assert.equal(S.sosyometriCevapla('tok-ada',kimlik,hepsi([adaKimligi,uc[0],uc[1]])).basarili,false);
-// 5) Geçerli cevap: numaralarla tek satır; bir kez düzeltme; üçüncü deneme reddedilir.
-let r=S.sosyometriCevapla('tok-ada',kimlik,hepsi(uc));
-assert.equal(r.basarili,true);assert.equal(r.duzeltebilir,true);assert.equal(locked,false);
-assert.equal(sheets.SOSYOMETRI.rows.length,2);
-assert.deepEqual(JSON.parse(sheets.SOSYOMETRI.rows[1][3]).grup,['102','103','104']);
-assert.equal(disp(sheets.SOSYOMETRI.rows[1][2]),'101');
-let tekrar=S.ogrenciSosyometri('tok-ada');
-assert.equal(tekrar.cevapladi,true);assert.equal(tekrar.duzeltebilir,true);assert.deepEqual(tekrar.cevap.grup,uc);
-const yeni=[id('BORA KAYA'),id('EFE ARSLAN'),id('FUNDA ÇAKIR')];
-r=S.sosyometriCevapla('tok-ada',kimlik,{...hepsi(uc),oyun:yeni});
-assert.equal(r.basarili,true);assert.equal(r.duzeltebilir,false);
-assert.equal(sheets.SOSYOMETRI.rows.length,2,'Düzeltme yeni satır açmaz');
-assert.deepEqual(JSON.parse(sheets.SOSYOMETRI.rows[1][3]).oyun,['102','105','106']);assert.equal(sheets.SOSYOMETRI.rows[1][4],1);
-r=S.sosyometriCevapla('tok-ada',kimlik,hepsi(yeni));
-assert.equal(r.basarili,false);assert.match(r.mesaj,/değiştirdin/);
-tekrar=S.ogrenciSosyometri('tok-ada');assert.equal(tekrar.cevapladi,true);assert.equal(tekrar.duzeltebilir,false);
-// Bora'nın görünümünde Ada'nın cevabı yoktur.
-assert.equal(S.ogrenciSosyometri('tok-bora').cevap,null);
-// 6) Bora Ada'yı seçer (karşılıklı); TEST hesabı da cevaplar ama sonuca katılmaz.
-const bid=ad=>vb.arkadaslar.find(a=>a.ad===ad).id;
-assert.equal(S.sosyometriCevapla('tok-bora',kimlik,hepsi([bid('ADA YILMAZ'),bid('CEM ÖZ'),bid('EFE ARSLAN')])).basarili,true);
-const vt=S.ogrenciSosyometri('tok-test');
-assert.equal(vt.arkadaslar.length,6);
-assert.equal(S.sosyometriCevapla('tok-test',kimlik,hepsi(vt.arkadaslar.slice(0,3).map(a=>a.id))).basarili,true);
-// 7) Öğretmen sonuçları.
-turlar=JSON.parse(JSON.stringify(T.ogretmenSosyometri()));
+const sorularJson=JSON.stringify({secim:3,sorular:[{id:'grup',metin:'G'},{id:'oyun',metin:'O'},{id:'oturma',metin:'Y'},{id:'yardim',metin:'Ya'}]});
+// Eski veri: daha önce toplanmış bir tur ve cevapları (anket kaldırılmadan önce yazılmış gibi).
+const kimlik='1763100000000';
+sheets.SOSYOMETRI_TURLARI=makeSheet([['Kimlik','Baslik','SorularJSON','Durum','Olusturma'],["'"+kimlik,'Sınıf Arkadaşlarım (14.11.2026)',sorularJson,'YAYINDA','']]);
+sheets.SOSYOMETRI=makeSheet([['Zaman','TurKimlik','OgrenciNo','CevaplarJSON','DuzeltmeSayisi'],
+ ['',"'"+kimlik,'101',JSON.stringify({...hepsi(['102','103','104']),oyun:['102','105','106']}),1],
+ ['',"'"+kimlik,'102',JSON.stringify(hepsi(['101','103','105'])),0],
+ ['',"'"+kimlik,'140',JSON.stringify(hepsi(['101','102','103'])),0]]);
+const satirSayisi=sheets.SOSYOMETRI.rows.length;
+// 1) Öğrenci tarafı: tur YAYINDA görünse bile anket kapalı; cevap kaydedilmez.
+for(const tok of ['tok-ada','tok-bora','tok-test','kotu']){
+ const v=S.ogrenciSosyometri(tok);assert.equal(v.acik,false);assert.equal(v.arkadaslar,undefined);assert.equal(v.cevap,undefined);
+ const r=S.sosyometriCevapla(tok,kimlik,hepsi(['a','b','c']));assert.equal(r.basarili,false);assert.match(r.mesaj,/kapatıldı/);
+}
+assert.equal(sheets.SOSYOMETRI.rows.length,satirSayisi,'Kaldırılan anket tabloya yazmaz');
+// 2) Öğretmen: yeni tur hazırlanamaz, yeniden açılamaz; eski sonuçlar okunur.
+assert.throws(()=>T.ogretmenSosyometriHazirla(),/kaldırıldı/);
+assert.throws(()=>T.ogretmenSosyometriDurumDegistir(kimlik,'YAYINDA'),/kaldırıldı/);
+assert.throws(()=>T.ogretmenSosyometriDurumDegistir(kimlik,'TASLAK'),/kaldırıldı/);
+assert.equal(sheets.SOSYOMETRI_TURLARI.rows.length,2);
+let turlar=J(T.ogretmenSosyometri());
 const a=turlar.turlar[0].analiz,ad=i=>a.ogrenciler[i].ad,ix=n=>a.ogrenciler.findIndex(o=>o.ad===n);
 assert.equal(turlar.ogrenciSayisi,6);
 assert.equal(a.cevapSayisi,2);assert.equal(a.testCevapSayisi,1);assert.equal(a.duzeltmeSayisi,1);
-assert.ok(!JSON.stringify(turlar).includes('"101"'),'Öğretmen yanıtında da numara yok');
+assert.ok(!JSON.stringify(turlar).includes('"101"'),'Öğretmen yanıtında numara yok');
 assert.deepEqual(a.sorular.grup.karsilikli.map(p=>p.map(ad).sort()),[['ADA YILMAZ','BORA KAYA']]);
-assert.deepEqual(a.sorular.oyun.karsilikli.map(p=>p.map(ad).sort()),[['ADA YILMAZ','BORA KAYA']]);
 assert.equal(a.sorular.grup.alinan[ix('CEM ÖZ')],2);
-assert.equal(a.sorular.oyun.alinan[ix('CEM ÖZ')],1);
 assert.deepEqual(a.sorular.oyun.secilmeyen.map(ad).sort(),['DENİZ ŞEN']);
 assert.deepEqual(a.sorular.grup.secilmeyen.map(ad).sort(),['FUNDA ÇAKIR']);
-assert.deepEqual(a.sorular.tumu.secilmeyen,[],'Her öğrenci en az bir soruda seçildi');
-assert.equal(a.sorular.tumu.alinan[ix('CEM ÖZ')],2*4-1);
-assert.equal(a.sorular.tumu.karsilikli.length,1);
-assert.deepEqual(a.ogrenciler.filter(o=>o.cevapladi).map(o=>o.ad).sort(),['ADA YILMAZ','BORA KAYA']);
-// Saf analiz: kendini seçme ve bilinmeyen numara sayılmaz.
+assert.deepEqual(a.sorular.tumu.secilmeyen,[]);
 const saf=T.sosyometriAnalizi_([{no:'1',ad:'A'},{no:'2',ad:'B'}],[['',"'9",'1',JSON.stringify({grup:['1','2','99']}),0]],'9',[{id:'grup'}],[]);
 assert.deepEqual(Array.from(saf.sorular.grup.alinan),[0,1]);
-// 8) Kapanınca öğrenci göremez ve cevaplayamaz; yayındayken silme reddedilir.
+// 3) KVKK: açıkken silme reddedilir; kapatılınca cevaplar kalıcı silinir.
 assert.throws(()=>T.ogretmenSosyometriCevaplariniSil(kimlik),/kapatın/);
 T.ogretmenSosyometriDurumDegistir(kimlik,'ARSIV');
-assert.equal(S.ogrenciSosyometri('tok-ada').acik,false);
-assert.equal(S.sosyometriCevapla('tok-bora',kimlik,hepsi([bid('ADA YILMAZ'),bid('CEM ÖZ'),bid('EFE ARSLAN')])).basarili,false);
-// 9) Yeni tur: önceki tur cevapları yenisine karışmaz; aynı anda iki tur yayımlanamaz.
-T.ogretmenSosyometriHazirla();
-const ikinci=T.ogretmenSosyometri().turlar[0].kimlik;assert.notEqual(ikinci,kimlik);
-T.ogretmenSosyometriDurumDegistir(ikinci,'YAYINDA');
-assert.throws(()=>T.ogretmenSosyometriDurumDegistir(kimlik,'YAYINDA'),/Başka/);
-const v2=S.ogrenciSosyometri('tok-ada');assert.equal(v2.cevapladi,false);assert.ok(v2.arkadaslar[0].id!==v.arkadaslar[0].id,'Kimlikler tura özel');
-assert.equal(S.sosyometriCevapla('tok-ada',ikinci,hepsi(v2.arkadaslar.slice(0,3).map(a=>a.id))).basarili,true);
-// 10) KVKK: kapalı turun cevapları kalıcı silinir, diğer tur etkilenmez.
-const once=sheets.SOSYOMETRI.rows.length;
-const sil=T.ogretmenSosyometriCevaplariniSil(kimlik);assert.equal(sil.silinen,3);
-assert.equal(sheets.SOSYOMETRI.rows.length,once-3);
-assert.ok(sheets.SOSYOMETRI.rows.slice(1).every(x=>disp(x[1])===ikinci));
+assert.equal(T.ogretmenSosyometriCevaplariniSil(kimlik).silinen,3);
+assert.equal(sheets.SOSYOMETRI.rows.length,1);
 assert.match(sheets.SOSYOMETRI_TURLARI.rows[1][1],/cevaplar silindi/);
 assert.equal(locked,false);
-// 11) Sayfaların betikleri sözdizimi açısından geçerli ve yeni işlevler bağlı.
+// 4) Sayfalar: öğrenci sayfasında sosyometri izi yok; panelde sonuç bölümü var, hazırla/yayımla düğmesi yok.
 const portal=fs.readFileSync('portal/appsscript/OgrenciGiris_Guncel.html','utf8');
 const rapor=fs.readFileSync('portal/ogretmen-rapor/OgretmenRapor.html','utf8');
 for(const html of [portal,rapor])for(const b of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi))new vm.Script(b[1]);
-assert.match(portal,/id="sosyometriAlani"/);assert.match(portal,/\.ogrenciSosyometri\(token\)/);assert.match(portal,/\.sosyometriCevapla\(token,v\.tur\.kimlik,veri\)/);
-assert.equal((portal.match(/anketleriYukle\(\);sosyometriYukle\(\);/g)||[]).length,2,'Girişte ve sayfa yenilemede yüklenir');
-assert.match(portal,/sosyoIstekSirasi\+\+;document\.getElementById\("sosyometriAlani"\)\.replaceChildren\(\)/,'Çıkışta temizlenir');
-assert.match(rapor,/id='sociometryPanel'/);assert.match(rapor,/\.ogretmenSosyometri\(\)/);
+assert.ok(!/sosyo/i.test(portal),'Öğrenci sayfasında sosyometri kalmadı');
+assert.match(rapor,/id='sociometryPanel'/);assert.match(rapor,/\.ogretmenSosyometri\(\)/);assert.match(rapor,/portaldan kaldırıldı/);
+assert.ok(!/ogretmenSosyometriHazirla\(\)|Öğrencilere aç|Yeniden aç/.test(rapor),'Panelde açma düğmesi yok');
 const sync=fs.readFileSync('.github/scripts/prepare-appsscript-sync.mjs','utf8');
-assert.match(sync,/portal\/appsscript\/Sosyometri\.gs/);assert.match(sync,/portal\/ogretmen-rapor\/OgretmenSosyometri\.gs/);
-// Öğrenci projesinde öğretmen işlevi yok (başkasının cevabını okuyan öğrenci API'si olmamalı).
-assert.equal(typeof S.ogretmenSosyometri,'undefined');assert.ok(!/OZEL_TABLO_ID|openById/.test(fs.readFileSync('portal/appsscript/Sosyometri.gs','utf8')));
-console.log('PASS: sosyometri — tur/yayın, sınıf listesi gizliliği, doğrulama, tek cevap + bir düzeltme, TEST hariç analiz, karşılıklı/seçilmeyen, tur ayrımı, KVKK silme, sayfa sözdizimi.');
+assert.match(sync,/portal\/appsscript\/Sosyometri\.gs/,'Kilit dosyası eşitlenmeye devam eder (eski kod canlıda kalmasın)');
+assert.equal(typeof S.ogretmenSosyometri,'undefined');assert.ok(!/OZEL_TABLO_ID|openById|SpreadsheetApp/.test(fs.readFileSync('portal/appsscript/Sosyometri.gs','utf8')));
+console.log('PASS: sosyometri kaldırıldı — öğrenci tarafı kapalı ve yazmaz, öğretmen yeni tur açamaz, eski sonuç analizi, kapat + KVKK silme, sayfalarda iz yok.');
