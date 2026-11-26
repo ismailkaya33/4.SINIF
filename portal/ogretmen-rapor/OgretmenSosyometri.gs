@@ -148,8 +148,13 @@ function ogretmenSosyometri() {
   return {turlar: turlar, ogrenciSayisi: kadro.ogrenciler.length, veliOnayi: kadro.veliOnayi};
 }
 
+/** Anket portaldan kaldırıldı (öğretmenin kararı 2026-11-26): yeni tur hazırlanmaz, tur yeniden açılmaz.
+ * Panel yalnız eski sonuçları gösterir, açık turu kapatır ve kapalı turun cevaplarını kalıcı siler. */
+const SOSYOMETRI_KALDIRILDI_ = true;
+
 /** Şablondan TASLAK tur ekler. Açık (taslak/yayında) bir tur varken yenisi eklenmez. */
 function ogretmenSosyometriHazirla() {
+  if (SOSYOMETRI_KALDIRILDI_) throw Error('Sosyometri anketi portaldan kaldırıldı; yeni anket hazırlanamaz.');
   const ss = sosyoOgretmenTablosu_();
   const lock = LockService.getScriptLock(); lock.waitLock(10000);
   try {
@@ -173,6 +178,7 @@ function ogretmenSosyometriHazirla() {
 function ogretmenSosyometriDurumDegistir(kimlik, durum) {
   const hedef = String(kimlik || ''), yeni = String(durum || '').toUpperCase();
   if (!/^[0-9]{13}$/.test(hedef) || ['TASLAK', 'YAYINDA', 'ARSIV'].indexOf(yeni) < 0) throw Error('Anket veya durum geçersiz.');
+  if (SOSYOMETRI_KALDIRILDI_ && yeni !== 'ARSIV') throw Error('Sosyometri anketi portaldan kaldırıldı; yalnız kapatılabilir.');
   const sh = sosyoOgretmenTablosu_().getSheetByName(OGR_SOSYO_TUR_SAYFASI_);
   if (!sh) throw Error('SOSYOMETRI_TURLARI sayfası bulunamadı.');
   const lock = LockService.getScriptLock(); lock.waitLock(10000);

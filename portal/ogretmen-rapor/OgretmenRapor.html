@@ -150,7 +150,7 @@ button.secondary{background:var(--brand-bg);color:var(--brand-d)}button.secondar
 <section id='surveyPanel' class='reportSection'><h2>📝 Anketler</h2><p class="muted">Hazır anketi ekleyince TASLAK olur; öğrenciler siz “Yayımla” diyene kadar görmez. Her öğrenci bir kez cevaplar. Misafir (TEST) cevapları sayılmaz.</p>
 <h3>Hazır anketler</h3><div id="hazirAnketler"><p class="empty">Hazır anketler okunuyor...</p></div><span id="anketMesaj" role="status"></span>
 <h3>Anketlerim ve sonuçlar</h3><p id="anketListeMesaj" role="status"></p><div id="anketListe"></div><button id="anketYenile" class="secondary" type="button">Anketleri yenile</button></section>
-<section id='sociometryPanel' class='reportSection'><h2>👫 Sınıf Arkadaşlarım (sosyometri)</h2><p class="muted">Öğrenciler 4 soruda (grup çalışması, teneffüs, yan yana oturma, yardım isteme) 3'er arkadaş seçer. Anket açıkken cevabını bir kez değiştirebilir. Olumsuz seçim sorusu yoktur. Misafir (TEST) cevapları sonuçlara katılmaz.</p>
+<section id='sociometryPanel' class='reportSection'><h2>👫 Sınıf Arkadaşlarım (sosyometri)</h2><p class="sgCare"><b>Anket portaldan kaldırıldı (26.11.2026).</b> Öğrenciler artık görmez ve cevaplayamaz. Aşağıda yalnız toplanan sonuçlar durur; raporu hazırladıktan sonra anketi kapatıp “🗑 Cevapları kalıcı sil” ile silmeniz önerilir (KVKK).</p><p class="muted">Öğrenciler 4 soruda (grup çalışması, teneffüs, yan yana oturma, yardım isteme) 3'er arkadaş seçer. Anket açıkken cevabını bir kez değiştirebilir. Olumsuz seçim sorusu yoktur. Misafir (TEST) cevapları sonuçlara katılmaz.</p>
 <p class="sgPrivacy">🔒 Bu sonuçlar yalnız sizin içindir. Öğrencilerle, velilerle ya da başka sınıflarla paylaşmayın; ekran tahtaya yansıtılırken bu bölümü açmayın. Amaç çocukları etiketlemek değil; oturma düzenini, grup çalışmalarını planlamak ve yalnız kalabilecek çocukları erkenden fark etmektir. İşiniz bitince kapanmış anketin cevaplarını buradan kalıcı olarak silebilirsiniz.</p>
 <p id="sosyoMesaj" role="status"></p><div id="sosyoAlan"><p class="empty">Sosyometri okunuyor...</p></div><button id="sosyoYenile" class="secondary" type="button">Sosyometriyi yenile</button></section>
 <section id='consentPanel' class='reportSection'><h2>🔐 Veli onayları (KVKK)</h2><p class="muted">Velilere giden onay formundaki cevaplar özel tablonuzdaki <b>VELI_ONAYLARI</b> sayfasına yazılır: her öğrencinin satırında ilgili sütuna <b>EVET</b> ya da <b>HAYIR</b>. “HAYIR” yazılan çocuk o bölümde portalda yer almaz (sosyometride görünmez ve katılamaz; davranış raporu gösterilmez; Ayın Yıldızları'nda adı çıkmaz). Portal kullanımına “HAYIR” diyen çocuğa giriş kodu vermeyin.</p>
@@ -572,23 +572,15 @@ function sosyometriListele(sonMesaj){
    else{const parcalar=[];if(vo.hayir)parcalar.push('Velisi onaylamayan '+vo.hayir+' öğrenci listeye ve sonuçlara alınmadı.');if(vo.bekleyen)parcalar.push(vo.bekleyen+' öğrencinin sosyometri onayı tabloya henüz işlenmedi (“EVET” ya da “HAYIR” yazılmamış).');
     if(parcalar.length)u.textContent='🔐 '+parcalar.join(' ');else{u.className='sgCare allChosen';u.textContent='🔐 Bütün öğrencilerin sosyometri onayı işlendi.'}}
    el.appendChild(u)}
-  if(!turlar.some(function(t){return t.durum==='TASLAK'||t.durum==='YAYINDA'})){
-   const box=document.createElement('div'),p=document.createElement('p'),b=document.createElement('button');box.className='announcement';
-   p.textContent=turlar.length?'Yeni bir tur (ör. dönem sonunda karşılaştırmak için) hazırlayabilirsiniz. Önce taslak olur; siz yayımlayana kadar öğrenciler görmez.':'Sosyometri anketi henüz hazırlanmadı. Hazırlayınca taslak olur; siz yayımlayana kadar öğrenciler görmez.';
-   b.type='button';b.textContent='Sosyometri anketini hazırla (taslak)';
-   b.addEventListener('click',function(){b.disabled=true;msg.textContent='Hazırlanıyor...';google.script.run.withSuccessHandler(sosyometriListele).withFailureHandler(function(e){b.disabled=false;msg.textContent='Hata: '+(e&&e.message||'Hazırlanamadı');}).ogretmenSosyometriHazirla()});
-   box.append(p,b);el.appendChild(box);
-  }
+  if(!turlar.length){const e=document.createElement('p');e.className='empty';e.textContent='Kayıtlı sosyometri sonucu yok.';el.appendChild(e)}
   turlar.forEach(function(t,k){
    const box=document.createElement('details'),sum=document.createElement('summary'),body=document.createElement('div'),durumAd={YAYINDA:'Yayında',TASLAK:'Taslak',ARSIV:'Kapalı'}[t.durum]||t.durum;
    box.open=k===0;sum.className='plain';sum.textContent=t.baslik+' — '+durumAd+' · '+t.analiz.cevapSayisi+'/'+r.ogrenciSayisi+' cevap';body.style.padding='0 16px 14px';
    function btn(label,cls,soru,calistir){const b=document.createElement('button');b.type='button';b.textContent=label;if(cls)b.className=cls;b.style.margin='0 8px 8px 0';b.addEventListener('click',function(){if(!confirm(soru))return;b.disabled=true;calistir(b)});return b}
    function durumBtn(next,label,cls,soru){return btn(label,cls,soru,function(b){google.script.run.withSuccessHandler(sosyometriListele).withFailureHandler(function(e){b.disabled=false;msg.textContent='İşlem hatası: '+(e&&e.message||'Bilinmiyor');}).ogretmenSosyometriDurumDegistir(t.kimlik,next)})}
    const bar=document.createElement('p');
-   if(t.durum==='TASLAK')bar.append(durumBtn('YAYINDA','Öğrencilere aç (yayımla)','', 'Sosyometri anketi öğrencilerin portalında görünsün mü?'),durumBtn('ARSIV','Vazgeç (kapat)','secondary','Bu taslak kapatılsın mı?'));
-   else if(t.durum==='YAYINDA')bar.append(durumBtn('ARSIV','Anketi kapat','secondary','Anket kapatılsın mı? Öğrenciler artık cevaplayamaz ve değiştiremez; sonuçlar burada kalır.'));
+   if(t.durum==='TASLAK'||t.durum==='YAYINDA')bar.append(durumBtn('ARSIV','Anketi kapat','secondary','Anket kapatılsın mı? Sonuçlar burada kalır; kapanınca cevaplar kalıcı silinebilir.'));
    else{
-    bar.append(durumBtn('YAYINDA','Yeniden aç','secondary','Anket yeniden açılsın mı? Cevaplamayanlar cevaplayabilir.'));
     if(t.analiz.cevapSayisi||t.analiz.testCevapSayisi)bar.append(btn('🗑 Cevapları kalıcı sil','secondary','Bu anketin bütün cevapları tablodan KALICI olarak silinsin mi? Bu işlem geri alınamaz.',function(b){google.script.run.withSuccessHandler(function(s){sosyometriListele('🗑 '+(s&&s.silinen||0)+' cevap kalıcı olarak silindi.')}).withFailureHandler(function(e){b.disabled=false;msg.textContent='Silme hatası: '+(e&&e.message||'Bilinmiyor');}).ogretmenSosyometriCevaplariniSil(t.kimlik)}));
    }
    body.append(bar,sosyoSonucCiz(t,r.ogrenciSayisi));box.append(sum,body);el.appendChild(box);

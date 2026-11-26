@@ -40,9 +40,12 @@ for(const [v,b] of [['HAYIR','HAYIR'],['hayır','HAYIR'],['Hayir','HAYIR'],[' h 
 
 // Tablo yokken her şey eskisi gibi çalışır.
 assert.equal(T.ogretmenVeliOnaylari().tabloVar,false);
-T.ogretmenSosyometriHazirla();const kimlik=T.ogretmenSosyometri().turlar[0].kimlik;T.ogretmenSosyometriDurumDegistir(kimlik,'YAYINDA');
+// Sosyometri anketi kaldırıldı (2026-11-26); panel eski sonuçları okur. Eski bir tur ve Ada'nın cevabı:
+const kimlik='1763100000000';
+sheets.SOSYOMETRI_TURLARI=makeSheet([['Kimlik','Baslik','SorularJSON','Durum','Olusturma'],["'"+kimlik,'Sınıf Arkadaşlarım',JSON.stringify({secim:3,sorular:[{id:'grup',metin:'G'}]}),'ARSIV','']]);
+sheets.SOSYOMETRI=makeSheet([['Zaman','TurKimlik','OgrenciNo','CevaplarJSON','DuzeltmeSayisi'],['',"'"+kimlik,'101',JSON.stringify({grup:['102','103','104']}),0]]);
 assert.equal(T.ogretmenSosyometri().veliOnayi.tabloVar,false);
-assert.equal(S.ogrenciSosyometri('tok-ada').arkadaslar.length,3);
+assert.equal(T.ogretmenSosyometri().turlar[0].analiz.ogrenciler.length,4);
 
 // Öğretmen tabloyu hazırlar: TEST hariç 4 satır; ikinci kez eksik yoksa satır eklenmez, var olan değerlere dokunmaz.
 assert.equal(T.ogretmenVeliOnayTablosuHazirla().eklenen,4);
@@ -62,25 +65,12 @@ const sos=oz.alanlar.find(a=>a.id==='Sosyometri');
 assert.equal(oz.ogrenciSayisi,4);assert.equal(sos.evet,2);assert.equal(sos.hayir,1);assert.equal(sos.bos,1);assert.deepEqual(sos.hayirAdlar,['BORA KAYA']);
 assert.equal(oz.alanlar.find(a=>a.id==='Portal').bos,4);
 
-// Sosyometri: Bora listede yok, kendisi kartı görmez ve cevap gönderemez.
-yeniCagri();
-const va=S.ogrenciSosyometri('tok-ada');
-assert.deepEqual(va.arkadaslar.map(a=>a.ad),['CEM ÖZ','DENİZ ŞEN']);
-assert.equal(va.secim,2,'Seçilebilecek kişi azsa seçim sayısı ona iner');
-yeniCagri();
-assert.equal(S.ogrenciSosyometri('tok-bora').acik,false);
-const eskiId=S.sosyoArkadasKimligi_(kimlik,'101');
-yeniCagri();
-const r=S.sosyometriCevapla('tok-bora',kimlik,{grup:[eskiId],oyun:[eskiId],oturma:[eskiId],yardim:[eskiId]});
-assert.equal(r.basarili,false);assert.equal(sheets.SOSYOMETRI,undefined);
-// Ada'nın cevabı kaydedilir; öğretmen analizinde Bora yoktur, uyarı sayıları doğrudur.
-yeniCagri();
-const ids=va.arkadaslar.map(a=>a.id);
-assert.equal(S.sosyometriCevapla('tok-ada',kimlik,{grup:ids,oyun:ids,oturma:ids,yardim:ids}).basarili,true);
+// Sosyometri: velisi HAYIR diyen Bora öğretmen analizine girmez; Bora'yı seçen cevap sayılmaz.
 const t=T.ogretmenSosyometri();
 assert.deepEqual(t.turlar[0].analiz.ogrenciler.map(o=>o.ad),['ADA YILMAZ','CEM ÖZ','DENİZ ŞEN']);
 assert.deepEqual(t.veliOnayi,{tabloVar:true,hayir:1,bekleyen:1});
 assert.equal(t.ogrenciSayisi,3);
+assert.equal(t.turlar[0].analiz.sorular.grup.alinan.reduce((x,y)=>x+y,0),2,"Bora'ya verilen seçim sayılmaz");
 
 // Davranış raporu: Bora'nın raporu gösterilmez, Ada'nınki gösterilir.
 sheets.VELI_RAPORLARI=makeSheet([['Ay','Dönem','Öğrenci','O','OP','G','GP','%','Olumlu','Geliştirme','Durum'],

@@ -1,5 +1,7 @@
 ﻿# Sosyometri ("Sınıf Arkadaşlarım") — gizlilik notu
 
+> **2026-11-26: Anket portaldan kaldırıldı** (öğretmenin kararı). Öğrenci sayfasında kart yok; `Sosyometri.gs` yalnız kilit (anket hep kapalı, cevap yazılmaz). Öğretmen paneli eski sonuçları gösterir, açık turu kapatır ve kapalı turun cevaplarını kalıcı siler; yeni tur açılamaz. Değerlendirme raporu bittikten sonra cevapların silinmesi önerilir.
+
 Öğretmenin kararı (2026-11-14): 4 soru (grup çalışması, teneffüs, yan yana oturma, yardım isteme), her soruda 3 seçim,
 kayıtlı (kimin kimi seçtiği tutulur), anket açıkken bir kez düzeltme. Olumsuz seçim sorusu bilerek yok.
 
