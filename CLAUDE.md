@@ -51,6 +51,9 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
   `Turkce, Matematik, Fen, Sosyal, Insanhaklari, Trafik, Oyunlar`. Kodsuz katalog: `materyaller.html`.
 - **İçerik listesi:** `icerik-katalogu.json`. Ders klasörüne `.html` gelince GitHub Actions (`icerik-katalogu.yml`) listeye
   ekler; portal, öğretmen raporu ve katalog bu listeden okur. Gizlemek: `"gizli": true`.
+- **Açık kütüphane:** `kutuphane.html` (site kökü) — başka öğretmen/öğrenciler için **anonim**, girişsiz, sonuçsuz liste;
+  aynı katalogdan okur, ders → `"unite"` alanına göre gruplar (Türkçe'de beceri alanı). Yeni etkinliğin `"unite"`'ı yoksa
+  "Yeni eklenenler"de görünür → Claude yıllık plana göre ekler. Etkinliklerde okul/öğretmen/öğrenci adı geçmez (öğretmenin kararı 2026-11-26).
 - **Öğrenci portalı + öğretmen raporu:** Google Apps Script. Kaynağı `hazirlik/kazanim-takibi-20261101` dalında `portal/`.
   Bu dala `portal/appsscript/**` veya `portal/ogretmen-rapor/**` gönderimi **anında canlıya** çıkar → önce öğretmenin onayı.
 - **Sonuç akışı:** öğrenci 6 haneli kodla girer → takipli etkinlik portal içinde açılır → etkinlik `postMessage`

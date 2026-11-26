@@ -36,6 +36,8 @@ export function katalogYaz(k) {
   const satirlar = k.icerikler.map(x => {
     const s = {yol: x.yol, ad: x.ad, ders: x.ders, eklenme: x.eklenme, gizli: !!x.gizli};
     if (x.degerlendirme === 'konu' || x.degerlendirme === 'unite') s.degerlendirme = x.degerlendirme;
+    // "unite": herkese açık kütüphanede (kutuphane.html) etkinliğin hangi ünite başlığında duracağı. Yoksa "Yeni eklenenler"de görünür.
+    if (typeof x.unite === 'string' && x.unite.trim()) s.unite = x.unite.trim();
     return '    ' + JSON.stringify(s);
   });
   return '{\n' +
