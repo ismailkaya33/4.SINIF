@@ -79,6 +79,7 @@
     {"yol":"Sosyal/krokiatolyesi.html","ad":"Kroki Atölyesi","ders":"Sosyal Bilgiler","eklenme":"2026-11-20","gizli":false},
     {"yol":"Trafik/ulasimaraclari.html","ad":"Ulaşım Araçları Karşılaştırma","ders":"Trafik Güvenliği","eklenme":"2026-11-20","gizli":false},
     {"yol":"Turkce/bilgidedektifi.html","ad":"Bilgi Dedektifi: Güvenilir Kaynak","ders":"Türkçe","eklenme":"2026-11-20","gizli":false},
-    {"yol":"Turkce/gercekmihayalmi.html","ad":"Gerçek mi Hayal mi? Hikâye Atölyesi","ders":"Türkçe","eklenme":"2026-11-20","gizli":false}
+    {"yol":"Turkce/gercekmihayalmi.html","ad":"Gerçek mi Hayal mi? Hikâye Atölyesi","ders":"Türkçe","eklenme":"2026-11-20","gizli":false},
+    {"yol":"Matematik/carpmaatolyesi.html","ad":"Çarpma Atölyesi — Alt Alta Çarpma","ders":"Matematik","eklenme":"2026-11-26","gizli":false}
   ]
 }
