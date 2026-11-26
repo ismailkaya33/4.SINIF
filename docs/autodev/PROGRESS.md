@@ -121,3 +121,10 @@ Engel yok.
 1. Bu çalışmada hiçbir şey değişmedi.
 2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
 Engel yok.
+
+## 2026-11-26 00:16 UTC (on beşinci çalışma)
+- ONAYLI boştu; yeni güvenli küçük düzeltme bulunmadı. Kod değişmedi, test çalıştırılmadı.
+Öğretmenin bakmasi gerekenler:
+1. Bu çalışmada hiçbir şey değişmedi.
+2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
+Engel yok.
