@@ -1,0 +1,17 @@
+{
+  "id": "./kutuphane.html",
+  "name": "4. Sınıf Etkinlik Kütüphanesi",
+  "short_name": "Etkinlikler",
+  "description": "4. sınıf için ücretsiz, giriş gerektirmeyen interaktif etkinlikler",
+  "lang": "tr",
+  "start_url": "./kutuphane.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffe6cc",
+  "theme_color": "#ffe6cc",
+  "icons": [
+    {"src": "kutuphane-ikon/ikon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "kutuphane-ikon/ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}

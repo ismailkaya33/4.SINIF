@@ -3,14 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="kutuphane.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="kutuphane-ikon/ikon-192.png">
+  <link rel="apple-touch-icon" href="kutuphane-ikon/ikon-180.png">
+  <meta name="theme-color" content="#ffe6cc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Etkinlikler">
   <title>4. Sınıf Etkinlik Kütüphanesi</title>
   <meta name="description" content="4. sınıf için ücretsiz, giriş gerektirmeyen interaktif etkinlik kütüphanesi. Ders ve üniteye göre bulun, açın ve kullanın. Sonuç kaydedilmez.">
   <style>
-    :root { color-scheme: light dark; --bg:#f7f8f4; --surface:#fff; --ink:#243b38; --muted:#596b66; --line:#dce4dc; --accent:#24644d; --hero:#eaf2e7; --shadow:0 5px 18px #243b3809; --focus:#155fc0; --chip:#edf2ec; }
+    :root { color-scheme:light dark; --bg:#ffe6cc; --surface:#fff; --ink:#192b42; --muted:#5a5248; --line:#f3d3b3; --hero:#fff4e6; --chip:#edf1f5; --focus:#125aca; --shadow:0 5px 20px #24354b08; --accent:#254e87; }
     * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
     button,input { font:inherit; }
-    button,a,summary { -webkit-tap-highlight-color:transparent; }
+    button,a,summary { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
     button { cursor:pointer; }
     a { color:inherit; }
     :focus-visible { outline:3px solid var(--focus); outline-offset:4px; }
@@ -18,131 +25,228 @@
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
     .skip { position:fixed; top:12px; left:12px; z-index:10; transform:translateY(-180%); background:var(--surface); padding:12px 20px; border-radius:12px; }
     .skip:focus { transform:none; }
-    .wrap { width:min(1240px,calc(100% - 64px)); margin-inline:auto; }
-    .masthead { padding:27px 0 20px; display:flex; justify-content:space-between; gap:16px; align-items:center; font-size:14px; font-weight:650; letter-spacing:.025em; }
+    .wrap { width:min(1120px,calc(100% - 48px)); margin-inline:auto; }
+    .masthead { min-height:64px; display:flex; justify-content:space-between; gap:12px; align-items:center; font-size:13px; font-weight:700; }
     .brand { display:flex; gap:10px; align-items:center; }
-    .book { width:34px; height:34px; color:var(--accent); }
-    .access { display:flex; gap:8px; align-items:center; color:var(--muted); }
-    .access::before { content:""; width:8px; height:8px; background:var(--accent); border-radius:50%; }
-    .hero { position:relative; overflow:hidden; padding:38px 42px; background:var(--hero); border:1px solid var(--line); border-radius:24px; }
-    .eyebrow { margin:0 0 12px; color:var(--accent); font-size:13px; font-weight:750; letter-spacing:.12em; }
-    h1 { margin:0; max-width:850px; font-size:clamp(28px,3.4vw,44px); line-height:1.18; letter-spacing:-.035em; }
-    .intro { max-width:760px; margin:18px 0 20px; color:var(--muted); font-size:18px; }
-    .total { display:inline-flex; align-items:center; min-height:36px; padding:4px 13px; border:1px solid var(--line); border-radius:30px; background:var(--surface); font-size:14px; font-weight:700; }
-    .tools { padding-top:30px; }
-    .search-label { display:block; margin-bottom:8px; font-size:15px; font-weight:700; }
+    .book { width:33px; height:33px; padding:6px; color:#fff; background:#254e87; border-radius:10px; }
+    .access { color:var(--muted); font-size:12px; }
+    .access::before { content:""; display:inline-block; width:7px; height:7px; margin-right:7px; border-radius:50%; background:#278655; }
+    .hero { position:relative; display:flex; justify-content:space-between; align-items:center; gap:20px; min-height:158px; padding:23px 30px; background:var(--hero); border:1px solid #375c4812; border-radius:26px; }
+    .hero-copy { position:relative; z-index:1; min-width:0; }
+    .eyebrow { margin:0 0 5px; color:#3b6651; font-size:11px; font-weight:800; letter-spacing:.15em; }
+    h1 { margin:0; font-size:clamp(26px,3vw,36px); line-height:1.2; letter-spacing:-.04em; font-weight:850; }
+    .intro { margin:9px 0 12px; color:var(--muted); font-size:14px; }
+    .total { display:inline-flex; align-items:center; gap:6px; min-height:27px; padding:3px 10px; border-radius:20px; background:var(--surface); font-size:11px; font-weight:750; }
+    .total::before { content:"✦"; color:#956700; }
+    .mascot { position:relative; display:flex; flex-shrink:0; align-items:center; justify-content:flex-end; gap:6px; width:265px; }
+    .mascot svg { width:132px; height:132px; overflow:visible; filter:drop-shadow(0 7px 0 #1b354810); }
+    .speech { position:relative; align-self:flex-start; max-width:130px; margin-top:9px; padding:10px 12px; color:#24364a; background:#fff; border:1px solid #d9e5dd; border-radius:16px 16px 2px 16px; font-size:13px; font-weight:750; transform:rotate(-4deg); }
+    .owl-wing { transform-origin:140px 91px; animation:wave 3.6s ease-in-out 1; }
+    @keyframes wave { 0%,65%,100% { transform:rotate(0); } 72%,86% { transform:rotate(-12deg); } 79%,93% { transform:rotate(4deg); } }
+    .tools { padding-top:18px; }
     .search-field { position:relative; }
-    .search-field svg { position:absolute; width:23px; height:23px; left:19px; top:18px; color:var(--muted); pointer-events:none; }
-    #search { width:100%; min-height:60px; padding:14px 20px 14px 56px; border:1px solid var(--line); border-radius:14px; color:var(--ink); background:var(--surface); box-shadow:var(--shadow); }
-    #search::placeholder { color:var(--muted); opacity:1; }
-    .tabs { display:flex; gap:8px; overflow-x:auto; padding:18px 4px 14px; scrollbar-width:thin; }
-    .tab { flex-shrink:0; display:flex; align-items:center; gap:9px; min-height:46px; padding:9px 15px; color:var(--muted); border:1px solid var(--line); background:var(--surface); border-radius:11px; font-size:15px; font-weight:650; }
-    .tab[aria-selected="true"] { color:#fff; background:var(--accent); border-color:var(--accent); }
-    .tab-count { min-width:24px; padding:1px 6px; border-radius:6px; background:var(--chip); color:var(--ink); font-size:12px; text-align:center; }
-    .tab[aria-selected="true"] .tab-count { color:#fff; background:#ffffff26; }
-    .result-bar { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:5px 0 24px; color:var(--muted); font-size:14px; }
+    .search-field > svg { position:absolute; width:22px; height:22px; left:18px; top:17px; color:var(--muted); pointer-events:none; }
+    #search { width:100%; min-width:0; min-height:56px; padding:14px 58px 14px 51px; border:1px solid var(--line); border-radius:17px; color:var(--ink); background:var(--surface); box-shadow:var(--shadow); appearance:none; }
+    #search::-webkit-search-cancel-button { appearance:none; }
+    #search::placeholder { color:var(--muted); opacity:1; font-size:14px; }
+    #clear-search { position:absolute; right:6px; top:6px; width:44px; height:44px; padding:0; border:0; border-radius:12px; background:var(--chip); color:var(--ink); font-size:25px; }
+    .quick-nav { display:flex; flex-wrap:wrap; gap:9px; padding:13px 0 10px; }
+    .chip { display:inline-flex; justify-content:center; align-items:center; gap:7px; min-height:44px; padding:9px 16px; border:2px solid transparent; border-radius:30px; text-decoration:none; font-size:13px; font-weight:800; transition:transform .15s; }
+    .chip:hover { transform:translateY(-2px); }
+    .chip[aria-current="page"] { border-color:var(--ink); box-shadow:0 2px 0 var(--ink); }
+    .chip-recent { background:#ffdbcb; color:#8f321e; }
+    .chip-all { background:#fce6a0; color:#624700; }
+    .chip-games { background:#d7eddb; color:#205d3c; }
+    .chip:active { transform:translateY(2px); }
+    .result-bar { display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:29px; margin-bottom:12px; color:var(--muted); font-size:12px; }
     .result-bar p { margin:0; }
-    main { min-height:230px; padding-bottom:40px; }
-    h2 { margin:0; font-size:25px; line-height:1.3; letter-spacing:-.02em; }
-    .section-heading { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
-    .section-count { color:var(--muted); font-size:14px; font-weight:500; }
-    .recent { margin-bottom:38px; }
-    .recent-hint { margin:-9px 0 17px; color:var(--muted); font-size:14px; }
-    .recent-row { display:grid; grid-auto-flow:column; grid-auto-columns:calc((100% - 36px)/3); gap:18px; overflow-x:auto; padding:4px 4px 16px; scroll-snap-type:x proximity; scrollbar-width:thin; }
-    .recent-row .card { scroll-snap-align:start; }
-    .lesson { margin:0 0 38px; --tone:#4c6562; --wash:#eef2f1; }
-    .lesson > .section-heading::before { content:""; width:5px; height:28px; border-radius:6px; background:var(--tone); }
-    .unit { margin-bottom:16px; }
-    .unit summary { display:flex; align-items:center; gap:12px; min-height:52px; padding:10px 2px; cursor:pointer; list-style:none; border-bottom:1px solid var(--line); margin-bottom:17px; }
+    main { min-height:180px; padding-bottom:29px; }
+    h2 { margin:0; font-size:23px; line-height:1.3; letter-spacing:-.025em; }
+    .home-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:0 0 14px; }
+    .home-heading p { margin:0; color:var(--muted); font-size:12px; }
+    .subject-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px 18px; padding-bottom:6px; }
+    [data-color] { --paint:#7c8797; --tone:#4d596b; --edge:#414b59; --wash:#edf0f4; --on:#fff; }
+    [data-color="0"] { --paint:#f9c23c; --tone:#f9c23c; --edge:#c18a0c; --wash:#fff3ce; --on:#382b0c; }
+    [data-color="1"] { --paint:#6c6fd8; --tone:#6063c5; --edge:#464997; --wash:#eeedff; }
+    [data-color="2"] { --paint:#3daa6e; --tone:#287d4e; --edge:#21633f; --wash:#e2f4e8; }
+    [data-color="3"] { --paint:#f2784b; --tone:#b74723; --edge:#8d361b; --wash:#fff0e8; }
+    [data-color="4"] { --paint:#e45c95; --tone:#b93470; --edge:#8f2857; --wash:#ffe9f2; }
+    [data-color="5"] { --paint:#1f4fa0; --tone:#1f4fa0; --edge:#15366d; --wash:#e8efff; }
+    [data-color="6"] { --paint:#1fb5b0; --tone:#087c78; --edge:#05605d; --wash:#dcf7f4; }
+    .subject-button { display:flex; align-items:center; gap:16px; min-width:0; min-height:76px; padding:13px 20px; color:var(--on); background:linear-gradient(105deg,var(--paint) 0%,var(--tone) 18%); border:0; border-radius:22px; box-shadow:0 6px 0 var(--edge); text-decoration:none; transition:transform .15s,box-shadow .15s; }
+    .subject-button:hover { transform:translateY(-2px); box-shadow:0 8px 0 var(--edge); }
+    .subject-button:active { transform:translateY(5px); box-shadow:0 1px 0 var(--edge); }
+    .subject-emoji { flex-shrink:0; display:grid; place-items:center; width:48px; height:48px; border-radius:15px; background:#ffffff24; font-size:31px; line-height:1; }
+    .subject-name { flex:1; min-width:0; font-size:20px; font-weight:800; overflow-wrap:anywhere; line-height:1.3; }
+    .subject-meta { display:flex; align-items:center; justify-content:center; gap:12px; flex-shrink:0; min-width:70px; min-height:40px; padding:5px 12px; border-radius:30px; background:#ffffffdf; color:#27384c; font-size:16px; font-weight:800; }
+    .subject-meta .arrow { font-size:27px; font-weight:500; line-height:1; }
+    .hero.is-lesson { background:var(--tone); color:var(--on); }
+    .back { display:inline-flex; gap:5px; align-items:center; min-height:44px; padding:7px 12px; margin:-9px 0 5px -5px; background:#fff; color:#25354a; border-radius:12px; text-decoration:none; font-size:13px; font-weight:800; }
+    .hero.is-lesson .eyebrow { display:none; }
+    .hero.is-lesson .intro { color:var(--on); opacity:1; margin:7px 0 0; font-weight:650; }
+    .hero.is-lesson .total { display:none; }
+    .hero.is-lesson .mascot { width:235px; }
+    .hero.is-lesson .mascot svg { width:98px; height:98px; }
+    .lesson { margin-bottom:29px; min-width:0; }
+    .lesson-heading { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px; padding:15px 19px; border-radius:18px; background:var(--tone); color:var(--on); }
+    .lesson-heading h2 { display:flex; align-items:center; gap:10px; font-size:22px; }
+    .section-count { margin-left:auto; padding:4px 10px; border-radius:20px; background:#fff; color:#27384c; font-size:12px; font-weight:700; }
+    .view-heading { margin:3px 0 18px; }
+    .view-heading p { margin:5px 0 0; color:var(--muted); font-size:13px; }
+    .unit { margin-bottom:22px; min-width:0; }
+    .unit summary { display:flex; align-items:center; gap:10px; min-height:48px; padding:11px 16px; margin-bottom:14px; cursor:pointer; list-style:none; border-radius:14px; color:var(--ink); background:var(--wash); }
     .unit summary::-webkit-details-marker { display:none; }
-    .unit summary::before { content:"›"; font-size:25px; line-height:1; color:var(--muted); transform:rotate(0); }
+    .unit summary::before { content:"›"; flex-shrink:0; font-size:25px; line-height:1; }
     .unit[open] > summary::before { transform:rotate(90deg); }
-    h3 { margin:0; font-size:17px; font-weight:650; }
-    .unit-count { margin-left:auto; color:var(--muted); font-size:13px; white-space:nowrap; }
-    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; padding:3px; }
-    .card { position:relative; display:flex; flex-direction:column; min-width:0; min-height:215px; background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--tone); border-radius:15px; box-shadow:var(--shadow); transition:transform .16s,box-shadow .16s; }
-    .card:hover { transform:translateY(-2px); box-shadow:0 9px 25px #243b3814; }
-    .card:focus-within { border-color:var(--tone); }
-    .card-link { display:block; flex:1; padding:20px 21px 10px; text-decoration:none; border-radius:12px; }
-    .card-link::after { content:""; position:absolute; inset:0; border-radius:14px; }
-    .card-link:focus-visible { outline:none; }
-    .card-link:focus-visible::after { outline:3px solid var(--focus); outline-offset:3px; }
-    .card-top { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:13px; }
-    .subject { display:inline-block; color:var(--tone); background:var(--wash); padding:3px 8px; border-radius:6px; font-size:12px; font-weight:750; }
-    .badge { display:inline-block; font-size:11px; font-weight:750; color:var(--muted); background:var(--chip); padding:3px 7px; border-radius:6px; }
-    .badge.new { color:var(--accent); background:var(--hero); }
-    .card-name { display:block; font-size:19px; line-height:1.4; font-weight:720; overflow-wrap:anywhere; }
-    .card-unit { display:block; margin-top:9px; color:var(--muted); font-size:13px; overflow-wrap:anywhere; }
-    .card-bottom { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 12px 10px 21px; }
-    .open-hint { color:var(--muted); font-size:12px; }
-    .copy { position:relative; z-index:1; min-height:44px; border:0; border-radius:8px; padding:8px 9px; background:transparent; color:var(--muted); font-size:12px; font-weight:650; }
-    .copy:hover { background:var(--chip); color:var(--ink); }
-    [data-color="0"] { --tone:#a84432; --wash:#fbeee8; }
-    [data-color="1"] { --tone:#2863a1; --wash:#eaf2fc; }
-    [data-color="2"] { --tone:#28704d; --wash:#eaf5ec; }
-    [data-color="3"] { --tone:#98570c; --wash:#fff2de; }
-    [data-color="4"] { --tone:#75509d; --wash:#f3ecfa; }
-    [data-color="5"] { --tone:#80640c; --wash:#f8f1d6; }
-    [data-color="6"] { --tone:#a23f70; --wash:#fbeaf2; }
-    [data-color="7"] { --tone:#4c6562; --wash:#eef2f1; }
-    .notice { padding:30px; border:1px solid var(--line); border-radius:16px; background:var(--surface); text-align:center; }
+    h3 { margin:0; font-size:15px; font-weight:800; overflow-wrap:anywhere; }
+    .unit-count { margin-left:auto; flex-shrink:0; font-size:11px; white-space:nowrap; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .card { position:relative; display:flex; flex-direction:column; min-width:0; min-height:210px; padding:19px 17px 16px 20px; border:1px solid var(--line); border-left:6px solid var(--paint); border-radius:18px; background:var(--surface); box-shadow:var(--shadow); transition:transform .15s,box-shadow .15s; }
+    .card:hover { transform:translateY(-2px); box-shadow:0 8px 22px #1e334116; }
+    .card-top { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-bottom:11px; }
+    .subject { color:var(--ink); font-size:11px; font-weight:750; }
+    .badge { padding:3px 7px; border-radius:7px; background:var(--chip); color:var(--muted); font-size:10px; font-weight:800; }
+    .badge.new { color:#23633d; background:#e2f4e8; }
+    .card-name { display:block; margin:0; font-size:18px; line-height:1.4; font-weight:800; overflow-wrap:anywhere; }
+    .card-unit { margin:8px 0 0; color:var(--muted); font-size:12px; overflow-wrap:anywhere; }
+    .card-bottom { display:flex; align-items:center; gap:9px; margin-top:auto; padding-top:17px; }
+    .play { display:inline-flex; flex:1; align-items:center; justify-content:center; gap:7px; min-height:44px; padding:10px 12px; border:0; border-radius:12px; color:var(--on); background:var(--tone); text-decoration:none; font-size:14px; font-weight:800; }
+    .play:hover { box-shadow:inset 0 0 0 2px currentColor; }
+    .copy { min-height:44px; padding:9px; border:1px solid var(--line); border-radius:12px; color:var(--ink); background:var(--surface); font-size:12px; font-weight:700; }
+    .copy:hover { background:var(--chip); }
+    .notice { padding:28px 20px; border:1px solid var(--line); border-radius:18px; background:var(--surface); text-align:center; }
     .notice p { margin:0 0 14px; }
     .notice p:last-child { margin-bottom:0; }
-    .primary { min-height:46px; padding:10px 20px; background:var(--accent); color:#fff; border:0; border-radius:10px; font-weight:650; }
-    footer { border-top:1px solid var(--line); padding:28px 0 32px; color:var(--muted); font-size:13px; }
-    footer p { margin:0 0 9px; max-width:920px; }
-    .tip { margin-top:17px; font-size:12px; }
+    .primary { min-height:46px; padding:10px 20px; background:var(--accent); color:#fff; border:0; border-radius:12px; font-weight:750; }
+    button:disabled { cursor:wait; opacity:.65; }
+    footer { padding:19px 0 24px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    footer p { margin:0 0 6px; }
+    .tip { margin-top:10px; }
     dialog { width:min(540px,calc(100% - 32px)); padding:26px; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); }
-    dialog::backdrop { background:#132c2b80; }
+    dialog::backdrop { background:#132b4880; }
     dialog h2 { font-size:22px; }
-    dialog p { color:var(--muted); font-size:15px; }
-    dialog label { display:block; margin-bottom:6px; font-size:14px; font-weight:650; }
-    #copy-url { width:100%; min-height:48px; padding:10px; background:var(--bg); color:var(--ink); border:1px solid var(--line); border-radius:8px; }
+    dialog p { color:var(--muted); font-size:14px; }
+    dialog label { display:block; margin-bottom:6px; font-size:14px; font-weight:700; }
+    #copy-url { width:100%; min-height:48px; padding:10px; background:var(--bg); color:var(--ink); border:1px solid var(--line); border-radius:10px; }
     dialog .primary { margin-top:18px; }
-    @media(min-width:1500px) { .grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
-    @media(max-width:1000px) { .grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .recent-row { grid-auto-columns:calc((100% - 18px)/2); } }
-    @media(max-width:600px) { body { font-size:16px; } .wrap { width:calc(100% - 32px); } .masthead { padding-top:18px; font-size:12px; } .access { font-size:11px; } .brand { gap:7px; } .book { width:28px; height:28px; } .hero { padding:27px 23px; border-radius:19px; } .intro { font-size:16px; } .tools { padding-top:23px; } .grid { grid-template-columns:1fr; gap:14px; } .recent-row { grid-auto-columns:86%; gap:14px; } .result-bar { align-items:flex-start; } .result-tip { max-width:130px; text-align:right; font-size:12px; } h2 { font-size:22px; } .unit-count { font-size:12px; } .card { min-height:200px; } .tabs { margin-right:-16px; padding-right:16px; } }
-    @media(prefers-color-scheme:dark) {
-      :root { --bg:#17231f; --surface:#202f29; --ink:#ebf0e9; --muted:#b5c4b9; --line:#3a4c40; --accent:#346e55; --hero:#263d2c; --chip:#32443a; --focus:#97c9ff; --shadow:0 5px 18px #0002; }
-      .eyebrow,.book,.badge.new { color:#b4dca4; }
-      [data-color="0"] { --tone:#f5aa96; --wash:#49352e; }
-      [data-color="1"] { --tone:#a2c9f5; --wash:#293e51; }
-      [data-color="2"] { --tone:#9cd9b2; --wash:#294735; }
-      [data-color="3"] { --tone:#f4c58c; --wash:#483d2c; }
-      [data-color="4"] { --tone:#cfb4f1; --wash:#41334d; }
-      [data-color="5"] { --tone:#e4ce83; --wash:#443f28; }
-      [data-color="6"] { --tone:#f1afcc; --wash:#48313f; }
-      [data-color="7"] { --tone:#bad1cc; --wash:#334742; }
+    @media(max-width:900px) { .grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .hero { padding:21px 24px; } .mascot { width:225px; } .mascot svg { width:110px; height:110px; } .subject-button { padding:13px 16px; gap:12px; } .subject-name { font-size:18px; } }
+    @media(max-width:600px) {
+      .wrap { width:calc(100% - 28px); }
+      .masthead { min-height:57px; font-size:11px; }
+      .access { max-width:110px; text-align:right; font-size:10px; }
+      .book { width:30px; height:30px; }
+      .hero { min-height:187px; align-items:flex-start; padding:19px; border-radius:22px; gap:0; }
+      .hero-copy { width:100%; }
+      h1 { max-width:290px; font-size:28px; line-height:1.15; }
+      .eyebrow { font-size:9px; letter-spacing:.09em; }
+      .intro { max-width:205px; margin:10px 0; font-size:12px; }
+      .total { max-width:210px; font-size:10px; }
+      .mascot { position:absolute; right:5px; bottom:5px; width:94px; }
+      .mascot svg { width:86px; height:86px; }
+      .speech { position:absolute; right:0; bottom:76px; margin:0; padding:6px 9px; max-width:94px; font-size:10px; }
+      .hero:not(.is-lesson) .speech { display:none; }
+      .hero.is-lesson { min-height:188px; padding-right:100px; }
+      .hero.is-lesson h1 { font-size:25px; overflow-wrap:anywhere; }
+      .hero.is-lesson .intro { font-size:13px; }
+      .hero.is-lesson .mascot { width:94px; }
+      .hero.is-lesson .mascot svg { width:82px; height:82px; }
+      .tools { padding-top:14px; }
+      #search { font-size:14px; }
+      #search::placeholder { font-size:12px; }
+      .quick-nav { gap:6px; }
+      .chip { padding:9px 10px; font-size:11px; gap:4px; }
+      .result-bar { font-size:11px; margin-bottom:14px; }
+      .result-tip { display:none; }
+      .subject-grid,.grid { grid-template-columns:1fr; gap:14px; }
+      .subject-button { min-height:79px; padding:12px 15px; gap:13px; }
+      .subject-name { font-size:19px; }
+      .subject-emoji { width:43px; height:43px; font-size:29px; }
+      .subject-meta { min-width:62px; padding:5px 10px; gap:9px; }
+      .home-heading h2 { font-size:21px; }
+      .home-heading p { font-size:11px; }
+      .lesson-heading { padding:14px; }
+      .lesson-heading h2 { font-size:20px; }
+      .unit summary { padding:10px 12px; gap:9px; }
+      .unit-count { font-size:10px; }
+      .card { min-height:198px; }
+      footer { font-size:10px; }
     }
-    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none !important; scroll-behavior:auto !important; } }
+    @media(prefers-color-scheme:dark) {
+      :root { --bg:#101b2d; --surface:#1b293e; --ink:#edf2fa; --muted:#b6c4d7; --line:#35455e; --hero:#213c40; --chip:#304159; --focus:#a5caff; --shadow:0 5px 20px #0002; --accent:#285ca1; }
+      .hero { border-color:var(--line); }
+      .eyebrow { color:#b9dcc7; }
+      [data-color] { --wash:#293347; }
+      [data-color="0"] { --wash:#413a25; }
+      [data-color="1"] { --wash:#303254; }
+      [data-color="2"] { --wash:#233e33; }
+      [data-color="3"] { --wash:#44312b; }
+      [data-color="4"] { --wash:#432d40; }
+      [data-color="5"] { --wash:#253957; }
+      [data-color="6"] { --wash:#203e43; }
+      .badge.new { color:#b5ebc7; background:#264738; }
+      .speech { color:#eaf0fa; background:#1b293e; border-color:#52637b; }
+    }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+
+    .unit-title { margin:0; font-size:15px; font-weight:800; letter-spacing:0; overflow-wrap:anywhere; }
   </style>
 </head>
 <body>
   <a class="skip" href="#etkinlikler">Etkinliklere geç</a>
   <header class="wrap">
     <div class="masthead">
-      <span class="brand"><svg class="book" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 8C11 4 5 5 3 6v20c5-2 9-1 13 2 4-3 8-4 13-2V6c-2-1-8-2-13 2Zm0 0v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M7 11c2-.4 4 0 5 1m-5 4c2-.4 4 0 5 1m8-5c1-1 3-1.4 5-1m-5 6c1-1 3-1.4 5-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Birlikte keşfedelim</span>
+      <span class="brand"><svg class="book" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 8C11 4 5 5 3 6v20c5-2 9-1 13 2 4-3 8-4 13-2V6c-2-1-8-2-13 2Zm0 0v20" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/></svg>Birlikte keşfedelim</span>
       <span class="access">Herkese açık · Ücretsiz</span>
     </div>
-    <div class="hero">
-      <p class="eyebrow">MERAK ET. KEŞFET. ÖĞREN.</p>
-      <h1>4. Sınıf Etkinlik Kütüphanesi</h1>
-      <p class="intro">Ücretsiz, giriş gerektirmeyen interaktif etkinlikler. Sonuç kaydedilmez; sadece açın ve kullanın.</p>
-      <span id="total" class="total">Etkinlikler yükleniyor…</span>
+    <div id="hero" class="hero">
+      <div class="hero-copy">
+        <a id="back" class="back" href="#ders=T%C3%BCm%C3%BC" hidden><span aria-hidden="true">‹</span> Geri</a>
+        <p class="eyebrow">MERAK ET. KEŞFET. ÖĞREN.</p>
+        <h1 id="page-title" tabindex="-1">4. Sınıf Etkinlik Kütüphanesi</h1>
+        <p id="intro" class="intro">Bir ders seç, merakının peşinden git!</p>
+        <span id="total" class="total">Etkinlikler yükleniyor…</span>
+      </div>
+      <div class="mascot" role="img" aria-label="Kitap okuyan güler yüzlü baykuş Bilge">
+        <span id="speech" class="speech" aria-hidden="true">Bugün ne keşfedelim?</span>
+        <svg viewBox="0 0 180 180" fill="none" aria-hidden="true">
+          <path d="m22 42 3-9 3 9 9 3-9 3-3 9-3-9-9-3 9-3Z" fill="#e8ad25"/>
+          <path d="m154 24 2-6 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z" fill="#6b92b6"/>
+          <ellipse cx="92" cy="163" rx="62" ry="7" fill="#193c4820"/>
+          <path d="M44 60 42 24l30 20c12-4 25-4 37 0l29-20-2 39c11 21 10 52-1 71-14 24-71 25-88 1-14-20-17-51-3-75Z" fill="#d99739" stroke="#9f6427" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="m48 35 4 24 15-10-19-14Zm82 0-17 14 14 9 3-23Z" fill="#b96d29"/>
+          <path d="M49 91c0-22 18-40 41-28 24-12 43 5 43 28v25c0 34-84 36-84 0V91Z" fill="#ffeac0"/>
+          <path d="M39 93c-17 0-19 33 5 42l9-13-14-29Z" fill="#bf7a2d"/>
+          <g class="owl-wing"><path d="M136 94c9-18 15-23 20-19 8 8-1 30-17 40l-3-21Z" fill="#d99739" stroke="#9f6427" stroke-width="2.5"/><path d="m148 90 6-5" stroke="#9f6427" stroke-width="2.5" stroke-linecap="round"/></g>
+          <circle cx="69" cy="82" r="21" fill="#fffaf0"/><circle cx="111" cy="82" r="21" fill="#fffaf0"/>
+          <circle cx="69" cy="82" r="19" stroke="#243d59" stroke-width="5"/><circle cx="111" cy="82" r="19" stroke="#243d59" stroke-width="5"/>
+          <path d="M88 80h4m-43-3-8-3m89 3 8-3" stroke="#243d59" stroke-width="4" stroke-linecap="round"/>
+          <path d="M63 82q6-9 12 0m30 0q6-9 12 0" stroke="#243d59" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="m84 98 6 8 7-8" fill="#e48236"/><ellipse cx="57" cy="99" rx="6" ry="3" fill="#edaa88"/><ellipse cx="124" cy="99" rx="6" ry="3" fill="#edaa88"/>
+          <path d="M77 119q13 9 27 0" stroke="#d5ae78" stroke-width="3" stroke-linecap="round"/>
+          <path d="M38 131c18-5 38-1 52 7 14-8 35-12 53-7v29c-18-3-36-1-53 6-17-7-34-9-52-6v-29Z" fill="#78b5a9" stroke="#254c63" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M44 125c17-2 32 1 46 10 14-9 31-12 47-10v28c-17-2-33 2-47 9-14-7-29-11-46-9v-28Z" fill="#fff9e9"/>
+          <path d="M90 135v27m-37-26q16 0 27 6m-27 2q16 0 27 6m20-8q13-6 27-6m-27 14q13-6 27-6" stroke="#b3c4be" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
     </div>
   </header>
   <div class="wrap tools">
-    <label class="search-label" for="search">Bir etkinlik bul</label>
+    <label class="sr-only" for="search">Etkinlik adı, ders veya ünite ara</label>
     <div class="search-field">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <input type="search" id="search" placeholder="Etkinlik adı, ders veya ünite ara…" autocomplete="off" spellcheck="false" aria-controls="etkinlikler" disabled>
+      <input type="search" id="search" placeholder="Etkinlik adı, ders veya ünite ara…" autocomplete="off" spellcheck="false" aria-controls="results" disabled>
+      <button id="clear-search" type="button" aria-label="Aramayı temizle" hidden>×</button>
     </div>
-    <div id="tabs" class="tabs" role="tablist" aria-label="Ders seçimi" aria-orientation="horizontal"></div>
-    <div class="result-bar"><p id="result-count" role="status" aria-live="polite" aria-atomic="true">Etkinlik listesi yükleniyor.</p><span class="result-tip">Etkinlikler yeni sekmede açılır ↗</span></div>
+    <nav id="quick-nav" class="quick-nav" aria-label="Hızlı keşif">
+      <a id="recent-chip" class="chip chip-recent" href="#gorunum=yeni"><span aria-hidden="true">✦</span> Yeni eklenenler</a>
+      <a id="all-chip" class="chip chip-all" href="#gorunum=tumu"><span aria-hidden="true">▦</span> Tüm etkinlikler</a>
+      <a id="games-chip" class="chip chip-games" href="#ders=Oyunlar" hidden><span aria-hidden="true">🎮</span> Oyunlar</a>
+    </nav>
+    <div class="result-bar"><p id="result-count" role="status" aria-live="polite" aria-atomic="true">Etkinlik listesi yükleniyor.</p><span class="result-tip">Oyna, keşfet, öğren. Yeni sekmede açılır ↗</span></div>
   </div>
   <main id="etkinlikler" class="wrap" tabindex="-1" aria-busy="true">
     <div id="error" class="notice" hidden><p>Etkinlik listesi yüklenemedi. Sayfayı internet üzerinden açın veya yenileyin.</p><button id="retry" class="primary" type="button">Yeniden dene</button></div>
-    <div id="results" role="tabpanel" tabindex="0"></div>
+    <div id="results"></div>
     <div id="empty" class="notice" hidden><p>Aradığınız etkinlik bulunamadı.</p></div>
     <noscript><div class="notice">Etkinlik listesini görmek için tarayıcınızda JavaScript'i etkinleştirin.</div></noscript>
   </main>
@@ -163,8 +267,9 @@
     // Yalnızca herkese açık içerik alanları kullanılır; katalog üst bilgileri okunmaz.
     const SUBJECT_ORDER = ['Türkçe','Matematik','Fen Bilimleri','Sosyal Bilgiler','İnsan Hakları','Trafik Güvenliği','Oyunlar'];
     const $ = id => document.getElementById(id);
-    const state = { items:[], subjects:[], selected:'', ready:false };
+    const state = { items:[], subjects:[], selected:'', view:'home', ready:false };
     const collapsedUnits = new Set();
+    let navigationFocusRequested = false;
     function normalize(value) {
       return String(value ?? '').toLocaleLowerCase('tr').replace(/ı/g,'i')
         .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -212,7 +317,7 @@
       return age >= 0 && age < 14;
     }
     function latestItems(items) {
-      return [...items].sort((a,b) => (dateValue(b.eklenme) || 0) - (dateValue(a.eklenme) || 0) || a.ad.localeCompare(b.ad,'tr')).slice(0,6);
+      return [...items].sort((a,b) => (dateValue(b.eklenme) || 0) - (dateValue(a.eklenme) || 0) || a.ad.localeCompare(b.ad,'tr')).slice(0,8);
     }
     function matchingItems(items,query) {
       const words = normalize(query).trim().split(/\s+/).filter(Boolean);
@@ -225,24 +330,27 @@
       return el;
     }
     function colorFor(subject) { const index = SUBJECT_ORDER.indexOf(subject); return String(index < 0 ? 7 : index); }
+
+
     function card(item,showUnit) {
       const article = element('article','card');
       article.dataset.color = colorFor(item.ders);
-      const link = element('a','card-link');
-      link.href = item.href; link.target = '_blank'; link.rel = 'noopener';
-      const top = element('span','card-top');
-      top.append(element('span','subject',item.ders));
+      const top = element('div','card-top');
+      top.append(element('span','subject',emojiFor(item.ders) + ' ' + item.ders));
       if (isNew(item.eklenme)) top.append(element('span','badge new','Yeni'));
       if (item.assessment) top.append(element('span','badge','Değerlendirme'));
-      link.append(top,element('strong','card-name',item.ad));
-      if (showUnit) link.append(element('span','card-unit',item.unite || 'Yeni eklenenler'));
-      link.append(element('span','sr-only',' (yeni sekmede açılır)'));
+      const name = element('strong','card-name',item.ad);
+      article.append(top,name);
+      if (showUnit) article.append(element('span','card-unit',item.unite || 'Yeni eklenenler'));
       const bottom = element('div','card-bottom');
-      const copy = element('button','copy','Bağlantıyı kopyala');
-      copy.type = 'button'; copy.setAttribute('aria-label',item.ad + ' — Bağlantıyı kopyala');
+      const play = element('a','play','▶ Oyna');
+      play.href = item.href; play.target = '_blank'; play.rel = 'noopener';
+      play.setAttribute('aria-label',item.ad + ' — Oyna (yeni sekmede açılır)');
+      const copy = element('button','copy','🔗 Bağlantı');
+      copy.type = 'button'; copy.title = 'Bağlantıyı kopyala';
+      copy.setAttribute('aria-label',item.ad + ' — Bağlantıyı kopyala');
       copy.addEventListener('click',() => copyLink(item,copy));
-      bottom.append(element('span','open-hint','Etkinliği aç ↗'),copy);
-      article.append(link,bottom);
+      bottom.append(play,copy); article.append(bottom);
       return article;
     }
     async function copyLink(item,button) {
@@ -253,116 +361,179 @@
         clearTimeout(button.feedbackTimer);
         button.textContent = 'Kopyalandı ✓';
         $('copy-status').textContent = item.ad + ': Kopyalandı ✓';
-        button.feedbackTimer = setTimeout(() => { button.textContent = 'Bağlantıyı kopyala'; $('copy-status').textContent = ''; },2000);
+        button.feedbackTimer = setTimeout(() => { button.textContent = '🔗 Bağlantı'; $('copy-status').textContent = ''; },2000);
       } catch {
         $('copy-url').value = url;
         if (!$('copy-dialog').open) $('copy-dialog').showModal();
         $('copy-url').focus(); $('copy-url').select();
       }
     }
-    function heading(title,count) {
-      const row = element('div','section-heading');
-      row.append(element('h2','',title),element('span','section-count',count + ' etkinlik'));
+    function emojiFor(subject) {
+      const index = SUBJECT_ORDER.indexOf(subject);
+      return ['📖','🔢','🔬','🌍','🤝','🚦','🎮'][index] || '📚';
+    }
+    function routeTo(hash) {
+      $('search').value = '';
+      if (window.location.hash === hash) { readRoute(); focusHeading(); }
+      else { navigationFocusRequested = true; window.location.hash = hash; }
+    }
+    function chooseSubject(subject) {
+      routeTo('#ders=' + encodeURIComponent(subject || 'Tümü'));
+    }
+    function readRoute() {
+      const params = new URLSearchParams(window.location.hash.slice(1));
+      const requested = params.get('ders');
+      state.selected = state.subjects.includes(requested) ? requested : '';
+      state.view = state.selected ? 'subject' : params.get('gorunum') === 'yeni' ? 'recent' : params.get('gorunum') === 'tumu' ? 'all' : 'home';
+      $('search').value = '';
+      render();
+    }
+    function focusHeading() {
+      $('page-title').focus({preventScroll:true});
+      window.scrollTo({top:0,behavior:'instant'});
+    }
+    function updateHero() {
+      const subject = state.selected;
+      const count = state.items.filter(item => item.ders === subject).length;
+      $('hero').classList.toggle('is-lesson',Boolean(subject));
+      if (subject) $('hero').dataset.color = colorFor(subject);
+      else $('hero').removeAttribute('data-color');
+      $('back').hidden = !subject && state.view === 'home';
+      $('page-title').textContent = subject ? emojiFor(subject) + ' ' + subject : '4. Sınıf Etkinlik Kütüphanesi';
+      $('intro').textContent = subject ? count + ' etkinlik · Bir etkinlik seç, keşfetmeye başla.' : 'Merak ettiğin dersi seç, öğrenmenin keyfini çıkar.';
+      $('speech').textContent = subject ? 'Hadi başlayalım!' : 'Bugün ne keşfedelim?';
+      document.title = subject ? subject + ' · 4. Sınıf Etkinlik Kütüphanesi' : '4. Sınıf Etkinlik Kütüphanesi';
+    }
+    function viewHeading(title,hint) {
+      const row = element('div','view-heading');
+      row.append(element('h2','',title));
+      if (hint) row.append(element('p','',hint));
       return row;
+    }
+    function renderHome(fragment) {
+      const heading = element('div','home-heading');
+      heading.append(element('h2','','Hangi derse bakalım?'),element('p','',state.subjects.length + ' ders · Sen seç!'));
+      const grid = element('div','subject-grid');
+      state.subjects.forEach(subject => {
+        const entries = state.items.filter(item => item.ders === subject);
+        const link = element('a','subject-button');
+        link.href = '#ders=' + encodeURIComponent(subject);
+        link.dataset.color = colorFor(subject);
+        const emoji = element('span','subject-emoji',emojiFor(subject)); emoji.setAttribute('aria-hidden','true');
+        const count = element('span','subject-meta');
+        const arrow = element('span','arrow','›'); arrow.setAttribute('aria-hidden','true');
+        count.append(element('span','',String(entries.length)),arrow);
+        link.append(emoji,element('span','subject-name',subject),count);
+        link.setAttribute('aria-label',subject + ', ' + entries.length + ' etkinlik');
+        link.addEventListener('click',event => {
+          if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
+          event.preventDefault(); chooseSubject(subject);
+        });
+        grid.append(link);
+      });
+      fragment.append(heading,grid);
+    }
+    function renderLesson(subject,entries,fragment,searching) {
+      const section = element('section','lesson'); section.dataset.color = colorFor(subject);
+      section.setAttribute('aria-label',subject);
+      // Ders ekranında h1 zaten ders adını içerir; tümünde her dersin h2 başlığı vardır.
+      if (!state.selected) {
+        const heading = element('div','lesson-heading');
+        const title = element('h2');
+        const emoji = element('span','',emojiFor(subject)); emoji.setAttribute('aria-hidden','true');
+        title.append(emoji,element('span','',subject));
+        heading.append(title,element('span','section-count',entries.length + ' etkinlik'));
+        section.append(heading);
+      }
+      groupUnits(entries).forEach(([unit,items]) => {
+        const details = element('details','unit');
+        const key = JSON.stringify([subject,unit]);
+        details.open = searching || !collapsedUnits.has(key);
+        details.addEventListener('toggle',() => {
+          if (!details.isConnected || searching) return;
+          if (details.open) collapsedUnits.delete(key); else collapsedUnits.add(key);
+        });
+        const summary = element('summary');
+        // Tek ders görünümünde üniteler h2, çoklu ders görünümünde h3 seviyesindedir.
+        summary.append(element(state.selected ? 'h2' : 'h3','unit-title',unit || 'Yeni eklenenler'),element('span','unit-count',items.length + ' etkinlik'));
+        const grid = element('div','grid');
+        items.forEach(item => grid.append(card(item,searching)));
+        details.append(summary,grid); section.append(details);
+      });
+      fragment.append(section);
     }
     function render() {
       if (!state.ready) return;
       const query = $('search').value;
+      const searching = normalize(query).trim().length > 0;
       const matches = matchingItems(state.items,query);
       const visible = matches.filter(item => !state.selected || item.ders === state.selected);
-      const searching = normalize(query).trim().length > 0;
-      [...$('tabs').children].forEach(tab => {
-        const selected = tab.dataset.subject === state.selected;
-        tab.setAttribute('aria-selected',String(selected)); tab.tabIndex = selected ? 0 : -1;
-        tab.querySelector('.tab-count').textContent = matches.filter(item => !tab.dataset.subject || item.ders === tab.dataset.subject).length;
-        if (selected) $('results').setAttribute('aria-labelledby',tab.id);
-      });
       const fragment = document.createDocumentFragment();
-      if (!state.selected && !searching && visible.length) {
-        const recent = element('section','recent'); recent.setAttribute('aria-label','Son eklenenler');
-        recent.append(element('h2','section-heading','Son eklenenler'),element('p','recent-hint','Kütüphaneye en son katılan ' + Math.min(6,visible.length) + ' etkinlik. Kaydırarak keşfedin.'));
-        const row = element('div','recent-row');
-        // Taşan şerit, dokunmanın yanında klavye ile de kaydırılabilir.
-        row.tabIndex = 0; row.setAttribute('role','region'); row.setAttribute('aria-label','Son eklenen etkinlikler, yatay kaydırılabilir');
-        latestItems(visible).forEach(item => row.append(card(item,true)));
-        recent.append(row); fragment.append(recent);
-      }
-      state.subjects.forEach(subject => {
-        const entries = visible.filter(item => item.ders === subject);
-        if (!entries.length) return;
-        const section = element('section','lesson'); section.dataset.color = colorFor(subject);
-        section.append(heading(subject,entries.length));
-        groupUnits(entries).forEach(([unit,items]) => {
-          const details = element('details','unit');
-          const key = JSON.stringify([subject,unit]);
-          details.open = !collapsedUnits.has(key);
-          details.addEventListener('toggle',() => {
-            if (!details.isConnected) return;
-            if (details.open) collapsedUnits.delete(key); else collapsedUnits.add(key);
-          });
-          const summary = element('summary');
-          summary.append(element('h3','',unit || 'Yeni eklenenler'),element('span','unit-count',items.length + ' etkinlik'));
-          const grid = element('div','grid');
-          items.forEach(item => grid.append(card(item,!state.selected || searching)));
-          details.append(summary,grid); section.append(details);
+      updateHero();
+      $('clear-search').hidden = !$('search').value;
+      $('games-chip').hidden = !state.subjects.includes('Oyunlar');
+      const activeChip = !searching && (state.view === 'recent' ? 'recent-chip' : state.view === 'all' ? 'all-chip' : state.selected === 'Oyunlar' ? 'games-chip' : '');
+      ['recent-chip','all-chip','games-chip'].forEach(id => {
+        if (id === activeChip) $(id).setAttribute('aria-current','page');
+        else $(id).removeAttribute('aria-current');
+      });
+      let shown = visible;
+      if (state.view === 'home' && !searching && state.items.length) {
+        renderHome(fragment);
+        $('result-count').textContent = state.items.length + ' etkinlik · Bir ders seçerek başla.';
+      } else if (state.view === 'recent' && !searching) {
+        shown = latestItems(visible);
+        fragment.append(viewHeading('✦ Yeni eklenenler','Kütüphaneye en son katılan ' + shown.length + ' etkinlik.'));
+        const grid = element('div','grid');
+        shown.forEach(item => grid.append(card(item,true))); fragment.append(grid);
+        $('result-count').textContent = shown.length + ' yeni eklenen etkinlik';
+      } else {
+        if (searching) fragment.append(viewHeading('Arama sonuçları','“' + query.trim() + '” için ' + visible.length + ' etkinlik'));
+        else if (state.view === 'all') fragment.append(viewHeading('Tüm etkinlikler','Dersine ve ünitesine göre keşfet.'));
+        state.subjects.forEach(subject => {
+          const entries = visible.filter(item => item.ders === subject);
+          if (entries.length) renderLesson(subject,entries,fragment,searching);
         });
-        fragment.append(section);
-      });
+        $('result-count').textContent = searching ? visible.length + ' / ' + state.items.filter(item => !state.selected || item.ders === state.selected).length + ' etkinlik bulundu' : visible.length + ' etkinlik · ' + (state.selected || 'Tüm dersler');
+      }
       $('results').replaceChildren(fragment);
-      $('empty').hidden = visible.length > 0;
-      $('result-count').textContent = visible.length + ' etkinlik gösteriliyor';
+      $('empty').hidden = shown.length > 0;
     }
-    function chooseSubject(subject) {
-      const next = '#ders=' + encodeURIComponent(subject || 'Tümü');
-      if (location.hash !== next) location.hash = next;
-    }
-    function readRoute() {
-      const params = new URLSearchParams(location.hash.slice(1));
-      const requested = params.get('ders');
-      state.selected = state.subjects.includes(requested) ? requested : '';
-      render();
-    }
-    function buildTabs() {
-      const fragment = document.createDocumentFragment();
-      ['',...state.subjects].forEach((subject,index) => {
-        const tab = element('button','tab');
-        tab.type = 'button'; tab.id = 'subject-' + index; tab.dataset.subject = subject;
-        tab.setAttribute('role','tab'); tab.setAttribute('aria-controls','results');
-        tab.append(element('span','',subject || 'Tümü'),element('span','tab-count','0'));
-        tab.addEventListener('click',() => chooseSubject(subject));
-        fragment.append(tab);
-      });
-      $('tabs').replaceChildren(fragment);
-    }
-    $('tabs').addEventListener('keydown',event => {
-      if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
-      const tabs = [...$('tabs').children];
-      const current = tabs.indexOf(document.activeElement);
-      if (current < 0) return;
-      event.preventDefault();
-      const index = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length-1 : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
-      tabs[index].focus(); tabs[index].scrollIntoView({block:'nearest',inline:'nearest'});
-      chooseSubject(tabs[index].dataset.subject);
+    $('quick-nav').addEventListener('click',event => {
+      const link = event.target.closest('a');
+      if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
+      event.preventDefault(); routeTo(link.hash);
+    });
+    $('back').addEventListener('click',event => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
+      event.preventDefault(); chooseSubject('');
     });
     document.querySelector('.skip').addEventListener('click',event => {
       event.preventDefault(); $('etkinlikler').focus();
     });
     $('search').addEventListener('input',render);
-    window.addEventListener('hashchange',readRoute);
+    $('clear-search').addEventListener('click',() => { $('search').value = ''; render(); $('search').focus(); });
+    window.addEventListener('hashchange',() => {
+      readRoute();
+      if (state.ready && navigationFocusRequested) focusHeading();
+      navigationFocusRequested = false;
+    });
     async function load() {
       state.ready = false;
       $('etkinlikler').setAttribute('aria-busy','true'); $('error').hidden = true;
       $('empty').hidden = true; $('retry').disabled = true; $('search').disabled = true;
+      $('clear-search').hidden = true; $('results').replaceChildren();
       $('total').textContent = 'Etkinlikler yükleniyor…';
       $('result-count').textContent = 'Etkinlik listesi yükleniyor.';
       try {
         const response = await fetch('icerik-katalogu.json', {cache:'no-cache'});
         if (!response.ok) throw new Error('Liste yüklenemedi');
         state.items = prepareItems(await response.json()); state.subjects = sortSubjects(state.items);
-        state.ready = true; buildTabs(); readRoute();
-        $('search').disabled = false; $('total').textContent = state.items.length + ' etkinlik';
+        state.ready = true; readRoute();
+        $('search').disabled = false; $('total').textContent = state.items.length + ' etkinlik seni bekliyor';
       } catch {
-        $('results').replaceChildren(); $('tabs').replaceChildren();
+        state.ready = false;
+        $('results').replaceChildren(); $('games-chip').hidden = true;
         $('error').hidden = false; $('total').textContent = 'Liste yüklenemedi';
         $('result-count').textContent = 'Etkinlik listesi yüklenemedi.';
       } finally {
