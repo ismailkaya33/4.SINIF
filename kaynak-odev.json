@@ -1,0 +1,117 @@
+{
+  "aciklama": "Öğrenci portalındaki 'Kaynak Kitap Ödevlerim' kartı. Her hafta tools/kaynak-odev-oner.mjs ile üretilir; 'bitis'ten sonra kart gizlenir.",
+  "baslik": "30 Kasım–4 Aralık",
+  "baslangic": "2026-11-30",
+  "bitis": "2026-12-06",
+  "not": "Kaynak kitabı olan öğrenciler için zorunludur.",
+  "paket": [
+    {
+      "ders": "Türkçe",
+      "kitap": "Türkçe Avcı",
+      "sayfa": "81–86",
+      "konu": "Cümle Bilgisi",
+      "yesilTest": "85–86"
+    },
+    {
+      "ders": "Matematik",
+      "kitap": "Matematik Avcı",
+      "sayfa": "85–92",
+      "konu": "Doğal Sayılarla Çarpma İşlemi / Çarpanların Yeri ve Sonuç",
+      "yesilTest": "87–88, 91–92"
+    },
+    {
+      "ders": "Sosyal Bilgiler",
+      "kitap": "Sosyal Avcı",
+      "sayfa": "29–32",
+      "konu": "Yön Bulma Yöntemleri / Kroki",
+      "yesilTest": "30, 32"
+    }
+  ],
+  "gunler": [
+    {
+      "gun": "Pazartesi",
+      "tarih": "2026-11-30",
+      "odevler": [
+        {
+          "ders": "Türkçe",
+          "kitap": "Türkçe Ödev Yaprakları",
+          "sayfa": "35–36",
+          "konu": "Okuma – Anlama"
+        },
+        {
+          "ders": "Matematik",
+          "kitap": "Matematik Ödev Yaprakları",
+          "sayfa": "41",
+          "konu": "Çarpma İşlemi"
+        }
+      ]
+    },
+    {
+      "gun": "Salı",
+      "tarih": "2026-12-01",
+      "odevler": [
+        {
+          "ders": "Türkçe",
+          "kitap": "Türkçe Ödev Yaprakları",
+          "sayfa": "37",
+          "konu": "Cümle Bilgisi"
+        },
+        {
+          "ders": "Matematik",
+          "kitap": "Matematik Ödev Yaprakları",
+          "sayfa": "42",
+          "konu": "Çarpma İşlemi"
+        }
+      ]
+    },
+    {
+      "gun": "Çarşamba",
+      "tarih": "2026-12-02",
+      "odevler": [
+        {
+          "ders": "Türkçe",
+          "kitap": "Türkçe Ödev Yaprakları",
+          "sayfa": "38",
+          "konu": "Cümle Bilgisi"
+        },
+        {
+          "ders": "Sosyal Bilgiler",
+          "kitap": "Sosyal Ödev Yaprakları",
+          "sayfa": "21–23",
+          "konu": "Yön Bulma Yöntemleri / Kroki"
+        }
+      ]
+    },
+    {
+      "gun": "Perşembe",
+      "tarih": "2026-12-03",
+      "odevler": [
+        {
+          "ders": "Türkçe",
+          "kitap": "Türkçe Ödev Yaprakları",
+          "sayfa": "39",
+          "konu": "Cümle Bilgisi"
+        }
+      ]
+    },
+    {
+      "gun": "Cuma",
+      "tarih": "2026-12-04",
+      "odevler": [
+        {
+          "ders": "Türkçe",
+          "kitap": "Türkçe Ödev Yaprakları",
+          "sayfa": "40",
+          "konu": "Cümle Bilgisi"
+        },
+        {
+          "ders": "Sosyal Bilgiler",
+          "kitap": "Sosyal Ödev Yaprakları",
+          "sayfa": "24",
+          "konu": "Kroki"
+        }
+      ]
+    }
+  ],
+  "haftaSonu": null
+}

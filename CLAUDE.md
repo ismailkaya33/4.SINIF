@@ -13,6 +13,7 @@ Ayrı bir sohbet projesi kullanılmaz. Kurallar burada ve `.claude/skills/` alt�
 | `4d-etkinlik-takibe-al` | Bir etkinliğin sonucu öğretmen paneline düşsün |
 | `4d-canli-kontrol` | Gönderilen değişikliğin canlıda çalıştığını kontrol etmek |
 | `4d-haftalik-hatirlatma` | Yıllık plana göre bu/sıradaki haftanın konuları ve portalda eksik etkinlik/defter notu |
+| `4d-kaynak-kitap-odev` | Kaynak kitaplardan (Avcı seti) haftalık ödev planı; portaldaki "Kaynak Kitap Ödevlerim" kartı |
 
 **Önce diğer yapay zekâlar (öğretmenin kararı 2026-11-21):** Claude kotası çabuk bitiyor. Uzun üretim işini (etkinlik/oyun
 HTML'i, etkinlik sayfası konu dosyaları, çok sayıda soru/metin, toplu düzeltme) **önce Codex CLI** (öğretmenin ChatGPT Plus

@@ -1,0 +1,2707 @@
+{
+  "aciklama": "Kaynak kitapların içindekiler haritası (yalnız sayfa no ve konu adı).",
+  "kitaplar": [
+    {
+      "id": "tr-avci",
+      "ad": "Türkçe Avcı",
+      "ders": "Türkçe",
+      "tur": "avci",
+      "yanitAnahtari": 239,
+      "bolumler": [
+        {
+          "bas": 7,
+          "konu": "Sözcük Bilgisi",
+          "metin": "Çam Ağacı",
+          "son": 12,
+          "yesilTest": [
+            11,
+            12
+          ]
+        },
+        {
+          "bas": 13,
+          "konu": "Sözcüklerin Sözlük Sırası",
+          "metin": "Dil Yarası",
+          "son": 18,
+          "yesilTest": [
+            17,
+            18
+          ]
+        },
+        {
+          "bas": 19,
+          "konu": "Sözcüklerin Doğru Yazılışı",
+          "metin": "Karga ve Su Testisi",
+          "son": 24,
+          "yesilTest": [
+            23,
+            24
+          ]
+        },
+        {
+          "bas": 25,
+          "konu": "Eş Anlamlı Sözcükler",
+          "metin": "Mustafa Kemaller Tükenmez",
+          "son": 30,
+          "yesilTest": [
+            29,
+            30
+          ]
+        },
+        {
+          "bas": 31,
+          "konu": "Zıt Anlamlı Sözcükler",
+          "metin": "Türk Kadını",
+          "son": 36,
+          "yesilTest": [
+            35,
+            36
+          ]
+        },
+        {
+          "bas": 37,
+          "konu": "Eş Sesli Sözcükler",
+          "metin": "Bandırma Vapuru",
+          "son": 42,
+          "yesilTest": [
+            41,
+            42
+          ]
+        },
+        {
+          "bas": 43,
+          "konu": "Eş, Zıt Anlamlı ve Eş Sesli Sözcükler",
+          "metin": "Bayrak Çiğnenmez",
+          "son": 48,
+          "yesilTest": [
+            47,
+            48
+          ]
+        },
+        {
+          "bas": 49,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 49
+        },
+        {
+          "bas": 50,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 50
+        },
+        {
+          "bas": 51,
+          "konu": "Gerçek ve Mecaz Anlam",
+          "metin": "Vücudumuz",
+          "son": 56,
+          "yesilTest": [
+            55,
+            56
+          ]
+        },
+        {
+          "bas": 57,
+          "konu": "Gerçek, Mecaz ve Terim Anlam",
+          "metin": "Organlar",
+          "son": 62,
+          "yesilTest": [
+            61,
+            62
+          ]
+        },
+        {
+          "bas": 63,
+          "konu": "Atasözleri",
+          "metin": "Güzel Bir At",
+          "son": 68,
+          "yesilTest": [
+            67,
+            68
+          ]
+        },
+        {
+          "bas": 69,
+          "konu": "Deyimler",
+          "metin": "Hacivat ile Karagöz",
+          "son": 74,
+          "yesilTest": [
+            73,
+            74
+          ]
+        },
+        {
+          "bas": 75,
+          "konu": "Atasözleri ve Deyimler",
+          "metin": "Kaktüs",
+          "son": 80,
+          "yesilTest": [
+            79,
+            80
+          ]
+        },
+        {
+          "bas": 81,
+          "konu": "Cümle Bilgisi",
+          "metin": "Her Ağızdan Bir Laf",
+          "son": 86,
+          "yesilTest": [
+            85,
+            86
+          ]
+        },
+        {
+          "bas": 87,
+          "konu": "Kurallı ve Devrik Cümle",
+          "metin": "Bayrak",
+          "son": 92,
+          "yesilTest": [
+            91,
+            92
+          ]
+        },
+        {
+          "bas": 93,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 93
+        },
+        {
+          "bas": 94,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 94
+        },
+        {
+          "bas": 95,
+          "konu": "Sebep - Sonuç Cümlesi",
+          "metin": "Usta Ressam",
+          "son": 100,
+          "yesilTest": [
+            99,
+            100
+          ]
+        },
+        {
+          "bas": 101,
+          "konu": "Karşılaştırma Cümlesi",
+          "metin": "Vincent Van Gogh'un Dünyası",
+          "son": 106,
+          "yesilTest": [
+            105,
+            106
+          ]
+        },
+        {
+          "bas": 107,
+          "konu": "Karşılaştırma, Benzetme ve Örneklendirme",
+          "metin": "Hayal Hırsızı",
+          "son": 112,
+          "yesilTest": [
+            111,
+            112
+          ]
+        },
+        {
+          "bas": 113,
+          "konu": "Gerçek ve Hayal Ürünü Unsurlar / Konu, Ana Fikir, Başlık",
+          "metin": "Thomas Edison ve Kahraman Annesi",
+          "son": 122,
+          "yesilTest": [
+            117,
+            122
+          ]
+        },
+        {
+          "bas": 123,
+          "konu": "Şiir ve Ana Duygu",
+          "metin": "Kış Ağacı",
+          "son": 128,
+          "yesilTest": [
+            127,
+            128
+          ]
+        },
+        {
+          "bas": 129,
+          "konu": "5N 1K",
+          "metin": "Çakıl Taşları",
+          "son": 134,
+          "yesilTest": [
+            133,
+            134
+          ]
+        },
+        {
+          "bas": 135,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 135
+        },
+        {
+          "bas": 136,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 136
+        },
+        {
+          "bas": 137,
+          "konu": "Olayların Oluş Sırası",
+          "metin": "Kitap",
+          "son": 142,
+          "yesilTest": [
+            141,
+            142
+          ]
+        },
+        {
+          "bas": 143,
+          "konu": "Hikâye Unsurları",
+          "metin": "Çatlak Kova",
+          "son": 148,
+          "yesilTest": [
+            147,
+            148
+          ]
+        },
+        {
+          "bas": 149,
+          "konu": "Metnin Bölümleri",
+          "metin": "Bambu Ağacı",
+          "son": 154,
+          "yesilTest": [
+            153,
+            154
+          ]
+        },
+        {
+          "bas": 155,
+          "konu": "Yabancı Dilden Alınan Sözcüklerin Türkçe Karşılığı ve Yönerge Takibi",
+          "metin": "Kendini Düzelt Dünya Düzelsin",
+          "son": 160,
+          "yesilTest": [
+            159,
+            160
+          ]
+        },
+        {
+          "bas": 161,
+          "konu": "Türemiş Sözcükler",
+          "metin": "Hayatın Anlamı",
+          "son": 166,
+          "yesilTest": [
+            165,
+            166
+          ]
+        },
+        {
+          "bas": 167,
+          "konu": "Varlıkları Niteleyen Sözcükler",
+          "metin": "Pahalı Tablo",
+          "son": 172,
+          "yesilTest": [
+            171,
+            172
+          ]
+        },
+        {
+          "bas": 173,
+          "konu": "Adların Yerine Kullanılan Sözcükler",
+          "metin": "Kitaplarım",
+          "son": 178,
+          "yesilTest": [
+            177,
+            178
+          ]
+        },
+        {
+          "bas": 179,
+          "konu": "Özel Ad - Tür Adı, Çoğul - Tekil Ad",
+          "metin": "Ülkemin Renkli Haritası",
+          "son": 185,
+          "yesilTest": [
+            184,
+            185
+          ]
+        },
+        {
+          "bas": 186,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 186
+        },
+        {
+          "bas": 187,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 187
+        },
+        {
+          "bas": 188,
+          "konu": "Yazım Kuralları - 1",
+          "metin": "Kurt ile Sincap",
+          "son": 194,
+          "yesilTest": [
+            193,
+            194
+          ]
+        },
+        {
+          "bas": 195,
+          "konu": "Yazım Kuralları - 2, Anlatım Bozuklukları",
+          "metin": "Renklerin Dili",
+          "son": 200,
+          "yesilTest": [
+            199,
+            200
+          ]
+        },
+        {
+          "bas": 201,
+          "konu": "Yazım Kuralları - 3",
+          "metin": "Çınar",
+          "son": 206,
+          "yesilTest": [
+            205,
+            206
+          ]
+        },
+        {
+          "bas": 207,
+          "konu": "“de” Eki ve “de” Bağlacının Yazılışı / “ki” Eki ve “ki” Bağlacının Yazılışı",
+          "metin": "Sana Dair",
+          "son": 212,
+          "yesilTest": [
+            211,
+            212
+          ]
+        },
+        {
+          "bas": 213,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 213
+        },
+        {
+          "bas": 214,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 214
+        },
+        {
+          "bas": 215,
+          "konu": "Noktalama İşaretleri - 1",
+          "metin": "Türkiye'miz",
+          "son": 220,
+          "yesilTest": [
+            219,
+            220
+          ]
+        },
+        {
+          "bas": 221,
+          "konu": "Noktalama İşaretleri - 2",
+          "metin": "Hikâye",
+          "son": 226,
+          "yesilTest": [
+            225,
+            226
+          ]
+        },
+        {
+          "bas": 227,
+          "konu": "Noktalama İşaretleri - 3",
+          "metin": "Kuşlar",
+          "son": 230,
+          "yesilTest": [
+            229,
+            230
+          ]
+        },
+        {
+          "bas": 231,
+          "konu": "Görsel Okuma, Şekil, Sembol ve İşaretler",
+          "metin": "Güneş ve Gökkuşağı",
+          "son": 236,
+          "yesilTest": [
+            235,
+            236
+          ]
+        },
+        {
+          "bas": 237,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 237
+        },
+        {
+          "bas": 238,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 238
+        }
+      ]
+    },
+    {
+      "id": "tr-oy",
+      "ad": "Türkçe Ödev Yaprakları",
+      "ders": "Türkçe",
+      "tur": "odev-yapraklari",
+      "yanitAnahtari": 91,
+      "bolumler": [
+        {
+          "bas": 3,
+          "konu": "Okuma – Anlama",
+          "metin": "Doğa ve Düzen",
+          "son": 4,
+          "sayilmaz": true
+        },
+        {
+          "bas": 5,
+          "konu": "Sözcük Bilgisi",
+          "son": 6
+        },
+        {
+          "bas": 7,
+          "konu": "Sözcük Bilgisi",
+          "son": 8
+        },
+        {
+          "bas": 9,
+          "konu": "Sözcük Bilgisi",
+          "son": 10
+        },
+        {
+          "bas": 11,
+          "konu": "Okuma – Anlama",
+          "metin": "Sabah",
+          "son": 12,
+          "sayilmaz": true
+        },
+        {
+          "bas": 13,
+          "konu": "Eş Anlamlı Sözcükler",
+          "son": 13
+        },
+        {
+          "bas": 14,
+          "konu": "Zıt Anlamlı Sözcükler",
+          "son": 15
+        },
+        {
+          "bas": 16,
+          "konu": "Eş Anlamlı ve Zıt Anlamlı Sözcükler",
+          "son": 17
+        },
+        {
+          "bas": 18,
+          "konu": "Eş Sesli Sözcükler",
+          "son": 20
+        },
+        {
+          "bas": 21,
+          "konu": "Okuma – Anlama",
+          "metin": "Kralın Tohumu",
+          "son": 22,
+          "sayilmaz": true
+        },
+        {
+          "bas": 23,
+          "konu": "Gerçek, Mecaz ve Terim Anlam",
+          "son": 24
+        },
+        {
+          "bas": 25,
+          "konu": "Okuma – Anlama",
+          "metin": "Dilin Önemi",
+          "son": 26,
+          "sayilmaz": true
+        },
+        {
+          "bas": 27,
+          "konu": "Atasözleri",
+          "son": 28
+        },
+        {
+          "bas": 29,
+          "konu": "Atasözleri ve Deyimler",
+          "son": 30
+        },
+        {
+          "bas": 31,
+          "konu": "Okuma – Anlama",
+          "metin": "Mektup",
+          "son": 32,
+          "sayilmaz": true
+        },
+        {
+          "bas": 33,
+          "konu": "Atasözleri ve Deyimler",
+          "son": 34
+        },
+        {
+          "bas": 35,
+          "konu": "Okuma – Anlama",
+          "metin": "Erik Ağacı",
+          "son": 36,
+          "sayilmaz": true
+        },
+        {
+          "bas": 37,
+          "konu": "Cümle Bilgisi",
+          "son": 38
+        },
+        {
+          "bas": 39,
+          "konu": "Cümle Bilgisi",
+          "son": 40
+        },
+        {
+          "bas": 41,
+          "konu": "Örneklendirme ve Sebep - Sonuç Cümleleri",
+          "son": 42
+        },
+        {
+          "bas": 43,
+          "konu": "Benzetme ve Karşılaştırma Cümleleri",
+          "son": 44
+        },
+        {
+          "bas": 45,
+          "konu": "Okuma – Anlama",
+          "metin": "Salyangozun Kabuğu",
+          "son": 46,
+          "sayilmaz": true
+        },
+        {
+          "bas": 47,
+          "konu": "Gerçek ve Hayal Ürünü Unsurlar",
+          "son": 48
+        },
+        {
+          "bas": 49,
+          "konu": "Okuma – Anlama",
+          "metin": "Okuma",
+          "son": 50,
+          "sayilmaz": true
+        },
+        {
+          "bas": 51,
+          "konu": "Şiir Bilgisi",
+          "son": 52
+        },
+        {
+          "bas": 53,
+          "konu": "5N 1K - Hikâye Unsurları",
+          "son": 54
+        },
+        {
+          "bas": 55,
+          "konu": "Yabancı Dilden Alınan Sözcüklerin Türkçe Karşılığı",
+          "metin": "Karınca ile Deve",
+          "dogrulanmali": true,
+          "son": 56
+        },
+        {
+          "bas": 57,
+          "konu": "Okuma – Anlama",
+          "metin": "Özge Bana Abla Dedi!",
+          "son": 58,
+          "sayilmaz": true
+        },
+        {
+          "bas": 59,
+          "konu": "Türemiş Sözcükler",
+          "son": 60
+        },
+        {
+          "bas": 61,
+          "konu": "Varlıkları Niteleyen Sözcükler",
+          "son": 62
+        },
+        {
+          "bas": 63,
+          "konu": "Varlıkları Niteleyen Sözcükler",
+          "son": 64
+        },
+        {
+          "bas": 65,
+          "konu": "Adın Yerine Geçen Sözcükler",
+          "son": 66
+        },
+        {
+          "bas": 67,
+          "konu": "Okuma – Anlama",
+          "metin": "Küçük Su Damlası",
+          "son": 68,
+          "sayilmaz": true
+        },
+        {
+          "bas": 69,
+          "konu": "Tekil, Çoğul ve Topluluk Adları",
+          "son": 70
+        },
+        {
+          "bas": 71,
+          "konu": "Özel Ad ve Tür Adı",
+          "son": 72
+        },
+        {
+          "bas": 73,
+          "konu": "Okuma – Anlama",
+          "metin": "Geveze Kan Damlası",
+          "son": 74,
+          "sayilmaz": true
+        },
+        {
+          "bas": 75,
+          "konu": "Sayıların ve Özel Adların Yazılışı",
+          "son": 76
+        },
+        {
+          "bas": 77,
+          "konu": "“-de” ve “-ki”nin Yazılışı",
+          "son": 78
+        },
+        {
+          "bas": 79,
+          "konu": "Yazım Kuralları",
+          "son": 80
+        },
+        {
+          "bas": 81,
+          "konu": "Okuma – Anlama",
+          "metin": "Özgürlük",
+          "son": 82,
+          "sayilmaz": true
+        },
+        {
+          "bas": 83,
+          "konu": "Noktalama İşaretleri",
+          "son": 84
+        },
+        {
+          "bas": 85,
+          "konu": "Noktalama İşaretleri",
+          "son": 86
+        },
+        {
+          "bas": 87,
+          "konu": "Görsel Okuma",
+          "son": 88
+        },
+        {
+          "bas": 89,
+          "konu": "Pekiştirmeli Sözcükler",
+          "son": 90
+        }
+      ]
+    },
+    {
+      "id": "mat-avci",
+      "ad": "Matematik Avcı",
+      "ders": "Matematik",
+      "tur": "avci",
+      "yanitAnahtari": 311,
+      "bolumler": [
+        {
+          "bas": 7,
+          "konu": "4, 5 ve 6 Basamaklı Sayıları Okuma ve Yazma",
+          "son": 12,
+          "yesilTest": [
+            11,
+            12
+          ]
+        },
+        {
+          "bas": 13,
+          "konu": "4, 5 ve 6 Basamaklı Doğal Sayıların Bölük ve Basamakları",
+          "son": 18,
+          "yesilTest": [
+            17,
+            18
+          ]
+        },
+        {
+          "bas": 19,
+          "konu": "4, 5 ve 6 Basamaklı Sayıları Çözümleme",
+          "son": 22,
+          "yesilTest": [
+            21,
+            22
+          ]
+        },
+        {
+          "bas": 23,
+          "konu": "En Yakın Onluğa ve Yüzlüğe Yuvarlama",
+          "son": 26,
+          "yesilTest": [
+            25,
+            26
+          ]
+        },
+        {
+          "bas": 27,
+          "konu": "Doğal Sayılarda Sıralama",
+          "son": 30,
+          "yesilTest": [
+            29,
+            30
+          ]
+        },
+        {
+          "bas": 31,
+          "konu": "Sayı Örüntüsü",
+          "son": 34,
+          "yesilTest": [
+            33,
+            34
+          ]
+        },
+        {
+          "bas": 35,
+          "konu": "Doğal Sayılarla Toplama İşlemi",
+          "son": 40,
+          "yesilTest": [
+            39,
+            40
+          ]
+        },
+        {
+          "bas": 41,
+          "konu": "Doğal Sayılarla Çıkarma İşlemi",
+          "son": 46,
+          "yesilTest": [
+            45,
+            46
+          ]
+        },
+        {
+          "bas": 47,
+          "konu": "Zihinden Çıkarma İşlemi",
+          "son": 50,
+          "yesilTest": [
+            49,
+            50
+          ]
+        },
+        {
+          "bas": 51,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 52
+        },
+        {
+          "bas": 53,
+          "konu": "Toplamı Tahmin Etme",
+          "son": 54
+        },
+        {
+          "bas": 55,
+          "konu": "Zihinden Toplama İşlemi",
+          "son": 58,
+          "yesilTest": [
+            57,
+            58
+          ]
+        },
+        {
+          "bas": 59,
+          "konu": "Toplama İşlemi Gerektiren Problemler",
+          "son": 64,
+          "yesilTest": [
+            63,
+            64
+          ]
+        },
+        {
+          "bas": 65,
+          "konu": "Çıkarma İşleminin Sonucunu Tahmin Etme",
+          "son": 68,
+          "yesilTest": [
+            67,
+            68
+          ]
+        },
+        {
+          "bas": 69,
+          "konu": "Çıkarma İşlemi Gerektiren Problemler",
+          "son": 74,
+          "yesilTest": [
+            73,
+            74
+          ]
+        },
+        {
+          "bas": 75,
+          "konu": "Toplama - Çıkarma İşlemi Problemleri",
+          "son": 80,
+          "yesilTest": [
+            79,
+            80
+          ]
+        },
+        {
+          "bas": 81,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 82
+        },
+        {
+          "bas": 83,
+          "konu": "Doğal Sayılarla Çarpma İşlemi",
+          "son": 88,
+          "yesilTest": [
+            87,
+            88
+          ]
+        },
+        {
+          "bas": 89,
+          "konu": "Çarpanların Yeri ve Sonuç",
+          "son": 92,
+          "yesilTest": [
+            91,
+            92
+          ]
+        },
+        {
+          "bas": 93,
+          "konu": "10, 100, 1000 ile Zihinden Çarpma",
+          "son": 94
+        },
+        {
+          "bas": 95,
+          "konu": "5, 25, 50 ile Kısa Yoldan Çarpma",
+          "son": 98,
+          "yesilTest": [
+            97,
+            98
+          ]
+        },
+        {
+          "bas": 99,
+          "konu": "Çarpma İşleminde Tahmini Sonuç",
+          "son": 102,
+          "yesilTest": [
+            101,
+            102
+          ]
+        },
+        {
+          "bas": 103,
+          "konu": "Doğal Sayılarla Çarpma İşlemi Problemleri",
+          "son": 108,
+          "yesilTest": [
+            107,
+            108
+          ]
+        },
+        {
+          "bas": 109,
+          "konu": "Bölme İşlemi",
+          "son": 112
+        },
+        {
+          "bas": 113,
+          "konu": "Bölme İşleminde Bölümün Basamak Sayısı",
+          "son": 116,
+          "yesilTest": [
+            115,
+            116
+          ]
+        },
+        {
+          "bas": 117,
+          "konu": "10, 100 ve 1000'e Zihinden Bölme",
+          "son": 120,
+          "yesilTest": [
+            119,
+            120
+          ]
+        },
+        {
+          "bas": 121,
+          "konu": "Bölme İşleminde Tahmini Sonuç",
+          "son": 124,
+          "yesilTest": [
+            123,
+            124
+          ]
+        },
+        {
+          "bas": 125,
+          "konu": "Bölme İşlemi Problemleri",
+          "son": 128,
+          "yesilTest": [
+            127,
+            128
+          ]
+        },
+        {
+          "bas": 129,
+          "konu": "Dört İşlem",
+          "son": 132,
+          "yesilTest": [
+            131,
+            132
+          ]
+        },
+        {
+          "bas": 133,
+          "konu": "Parantezli İşlemler ve Eşitlik İfadeleri",
+          "son": 136,
+          "yesilTest": [
+            135,
+            136
+          ]
+        },
+        {
+          "bas": 137,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 138
+        },
+        {
+          "bas": 139,
+          "konu": "Kesirler - Basit, Bileşik, Tam Sayılı Kesirleri Tanıma, Okuma ve Modelle Gösterme",
+          "son": 142
+        },
+        {
+          "bas": 143,
+          "konu": "Kesirler - Sayı Doğrusunda Gösterimi",
+          "son": 143
+        },
+        {
+          "bas": 144,
+          "konu": "Kesirler - İsimlendirilmesi ve Gösterimi",
+          "son": 146,
+          "yesilTest": [
+            145,
+            146
+          ]
+        },
+        {
+          "bas": 147,
+          "konu": "Birim Kesirleri Karşılaştırma ve Sıralama",
+          "son": 148
+        },
+        {
+          "bas": 149,
+          "konu": "Paydaları Eşit Kesirleri Karşılaştırma ve Sıralama",
+          "son": 152,
+          "yesilTest": [
+            152,
+            152
+          ]
+        },
+        {
+          "bas": 153,
+          "konu": "Bir Çokluğun Basit Kesir Kadarını Bulma",
+          "son": 156,
+          "yesilTest": [
+            156,
+            156
+          ]
+        },
+        {
+          "bas": 157,
+          "konu": "Kesirlerle İşlemler; Toplama İşlemi",
+          "son": 157
+        },
+        {
+          "bas": 158,
+          "konu": "Kesirlerle İşlemler; Toplama İşlemi",
+          "son": 158
+        },
+        {
+          "bas": 159,
+          "konu": "Kesirlerle İşlemler; Çıkarma İşlemi",
+          "son": 159
+        },
+        {
+          "bas": 160,
+          "konu": "Kesirlerle İşlemler; Çıkarma İşlemi",
+          "son": 160
+        },
+        {
+          "bas": 161,
+          "konu": "Kesir Problemleri",
+          "son": 164,
+          "yesilTest": [
+            163,
+            164
+          ]
+        },
+        {
+          "bas": 165,
+          "konu": "Kesir Problemleri",
+          "son": 165
+        },
+        {
+          "bas": 166,
+          "konu": "Kesir Problemleri",
+          "son": 168,
+          "yesilTest": [
+            167,
+            168
+          ]
+        },
+        {
+          "bas": 169,
+          "konu": "Zaman Ölçme",
+          "son": 169
+        },
+        {
+          "bas": 170,
+          "konu": "Zaman Ölçme",
+          "son": 174,
+          "yesilTest": [
+            173,
+            174
+          ]
+        },
+        {
+          "bas": 175,
+          "konu": "Zaman Ölçme",
+          "son": 180,
+          "yesilTest": [
+            179,
+            180
+          ]
+        },
+        {
+          "bas": 181,
+          "konu": "Zaman Problemleri",
+          "son": 186,
+          "yesilTest": [
+            185,
+            186
+          ]
+        },
+        {
+          "bas": 187,
+          "konu": "Sütun Grafiği Oluşturma ve Yorumlama",
+          "son": 192,
+          "yesilTest": [
+            191,
+            192
+          ]
+        },
+        {
+          "bas": 193,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 194
+        },
+        {
+          "bas": 195,
+          "konu": "Üçgen, Kare ve Dikdörtgenin Kenarlarını ve Köşelerini İsimlendirme",
+          "son": 198,
+          "yesilTest": [
+            197,
+            198
+          ]
+        },
+        {
+          "bas": 199,
+          "konu": "Kare ve Dikdörtgenin Kenar ve Açı Özellikleri",
+          "son": 199
+        },
+        {
+          "bas": 200,
+          "konu": "Üçgeni Kenar Uzunluklarına Göre Sınıflandırma",
+          "son": 204,
+          "yesilTest": [
+            203,
+            204
+          ]
+        },
+        {
+          "bas": 205,
+          "konu": "Birim Küp - Eş Küpler",
+          "son": 207
+        },
+        {
+          "bas": 208,
+          "konu": "Küp Oluşturalım",
+          "son": 212,
+          "yesilTest": [
+            211,
+            212
+          ]
+        },
+        {
+          "bas": 213,
+          "konu": "Düzlem",
+          "son": 214,
+          "yesilTest": [
+            214,
+            214
+          ]
+        },
+        {
+          "bas": 215,
+          "konu": "Açı - Kenarları ve Köşesi",
+          "son": 215
+        },
+        {
+          "bas": 216,
+          "konu": "Açı - İsimlendirme ve Sembolle Gösterme",
+          "son": 217
+        },
+        {
+          "bas": 218,
+          "konu": "Açı - Standart Olmayan Ölçme Birimleri",
+          "son": 219
+        },
+        {
+          "bas": 220,
+          "konu": "Açı - Standart Ölçme Araçlarıyla Ölçme - Dar, Dik, Geniş ve Doğru Açılar",
+          "son": 224
+        },
+        {
+          "bas": 225,
+          "konu": "Açı - Açı Ölçüsü Verilen Açıyı Çizmek",
+          "son": 234,
+          "yesilTest": [
+            229,
+            234
+          ]
+        },
+        {
+          "bas": 235,
+          "konu": "Simetri",
+          "son": 240,
+          "yesilTest": [
+            239,
+            240
+          ]
+        },
+        {
+          "bas": 241,
+          "konu": "Uzunlukları Ölçme",
+          "son": 241
+        },
+        {
+          "bas": 242,
+          "konu": "Uzunlukları Ölçme - Birimleri Dönüştürme",
+          "son": 246,
+          "yesilTest": [
+            245,
+            246
+          ]
+        },
+        {
+          "bas": 247,
+          "konu": "Uzunlukları Ölçme - Birimleri Dönüştürme",
+          "son": 252,
+          "yesilTest": [
+            251,
+            252
+          ]
+        },
+        {
+          "bas": 253,
+          "konu": "Uzunluk Ölçme Problemleri",
+          "son": 258,
+          "yesilTest": [
+            257,
+            258
+          ]
+        },
+        {
+          "bas": 259,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 260
+        },
+        {
+          "bas": 261,
+          "konu": "Kare ve Dikdörtgenin Çevre Uzunlukları",
+          "son": 264
+        },
+        {
+          "bas": 265,
+          "konu": "Düzlemsel Şekillerde Çevre",
+          "son": 268,
+          "yesilTest": [
+            267,
+            268
+          ]
+        },
+        {
+          "bas": 269,
+          "konu": "Şekillerin Çevre Uzunluklarını Ölçme",
+          "son": 272,
+          "yesilTest": [
+            271,
+            272
+          ]
+        },
+        {
+          "bas": 273,
+          "konu": "Çevre Uzunlukları ile İlgili Problemler",
+          "dogrulanmali": true,
+          "son": 278,
+          "yesilTest": [
+            277,
+            278
+          ]
+        },
+        {
+          "bas": 279,
+          "konu": "Alan Ölçme",
+          "son": 279
+        },
+        {
+          "bas": 280,
+          "konu": "Kare ve Dikdörtgensel Bölgenin Alanı",
+          "son": 284,
+          "yesilTest": [
+            283,
+            284
+          ]
+        },
+        {
+          "bas": 285,
+          "konu": "Tartma",
+          "son": 290,
+          "yesilTest": [
+            289,
+            290
+          ]
+        },
+        {
+          "bas": 291,
+          "konu": "Kütle Ölçme Birimleri",
+          "son": 296,
+          "yesilTest": [
+            295,
+            296
+          ]
+        },
+        {
+          "bas": 297,
+          "konu": "Sıvıları Ölçme",
+          "son": 298
+        },
+        {
+          "bas": 299,
+          "konu": "Sıvıları Ölçme",
+          "son": 302,
+          "yesilTest": [
+            301,
+            302
+          ]
+        },
+        {
+          "bas": 303,
+          "konu": "Sıvı Ölçme Problemleri",
+          "dogrulanmali": true,
+          "son": 308,
+          "yesilTest": [
+            307,
+            308
+          ]
+        },
+        {
+          "bas": 309,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 310
+        }
+      ]
+    },
+    {
+      "id": "mat-oy",
+      "ad": "Matematik Ödev Yaprakları",
+      "ders": "Matematik",
+      "tur": "odev-yapraklari",
+      "yanitAnahtari": 111,
+      "bolumler": [
+        {
+          "bas": 3,
+          "konu": "Doğal Sayıları Okuma ve Yazma",
+          "son": 4
+        },
+        {
+          "bas": 5,
+          "konu": "Doğal Sayıları Okuma ve Yazma",
+          "son": 6
+        },
+        {
+          "bas": 7,
+          "konu": "Doğal Sayıları Okuma ve Yazma",
+          "son": 8
+        },
+        {
+          "bas": 9,
+          "konu": "Doğal Sayıların Basamak Değeri",
+          "son": 10
+        },
+        {
+          "bas": 11,
+          "konu": "Doğal Sayıları Çözümleme",
+          "son": 12
+        },
+        {
+          "bas": 13,
+          "konu": "En Yakın Onluğa ve Yüzlüğe Yuvarlama",
+          "son": 14
+        },
+        {
+          "bas": 15,
+          "konu": "Doğal Sayıları Sıralama",
+          "son": 16
+        },
+        {
+          "bas": 17,
+          "konu": "Doğal Sayılar",
+          "son": 18
+        },
+        {
+          "bas": 19,
+          "konu": "Sayı Örüntüleri",
+          "son": 20
+        },
+        {
+          "bas": 21,
+          "konu": "Doğal Sayılar - Genel",
+          "son": 22
+        },
+        {
+          "bas": 23,
+          "konu": "Toplama İşlemi",
+          "son": 24
+        },
+        {
+          "bas": 25,
+          "konu": "Çıkarma İşlemi",
+          "son": 26
+        },
+        {
+          "bas": 27,
+          "konu": "Toplama ve Çıkarma İşlemi",
+          "son": 28
+        },
+        {
+          "bas": 29,
+          "konu": "Zihinden Çıkarma İşlemi",
+          "son": 30
+        },
+        {
+          "bas": 31,
+          "konu": "Zihinden Toplama İşlemi, Toplamı Tahmin Etme",
+          "son": 32
+        },
+        {
+          "bas": 33,
+          "konu": "Zihinden Toplama İşlemi, Toplamı Tahmin Etme",
+          "son": 34
+        },
+        {
+          "bas": 35,
+          "konu": "Toplama İşlemi Problemleri",
+          "son": 36
+        },
+        {
+          "bas": 37,
+          "konu": "Çıkarma İşleminin Sonucunu Tahmin Etme",
+          "son": 38
+        },
+        {
+          "bas": 39,
+          "konu": "Toplama ve Çıkarma İşlemi Problemleri",
+          "son": 40
+        },
+        {
+          "bas": 41,
+          "konu": "Çarpma İşlemi",
+          "son": 42
+        },
+        {
+          "bas": 43,
+          "konu": "Çarpma İşleminde Çarpma Sırası - 5, 25, 50 ile Kısa Yoldan Çarpma",
+          "son": 44
+        },
+        {
+          "bas": 45,
+          "konu": "Kısa Yoldan Çarpma - Çarpma İşleminin Sonucunu Tahmin Etme",
+          "son": 46
+        },
+        {
+          "bas": 47,
+          "konu": "Çarpma İşlemi Problemleri",
+          "son": 48
+        },
+        {
+          "bas": 49,
+          "konu": "Bölme İşlemi",
+          "son": 50
+        },
+        {
+          "bas": 51,
+          "konu": "Kısa Yoldan Bölme İşlemi",
+          "son": 52
+        },
+        {
+          "bas": 53,
+          "konu": "Bölme İşleminin Sonucunu Tahmin Etme",
+          "son": 54
+        },
+        {
+          "bas": 55,
+          "konu": "Bölme İşlemi Problemleri",
+          "son": 56
+        },
+        {
+          "bas": 57,
+          "konu": "Eşitlik İfadeleri",
+          "son": 58
+        },
+        {
+          "bas": 59,
+          "konu": "Kesirler",
+          "son": 60
+        },
+        {
+          "bas": 61,
+          "konu": "Birim Kesirleri Karşılaştırma ve Sıralama",
+          "son": 62
+        },
+        {
+          "bas": 63,
+          "konu": "Bir Çokluğun Basit Kesir Kadarını Bulma",
+          "son": 64
+        },
+        {
+          "bas": 65,
+          "konu": "Kesirler",
+          "son": 66
+        },
+        {
+          "bas": 67,
+          "konu": "Paydaları Eşit Kesirleri Karşılaştırma ve Sıralama",
+          "son": 68
+        },
+        {
+          "bas": 69,
+          "konu": "Kesirlerle Toplama ve Çıkarma İşlemi",
+          "son": 70
+        },
+        {
+          "bas": 71,
+          "konu": "Kesir Problemleri",
+          "son": 72
+        },
+        {
+          "bas": 73,
+          "konu": "Zaman Ölçme",
+          "son": 74
+        },
+        {
+          "bas": 75,
+          "konu": "Zaman Ölçme - Zaman Problemleri",
+          "son": 76
+        },
+        {
+          "bas": 77,
+          "konu": "Grafik - Grafik Problemleri",
+          "son": 78
+        },
+        {
+          "bas": 79,
+          "konu": "Üçgen, Kare ve Dikdörtgen",
+          "son": 80
+        },
+        {
+          "bas": 81,
+          "konu": "Üçgen, Kare ve Dikdörtgen",
+          "son": 82
+        },
+        {
+          "bas": 83,
+          "konu": "Üçgen, Kare ve Dikdörtgen",
+          "son": 84
+        },
+        {
+          "bas": 85,
+          "konu": "Eş Küpler",
+          "son": 86
+        },
+        {
+          "bas": 87,
+          "konu": "Açılar",
+          "son": 88
+        },
+        {
+          "bas": 89,
+          "konu": "Açılar - Açı Çeşitleri",
+          "son": 90
+        },
+        {
+          "bas": 91,
+          "konu": "Simetri",
+          "son": 92
+        },
+        {
+          "bas": 93,
+          "konu": "Uzunluk Ölçme",
+          "son": 94
+        },
+        {
+          "bas": 95,
+          "konu": "Uzunluk Problemleri",
+          "son": 96
+        },
+        {
+          "bas": 97,
+          "konu": "Çevre Ölçme",
+          "son": 98
+        },
+        {
+          "bas": 99,
+          "konu": "Çevre Ölçme",
+          "son": 100
+        },
+        {
+          "bas": 101,
+          "konu": "Alan Ölçme",
+          "son": 102
+        },
+        {
+          "bas": 103,
+          "konu": "Tartma",
+          "son": 104
+        },
+        {
+          "bas": 105,
+          "konu": "Tartma Problemleri",
+          "son": 106
+        },
+        {
+          "bas": 107,
+          "konu": "Sıvıları Ölçme",
+          "son": 108
+        },
+        {
+          "bas": 109,
+          "konu": "Sıvıları Ölçme",
+          "son": 110
+        }
+      ]
+    },
+    {
+      "id": "fen-avci",
+      "ad": "Fen Avcı",
+      "ders": "Fen Bilimleri",
+      "tur": "avci",
+      "yanitAnahtari": 95,
+      "bolumler": [
+        {
+          "bas": 5,
+          "konu": "Yer Kabuğunun Yapısı",
+          "son": 8,
+          "yesilTest": [
+            8,
+            8
+          ]
+        },
+        {
+          "bas": 9,
+          "konu": "Dünya'mızın Hareketleri",
+          "son": 12,
+          "yesilTest": [
+            12,
+            12
+          ]
+        },
+        {
+          "bas": 13,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 16
+        },
+        {
+          "bas": 17,
+          "konu": "Besinler ve Özellikleri",
+          "son": 20,
+          "yesilTest": [
+            20,
+            20
+          ]
+        },
+        {
+          "bas": 21,
+          "konu": "Besinlerin Tazeliği ve Doğallığı / Besinleri Saklama Koşulları",
+          "son": 24,
+          "yesilTest": [
+            24,
+            24
+          ]
+        },
+        {
+          "bas": 25,
+          "konu": "Dengeli ve Sağlıklı Beslenelim / Alkol ve Sigaranın Zararları",
+          "son": 26,
+          "yesilTest": [
+            26,
+            26
+          ]
+        },
+        {
+          "bas": 27,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 28
+        },
+        {
+          "bas": 29,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 29
+        },
+        {
+          "bas": 30,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 30
+        },
+        {
+          "bas": 31,
+          "konu": "Kuvvetin Cisimler Üzerindeki Etkileri",
+          "son": 34,
+          "yesilTest": [
+            34,
+            34
+          ]
+        },
+        {
+          "bas": 35,
+          "konu": "Mıknatısların Uyguladığı Kuvvet",
+          "son": 38,
+          "yesilTest": [
+            38,
+            38
+          ]
+        },
+        {
+          "bas": 39,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 42
+        },
+        {
+          "bas": 43,
+          "konu": "Maddeyi Niteleyen Özellikler",
+          "son": 46,
+          "yesilTest": [
+            46,
+            46
+          ]
+        },
+        {
+          "bas": 47,
+          "konu": "Maddenin Ölçülebilir Özellikleri",
+          "son": 50,
+          "yesilTest": [
+            50,
+            50
+          ]
+        },
+        {
+          "bas": 51,
+          "konu": "Maddenin Hâlleri",
+          "son": 54,
+          "yesilTest": [
+            54,
+            54
+          ]
+        },
+        {
+          "bas": 55,
+          "konu": "Maddenin Isı Etkisiyle Değişimi",
+          "son": 58,
+          "yesilTest": [
+            58,
+            58
+          ]
+        },
+        {
+          "bas": 59,
+          "konu": "Saf Madde ve Karışım",
+          "son": 62,
+          "yesilTest": [
+            62,
+            62
+          ]
+        },
+        {
+          "bas": 63,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 66
+        },
+        {
+          "bas": 67,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 67
+        },
+        {
+          "bas": 68,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 68
+        },
+        {
+          "bas": 69,
+          "konu": "Aydınlatma Teknolojileri / Uygun Aydınlatma / Işık Kirliliği",
+          "son": 72,
+          "yesilTest": [
+            72,
+            72
+          ]
+        },
+        {
+          "bas": 73,
+          "konu": "Geçmişten Günümüze Ses Teknolojileri / Ses Kirliliği",
+          "son": 76,
+          "yesilTest": [
+            76,
+            76
+          ]
+        },
+        {
+          "bas": 77,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 78
+        },
+        {
+          "bas": 79,
+          "konu": "Bilinçli Tüketici",
+          "son": 82,
+          "yesilTest": [
+            82,
+            82
+          ]
+        },
+        {
+          "bas": 83,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 86
+        },
+        {
+          "bas": 87,
+          "konu": "Basit Elektrik Devreleri",
+          "son": 90,
+          "yesilTest": [
+            90,
+            90
+          ]
+        },
+        {
+          "bas": 91,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 92
+        },
+        {
+          "bas": 93,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 93
+        },
+        {
+          "bas": 94,
+          "konu": "Yeni Nesil Sorular",
+          "karma": true,
+          "son": 94
+        }
+      ]
+    },
+    {
+      "id": "fen-oy",
+      "ad": "Fen Ödev Yaprakları",
+      "ders": "Fen Bilimleri",
+      "tur": "odev-yapraklari",
+      "yanitAnahtari": 61,
+      "bolumler": [
+        {
+          "bas": 3,
+          "konu": "Yer Kabuğunun Yapısı",
+          "son": 6
+        },
+        {
+          "bas": 7,
+          "konu": "Dünya'mızın Hareketleri",
+          "son": 10
+        },
+        {
+          "bas": 11,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 12
+        },
+        {
+          "bas": 13,
+          "konu": "Besinler ve Özellikleri",
+          "son": 14
+        },
+        {
+          "bas": 15,
+          "konu": "Besinler ve Özellikleri",
+          "son": 18
+        },
+        {
+          "bas": 19,
+          "konu": "Kuvvetin Cisimler Üzerindeki Etkileri",
+          "son": 22
+        },
+        {
+          "bas": 23,
+          "konu": "Mıknatısların Uyguladığı Kuvvet",
+          "son": 26
+        },
+        {
+          "bas": 27,
+          "konu": "Maddeyi Niteleyen Özellikler",
+          "son": 28
+        },
+        {
+          "bas": 29,
+          "konu": "Maddenin Ölçülebilir Özellikleri",
+          "son": 30
+        },
+        {
+          "bas": 31,
+          "konu": "Maddenin Hâlleri",
+          "son": 34
+        },
+        {
+          "bas": 35,
+          "konu": "Maddenin Isı Etkisiyle Değişimi",
+          "son": 36
+        },
+        {
+          "bas": 37,
+          "konu": "Saf Madde ve Karışım",
+          "son": 40
+        },
+        {
+          "bas": 41,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 42
+        },
+        {
+          "bas": 43,
+          "konu": "Aydınlatma Teknolojileri - Uygun Aydınlatma - Işık Kirliliği",
+          "son": 46
+        },
+        {
+          "bas": 47,
+          "konu": "Geçmişten Günümüze Ses Teknolojileri - Ses Kirliliği",
+          "son": 50
+        },
+        {
+          "bas": 51,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 52
+        },
+        {
+          "bas": 53,
+          "konu": "Bilinçli Tüketici",
+          "son": 56
+        },
+        {
+          "bas": 57,
+          "konu": "Basit Elektrik Devreleri",
+          "son": 60
+        }
+      ]
+    },
+    {
+      "id": "sos-avci",
+      "ad": "Sosyal Avcı",
+      "ders": "Sosyal Bilgiler",
+      "tur": "avci",
+      "yanitAnahtari": 79,
+      "bolumler": [
+        {
+          "bas": 5,
+          "konu": "Benim de Kimliğim Var",
+          "son": 6,
+          "yesilTest": [
+            6,
+            6
+          ]
+        },
+        {
+          "bas": 7,
+          "konu": "Dünden Bugüne",
+          "son": 8,
+          "yesilTest": [
+            8,
+            8
+          ]
+        },
+        {
+          "bas": 9,
+          "konu": "Ben de Yapabilirim",
+          "son": 10,
+          "yesilTest": [
+            10,
+            10
+          ]
+        },
+        {
+          "bas": 11,
+          "konu": "Tüm Renkler Bir Arada",
+          "son": 12,
+          "yesilTest": [
+            12,
+            12
+          ]
+        },
+        {
+          "bas": 13,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 14
+        },
+        {
+          "bas": 15,
+          "konu": "Aile Tarihi",
+          "son": 16,
+          "yesilTest": [
+            16,
+            16
+          ]
+        },
+        {
+          "bas": 17,
+          "konu": "Kültürümüz",
+          "son": 18,
+          "yesilTest": [
+            18,
+            18
+          ]
+        },
+        {
+          "bas": 19,
+          "konu": "Oyun Zamanı",
+          "son": 20,
+          "yesilTest": [
+            20,
+            20
+          ]
+        },
+        {
+          "bas": 21,
+          "konu": "Millî Mücadelemiz (Savaşa Hazırlık)",
+          "son": 22,
+          "yesilTest": [
+            22,
+            22
+          ]
+        },
+        {
+          "bas": 23,
+          "konu": "Millî Mücadelemiz (Cepheler - 1)",
+          "son": 24,
+          "yesilTest": [
+            24,
+            24
+          ]
+        },
+        {
+          "bas": 25,
+          "konu": "Millî Mücadelemiz (Cepheler - 2)",
+          "son": 26,
+          "yesilTest": [
+            26,
+            26
+          ]
+        },
+        {
+          "bas": 27,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 28
+        },
+        {
+          "bas": 29,
+          "konu": "Yön Bulma Yöntemleri",
+          "son": 30,
+          "yesilTest": [
+            30,
+            30
+          ]
+        },
+        {
+          "bas": 31,
+          "konu": "Kroki",
+          "son": 32,
+          "yesilTest": [
+            32,
+            32
+          ]
+        },
+        {
+          "bas": 33,
+          "konu": "Doğal ve Beşerî Unsurlar",
+          "son": 34,
+          "yesilTest": [
+            34,
+            34
+          ]
+        },
+        {
+          "bas": 35,
+          "konu": "Hava Olayları",
+          "son": 36,
+          "yesilTest": [
+            36,
+            36
+          ]
+        },
+        {
+          "bas": 37,
+          "konu": "Türkiye'nin Coğrafi Özellikleri",
+          "son": 38,
+          "yesilTest": [
+            38,
+            38
+          ]
+        },
+        {
+          "bas": 39,
+          "konu": "Doğal Afetler",
+          "son": 40,
+          "yesilTest": [
+            40,
+            40
+          ]
+        },
+        {
+          "bas": 41,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 42
+        },
+        {
+          "bas": 43,
+          "konu": "Hayatımızdaki Teknoloji",
+          "son": 44,
+          "yesilTest": [
+            44,
+            44
+          ]
+        },
+        {
+          "bas": 45,
+          "konu": "Bilgiden Teknolojiye",
+          "son": 46,
+          "yesilTest": [
+            46,
+            46
+          ]
+        },
+        {
+          "bas": 47,
+          "konu": "Tasarım Harikası",
+          "son": 48,
+          "yesilTest": [
+            48,
+            48
+          ]
+        },
+        {
+          "bas": 49,
+          "konu": "Teknoloji Zarar Vermesin",
+          "son": 50,
+          "yesilTest": [
+            50,
+            50
+          ]
+        },
+        {
+          "bas": 51,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 52
+        },
+        {
+          "bas": 53,
+          "konu": "İhtiyaçlar mı? İstekler mi?",
+          "son": 54,
+          "yesilTest": [
+            54,
+            54
+          ]
+        },
+        {
+          "bas": 55,
+          "konu": "Çevremizdeki Ekonomik Faaliyetler",
+          "son": 56,
+          "yesilTest": [
+            56,
+            56
+          ]
+        },
+        {
+          "bas": 57,
+          "konu": "Bilinçli Tüketici",
+          "son": 58,
+          "yesilTest": [
+            58,
+            58
+          ]
+        },
+        {
+          "bas": 59,
+          "konu": "Bütçemi Yapıyorum",
+          "son": 60,
+          "yesilTest": [
+            60,
+            60
+          ]
+        },
+        {
+          "bas": 61,
+          "konu": "İsraf Etmeyelim",
+          "son": 62,
+          "yesilTest": [
+            62,
+            62
+          ]
+        },
+        {
+          "bas": 63,
+          "konu": "Ünite Değerlendirme",
+          "karma": true,
+          "son": 64
+        },
+        {
+          "bas": 65,
+          "konu": "Haklarım Var",
+          "son": 66,
+          "yesilTest": [
+            66,
+            66
+          ]
+        },
+        {
+          "bas": 67,
+          "konu": "Sorumluluklarım",
+          "son": 68,
+          "yesilTest": [
+            68,
+            68
+          ]
+        },
+        {
+          "bas": 69,
+          "konu": "Ben de Katılabilirim",
+          "son": 70,
+          "yesilTest": [
+            70,
+            70
+          ]
+        },
+        {
+          "bas": 71,
+          "konu": "Özgürlük ve Bağımsızlık",
+          "son": 72,
+          "yesilTest": [
+            72,
+            72
+          ]
+        },
+        {
+          "bas": 73,
+          "konu": "Keşfe Çıkalım",
+          "son": 74,
+          "yesilTest": [
+            74,
+            74
+          ]
+        },
+        {
+          "bas": 75,
+          "konu": "Yollar Birbirine Bağlıyor",
+          "son": 76,
+          "yesilTest": [
+            76,
+            76
+          ]
+        },
+        {
+          "bas": 77,
+          "konu": "Yeryüzünde Yaşam",
+          "son": 78,
+          "yesilTest": [
+            78,
+            78
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sos-oy",
+      "ad": "Sosyal Ödev Yaprakları",
+      "ders": "Sosyal Bilgiler",
+      "tur": "odev-yapraklari",
+      "yanitAnahtari": 64,
+      "bolumler": [
+        {
+          "bas": 3,
+          "konu": "Benim de Kimliğim Var",
+          "son": 4
+        },
+        {
+          "bas": 5,
+          "konu": "Dünden Bugüne",
+          "son": 6
+        },
+        {
+          "bas": 7,
+          "konu": "Ben de Yapabilirim",
+          "son": 8
+        },
+        {
+          "bas": 9,
+          "konu": "Tüm Renkler Bir Arada",
+          "son": 10
+        },
+        {
+          "bas": 11,
+          "konu": "Aile Tarihi",
+          "son": 12
+        },
+        {
+          "bas": 13,
+          "konu": "Kültürümüz",
+          "son": 14
+        },
+        {
+          "bas": 15,
+          "konu": "Oyun Zamanı",
+          "son": 16
+        },
+        {
+          "bas": 17,
+          "konu": "Millî Mücadelemiz (Savaşa Hazırlık)",
+          "son": 18
+        },
+        {
+          "bas": 19,
+          "konu": "Millî Mücadelemiz (Cepheler)",
+          "son": 20
+        },
+        {
+          "bas": 21,
+          "konu": "Yön Bulma Yöntemleri",
+          "son": 22
+        },
+        {
+          "bas": 23,
+          "konu": "Kroki",
+          "son": 24
+        },
+        {
+          "bas": 25,
+          "konu": "Doğal ve Beşerî Unsurlar",
+          "son": 26
+        },
+        {
+          "bas": 27,
+          "konu": "Hava Olayları",
+          "son": 28
+        },
+        {
+          "bas": 29,
+          "konu": "Türkiye'nin Coğrafi Özellikleri",
+          "son": 30
+        },
+        {
+          "bas": 31,
+          "konu": "Doğal Afetler",
+          "son": 32
+        },
+        {
+          "bas": 33,
+          "konu": "Hayatımızdaki Teknoloji",
+          "son": 34
+        },
+        {
+          "bas": 35,
+          "konu": "Bilgiden Teknolojiye",
+          "son": 36
+        },
+        {
+          "bas": 37,
+          "konu": "Tasarım Harikası",
+          "son": 38
+        },
+        {
+          "bas": 39,
+          "konu": "Teknoloji Zarar Vermesin",
+          "son": 40
+        },
+        {
+          "bas": 41,
+          "konu": "İhtiyaçlar mı? İstekler mi?",
+          "son": 42
+        },
+        {
+          "bas": 43,
+          "konu": "Çevremizdeki Ekonomik Faaliyetler",
+          "son": 44
+        },
+        {
+          "bas": 45,
+          "konu": "Bilinçli Tüketici",
+          "son": 46
+        },
+        {
+          "bas": 47,
+          "konu": "Bütçemi Yapıyorum",
+          "son": 48
+        },
+        {
+          "bas": 49,
+          "konu": "İsraf Etmeyelim",
+          "son": 50
+        },
+        {
+          "bas": 51,
+          "konu": "Haklarım Var",
+          "son": 52
+        },
+        {
+          "bas": 53,
+          "konu": "Sorumluluklarım",
+          "son": 54
+        },
+        {
+          "bas": 55,
+          "konu": "Ben de Katılabilirim",
+          "son": 56
+        },
+        {
+          "bas": 57,
+          "konu": "Özgürlük ve Bağımsızlık",
+          "son": 58
+        },
+        {
+          "bas": 59,
+          "konu": "Keşfe Çıkalım",
+          "son": 60
+        },
+        {
+          "bas": 61,
+          "konu": "Yollar Birbirine Bağlıyor",
+          "son": 62
+        },
+        {
+          "bas": 63,
+          "konu": "Yeryüzünde Yaşam",
+          "son": 63
+        }
+      ]
+    }
+  ],
+  "haftaSonu": {
+    "id": "hafta-sonu",
+    "ad": "Hafta Sonu Ödev Avcısı",
+    "haftalar": [
+      {
+        "hafta": 1,
+        "Türkçe": "Sözcük Bilgisi",
+        "Matematik": "4, 5, 6 basamaklı sayılar; 10.000'er ve 100.000'er sayma",
+        "Sosyal Bilgiler": "Kimlik belgesi ve kişisel kimlik",
+        "Fen Bilimleri": "Yer kabuğu, kayaçlar",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 2,
+        "Türkçe": "Eş Anlamlı Sözcükler",
+        "Matematik": "Basamaklar, bölükler, basamak değerleri; onar, yüzer, biner sayma",
+        "Sosyal Bilgiler": "Kronolojik yaşam sırası",
+        "Fen Bilimleri": "Madenler ve kullanım alanları",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 3,
+        "Türkçe": "Zıt Anlamlı Sözcükler",
+        "Matematik": "Sayıları karşılaştırma, sıralama; onluğa ve yüzlüğe yuvarlama",
+        "Sosyal Bilgiler": "Bireysel ilgi, ihtiyaç ve yetenekler",
+        "Fen Bilimleri": "Fosillerin oluşumu",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 4,
+        "Türkçe": "Eş Sesli Sözcükler",
+        "Matematik": "Toplama işlemi; 100'ün katlarıyla zihinden toplama",
+        "Sosyal Bilgiler": "Farklı özelliklere saygı",
+        "Fen Bilimleri": "Dünya'nın dönme ve dolanma hareketleri",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 5,
+        "Türkçe": "Gerçek, Mecaz ve Terim Anlamlı Sözcükler",
+        "Matematik": "Toplamı tahmin etme; 100'ün katlarıyla zihinden toplama",
+        "Sosyal Bilgiler": "Farklı özelliklere saygı",
+        "Fen Bilimleri": "Dünya'nın hareketlerinin sonuçları",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 6,
+        "Türkçe": "Sözcükleri Anlamına Uygun Kullanma",
+        "Matematik": "Toplama işlemi problemleri",
+        "Sosyal Bilgiler": "Sözlü, yazılı, görsel kaynaklarla aile tarihi",
+        "Fen Bilimleri": "Besin içerikleri ve canlıların beslenmesi",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 7,
+        "Türkçe": "Deyimler ve Atasözleri",
+        "Matematik": "Çıkarma; sonucu tahmin; toplama ve çıkarma problemleri",
+        "Sosyal Bilgiler": "Millî kültür ögeleri",
+        "Fen Bilimleri": "Su ve minerallerin önemi, besinlerde bulunması",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 8,
+        "Türkçe": "Cümle Bilgisi",
+        "Matematik": "Üç basamaklı sayılardan zihinden 10 ve 100 çıkarma; çıkarma problemleri",
+        "Sosyal Bilgiler": "Geleneksel ve günümüz çocuk oyunları",
+        "Fen Bilimleri": "Taze, doğal besinler; israfın önlenmesi",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 9,
+        "Türkçe": "Cümle Oluşturma",
+        "Matematik": "10, 100, 1000 ile çarpma; 10 ve 100'e bölme",
+        "Sosyal Bilgiler": "Çocuk oyunlarının değişimi ve sürekliliği",
+        "Fen Bilimleri": "Dengeli beslenme",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 10,
+        "Türkçe": "Cümle Tamamlama",
+        "Matematik": "Üç basamaklıyla iki basamaklı çarpma; çarpanların yeri; çarpımı tahmin",
+        "Sosyal Bilgiler": "Millî Mücadele kahramanları",
+        "Fen Bilimleri": "Alkol ve sigaranın zararları, sağlıklı yaşam",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 11,
+        "Türkçe": "Neden - Sonuç Cümleleri",
+        "Matematik": "Üç basamaklıyla iki basamaklı çarpma; üç doğal sayıyı çarpma",
+        "Sosyal Bilgiler": "Millî Mücadele kahramanları",
+        "Fen Bilimleri": "Kuvvetin hızlandırma, yavaşlatma, yön ve şekil değiştirme etkileri",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 12,
+        "Türkçe": "Karşılaştırma ve Benzetme Cümleleri",
+        "Matematik": "Bölme; bölümü tahmin etme; bölme işleminin sonucunu kontrol etme",
+        "Sosyal Bilgiler": "Yön bulma yöntemleri",
+        "Fen Bilimleri": "Mıknatısın kutupları",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 13,
+        "Türkçe": "Gerçek ve Hayal Unsuru Ögeler",
+        "Matematik": "Çarpma ve bölme problemleri; dört işlem problemleri",
+        "Sosyal Bilgiler": "Mekânın krokisini çizme",
+        "Fen Bilimleri": "Mıknatısın etki ettiği maddeler",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 14,
+        "Türkçe": "Metnin Konusu",
+        "Matematik": "Ardışık, artan veya azalan sayı örüntüleri",
+        "Sosyal Bilgiler": "Doğal ve beşerî unsurlar",
+        "Fen Bilimleri": "Mıknatısların kullanım alanları ve farklı kullanımları",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 15,
+        "Türkçe": "Metnin Ana Fikri",
+        "Matematik": "Basit, bileşik, tam sayılı kesirleri tanıma ve modelleme",
+        "Sosyal Bilgiler": "Hava olaylarını gözlemleme ve resimli grafik",
+        "Fen Bilimleri": "Beş duyu organıyla maddenin özellikleri",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 16,
+        "Türkçe": "Şiirde Ana Duygu",
+        "Matematik": "Bir çokluğun basit kesir kadarı; toplama ve çıkarma kontrolü",
+        "Sosyal Bilgiler": "Yer şekilleri ve nüfus özellikleri",
+        "Fen Bilimleri": "Kütle ve hacim ölçme, karşılaştırma; ölçülebilir özelliklerle maddeyi tanımlama",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 17,
+        "Türkçe": "Metinle İlgili Sorular",
+        "Matematik": "Kesirlerle toplama ve çıkarma problemleri",
+        "Sosyal Bilgiler": "Yer şekilleri ve nüfus özellikleri",
+        "Fen Bilimleri": "Maddenin hâllerinin temel özellikleri",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 18,
+        "Türkçe": "5N 1K (Ne, Nerede, Nasıl, Niçin, Ne Zaman, Kim)",
+        "Matematik": "Zaman ölçme birimleri ilişkileri ve problemleri",
+        "Sosyal Bilgiler": "Doğal afetlere hazırlık",
+        "Fen Bilimleri": "Isının madde hâline etkisi",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 19,
+        "Türkçe": "Olayların Oluş Sırası",
+        "Matematik": "Zaman ölçme birimleri ilişkileri ve problemleri",
+        "Sosyal Bilgiler": "Teknolojik ürünlerin kullanım alanları",
+        "Fen Bilimleri": "Maddenin ısı alışverişi",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 20,
+        "Türkçe": "Örnekleme, Destekleyen, Sonuç Bildiren, Farklı Düşünmeye Yönlendiren İfadeler",
+        "Matematik": "Sütun grafiği oluşturma, yorumlama ve grafik problemleri",
+        "Sosyal Bilgiler": "Teknolojik ürünlerin geçmişi ve bugünü",
+        "Fen Bilimleri": "Maddenin ısı etkisiyle değişimi",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 21,
+        "Türkçe": "Hikâye Unsurları",
+        "Matematik": "Sütun grafiği problemleri; çizelge ve tablo oluşturma",
+        "Sosyal Bilgiler": "Teknolojik ürünlerin geçmişi, gelecekteki etkileri",
+        "Fen Bilimleri": "Saf madde, karışım; ayırma ve geri dönüşüm",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 22,
+        "Türkçe": "Başlık ve İçerik İlişkisi",
+        "Matematik": "Üçgen, kare, dikdörtgen; kenarlar, köşeler, açı ilişkileri",
+        "Sosyal Bilgiler": "Teknolojik ihtiyaçlardan hareketle tasarım",
+        "Fen Bilimleri": "Karışımların ayrılmasının ekonomi ve kaynaklara katkısı",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 23,
+        "Türkçe": "Metnin Bölümleri (Giriş, Gelişme, Sonuç)",
+        "Matematik": "Kare ve dikdörtgen çizimi; üçgenleri kenarlarına göre sınıflandırma",
+        "Sosyal Bilgiler": "Teknolojik ürünlerin güvenli kullanımı",
+        "Fen Bilimleri": "Karışımları ayırma; ekonomi ve kaynakların korunması",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 24,
+        "Türkçe": "Metinle İlgili Çıkarımlar",
+        "Matematik": "Düzlem, açı; açıyı isimlendirme, sembolle gösterme, ölçme ve çizme",
+        "Sosyal Bilgiler": "İstek ve ihtiyaçlar",
+        "Fen Bilimleri": "Aydınlatma araçlarının geçmişi ve bugünü",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 25,
+        "Türkçe": "Yönerge Yazma",
+        "Matematik": "Açının standart olmayan birimlerle ölçümü; açı çeşitleri; küp oluşturma",
+        "Sosyal Bilgiler": "Geçmişten bugüne ekonomik faaliyetler",
+        "Fen Bilimleri": "Uygun aydınlatma",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 26,
+        "Türkçe": "Yabancı Dilden Alınan Sözcüklerin Türkçeleri",
+        "Matematik": "Ayna simetrisi; simetrik şekiller çizme",
+        "Sosyal Bilgiler": "Günlük hayatta kullanılan ekonomik faaliyetler",
+        "Fen Bilimleri": "Aydınlatma araçlarının tasarruflu kullanımı, aile ve ülke ekonomisi",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 27,
+        "Türkçe": "Büyük Harflerin Yazımı",
+        "Matematik": "Metre, santimetre, milimetre; uzunluk tahmini ve problemleri",
+        "Sosyal Bilgiler": "Bilinçli tüketici",
+        "Fen Bilimleri": "Işık kirliliğinin nedenleri",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 28,
+        "Türkçe": "Noktalama İşaretleri - 1",
+        "Matematik": "Uzunluk birimleri; kilometre, metre, santimetre, milimetre problemleri",
+        "Sosyal Bilgiler": "İhtiyaçlardan hareketle bütçe",
+        "Fen Bilimleri": "Işık kirliliğinin etkileri ve azaltılması",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 29,
+        "Türkçe": "Noktalama İşaretleri - 2",
+        "Matematik": "Çevre ölçme, çevre uzunluklarını karşılaştırma",
+        "Sosyal Bilgiler": "Çocuk hakları",
+        "Fen Bilimleri": "Geçmiş ve günümüz ses teknolojileri",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 30,
+        "Türkçe": "Kısaltmaların ve Kısaltmalara Gelen Eklerin Yazımı",
+        "Matematik": "Çevre problemleri; alanı standart olmayan birimlerle ölçme",
+        "Sosyal Bilgiler": "Hak ve sorumluluklar",
+        "Fen Bilimleri": "Şiddetli sesli teknolojilerin olumlu ve olumsuz etkileri",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 31,
+        "Türkçe": "Dil ve Anlatım Bozuklukları",
+        "Matematik": "Dikdörtgen ve karenin alanı; alan tahmini",
+        "Sosyal Bilgiler": "Sosyal sorumluluk etkinlikleri",
+        "Fen Bilimleri": "Ses kirliliği; nedenleri, etkileri ve azaltılması",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 32,
+        "Türkçe": "Sayıların Yazımı",
+        "Matematik": "Kütle ölçme birimleri, dönüşümler ve problemler",
+        "Sosyal Bilgiler": "Bağımsızlık ve bireysel özgürlük",
+        "Fen Bilimleri": "Kaynakların tasarruflu kullanımı",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 33,
+        "Türkçe": "“de” ve “ki” Bağlaçlarının Yazımı",
+        "Matematik": "Ton, kilogram, gram, miligram; kütle tahmini ve problemler",
+        "Sosyal Bilgiler": "Dünya üzerindeki çeşitli ülkeler",
+        "Fen Bilimleri": "Yaşam için gerekli kaynaklar ve geri dönüşüm",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 34,
+        "Türkçe": "İkilemelerin Yazımı",
+        "Matematik": "Ton, kilogram, gram, miligram problemleri",
+        "Sosyal Bilgiler": "Komşular ve diğer Türk Cumhuriyetleri",
+        "Fen Bilimleri": "Basit elektrik devresi elemanları",
+        "dogrulanmali": true
+      },
+      {
+        "hafta": 35,
+        "Türkçe": "Şekil, Sembol ve İşaretler",
+        "Matematik": "Mililitre, litre; dönüşümler, tahmin ve sıvı ölçme problemleri",
+        "Sosyal Bilgiler": "Farklı kültürleri tanıma, saygı ve karşılaştırma",
+        "Fen Bilimleri": "Çalışan bir elektrik devresi kurma",
+        "dogrulanmali": true
+      }
+    ],
+    "not": "Haftaların konuları düşük çözünürlüklü görselden okundu; öğretmenin yakın çekim görselleriyle doğrulanmalı."
+  }
+}

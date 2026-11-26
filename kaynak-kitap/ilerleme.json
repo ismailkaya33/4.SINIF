@@ -1,0 +1,15 @@
+{
+  "aciklama": "Kaynak kitaplarda ödev olarak verilen son sayfa (kaldığımız yer). Haftalık plan onaylanınca 'node tools/kaynak-odev-oner.mjs --ilerle' günceller.",
+  "guncelleme": "2026-11-26",
+  "sonSayfa": {
+    "tr-avci": 86,
+    "tr-oy": 40,
+    "mat-avci": 92,
+    "mat-oy": 42,
+    "fen-avci": 30,
+    "fen-oy": 18,
+    "sos-avci": 32,
+    "sos-oy": 24
+  },
+  "haftaSonuSon": 7
+}

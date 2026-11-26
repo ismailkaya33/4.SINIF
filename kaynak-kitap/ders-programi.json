@@ -1,0 +1,19 @@
+{
+  "aciklama": "4/D haftalık ders programı (2026-2027, öğlenci). Portaldaki 'Ders Programım' kartı ve kaynak kitap ödev dağıtımı buradan okur. Her gün 6 ders, sırayla.",
+  "baslik": "2026-2027 Eğitim Öğretim Yılı (Öğlenci Grup)",
+  "saatler": [
+    { "no": 1, "bas": "13:10", "bit": "13:50" },
+    { "no": 2, "bas": "14:00", "bit": "14:40" },
+    { "no": 3, "bas": "14:55", "bit": "15:35" },
+    { "no": 4, "bas": "15:45", "bit": "16:25" },
+    { "no": 5, "bas": "16:35", "bit": "17:15" },
+    { "no": 6, "bas": "17:25", "bit": "18:05" }
+  ],
+  "gunler": {
+    "Pazartesi": ["Türkçe", "Türkçe", "Matematik", "Görsel Sanatlar", "İnsan Hakları, Vatandaşlık ve Demokrasi", "İnsan Hakları, Vatandaşlık ve Demokrasi"],
+    "Salı": ["Matematik", "Türkçe", "Türkçe", "Fen Bilimleri", "İngilizce", "İngilizce"],
+    "Çarşamba": ["Sosyal Bilgiler", "Sosyal Bilgiler", "Beden Eğitimi ve Oyun", "Beden Eğitimi ve Oyun", "Matematik", "Türkçe"],
+    "Perşembe": ["Fen Bilimleri", "Fen Bilimleri", "Matematik", "Türkçe", "Din Kültürü ve Ahlak Bilgisi", "Din Kültürü ve Ahlak Bilgisi"],
+    "Cuma": ["Türkçe", "Türkçe", "Matematik", "Sosyal Bilgiler", "Trafik Güvenliği ve İlkyardım", "Müzik"]
+  }
+}

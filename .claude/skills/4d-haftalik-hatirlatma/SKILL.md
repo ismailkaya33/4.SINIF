@@ -55,6 +55,10 @@ Baskı materyali (ev ödevi, çalışma kâğıdı) önerme/sorma; yalnız etkin
 4. Öğretmene listeyi ad olarak göster ("Türkçe – Kantin Dedektifi" …), onay alınca `main`'e gönder.
    GitHub Pages birkaç dakikada yayınlar; portalı yeniden yayınlamak gerekmez.
 
+## 4a. Kaynak kitap ödevleri (`kaynak-odev.json`)
+Aynı turda `4d-kaynak-kitap-odev` skill'inin "Haftalık adımlar"ını uygula: sıradaki haftanın Avcı / Ödev Yaprakları
+sayfalarını ve hafta sonu yaprağını öner. Onaylar başta tek seferde alınır (bu-hafta.json ile birlikte).
+
 ## 5. Zamanlanmış görevde
 Görev kendiliğinden çalıştıysa hiçbir şey üretme, gönderme (push) yapma; yalnız listeyi hazırla ve bildirim gönder.
 `bu-hafta.json` için önerilen yeni listeyi bildirime ekle ama dosyayı değiştirme. Ana dalda (`main`) kal, dosya değiştirme.
