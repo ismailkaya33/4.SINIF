@@ -25,7 +25,8 @@ KAZANIM         : (kod + metin; bilmiyorsan "bilinmiyor")
 9. (HTML ise) Teknik: dış bağlantı (http/https ile başlayan kaynak, CDN, font) var mı? alert/confirm/prompt var mı?
    Öğrenciden ad/numara/kod isteniyor mu? İçinde "devamı eklenecek", "TODO", boş bırakılmış bölüm var mı?
    Takipli etkinlik/değerlendirme ise oyun sonunda type: '4d:activity-finished' mesajı gönderiliyor mu ve
-   correct + wrong = total, firstTry ≤ correct kuralları sağlanıyor mu? (Oyunlar için bu mesaj GEREKMEZ.)
+   correct + wrong = total, firstTry ≤ correct kuralları sağlanıyor mu? Soru geçilince de mesaj gidiyor mu?
+   ("hepsi doğruysa gönder" şartı KRİTİK hatadır.) (Oyunlar için bu mesaj GEREKMEZ.)
 10. (Baskı ise) A4'e sığıyor mu, az mürekkepli mi, cevap anahtarı ayrı sayfada mı?
 
 RAPOR BİÇİMİ

@@ -302,7 +302,8 @@ filigranı ve metni kopyalanmaz — yalnız düzen ve tarz örneğidir). Her def
 - [ ] İpucu → ikinci şans → çözüm akışı çalışıyor; `why` her maddede
 - [ ] Dokunma, fare, klavye ayrı ayrı denendi; telefon ve tahta görünümünde taşma yok
 - [ ] İnternetsiz açılıyor; `localStorage` kapalıyken çalışıyor
-- [ ] (Takipli etkinlikte) `oyunId` gerçek kimlik; oyun sonunda tek `4d:activity-finished` mesajı gidiyor
+- [ ] (Oyunlar hariç her etkinlik) `oyunId` gerçek kimlik; oyun sonunda tek `4d:activity-finished` mesajı gidiyor;
+      görev geçilince/yarıda "bitir" denince de gidiyor; aynı gün takibe alındı; `node tools/sonuc-takip-kontrol.mjs` temiz
 - [ ] Bilgi görselle taşınıyor (4.1): konu gerektirdiği yerde tablo/infografik/şema/zaman çizelgesi/sembol var; düz metin + soru dizisi değil (değerlendirmeler dahil)
 - [ ] Görsel zenginlik (4.1): tema + rehber karakter + her soruda görsel + kutlama efekti + ödül/ilerleme + ses düğmesi var; ekran görüntüleri alındı
 - [ ] Türkçe karakter ve yazım doğru; süre hedefe uygun; final bölümü kısa

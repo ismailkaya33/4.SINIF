@@ -67,6 +67,22 @@ Yıllık plan: `YillikPlan/*.docx` (yerel, GitHub'a gitmez) → `node tools/yill
 - **Takipli etkinlik listesi:** `portal/etkinlik-kayitlari.json` (portal dalı) → `node tools/katalog-esitle.mjs`.
 - **Oyunlar** klasörü için sonuç kaydı yapılmaz; defter notu ve değerlendirme de hazırlanmaz/önerilmez (öğretmenin kararı).
 
+## Sonuç kuralı — "öğrenci yaptıysa öğretmen panelinde görünür" (öğretmenin kararı 2026-11-27)
+Neden: 27 Kasım'da portaldaki bir tıklama değişikliği bütün takipli etkinliklerin sonucunu yarım gün kaybettirdi; ayrıca
+"görev geçilince sonuç gitmiyor" ve "takip listesine alınmamış yeni etkinlik" hataları vardı. Oyunlar hariç her ders etkinliği için:
+1. **Sonuç kodu şart.** Yeni etkinlik oyun sonunda tek `4d:activity-finished` mesajı gönderir (rapor motoru); kimliği (`OYUN.id`)
+   portal takip listesindekiyle aynıdır. Sonuç kodu olmayan etkinlik ders klasörüne konmaz.
+2. **Sonuç her bitişte gider.** "Her görev doğru olursa gönder" şartı yasak: görev geçilse ya da öğrenci "bugünlük bitir" dese de
+   sonuç gider (geçilen = yanlış). Yarıda bırakılan çok bölümlü etkinlikte "Bitir / karnemi gör" düğmesi her zaman görünür.
+3. **Aynı gün takip.** Etkinlik main'e giderken portal takip listesine de alınır (`4d-etkinlik-takibe-al`); ikisi birlikte yayınlanır.
+4. **Yayından önce iki araç** (ikisi de geçmeden "yayınla" denmez):
+   - `node tools/sonuc-takip-kontrol.mjs` — her etkinliğin sonuç kodu var mı, takipte mi, kimlik uyuşuyor mu (main'e her yeni etkinlikte).
+   - `node tools/portal-sonuc-testi.mjs --dosya <portal-dalı>/portal/appsscript/OgrenciGiris_Guncel.html` — portal koduna (öğrenci
+     sayfası) dokunan HER değişiklikte: her takipli etkinlik ders listesinden ve "Bu Haftanın Etkinlikleri"nden portal içinde açılıp
+     sonucu kaydediliyor mu (sahte sunucu, gerçek veri yok; Playwright gerekir).
+5. **Yayından sonra** öğretmen TEST40 ile bir takipli etkinliği bitirir, `ETKINLIK_SONUCLARI` sekmesinde satırı görür (`4d-canli-kontrol`).
+6. Kural öncesi ~45 eski etkinlikte sonuç kodu yok; bunlar "bitirdim" bildirimiyle izlenir. Öğretmen istedikçe Codex ile koda kavuşturulur.
+
 ## Kurallar
 - Göndermeden (push) önce ne yayınlanacağını söyle ve onay al; portal dalında iki kez dikkat et.
   İstisna (öğretmenin kararı 2026-11-17): zamanlanmış "4. SINIF — OTONOM PROJE GELİŞTİRME" görevi yalnız `claude/` ile başlayan

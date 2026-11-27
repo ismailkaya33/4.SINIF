@@ -115,6 +115,8 @@ Etkinlik portalın içinde bir çerçevede (iframe) açılır. Oyun bitince, Bİ
 - Bütün sayılar negatif olmayan TAM sayı. total en fazla 200.
 - "Bir şans daha" tekrar soruları bu sayılara katılmaz.
 - Mesaj oyun başına tek kez gider (bayrakla koru). "Yeniden oyna" yeni attemptId ile yeni mesaj üretir.
+- Mesaj HER BİTİŞTE gider: "bütün sorular doğru olursa gönder" ya da "hiç soru geçilmediyse gönder" gibi şart KOYMA.
+  Geçilen/çözülemeyen soru wrong'a sayılır. Öğrenci yarıda bırakmak isterse "Bitir" düğmesi mesajı yine gönderir.
 - attemptId örneği: 'd_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 12)
 - Etkinlik sunucuya doğrudan hiçbir şey göndermez (fetch/XMLHttpRequest/form yok); yalnız bu mesaj.
 - Bitiş ekranının altında şu yazı görünsün: portal içindeyse "Sonucun öğretmenine gönderildi.",

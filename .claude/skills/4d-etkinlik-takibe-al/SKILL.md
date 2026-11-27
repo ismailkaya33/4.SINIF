@@ -12,6 +12,7 @@ Kullanıcı öğretmendir ve kod bilmez. Her adımı sade Türkçe ile, teknik t
    - `type:'4d:activity-finished'`, `schemaVersion:1`, sabit bir `activityId`
    - `correct + wrong = total`, `firstTry <= correct`, `attemptId` 12–80 karakter
    - Mesaj yalnızca **bir kez** gider (`finishSent` benzeri bir bayrak) ve "Yeniden oyna" bayrağı sıfırlar.
+   - Mesaj **her bitişte** gider: "her görev doğru olursa" şartı yasak; geçilen görev yanlış sayılır (CLAUDE.md "Sonuç kuralı").
 2. Göndermiyorsa önce bunu `main` dalında ekle. Bu değişiklik GitHub Pages ile birkaç dakikada yayına çıkar.
    `4d-icerik-uret` ile üretilen etkinliklerde `rapor_motoru.js` v2 bu mesajı zaten gönderir; yalnızca `OYUN.id` portal
    kimliğiyle aynı olmalı. Oyunlar klasörü takibe alınmaz (öğretmenin kararı).
@@ -21,6 +22,10 @@ Kullanıcı öğretmendir ve kod bilmez. Her adımı sade Türkçe ile, teknik t
    Ders listesindeyse `seciliEtkinlikler` listesinde de olmalı.
 2. `node tools/katalog-esitle.mjs` çalıştır (KATALOG BASLA/BITIR bölümlerini kendisi yazar; o bölümleri elle düzenleme).
 3. `node .github/scripts/verify-appsscript-integration.mjs` çalıştır; geçmeli.
+4. main klasöründe `node tools/portal-sonuc-testi.mjs --dosya <bu dal>/portal/appsscript/OgrenciGiris_Guncel.html` çalıştır;
+   "TAMAM" demeli (her takipli etkinlik portal içinde açılıp sonucu kaydediliyor). Portal öğrenci sayfasına dokunan
+   HER değişiklikte (takiple ilgisi olmasa bile) bu test yayından önce çalışır.
+5. Etkinlik main'e de gidiyorsa `node tools/sonuc-takip-kontrol.mjs` hata vermemeli (iki dal aynı gün yayınlanır).
 
 ## Yayın — ONAY GEREKİR
 Bu dala `portal/appsscript/**` veya `portal/ogretmen-rapor/**` değişikliği gönderilince GitHub Actions öğrenci ve öğretmen

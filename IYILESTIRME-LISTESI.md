@@ -12,6 +12,8 @@ Son tarama: 2026-11-22 (pazar; dosya/katalog okuma + `haftalik-hatirlatma.mjs`; 
   portalda kimlik olarak kullanılıyor ve Google tablosuna (ETKINLIK_TAMAMLAMA) bu adla yazılıyor; ad değişirse eski
   "Tamamladım" işaretleri eşleşmez. Ad değiştirme önerilmez; gerekirse site + portal dalı + tablodaki kayıtlar aynı gün birlikte değişmeli.
 - 2026-11-10: Oyunlar bölümü için defter notu ve değerlendirme gerekmez; eksik sayılmaz, önerilmez.
+- 2026-11-27: **Sonuç kuralı** (CLAUDE.md): öğrenci portaldan yaptığı her ders etkinliğinin sonucu öğretmen panelinde görünür.
+  Yeni etkinlik sonuç kodsuz/takipsiz yayınlanmaz; geçilen görev sonucu engellemez; portal değişikliği `tools/portal-sonuc-testi.mjs`'ten geçmeden yayınlanmaz.
 
 ## A. Eksikler (tespit edildi)
 - [ ] A1. (2026-11-22 güncel) Portal dalında takipli kayıt 24; katalogdaki 74 ders etkinliğinin (Oyunlar hariç) ~51'i takipsiz (yol karşılaştırması, doğrulanmalı). En acil: A22 (bu haftanın şeridindeki 7 yeni etkinlik). (skill: 4d-etkinlik-takibe-al)
@@ -27,7 +29,7 @@ Son tarama: 2026-11-22 (pazar; dosya/katalog okuma + `haftalik-hatirlatma.mjs`; 
 - [ ] A10. Ünite sonu değerlendirmesi: Fen'de var; Sosyal'de "Geçmişte Biz" eklendi (gizli). Türkçe, Matematik, İnsan Hakları, Trafik yok
 - [ ] A11. Baskı materyali yalnız 3 ödev (çalışma kâğıdı, kes-yapıştır yok)
 - [ ] A16. (2026-11-22 sayım; doğrulanmalı) 83 etkinlik dosyasının 34'ünde `aria-` var; 82'sinde sesli okuma (speechSynthesis) yok. 20 Kasım'da besin etkinliklerine ekran okuyucu etiketi eklenmiş (git günlüğü) — A7 ile birlikte ele alınacak.
-- [ ] A12. Etkinlikler otomatik test edilmiyor (açılıyor mu, sonuç mesajı gidiyor mu)
+- [~] A12. Etkinlikler otomatik test edilmiyor → 2026-11-27: `tools/sonuc-takip-kontrol.mjs` (sonuç kodu + takip) ve `tools/portal-sonuc-testi.mjs` (portal açma + kayıt) eklendi. KALAN: GitHub Actions'a bağlamak (portal dalında yayından önce otomatik).
 - [ ] A17. (YENİ 2026-11-12) `Turkce/DefterNotlari/ozdeyis.PNG` depoda takipsiz (git'e eklenmemiş) görünüyor ve `ozdeyisler.png` ile aynı konu olabilir → öğretmen: iki dosya aynı mı, biri fazla mı? (A6 ile birlikte düzenlenir)
 - [~] A18. (2026-11-22) 10. hafta başlıyor (23 Kasım). Defter notu dosyalarının çoğu indirilmiş; portal defter listesine eklenip eklenmediği bu taramada kontrol EDİLMEDİ (portal dalı) → doğrulanmalı. Kalan: Trafik defter notu (A5). Not: İnsan Hakları'nda `haklarimizinpesinde.html` (20 Kasım) Y.4.2.4 etkinliği olabilir — kazanım eşleşmesi doğrulanmalı.
 - [~] A19. (2026-11-22; 15 Kasım'a göre) 11–12. hafta boşlukları ad eşleştirmesiyle (doğrulanmalı): KAPANAN: Matematik çarpma (Çarpma Ustaları + 3 defter notu), Sosyal kroki (Kroki Atölyesi + 2 not), Trafik ulaşım araçları, Fen sigara/alkol (etkinlik + 2 defter notu). KALAN: Sosyal doğal/beşerî unsurlar SB.4.3.3, İnsan Hakları Y.4.2.5–Y.4.2.6 (etkinlik yok), Matematik çarpmada ikinci etkinlik (M.4.1.4.2–4.3; doğrulanmalı), Trafik defter notu. Not: C13 (sigara/alkol senaryo kartı) hâlâ geçerli.
