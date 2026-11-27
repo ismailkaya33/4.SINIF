@@ -142,3 +142,10 @@ Engel yok.
 1. Bu çalışmada hiçbir şey değişmedi.
 2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
 Engel yok.
+
+## 2026-11-27 10:15 UTC (on sekizinci çalışma)
+- ONAYLI boştu; yeni güvenli küçük düzeltme bulunmadı. Kod değişmedi. Panel testleri (entegrasyon + tests/*.cjs) geçti.
+Öğretmenin bakmasi gerekenler:
+1. Bu çalışmada hiçbir şey değişmedi.
+2. ONAYLI liste hâlâ boş; ONERI'den seçip onaylayabilirsiniz.
+Engel yok.
