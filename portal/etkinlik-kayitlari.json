@@ -34,7 +34,10 @@
     {"id": "trafik-ulasim-araclari", "yol": "Trafik/ulasimaraclari.html", "ad": "Trafik Güvenliği • Ulaşım Araçları Karşılaştırma", "konu": "Trafik Güvenliği", "kazanim": "TG.4.1.7 Ulaşım araçlarını karşılaştırma", "maxTotal": 200, "dersListesinde": true},
     {"id": "fen-alkol-sigara", "yol": "Fen/sagligimibenkorurum.html", "ad": "Fen Bilimleri • Sağlığımı Ben Korurum", "konu": "Fen Bilimleri", "kazanim": "F.4.2.1.5 Alkol ve sigaranın zararları", "maxTotal": 200, "dersListesinde": true},
     {"id": "tur-cumle-bilgisi", "yol": "Turkce/cumlekasabasi.html", "ad": "Türkçe • Cümle Kasabası: Cümle Bilgisi", "konu": "Türkçe", "kazanim": "Cümle bilgisi (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true},
-    {"id": "insan-bilincli-vatandas", "yol": "Insanhaklari/hakozgurluksorumluluk2.html", "ad": "İnsan Hakları • Bilinçli Vatandaş Kasabası", "konu": "İnsan Hakları, Yurttaşlık ve Demokrasi", "kazanim": "Hak, özgürlük ve sorumluluk (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true}
+    {"id": "insan-bilincli-vatandas", "yol": "Insanhaklari/hakozgurluksorumluluk2.html", "ad": "İnsan Hakları • Bilinçli Vatandaş Kasabası", "konu": "İnsan Hakları, Yurttaşlık ve Demokrasi", "kazanim": "Hak, özgürlük ve sorumluluk (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true},
+    {"id": "mat-kisayoldan-carpma", "yol": "Matematik/kisayoldancarpma.html", "ad": "Matematik • Kısa Yoldan Çarpma: 5, 25 ve 50", "konu": "Matematik", "kazanim": "M.4.1.4.4 Kısa yoldan çarpma", "maxTotal": 200, "dersListesinde": true},
+    {"id": "fen-kuvvetin-etkileri", "yol": "Fen/kuvvetparki.html", "ad": "Fen Bilimleri • Kuvvet Parkı: Kuvvetin Etkileri", "konu": "Fen Bilimleri", "kazanim": "Kuvvetin etkileri (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true},
+    {"id": "fen-miknatislar", "yol": "Fen/miknatislaboratuvari.html", "ad": "Fen Bilimleri • Mıknatıs Laboratuvarı", "konu": "Fen Bilimleri", "kazanim": "Mıknatıslar (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true}
   ],
   "seciliEtkinlikler": [
     {"yol": "Turkce/ikilemeler.html", "ad": "Türkçe • İkileme Dedektifi"},
@@ -69,6 +72,9 @@
     {"yol": "Trafik/ulasimaraclari.html", "ad": "Trafik Güvenliği • Ulaşım Araçları Karşılaştırma"},
     {"yol": "Fen/sagligimibenkorurum.html", "ad": "Fen • Sağlığımı Ben Korurum"},
     {"yol": "Turkce/cumlekasabasi.html", "ad": "Türkçe • Cümle Kasabası"},
-    {"yol": "Insanhaklari/hakozgurluksorumluluk2.html", "ad": "İnsan Hakları • Bilinçli Vatandaş Kasabası"}
+    {"yol": "Insanhaklari/hakozgurluksorumluluk2.html", "ad": "İnsan Hakları • Bilinçli Vatandaş Kasabası"},
+    {"yol": "Matematik/kisayoldancarpma.html", "ad": "Matematik • Kısa Yoldan Çarpma"},
+    {"yol": "Fen/kuvvetparki.html", "ad": "Fen • Kuvvet Parkı"},
+    {"yol": "Fen/miknatislaboratuvari.html", "ad": "Fen • Mıknatıs Laboratuvarı"}
   ]
 }

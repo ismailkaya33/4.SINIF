@@ -129,7 +129,10 @@ const paths = {
     'trafik-ulasim-araclari':'Trafik/ulasimaraclari.html',
     'fen-alkol-sigara':'Fen/sagligimibenkorurum.html',
     'tur-cumle-bilgisi':'Turkce/cumlekasabasi.html',
-    'insan-bilincli-vatandas':'Insanhaklari/hakozgurluksorumluluk2.html'
+    'insan-bilincli-vatandas':'Insanhaklari/hakozgurluksorumluluk2.html',
+    'mat-kisayoldan-carpma':'Matematik/kisayoldancarpma.html',
+    'fen-kuvvetin-etkileri':'Fen/kuvvetparki.html',
+    'fen-miknatislar':'Fen/miknatislaboratuvari.html'
   };
 /* KATALOG BITIR: ilerleme-yollari */
   const available = new Set(SECILI_ETKINLIKLER_);
