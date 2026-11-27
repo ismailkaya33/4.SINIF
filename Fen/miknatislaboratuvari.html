@@ -290,14 +290,14 @@ const OYUN = {
       gorevler: [
         { id: 'm1-1', tip: 'kategori', sahne: '🧲 ➜ 🔩', yonerge: 'Mıknatıs demir çiviyi çeker mi?', dogru: 'Çeker', yanilgi: 'demir-cekmez-sandi',
           ipucu: 'Çivi hangi maddeden yapılmış?', why: 'Demir çivi demirden yapılmıştır; mıknatıs demiri çeker.' },
-        { id: 'm1-2', tip: 'kategori', sahne: '🧲 ➜ 🧽', yonerge: 'Mıknatıs plastik silgiyi çeker mi?', dogru: 'Çekmez', yanilgi: 'her-seyi-ceker',
+        { id: 'm1-2', tip: 'kategori', sahne: '🧲 ➜ 📏', yonerge: 'Mıknatıs plastik cetveli çeker mi?', dogru: 'Çekmez', yanilgi: 'her-seyi-ceker',
           ipucu: 'Plastik, mıknatısın çektiği maddelerden biri mi?', why: 'Plastik demir, nikel ya da kobalt içermez; mıknatıs plastiği çekmez.' },
         { id: 'm1-3', tip: 'kategori', sahne: '🧲 ➜ 🥫', yonerge: 'Mıknatıs alüminyum içecek kutusunu çeker mi?', dogru: 'Çekmez', yanilgi: 'her-metal-ceker',
           ipucu: 'Hatırla kartındaki uyarıyı oku: her metal yapışır mı?', why: 'Alüminyum bir metaldir ama mıknatısa yapışmaz. Mıknatıs her metali çekmez.' },
         { id: 'm1-4', tip: 'coklu', sahne: '🧲📎🪡', yonerge: 'Mıknatısın ÇEKTİKLERİNİN hepsini seç.',
           dogrular: ['ataş', 'çelik vida', 'toplu iğne'],
           yanlislar: [['bakır tel', 'her-metal-ceker'], ['cam bilye', 'her-seyi-ceker'], ['altın yüzük', 'her-metal-ceker']],
-          ipucu: 'Üç doğru var. Demir ya da çelikten olanları bul; bakır ve altın çekilmez.', why: 'Ataş, çelik vida ve toplu iğne demir içerir. Bakır, altın ve cam mıknatısa yapışmaz.' }
+          ipucu: 'Demir ya da çelik içeren cisimleri düşün.', why: 'Ataş, çelik vida ve toplu iğne demir içerir. Bakır, altın ve cam mıknatısa yapışmaz.' }
       ] },
     { id: 'm2', ad: 'Mıknatısın kutupları', kisa: 'N ve S: iter mi, çeker mi?', ikon: '🔴🔵', renk: '#1864ab', kaz: 'F.4.3.4.1',
       kategoriler: ['İter', 'Çeker'],
@@ -342,7 +342,7 @@ const OYUN = {
         { id: 'm4-1', tip: 'coklu', sahne: '🧊🧭🏗️', yonerge: 'Hangilerinde mıknatıs kullanılır? Hepsini seç.',
           dogrular: ['Buzdolabı kapağı', 'Pusula', 'Hurdalıktaki vinç'],
           yanlislar: [['Tahta cetvel', 'kullanim-karisti'], ['Cam bardak', 'kullanim-karisti']],
-          ipucu: 'Üç doğru var. Hatırla kartındaki listeye bak.', why: 'Buzdolabı kapağı, pusula ve hurda vinci mıknatıs kullanır. Tahta cetvel ve cam bardakta mıknatıs yoktur.' },
+          ipucu: 'Hatırla kartındaki eşyaları düşün.', why: 'Buzdolabı kapağı, pusula ve hurda vinci mıknatıs kullanır. Tahta cetvel ve cam bardakta mıknatıs yoktur.' },
         { id: 'm4-2', tip: 'secim', sahne: '🏗️🧲🔩', yonerge: 'Hurdalıktaki büyük mıknatıslı vinç ne işe yarar?', dogru: 'Demir parçalarını öteki atıklardan ayırır.',
           yanlislar: [['Plastik şişeleri toplar.', 'her-seyi-ceker'], ['Tahta parçalarını kaldırır.', 'her-seyi-ceker'], ['Bütün çöpleri aynı anda kaldırır.', 'her-seyi-ceker']],
           ipucu: 'Mıknatıs hangi maddeleri çeker?', why: 'Mıknatıs demiri çeker, plastik ve tahtayı çekmez; vinç bu yüzden demiri ayırır.' },

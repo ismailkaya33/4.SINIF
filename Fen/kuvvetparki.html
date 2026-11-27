@@ -293,8 +293,8 @@ const OYUN = {
           ipucu: 'Köpek bize doğru mu geliyor?', why: 'Köpek bize yaklaşır → çekme.' },
         { id: 'k1-3', tip: 'kategori', sahne: '🗄️✋', yonerge: 'Dolabın kapağını kulpundan tutup açıyoruz. Bu itme mi, çekme mi?', dogru: 'Çekme', yanilgi: 'itme-cekme-karisti',
           ipucu: 'Kapağı açarken kapak bize doğru mu geliyor, bizden uzağa mı gidiyor?', why: 'Kapak bize doğru gelir → çekme.' },
-        { id: 'k1-4', tip: 'kategori', sahne: '🛗👆', yonerge: 'Asansörü çağırmak için düğmeye basıyoruz. Bu itme mi, çekme mi?', dogru: 'İtme', yanilgi: 'itme-cekme-karisti',
-          ipucu: 'Parmağımız düğmeyi kendimize mi yaklaştırıyor, yoksa içeri mi bastırıyor?', why: 'Düğmeyi bizden uzağa, içeri doğru bastırırız → itme.' }
+        { id: 'k1-4', tip: 'kategori', sahne: '⚽🦶', yonerge: 'Kum havuzundaki topu ayağımızla ileri doğru yuvarlıyoruz. Bu itme mi, çekme mi?', dogru: 'İtme', yanilgi: 'itme-cekme-karisti',
+          ipucu: 'Top bizden uzaklaşıyor mu, bize yaklaşıyor mu?', why: 'Top bizden uzaklaşır → itme.' }
       ] },
     { id: 'k2', ad: 'Oyuncak araba deneyi', kisa: 'Dene, gör, anla', ikon: '🚗', renk: '#1971c2', kaz: 'F.4.3.1.1',
       hatirla: '<p style="margin:4px 0">Oyuncak arabaya kuvvet uygulayınca ne olur? Doğru kuvveti seç, arabanın hareketini izle.</p>' +
@@ -338,7 +338,7 @@ const OYUN = {
       gorevler: [
         { id: 'k3-1', tip: 'kategori', kaz: 'F.4.3.1.1', sahne: '🔵👆', yonerge: 'Yerde duran bilyeye parmağımızla fiske vuruyoruz. Kuvvet bilyeye ne yapar?', dogru: 'Hareket ettirir', yanilgi: 'etki-karisti',
           ipucu: 'Bilye önce duruyor muydu, hareket mi ediyordu?', why: 'Bilye duruyordu; fiske ile hareket etmeye başladı → hareket ettirir.' },
-        { id: 'k3-2', tip: 'kategori', kaz: 'F.4.3.2.1', sahne: '🏐🙌', yonerge: 'Voleybolcu, fileden gelen topa vurup topu karşı sahaya geri gönderiyor. Kuvvet topa ne yapar?', dogru: 'Yönünü değiştirir', yanilgi: 'etki-karisti',
+        { id: 'k3-2', tip: 'kategori', kaz: 'F.4.3.2.1', sahne: '🏐🙌', yonerge: 'Voleybolcu, fileden gelen topa vurup topu geldiği yöne, karşı sahaya geri gönderiyor. Topun gittiği yöne dikkat et: kuvvet topa ne yapar?', dogru: 'Yönünü değiştirir', yanilgi: 'etki-karisti',
           ipucu: 'Top hangi yönden geliyordu, hangi yöne gitti?', why: 'Top geldiği yöne geri gitti → kuvvet topun yönünü değiştirdi.' },
         { id: 'k3-3', tip: 'kategori', kaz: 'F.4.3.2.1', sahne: '🛷❄️', yonerge: 'Kızakla kayarken ayaklarımızı yere sürtüyoruz, kızak gittikçe yavaşlıyor ama hâlâ gidiyor. Kuvvet kızağa ne yapar?', dogru: 'Hızını değiştirir', yanilgi: 'etki-karisti',
           ipucu: 'Kızak durdu mu, yoksa yalnız yavaşladı mı?', why: 'Kızak durmadı, yavaşladı → kuvvet kızağın hızını değiştirdi.' },
@@ -351,13 +351,13 @@ const OYUN = {
         '<table class="tbl"><tr><th>Kuvvet kalkınca eski şekline döner</th><th>Eski şekline dönmez</th></tr>' +
         '<tr><td>sünger, yay, lastik top</td><td>oyun hamuru, buruşturulmuş kâğıt, ezilmiş teneke kutu</td></tr></table>',
       gorevler: [
-        { id: 'k4-1', tip: 'kategori', sahne: '🟡✊', yonerge: 'Stres topunu avucumuzda sıkıp bırakıyoruz. Top ne olur?', dogru: 'Eski şekline döner', yanilgi: 'kalici-gecici-karisti',
-          ipucu: 'Stres topu süngere mi benzer, hamura mı?', why: 'Stres topu sünger gibidir; bırakınca eski şekline döner.' },
+        { id: 'k4-1', tip: 'kategori', sahne: '🔴✊', yonerge: 'Lastik topu avucumuzda sıkıp bırakıyoruz. Top ne olur?', dogru: 'Eski şekline döner', yanilgi: 'kalici-gecici-karisti',
+          ipucu: 'Elimizi açınca topa ne olduğunu düşün.', why: 'Lastik top, sünger ve yay gibi kuvvet kalkınca eski şekline döner.' },
         { id: 'k4-2', tip: 'kategori', sahne: '🏰🦶', yonerge: 'Kumdan yaptığımız kaleye yanlışlıkla basıyoruz. Kale ne olur?', dogru: 'Eski şekline dönmez', yanilgi: 'kalici-gecici-karisti',
           ipucu: 'Ayağımızı kaldırınca kale kendiliğinden yeniden yükselir mi?', why: 'Ezilen kum kale kendiliğinden düzelmez; şekil değişikliği kalıcıdır.' },
         { id: 'k4-3', tip: 'kategori', sahne: '🛋️🧒', yonerge: 'Yumuşak bir minderin üstüne oturup kalkıyoruz. Minder ne olur?', dogru: 'Eski şekline döner', yanilgi: 'kalici-gecici-karisti',
           ipucu: 'Minderin içi neye benzer?', why: 'Minder sünger gibidir; kalkınca yavaş yavaş eski şekline döner.' },
-        { id: 'k4-4', tip: 'kategori', sahne: '🥡✊', yonerge: 'Alüminyum folyoyu avucumuzda buruşturup top yapıyoruz. Folyo ne olur?', dogru: 'Eski şekline dönmez', yanilgi: 'kalici-gecici-karisti',
+        { id: 'k4-4', tip: 'kategori', sahne: '✊💥', yonerge: 'Alüminyum folyoyu avucumuzda buruşturup top yapıyoruz. Folyo ne olur?', dogru: 'Eski şekline dönmez', yanilgi: 'kalici-gecici-karisti',
           ipucu: 'Buruşturulmuş kâğıt kendiliğinden düzelir mi?', why: 'Folyo, buruşturulmuş kâğıt gibi kendiliğinden düzelmez; şekli kalıcı olarak değişir.' }
       ] },
     { id: 'k5', ad: 'Hepsi bir arada', kisa: 'Birden çok etki', ikon: '🏆', renk: '#7048e8', kaz: 'F.4.3.3.1',
@@ -368,11 +368,11 @@ const OYUN = {
         { id: 'k5-1', tip: 'coklu', kaz: 'F.4.3.3.1', sahne: '⚽🦶', yonerge: 'Yerde duran futbol topuna vurduk. Doğru olanların HEPSİNİ seç.',
           dogrular: ['Top hareket etmeye başladı.', 'Topun şekli bir an değişti.'],
           yanlislar: [['Topa çekme kuvveti uyguladık.', 'itme-cekme-karisti'], ['Topun şekli kalıcı olarak değişti.', 'kalici-gecici-karisti']],
-          ipucu: 'İki doğru var. Top sonra eski şekline dönüyor mu?', why: 'Vuruş topu hareket ettirir ve topun şeklini bir an değiştirir; top sonra eski şekline döner. Vurmak itmedir.' },
+          ipucu: 'Top sonra eski şekline dönüyor mu? Vurmak itme midir, çekme mi?', why: 'Vuruş topu hareket ettirir ve topun şeklini bir an değiştirir; top sonra eski şekline döner. Vurmak itmedir.' },
         { id: 'k5-2', tip: 'coklu', kaz: 'F.4.3.3.1', sahne: '🟠🙌', yonerge: 'Oyun hamurunu iki elimizle bastırıp yassı bir disk yaptık. Doğru olanların HEPSİNİ seç.',
-          dogrular: ['Hamurun şekli değişti.', 'Hamura itme kuvveti uyguladık.', 'Hamur kendiliğinden eski şekline dönmez.'],
-          yanlislar: [['Hamur kendiliğinden eski şekline döner.', 'kalici-gecici-karisti'], ['Kuvvet hamuru hiç etkilemedi.', 'etki-yok']],
-          ipucu: 'Üç doğru var. Bastırmak itme midir, çekme mi?', why: 'Bastırmak itmedir; hamurun şekli değişir ve kendiliğinden eski şekline dönmez.' },
+          dogrular: ['Hamurun şekli değişti.', 'Hamur kendiliğinden eski şekline dönmez.'],
+          yanlislar: [['Hamur kendiliğinden eski şekline döner.', 'kalici-gecici-karisti'], ['Kuvvet hamuru hiç etkilemedi.', 'etki-yok'], ['Hamur yuvarlanıp uzağa gitti.', 'etki-karisti']],
+          ipucu: 'Ellerimizi çekince hamur kendiliğinden eski hâline gelir mi?', why: 'Kuvvet hamurun şeklini değiştirdi; hamur kendiliğinden eski şekline dönmez, yani değişiklik kalıcıdır.' },
         { id: 'k5-3', tip: 'secim', kaz: 'F.4.3.1.1', sahne: '🤔💭', yonerge: 'Kuvvet için hangisi doğrudur?', dogru: 'Kuvveti göremeyiz, etkilerini görürüz.',
           yanlislar: [['Kuvvet yalnız duran cisimlere uygulanır.', 'yalniz-duran'], ['Kuvvet bir cismin şeklini değiştiremez.', 'sekil-yok'], ['Kuvveti gözümüzle görebiliriz.', 'kuvvet-gorulur']],
           ipucu: 'Rüzgârı düşün: rüzgârı mı görürüz, sallanan dalları mı?', why: 'Kuvvetin kendisi görünmez; hareket, hız, yön ve şekil değişikliği gibi etkilerini görürüz.' },
