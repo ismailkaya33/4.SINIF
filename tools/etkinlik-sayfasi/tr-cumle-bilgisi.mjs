@@ -33,12 +33,15 @@ export default {
       ['Yağmur yağdığı için maç ertelendi.', '[sebep–sonuç]'], ['Sınavı kazanmak için çok çalıştı.', '[amaç–sonuç]'], ['Hasta olduğundan okula gelemedi.', '[sebep–sonuç]'], ['Kitap almak üzere kırtasiyeye gitti.', '[amaç–sonuç]'], ['Erken kalksın diye saati kurdu.', '[amaç–sonuç]'],
     ] },
     { tur: 'coktan', genis: true, baslik: 'Doğru seçeneği işaretle', sorular: [
-      { s: 'Hangisi ünlem cümlesidir?', sec: ['Bugün hava güzel.', 'Aman, düşeceksin!', 'Saat kaç?'], d: 1 },
       { s: '“Kardeşim yemeğini bitirdi.” cümlesinin olumsuzu hangisidir?', sec: ['Kardeşim yemeğini bitirmedi.', 'Kardeşim yemeğini bitirdi mi?', 'Kardeşim yemeğini bitirsin!'], d: 0 },
       { s: 'Hangisinde amaç–sonuç ilişkisi vardır?', sec: ['Üşüdüğü için montunu giydi.', 'Dişleri çürümesin diye şekeri azalttı.', 'Yorulduğundan erken uyudu.'], d: 1 },
+      { s: '“Kar eridi.” cümlesine Can “hareket bildirir” dedi. Can neden yanılıyor?', sec: ['Kar yer değiştirmez, zamanla kendiliğinden değişir; cümle oluş bildirir.', 'Yüklem “neyi?” sorusuna cevap verir; cümle iş bildirir.', 'Kar kıpırdamadan durur; cümle durum bildirir.'], d: 0 },
     ] },
-    { tur: 'yaz', genis: true, baslik: 'Sen yaz', sorular: [
-      { s: 'Teneffüste yaşadığın bir olayı anlatan bir olumlu, bir olumsuz ve bir ünlem cümlesi yaz.', satir: 3, cevap: 'Örnek: Bahçede ip atladık. Kimse kavga etmedi. Ne eğlenceli bir teneffüstü!' },
+    { tur: 'tablo', genis: true, baslik: 'İş mi, hareket mi, oluş mu, durum mu?', yonerge: 'Yükleme sırayla sor: Neyi/kimi? → Yer değiştiriyor mu? → Zamanla kendiliğinden mi değişiyor? Hiçbiri değilse durum.', basliklar: ['Cümle', 'Türü', 'Cümle', 'Türü'], genislik: ['31%', '19%', '31%', '19%'], ortala: false, satirlar: [
+      ['Babam arabayı yıkadı.', '[iş]', 'Atlar çayırda koştu.', '[hareket]'],
+      ['Elmalar kızardı.', '[oluş]', 'Kardeşim yatağında uyuyor.', '[durum]'],
+      ['Ayşe mektubu okudu.', '[iş]', 'Su kaynadı.', '[oluş]'],
+      ['Kuşlar güneye uçtu.', '[hareket]', 'Dedem koltukta oturuyor.', '[durum]'],
     ] },
   ]],
 };

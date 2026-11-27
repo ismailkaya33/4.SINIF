@@ -47,6 +47,17 @@ Sketchnote.defterNotu({
       '"için, -dığı için, bu yüzden, -den" gibi sözcük ve eklerle kurulur: Hasta olduğundan okula gelmedi.',
       '**Amaç-sonuç:** Bir işin **hangi amaçla** yapıldığı anlatılır: Kitap almak için kırtasiyeye gitti.',
     ] },
+
+    { konu: '7. İş, hareket, oluş ve durum bildiren cümle' },
+    { madde: 'Cümlenin ne bildirdiğini **yüklem** söyler. Yükleme soru sorarak cümlenin türünü buluruz.' },
+    { gorsel: 10, metin: [
+      '**İş:** Biri bir şeyi **yapar**; "neyi, kimi?" sorusunun cevabı vardır: Annem **keki** pişirdi.',
+      '**Hareket:** Biri **yer değiştirir** ya da kıpırdar: Çocuklar bahçede koştu.',
+      '**Oluş:** Bir şey kendiliğinden, **zamanla değişir**: Yapraklar sarardı. Bebek büyüdü.',
+      '**Durum:** Kıpırdamadan **bir hâlde** kalır: Kedi kanepede uyuyor.',
+    ] },
+    { dikkat: 'Soruları **sırayla** sor! "Ali kapıyı açtı." cümlesinde Ali kıpırdıyor; ama yükleme "neyi açtı?" diye sorunca cevap var (**kapıyı**). İlk soruda "evet" dediğin için bu cümle **iş** bildirir.' },
+    { madde: '**Oluş** ile **hareketi** karıştırma: "Çiçekler açtı." cümlesinde çiçek yer değiştirmez, zamanla kendiliğinden değişir → **oluş**.' },
   ],
 
   gorseller: [
@@ -170,6 +181,38 @@ Sketchnote.defterNotu({
       blok(84, 'SEBEP → SONUÇ', 'Yağmur yağdığı için', 'ıslandık.', 'neden oldu?', 'ne oldu?', SARI);
       blok(206, 'AMAÇ → SONUÇ', 'Kazanmak için', 'çok çalıştı.', 'ne istedi?', 'ne yaptı?', MAVI);
       yazi(255, 334, 'Sebep: olayın nedeni  •  Amaç: ulaşılmak istenen', 19, { 'text-anchor': 'middle', fill: S.m(R.lacivert) });
+    } },
+    // 10 — İş / hareket / oluş / durum karar şeması (kodla; soruların sırası önemli: önce "neyi?")
+    { ad: 'Yükleme sor, türünü bul', ciz(S) {
+      const { rc, o, ekle, yazi, ok } = S, R = Sketchnote.R, SARI = Sketchnote.SARI, MAVI = Sketchnote.MAVI;
+      yazi(255, 34, 'Yükleme Sor, Türünü Bul', 26, { class: 'kalin', 'text-anchor': 'middle', fill: S.m(R.lacivert) });
+      const SX = 12, SW = 280, NX = 344, NW = 156, H = 48;
+      const soru = (y, t) => {
+        ekle(rc.rectangle(SX, y - H / 2, SW, H, o({ strokeWidth: 2 })));
+        let boy = 18;
+        while (boy > 13 && S.genislik(t, boy, { class: 'kalin' }) > SW - 18) boy -= 0.5;
+        yazi(SX + SW / 2, y + 6, t, boy, { class: 'kalin', 'text-anchor': 'middle' });
+      };
+      const sonuc = (x, y, w, ad, ornek, renk) => {
+        ekle(rc.rectangle(x, y - H / 2, w, H, o({ fill: S.r(renk), fillStyle: 'hachure', hachureGap: 13, fillWeight: 0.7, strokeWidth: 2.4 })));
+        yazi(x + w / 2, y - 2, ad, 21, { class: 'kalin', 'text-anchor': 'middle', fill: S.m(R.kirmizi) });
+        yazi(x + w / 2, y + 17, ornek, 15, { class: 'kalin', 'text-anchor': 'middle', fill: S.m(R.lacivert) });
+      };
+      const satirlar = [
+        [82, 'Neyi? Kimi? sorusunun cevabı var mı?', 'İŞ', 'Ali kapıyı açtı.', SARI],
+        [160, 'Yer değiştiriyor ya da kıpırdıyor mu?', 'HAREKET', 'Kuşlar uçtu.', MAVI],
+        [238, 'Zamanla kendiliğinden mi değişiyor?', 'OLUŞ', 'Buz eridi.', R.pembe],
+      ];
+      for (const [y, s, ad, ornek, renk] of satirlar) {
+        soru(y, s);
+        ok([[SX + SW + 4, y], [NX - 22, y - 1], [NX - 6, y]], S.m(R.yesil));
+        yazi((SX + SW + NX) / 2, y - 9, 'evet', 14, { class: 'kalin', 'text-anchor': 'middle', fill: S.m(R.yesil) });
+        sonuc(NX, y, NW, ad, ornek, renk);
+        const ax = SX + SW / 2, y1 = y + H / 2 + 3, y2 = y + 78 - H / 2 - 4;
+        ok([[ax, y1], [ax + 1, (y1 + y2) / 2], [ax, y2]], S.m(R.kirmizi));
+        yazi(ax + 12, (y1 + y2) / 2 + 5, 'hayır', 14, { class: 'kalin', fill: S.m(R.kirmizi) });
+      }
+      sonuc(SX + SW / 2 - 110, 316, 220, 'DURUM', 'Dedem bankta oturuyor.', SARI);
     } },
   ],
 });
