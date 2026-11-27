@@ -73,7 +73,7 @@ button.yapi{cursor:pointer;border-color:var(--mavi)}
  * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
  */
 const RaporMotoru = (() => {
-  const SURUM = 2;
+  const SURUM = 3;
   const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
   let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
 
@@ -87,10 +87,50 @@ const RaporMotoru = (() => {
     try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
   }
 
+
+  /* --- Cevap defteri (v3, öğretmenin kararı 2026-11-27) ---
+   * Her ilk kez çözülen madde portala tek tek gider (4d:answer); portal Google tablosuna yazar, İLK kayıt kilitlidir.
+   * Etkinlik açılınca (init) portal kayıtlı cevapları geri verir (4d:saved-answers) → RaporMotoru.kayitli(id).
+   * Etkinlik isterse RaporMotoru.onKayitli(fn) ile kayıtlı maddeleri atlar/kilitler. Onay (4d:answer-ack) gelene
+   * kadar cevap 5 saniyede bir yeniden gönderilir; portal yoksa hiçbir şey gitmez. */
+  let kayitliCevaplar = {}, kayitliDinleyiciler = [], bekleyenCevaplar = {}, cevapZamanlayici = null;
+  function hazirGonder() { if (meta) portalaGonder({ type: '4d:ready', schemaVersion: 1, activityId: meta.oyunId }); }
+  function bekleyenleriGonder() {
+    const k = Object.keys(bekleyenCevaplar);
+    k.forEach(q => portalaGonder(bekleyenCevaplar[q]));
+    if (!k.length && cevapZamanlayici) { clearInterval(cevapZamanlayici); cevapZamanlayici = null; }
+  }
+  function cevapGonder(x) {
+    if (!meta || x.r || !x.m || kayitliCevaplar[x.m] || bekleyenCevaplar[x.m]) return;
+    bekleyenCevaplar[x.m] = { type: '4d:answer', schemaVersion: 1, activityId: meta.oyunId, questionId: x.m,
+      correct: !x.c, firstTry: !!x.i && !x.c };
+    portalaGonder(bekleyenCevaplar[x.m]);
+    if (!cevapZamanlayici && window.parent !== window) cevapZamanlayici = setInterval(bekleyenleriGonder, 5000);
+  }
+  try {
+    window.addEventListener('message', ev => {
+      const d = ev.data;
+      if (ev.source !== window.parent || !d || typeof d !== 'object' || !meta || d.activityId !== meta.oyunId) return;
+      if (d.type === '4d:saved-answers' && Array.isArray(d.answers)) {
+        d.answers.forEach(a => { if (a && typeof a.questionId === 'string') kayitliCevaplar[a.questionId] = { correct: !!a.correct, firstTry: !!a.firstTry, answer: String(a.answer || '') }; });
+        Object.keys(kayitliCevaplar).forEach(q => { delete bekleyenCevaplar[q]; });
+        kayitliDinleyiciler.forEach(fn => { try { fn(Object.assign({}, kayitliCevaplar)); } catch (e) { /* etkinlik hatası */ } });
+      } else if (d.type === '4d:answer-ack' && typeof d.questionId === 'string') {
+        delete bekleyenCevaplar[d.questionId];
+        if (d.saved && typeof d.saved === 'object') kayitliCevaplar[d.questionId] = { correct: !!d.saved.correct, firstTry: !!d.saved.firstTry, answer: String(d.saved.answer || '') };
+      }
+    });
+  } catch (e) { /* tarayıcı mesaj dinleyemiyor */ }
+  /** Daha önce kaydedilmiş madde: {correct, firstTry, answer} ya da null. */
+  function kayitli(madde) { return kayitliCevaplar[String(madde)] || null; }
+  /** Portal kayıtlı cevapları verdiğinde çağrılır: fn({maddeId: {correct, firstTry, answer}}). */
+  function onKayitli(fn) { if (typeof fn === 'function') kayitliDinleyiciler.push(fn); }
+
   /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
   function init(m) {
     meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
     kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+    bekleyenCevaplar = {}; hazirGonder();
   }
 
   /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
@@ -107,6 +147,7 @@ const RaporMotoru = (() => {
     portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
       kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
       cozum: x.c, sureSn: x.s, tekrar: x.r });
+    cevapGonder(x);
     return true;
   }
 
@@ -179,7 +220,7 @@ const RaporMotoru = (() => {
   }
   function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
 
-  return { init, kaydet, ozet, bitir, ekranCiz, seviye, ESIK, SURUM };
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, kayitli, onKayitli, ESIK, SURUM };
 })();
 
 </script>

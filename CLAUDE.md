@@ -81,7 +81,12 @@ Neden: 27 Kasım'da portaldaki bir tıklama değişikliği bütün takipli etkin
      sayfası) dokunan HER değişiklikte: her takipli etkinlik ders listesinden ve "Bu Haftanın Etkinlikleri"nden portal içinde açılıp
      sonucu kaydediliyor mu (sahte sunucu, gerçek veri yok; Playwright gerekir).
 5. **Yayından sonra** öğretmen TEST40 ile bir takipli etkinliği bitirir, `ETKINLIK_SONUCLARI` sekmesinde satırı görür (`4d-canli-kontrol`).
-6. Kural öncesi ~45 eski etkinlikte sonuç kodu yok; bunlar "bitirdim" bildirimiyle izlenir. Öğretmen istedikçe Codex ile koda kavuşturulur.
+6. **Soru soru kayıt (cevap defteri, öğretmenin kararı 2026-11-27).** Öğrenci kaç soru cevapladıysa o kadar sonuç gider:
+   cevapladığı doğru/yanlış, cevaplamadığı boş sayılır. Bitirdiği her soru anında kaydedilir ve **değiştirilemez**; etkinliği
+   sonra açınca kayıtlı cevaplar geri gelir, yalnız kalanları çözer. Değerlendirmede ilk cevap kesin; etkinlikte ikinci şans
+   geçerli, çözümü gösterilen yanlış. Yeni etkinlik `4d:answer` gönderir (rapor motoru v3) ve kayıtlı maddeleri kilitler;
+   soru kimlikleri sabittir. Takip listesinde `tur` ve `soruSayisi` yazılır. Ayrıntı: `MIMARI.md` "Cevap defteri".
+7. Kural öncesi ~45 eski etkinlikte sonuç kodu yok; bunlar "bitirdim" bildirimiyle izlenir. Öğretmen istedikçe Codex ile koda kavuşturulur.
 
 ## Kurallar
 - Göndermeden (push) önce ne yayınlanacağını söyle ve onay al; portal dalında iki kez dikkat et.

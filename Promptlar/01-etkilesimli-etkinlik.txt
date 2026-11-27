@@ -115,6 +115,12 @@ Etkinlik portalın içinde bir çerçevede (iframe) açılır. Oyun bitince, Bİ
 - Bütün sayılar negatif olmayan TAM sayı. total en fazla 200.
 - "Bir şans daha" tekrar soruları bu sayılara katılmaz.
 - Mesaj oyun başına tek kez gider (bayrakla koru). "Yeniden oyna" yeni attemptId ile yeni mesaj üretir.
+- SORU SORU KAYIT (zorunlu): her soru bitince BİR KEZ şu mesajı da gönder:
+    parent.postMessage({type:'4d:answer', schemaVersion:1, activityId:'…', questionId:'q7', correct:true, firstTry:false, answer:'B'}, '*')
+  questionId her soru için SABİT olsun (karıştırmadan etkilenmesin). Sayfa açılınca {type:'4d:ready', schemaVersion:1, activityId:'…'}
+  gönder; portal {type:'4d:saved-answers', activityId, answers:[{questionId, correct, firstTry, answer}]} ile cevap verirse
+  o soruları kilitli göster (değiştirilemez) ve öğrenciyi kalan sorulara götür. {type:'4d:answer-ack', questionId} gelene kadar
+  aynı cevabı 5 saniyede bir yeniden gönder. Cevaplanmayan soru boş kalır; öğrenci istediği zaman "Bitir" diyebilir.
 - Mesaj HER BİTİŞTE gider: "bütün sorular doğru olursa gönder" ya da "hiç soru geçilmediyse gönder" gibi şart KOYMA.
   Geçilen/çözülemeyen soru wrong'a sayılır. Öğrenci yarıda bırakmak isterse "Bitir" düğmesi mesajı yine gönderir.
 - attemptId örneği: 'd_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 12)

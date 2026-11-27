@@ -9,6 +9,7 @@
 //   2. Mesajdaki etkinlik kimliği (activityId / OYUN.id) portal takip listesinde (portal dalı:
 //      portal/etkinlik-kayitlari.json) bu dosyanın kimliğiyle aynı mı?
 //   3. Sonuç "her görev doğru çözülürse" şartına bağlı mı? (geçilen görev sonucu engellememeli; uyarı)
+//   4. Soru soru kayıt (cevap defteri, '4d:answer') var mı? (yoksa bilgi; MIMARI.md "Cevap defteri")
 // Portal dalı "git fetch" ile alınır; internet yoksa eldeki kopya kullanılır.
 import {readFileSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
@@ -58,7 +59,7 @@ for (const it of katalog.icerikler) {
   else if (!mesaj) durum = 'TAKİPTE AMA SONUÇ KODU YOK';
   else if (!id) durum = 'SONUÇ KODU VAR, TAKİP LİSTESİNDE YOK (' + [...ids].join(',') + ')';
   else if (ids.size && !ids.has(id)) durum = 'KİMLİK UYUŞMUYOR: listede ' + id + ', dosyada ' + [...ids].join(',');
-  else durum = 'TAMAM' + (tamDogruSarti(s) ? ' (uyarı: sonuç "her görev doğru" şartına bağlı olabilir, geçme ile dene)' : '');
+  else durum = 'TAMAM' + (s.includes('4d:answer') ? '' : ' · cevap defteri YOK (soru soru kayıt/geri yükleme eklenmeli)') + (tamDogruSarti(s) ? ' (uyarı: sonuç "her görev doğru" şartına bağlı olabilir, geçme ile dene)' : '');
   satirlar.push([yol, durum]);
   if (!durum.startsWith('TAMAM') && (yeni || mesaj || id)) hatalar.push(yol);
 }

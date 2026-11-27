@@ -69,15 +69,17 @@ const m2=`<div class="bank" id="b5">${M2.map(m=>chip(m[1],m[1],'b5')).join('')}<
 const HS=[["Sebze ve meyve tüketmek","H"],["Son kullanma tarihine bakmak","H"],["Düzenli spor yapmak","H"],["Sigara ve alkolden uzak durmak","H"],["Yemeği haşlayarak pişirmek","H"],["Günde tek öğün yemek","S"],["Çözülen besini tekrar dondurmak","S"],["Her gün gazlı içecek ve kızartma yemek","S"],["Tabağa yiyebileceğinden fazla koymak","S"],["Ambalajı yırtık ürün almak","S"]];
 const hs=`<div class="bank" id="b6">${HS.map(h=>chip(h[0],h[1],'b6')).join('')}</div><table><tr><th>Sağlıklı yaşam için yapılır</th><th>Sağlığa zarar verir</th></tr><tr><td class="bin" data-a="H"></td><td class="bin" data-a="S"></td></tr></table>`;
 $('#app').innerHTML=sec('s1','1. Çoktan seçmeli','Besin içerikleri, saklama, dengeli beslenme, alkol ve sigara','<div>'+mc+'</div>','chkR')+sec('s2','2. Doğru – Yanlış','Beslenme tarzlarını değerlendirme, sağlık ve zararlı alışkanlıklar',tf,'chkR')+sec('s3','3. Eşleştirme','Besin içeriklerinin görevleri: ifadeye uygun besin içeriğini sürükle',mt,'chkD')+sec('s4','4. Boşluk doldurma','Tazelik, doğallık, saklama koşulları, zararlı alışkanlıklar',fl,'chkD')+sec('s5','5. Kavram haritası','Besin içerikleri görevlerine göre gruplanır',cm,'chkD')+sec('s6','6. Tablo doldurma','Görselleri içerdikleri başlıca besin içeriğine göre yerleştir',tb,'chkD')+sec('s8','7. Eşleştirme: kişi, kuruluş ve kavramlar','Meslekler, Yeşilay, pasif içicilik ve obezite',m2,'chkD')+sec('s9','8. Sağlıklı mı, sağlıksız mı?','Sağlıklı yaşam alışkanlıkları ve zararlı davranışlar',hs,'chkD')+sec('s7','9. Çengel bulmaca','Besin ve sağlıklı yaşam kavramları',cw,'chkC');
+document.querySelectorAll('.chip').forEach((c,i)=>{c.dataset.qid='k'+(i+1)}); /* sabit soru kimliği: karıştırmadan önce */
 document.querySelectorAll('.bank').forEach(b=>[...b.children].sort(()=>Math.random()-.5).forEach(c=>b.appendChild(c)));
 for(const k of['pyr','plate']){const e=$('#im_'+k);if(e)e.src=IMG[k]}
 const home=c=>{$('#'+c.dataset.b).appendChild(c);c.classList.remove('ok','bad')};
-function put(c,t){if(!t.classList.contains('bin')&&t.firstElementChild)home(t.firstElementChild);t.appendChild(c);c.classList.remove('ok','bad','sel');sel=null}
-document.addEventListener('dragstart',e=>{drag=e.target.closest('.chip')});
+function put(c,t){if(kilitliMi(c))return;if(!t.classList.contains('bin')&&t.firstElementChild){if(kilitliMi(t.firstElementChild))return;home(t.firstElementChild)}t.appendChild(c);c.classList.remove('ok','bad','sel');sel=null}
+const kilitliMi=c=>!!(c&&c.dataset.kilit==='1');
+document.addEventListener('dragstart',e=>{drag=e.target.closest('.chip');if(kilitliMi(drag)){e.preventDefault();drag=null}});
 document.addEventListener('dragover',e=>e.preventDefault());
 document.addEventListener('drop',e=>{e.preventDefault();const t=e.target.closest('.slot,.bin,.bank');if(!drag||!t)return;t.classList.contains('bank')?home(drag):put(drag,t);drag=null});
 document.addEventListener('click',e=>{const c=e.target.closest('.chip'),t=e.target.closest('.slot,.bin');
-if(c){if(!c.parentElement.classList.contains('bank')){home(c);return}sel&&sel.classList.remove('sel');sel=sel===c?null:c;sel&&sel.classList.add('sel')}else if(t&&sel)put(sel,t)});
+if(c){if(kilitliMi(c))return;if(!c.parentElement.classList.contains('bank')){home(c);return}sel&&sel.classList.remove('sel');sel=sel===c?null:c;sel&&sel.classList.add('sel')}else if(t&&sel)put(sel,t)});
 
 /* 4/D soru bazlı ölçme verisi: öğrenci kimliği yalnızca portal oturumunda eşleştirilir.
    GitHub sayfası öğrenci adı, kodu veya oturum anahtarı saklamaz. */
@@ -170,7 +172,7 @@ dortdRecord=function(id,answers){
   });
   dortdPublishPending();
   // Eksik yanıtlar varken yalnızca soru verileri gönderilir; tamamlanmış sayılmaz.
-  if(!dortdFinishedSent&&dortdAllAnswered()){
+  if(!dortdFinishedSent&&dortdOrder.every(key=>DORTD_CHECKED[key])){
     const all=dortdOrder.flatMap(key=>DORTD_CHECKED[key].items);
     const correct=all.filter(a=>a.correct).length,total=all.length;
     dortdFinishedSent=true;
@@ -181,8 +183,76 @@ dortdRecord=function(id,answers){
       durationSeconds:Math.max(0,Math.round((Date.now()-dortdStartedAt)/1000))
     },'*');
     const tot=document.getElementById('tot');
-    if(tot)tot.textContent+=' · Bütün sorular kontrol edildi';
+    if(tot)tot.textContent+=' · Bütün bölümler kontrol edildi';
   }
 };
 
-</script></body></html>
+</script><script>
+/* ==== 4/D CEVAP DEFTERİ (öğretmenin kararı 2026-11-27) ====
+ * "Kontrol et"e basılınca cevaplanmış her soru öğretmene kaydedilir ve KİLİTLENİR (değiştirilemez).
+ * Boş bırakılan soru boş kalır; öğrenci sonra gelip cevaplayabilir. Etkinlik portalda yeniden açılınca
+ * kayıtlı cevaplar geri yüklenir. Değerlendirme olduğu için her sorunun ilk (tek) cevabı geçerlidir.
+ * Portal dışında açılırsa (kodsuz) hiçbir şey gönderilmez, kilit de konmaz. */
+(function(){
+  const ID='fen-besinlerdegerlendirme',PORTAL=window.parent&&window.parent!==window;
+  const bekleyen={},kayitli={};let zaman=null;
+  const gonder=m=>{try{if(PORTAL)window.parent.postMessage(m,'*')}catch(e){}};
+  const bolumTuru=id=>id==='s1'||id==='s2'?'radyo':id==='s7'?'bulmaca':'kart';
+  /* Bir bölümdeki sorular: {qid, cevaplandi, dogru, cevap, kilitle(), geriYukle(cevap,dogru)} */
+  function sorular(id){
+    const s=document.getElementById(id),t=bolumTuru(id),out=[];
+    if(t==='radyo'){
+      const A=id==='s1'?MC.map(q=>q[2]):TF.map(x=>x[1]?0:1);
+      A.forEach((a,i)=>{const nm=(id==='s1'?'m':'t')+i,ins=[...s.querySelectorAll('input[name="'+nm+'"]')],sec=ins.find(r=>r.checked);
+        out.push({qid:nm,cevaplandi:!!sec,dogru:!!sec&&Number(sec.value)===a,cevap:sec?sec.value:'',
+          kilitle(){ins.forEach(r=>{r.disabled=true})},
+          geriYukle(c,d){ins.forEach((r,j)=>{r.checked=r.value===c;r.disabled=true;r.parentElement.classList.remove('ok','bad');if(r.checked)r.parentElement.classList.add(Number(r.value)===a?'ok':'bad')})}});});
+    }else if(t==='bulmaca'){
+      [...s.querySelectorAll('.cr input')].forEach((inp,i)=>{
+        out.push({qid:'x'+(i+1),cevaplandi:!!inp.value,dogru:inp.value===inp.dataset.a,cevap:inp.value,
+          kilitle(){inp.readOnly=true},
+          geriYukle(c){inp.value=c;inp.readOnly=true;inp.classList.remove('ok','bad');inp.classList.add(c===inp.dataset.a?'ok':'bad')}});});
+    }else{
+      [...s.querySelectorAll('.chip')].forEach(ch=>{
+        const yer=ch.parentElement,cevaplandi=!yer.classList.contains('bank');
+        out.push({qid:ch.dataset.qid,cevaplandi,dogru:cevaplandi&&ch.dataset.g===yer.dataset.a,
+          cevap:cevaplandi?(yer.classList.contains('bin')?'B':'S')+yer.dataset.a:'',
+          kilitle(){ch.dataset.kilit='1';ch.draggable=false;ch.classList.remove('sel')},
+          geriYukle(c){const tur=c.charAt(0)==='B'?'.bin':'.slot',a=c.slice(1);
+            const hedef=[...s.querySelectorAll(tur)].find(x=>x.dataset.a===a&&(tur==='.bin'||!x.firstElementChild||x.firstElementChild===ch));
+            if(hedef){hedef.appendChild(ch);ch.classList.remove('ok','bad','sel');ch.classList.add(ch.dataset.g===a?'ok':'bad')}
+            ch.dataset.kilit='1';ch.draggable=false}});});
+    }
+    return out;
+  }
+  function bekleyenleriGonder(){const k=Object.keys(bekleyen);k.forEach(q=>gonder(bekleyen[q]));if(!k.length&&zaman){clearInterval(zaman);zaman=null}}
+  /* "Kontrol et" sonrası: cevaplanmış ve henüz kaydedilmemiş soruları gönder ve kilitle. */
+  function bolumuKaydet(id){
+    if(!PORTAL)return;
+    sorular(id).forEach(q=>{
+      if(!q.cevaplandi||kayitli[q.qid]||bekleyen[q.qid])return;
+      q.kilitle();
+      bekleyen[q.qid]={type:'4d:answer',schemaVersion:1,activityId:ID,questionId:q.qid,correct:q.dogru,firstTry:q.dogru,answer:q.cevap};
+      gonder(bekleyen[q.qid]);
+    });
+    if(!zaman&&Object.keys(bekleyen).length)zaman=setInterval(bekleyenleriGonder,5000);
+    bilgi();
+  }
+  function bilgi(){const n=Object.keys(kayitli).length+Object.keys(bekleyen).length,e=document.getElementById('dortdKayit');
+    if(e)e.textContent=n?'🔒 '+n+' cevabın öğretmenine kaydedildi; kaydedilen cevaplar değişmez. Boş bıraktıklarını sonra da cevaplayabilirsin.':''}
+  function geriYukle(list){
+    const harita={};list.forEach(a=>{if(a&&typeof a.questionId==='string')harita[a.questionId]=a});
+    Object.keys(DORTD_SECTION_NAMES).forEach(id=>sorular(id).forEach(q=>{const a=harita[q.qid];if(!a)return;kayitli[q.qid]=a;delete bekleyen[q.qid];q.geriYukle(String(a.answer||''),!!a.correct)}));
+    bilgi();
+  }
+  ['chkR','chkD','chkC'].forEach(ad=>{const eski=window[ad];if(typeof eski!=='function')return;window[ad]=function(id){const r=eski.apply(this,arguments);try{bolumuKaydet(id)}catch(e){}return r}});
+  window.addEventListener('message',ev=>{const d=ev.data;if(ev.source!==window.parent||!d||d.activityId!==ID)return;
+    if(d.type==='4d:saved-answers'&&Array.isArray(d.answers))geriYukle(d.answers);
+    else if(d.type==='4d:answer-ack'&&typeof d.questionId==='string'){delete bekleyen[d.questionId];kayitli[d.questionId]=d.saved||{questionId:d.questionId};
+      if(d.locked&&d.saved)geriYukle([d.saved]);bilgi()}});
+  const tot=document.getElementById('tot');
+  if(tot&&PORTAL){const p=document.createElement('p');p.id='dortdKayit';p.setAttribute('role','status');p.style.cssText='font-weight:700;margin:6px 0';tot.insertAdjacentElement('afterend',p)}
+  gonder({type:'4d:ready',schemaVersion:1,activityId:ID});
+})();
+</script>
+</body></html>

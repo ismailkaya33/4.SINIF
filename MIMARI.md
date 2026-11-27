@@ -55,6 +55,29 @@ window.parent.postMessage({
 Kurallar: mesaj **oyun sonunda bir kez** gönderilir; “Yeniden oyna” yeni bir `attemptId`
 ile yeni bir mesaj üretir.
 
+### Cevap defteri (soru soru kayıt — öğretmenin kararı 2026-11-27)
+
+Öğrenci her soruyu bitirdiği anda o soru Google tablosuna (`ETKINLIK_CEVAPLARI`) tek satır yazılır.
+Aynı öğrenci + etkinlik + soru için **ilk kayıt geçerlidir, değiştirilemez**. Cevaplanmayan soru **boş** sayılır;
+öğrenci etkinliği sonra yeniden açıp kalan soruları cevaplayabilir. Öğretmen raporu doğru / yanlış / boş gösterir
+(boş = takip listesindeki `soruSayisi` − cevaplanan). Değerlendirmede (`"tur": "degerlendirme"`) ilk cevap kesindir;
+etkinlikte ikinci şans geçerli, çözümü gösterilen soru yanlıştır. Cevap defteri olan öğrenci+etkinlikte eski oyun sonu kaydı sayılmaz.
+
+```js
+// etkinlik açılınca (portal kayıtlı cevapları geri verir)
+parent.postMessage({type:'4d:ready', schemaVersion:1, activityId:'tur-ikilemeler'}, '*');
+// her soru bitince, bir kez (onay gelene kadar 5 sn'de bir yeniden)
+parent.postMessage({type:'4d:answer', schemaVersion:1, activityId:'tur-ikilemeler',
+  questionId:'q7',        // SABİT soru kimliği (karıştırmadan etkilenmez), 1-60: harf, rakam, _ . : -
+  correct:true,           // sonunda doğru buldu mu (çözümü gösterildiyse false)
+  firstTry:false,         // ilk denemede mi doğru (correct false ise false)
+  answer:'B'}, '*');      // isteğe bağlı, en çok 80 karakter: geri yüklemek için öğrencinin cevabı
+// portaldan gelenler: {type:'4d:saved-answers', activityId, answers:[{questionId, correct, firstTry, answer}]}
+//                     {type:'4d:answer-ack', activityId, questionId, locked, saved}
+```
+Rapor motoru v3 bunları kendisi yapar; etkinlik `RaporMotoru.onKayitli(fn)` / `RaporMotoru.kayitli(madde)` ile
+kayıtlı maddeleri kilitler ve atlar. Örnek tam uygulama: `Fen/besinlerdegerlendirme.html` (en alttaki betik).
+
 ## 3. Etkinlik listesi tek yerde: `portal/etkinlik-kayitlari.json`
 
 (`hazirlik/kazanim-takibi-20261101` dalında)

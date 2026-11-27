@@ -18,7 +18,8 @@ Kullanıcı öğretmendir ve kod bilmez. Her adımı sade Türkçe ile, teknik t
    kimliğiyle aynı olmalı. Oyunlar klasörü takibe alınmaz (öğretmenin kararı).
 
 ## Kayıt (hazirlik/kazanim-takibi-20261101 dalı)
-1. `portal/etkinlik-kayitlari.json` → `otomatikSonuc` listesine ekle: `id`, `yol`, `ad`, `konu`, `kazanim`, `maxTotal`, `dersListesinde`.
+1. `portal/etkinlik-kayitlari.json` → `otomatikSonuc` listesine ekle: `id`, `yol`, `ad`, `konu`, `kazanim`, `maxTotal`, `dersListesinde`,
+   `tur` (`etkinlik` | `degerlendirme`: değerlendirmede ilk cevap kesin) ve `soruSayisi` (boşları hesaplamak için; bilinmiyorsa yazma).
    Ders listesindeyse `seciliEtkinlikler` listesinde de olmalı.
 2. `node tools/katalog-esitle.mjs` çalıştır (KATALOG BASLA/BITIR bölümlerini kendisi yazar; o bölümleri elle düzenleme).
 3. `node .github/scripts/verify-appsscript-integration.mjs` çalıştır; geçmeli.
