@@ -36,6 +36,7 @@
     {"id": "tur-cumle-bilgisi", "yol": "Turkce/cumlekasabasi.html", "ad": "Türkçe • Cümle Kasabası: Cümle Bilgisi", "konu": "Türkçe", "kazanim": "Cümle bilgisi (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true, "soruSayisi": 28},
     {"id": "insan-bilincli-vatandas", "yol": "Insanhaklari/hakozgurluksorumluluk2.html", "ad": "İnsan Hakları • Bilinçli Vatandaş Kasabası", "konu": "İnsan Hakları, Yurttaşlık ve Demokrasi", "kazanim": "Hak, özgürlük ve sorumluluk (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true, "soruSayisi": 16},
     {"id": "mat-kisayoldan-carpma", "yol": "Matematik/kisayoldancarpma.html", "ad": "Matematik • Kısa Yoldan Çarpma: 5, 25 ve 50", "konu": "Matematik", "kazanim": "M.4.1.4.4 Kısa yoldan çarpma", "maxTotal": 200, "dersListesinde": true},
+      {"id": "mat-carpma-atolyesi", "yol": "Matematik/carpmaatolyesi.html", "ad": "Matematik • Çarpma Atölyesi: Alt Alta Çarpma", "konu": "Matematik", "kazanim": "M.4.1.4.1 Üç basamaklı ile iki basamaklı doğal sayıları çarpma", "maxTotal": 200, "dersListesinde": true, "soruSayisi": 10},
     {"id": "fen-kuvvetin-etkileri", "yol": "Fen/kuvvetparki.html", "ad": "Fen Bilimleri • Kuvvet Parkı: Kuvvetin Etkileri", "konu": "Fen Bilimleri", "kazanim": "Kuvvetin etkileri (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true, "soruSayisi": 20},
     {"id": "fen-miknatislar", "yol": "Fen/miknatislaboratuvari.html", "ad": "Fen Bilimleri • Mıknatıs Laboratuvarı", "konu": "Fen Bilimleri", "kazanim": "Mıknatıslar (kazanım kodu doğrulanmalı)", "maxTotal": 200, "dersListesinde": true, "soruSayisi": 16}
   ],
@@ -74,6 +75,7 @@
     {"yol": "Turkce/cumlekasabasi.html", "ad": "Türkçe • Cümle Kasabası"},
     {"yol": "Insanhaklari/hakozgurluksorumluluk2.html", "ad": "İnsan Hakları • Bilinçli Vatandaş Kasabası"},
     {"yol": "Matematik/kisayoldancarpma.html", "ad": "Matematik • Kısa Yoldan Çarpma"},
+    {"yol": "Matematik/carpmaatolyesi.html", "ad": "Matematik • Çarpma Atölyesi"},
     {"yol": "Fen/kuvvetparki.html", "ad": "Fen • Kuvvet Parkı"},
     {"yol": "Fen/miknatislaboratuvari.html", "ad": "Fen • Mıknatıs Laboratuvarı"}
   ]

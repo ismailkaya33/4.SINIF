@@ -131,6 +131,7 @@ const paths = {
     'tur-cumle-bilgisi':'Turkce/cumlekasabasi.html',
     'insan-bilincli-vatandas':'Insanhaklari/hakozgurluksorumluluk2.html',
     'mat-kisayoldan-carpma':'Matematik/kisayoldancarpma.html',
+    'mat-carpma-atolyesi':'Matematik/carpmaatolyesi.html',
     'fen-kuvvetin-etkileri':'Fen/kuvvetparki.html',
     'fen-miknatislar':'Fen/miknatislaboratuvari.html'
   };

@@ -124,6 +124,7 @@ const SECILI_ETKINLIKLER_ = Object.freeze([
  'Turkce/cumlekasabasi.html',
  'Insanhaklari/hakozgurluksorumluluk2.html',
  'Matematik/kisayoldancarpma.html',
+ 'Matematik/carpmaatolyesi.html',
  'Fen/kuvvetparki.html',
  'Fen/miknatislaboratuvari.html'
 ]);

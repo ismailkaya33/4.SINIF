@@ -38,6 +38,7 @@ const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({
   'tur-cumle-bilgisi': Object.freeze({konu:'Türkçe',kazanim:'Cümle bilgisi (kazanım kodu doğrulanmalı)',maxTotal:200,tur:'etkinlik',soruSayisi:28}),
   'insan-bilincli-vatandas': Object.freeze({konu:'İnsan Hakları, Yurttaşlık ve Demokrasi',kazanim:'Hak, özgürlük ve sorumluluk (kazanım kodu doğrulanmalı)',maxTotal:200,tur:'etkinlik',soruSayisi:16}),
   'mat-kisayoldan-carpma': Object.freeze({konu:'Matematik',kazanim:'M.4.1.4.4 Kısa yoldan çarpma',maxTotal:200,tur:'etkinlik',soruSayisi:0}),
+  'mat-carpma-atolyesi': Object.freeze({konu:'Matematik',kazanim:'M.4.1.4.1 Üç basamaklı ile iki basamaklı doğal sayıları çarpma',maxTotal:200,tur:'etkinlik',soruSayisi:10}),
   'fen-kuvvetin-etkileri': Object.freeze({konu:'Fen Bilimleri',kazanim:'Kuvvetin etkileri (kazanım kodu doğrulanmalı)',maxTotal:200,tur:'etkinlik',soruSayisi:20}),
   'fen-miknatislar': Object.freeze({konu:'Fen Bilimleri',kazanim:'Mıknatıslar (kazanım kodu doğrulanmalı)',maxTotal:200,tur:'etkinlik',soruSayisi:16})
 });
