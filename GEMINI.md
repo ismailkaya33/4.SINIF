@@ -11,9 +11,9 @@ Müfredat MEB 4. sınıf. Ayrıntılı proje kuralları `CLAUDE.md` ve `MIMARI.m
   Türkçe dil denetimi**.
 - İşlerini yalnız `docs/antigravity/GOREVLER.md` dosyasından alırsın. Orada **sahibi Antigravity** ve durumu
   **BEKLIYOR** olan bir işi seç. Listede olmayan bir iş istenirse öğretmene "Bunu GOREVLER.md'ye ekleyeyim mi?" diye sor.
-- Yaptığın her iş Claude tarafından **denetlenir**. Denetim sonucu:
-  `git fetch origin && git show origin/claude/ogretmen-paneli-gelistirme:docs/autodev/ANTIGRAVITY-DENETIM.md`
-  "DÜZELTİLMELİ" denen işlerinde önce o maddeleri düzelt.
+- İşin main'e alınmadan önce Claude tarafından **bir kez denetlenir**. Claude'un kotası kısıtlı olduğu için ilk denetçi
+  sensin: 4. bölümdeki testlerin hepsini gerçekten çalıştır, raporu dürüst yaz. Claude "DÜZELTİLMELİ" derse notu
+  `docs/antigravity/GOREVLER.md` en altındaki **Denetim notları** bölümünde bulursun; önce o maddeleri düzelt.
 
 ## 2. Her işte akış
 1. `git checkout main && git pull`

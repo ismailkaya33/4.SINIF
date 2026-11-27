@@ -96,9 +96,8 @@ Claude'un kendi kotası bitince öğretmen `Promptlar/` klasöründeki hazır pr
 - Öğretmenin kararı (2026-11-27): Antigravity, öğretmen başındayken `main`'den açtığı **`antigravity/<kisa-ad>`** dallarında
   çalışır, yalnız bu dallara commit/push eder (canlıya çıkmazlar). §4'teki "dış araçlar commit/push yapmaz" kuralının tek istisnası budur.
 - İşi: görsel düzeltme, dosya küçültme, tarayıcıda deneme, küçük hata, Türkçe dil denetimi. `portal/` ve canlı dallar yasak.
-- **Denetim:** bulut otonom görevi her çalışmada yeni `antigravity/*` dallarını inceler, sonucu
-  `claude/ogretmen-paneli-gelistirme` dalında `docs/autodev/ANTIGRAVITY-DENETIM.md`'ye yazar (ONAYA HAZIR / DÜZELTİLMELİ / REDDEDİLDİ).
-  Birleştirme yapmaz. `main`'e alma öğretmen onayıyla, Claude ile sohbetten yapılır.
+- **Denetim:** yalnız öğretmen sohbette "yayınla" deyince, Claude tek sefer `docs/antigravity/DENETIM-TALIMATI.md`'ye göre yapar
+  (önce bedava komut kontrolleri; denetçi ajan yalnız soru/metin değiştiyse). Bulut otonom görevi denetim yapmaz (kota kararı 2026-11-27).
 
 ## Antigravity CLI (Gemini Pro) nasıl çağrılır? (2026-11-21)
 - Program: `C:\Users\ismai\AppData\Local\Microsoft\WinGet\Packages\Google.AntigravityCLI_Microsoft.Winget.Source_8wekyb3d8bbwe\agy.exe`
