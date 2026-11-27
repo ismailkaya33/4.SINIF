@@ -55,6 +55,13 @@
  .parcala th{overflow-wrap:anywhere}
 }
 @media(max-width:680px){#app{padding-bottom:16px!important}.rakamlik{position:sticky;bottom:0;margin:10px -10px 10px;border:2px solid #c6e8ee;border-radius:16px}.calisma>.tahta{order:-1}}
+/* Görev özeti mevcut sekmelerin hemen altında. */
+#gorev{background:#fff;border-radius:14px;padding:10px;margin-top:10px;font-size:14px}
+#gorev .gorev-satir{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#gorev button,#gorevSonuc button{min-height:44px}
+#gorevMaddeler{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+#gorevMaddeler span{padding:2px 5px;border-radius:5px;background:#eef7fb}
+#gorevSonuc{margin:10px 0}#gorevSonuc[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -66,6 +73,8 @@
   <button class="sekme" id="tab2" role="tab" aria-controls="bolum" aria-selected="false" tabindex="-1" data-tab="2">3 · Alıştırma</button>
   <button class="sekme" id="tab3" role="tab" aria-controls="bolum" aria-selected="false" tabindex="-1" data-tab="3">4 · Hatayı bul</button>
  </nav>
+ <section id="gorev" aria-label="10 işlemlik görev"></section>
+ <section id="gorevSonuc" class="kart" hidden></section>
  <div class="seviyeler" role="group" aria-label="Seviye seçimi"></div>
  <main id="bolum" role="tabpanel" aria-labelledby="tab0"></main>
  <div class="rakamlik" aria-label="Rakam araçları"><div class="rakam-aciklama" id="rakamNot">Bir kutu seç, rakama dokun. İstersen rakamı sürükle.</div><div class="rakam-ic" id="rakamlar"></div></div>
@@ -73,6 +82,175 @@
  <div class="alt-not" id="altNot"></div>
 </div>
 <dialog id="bilgiDialog" aria-labelledby="dialogBaslik"><h2 id="dialogBaslik"></h2><div id="dialogIcerik"></div><button class="dugme" id="dialogKapat">Anladım</button></dialog>
+<script>
+/* RaporMotoru v2 — 4/D portalına bağlı (her etkinliğin içine gömülür; tek dosya, çevrimdışı).
+ *
+ * Akış:
+ *   RaporMotoru.init({oyunId, oyunAdi, kazanimlar:[{kod, ad}]})   oyun başında (ve "yeniden oyna"da)
+ *   RaporMotoru.kaydet({...})                                       her maddeden sonra
+ *   RaporMotoru.ekranCiz(el)                                        oyun sonunda: öğrenciye "Kazanım Karnem"
+ *
+ * Portal bağlantısı (öğrenci kodla giriş yaptıysa etkinlik portalın içinde açılır):
+ *   - Her madde: {type:'4d:item-result'} mesajı (madde bazlı kazanım/yanılgı verisi)
+ *   - Oyun sonu: {type:'4d:activity-finished'} mesajı, oyun başına BİR kez (mevcut sonuç kaydı)
+ *   Sayfa portal dışında (kodsuz) açıldıysa mesajlar gitmez; karne yine gösterilir.
+ *   Mesajı yalnızca portal kayıt listesinde (portal/etkinlik-kayitlari.json) olan etkinlikler için
+ *   sunucu kaydeder; oyunId bu listedeki "id" ile aynı olmalı.
+ *
+ * Seviye eşikleri öğretmen panelindekiyle AYNI olmalı (ESIK, seviye).
+ */
+const RaporMotoru = (() => {
+  const SURUM = 3;
+  const ESIK = { ustalik: 0.85, gelisiyor: 0.6, ipucuUst: 0.25, minMadde: 3 };
+  let meta = null, kayit = [], t0 = Date.now(), denemeKimligi = '', bitisGonderildi = false;
+
+  function yeniKimlik() {
+    let r = '';
+    try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(b => { r += b.toString(16).padStart(2, '0'); }); }
+    catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return 'rm_' + r;
+  }
+  function portalaGonder(mesaj) {
+    try { if (window.parent && window.parent !== window) window.parent.postMessage(mesaj, '*'); } catch (e) { /* portal yok */ }
+  }
+
+
+  /* --- Cevap defteri (v3, öğretmenin kararı 2026-11-27) ---
+   * Her ilk kez çözülen madde portala tek tek gider (4d:answer); portal Google tablosuna yazar, İLK kayıt kilitlidir.
+   * Etkinlik açılınca (init) portal kayıtlı cevapları geri verir (4d:saved-answers) → RaporMotoru.kayitli(id).
+   * Etkinlik isterse RaporMotoru.onKayitli(fn) ile kayıtlı maddeleri atlar/kilitler. Onay (4d:answer-ack) gelene
+   * kadar cevap 5 saniyede bir yeniden gönderilir; portal yoksa hiçbir şey gitmez. */
+  let kayitliCevaplar = {}, kayitliDinleyiciler = [], bekleyenCevaplar = {}, cevapZamanlayici = null;
+  function hazirGonder() { if (meta) portalaGonder({ type: '4d:ready', schemaVersion: 1, activityId: meta.oyunId }); }
+  function bekleyenleriGonder() {
+    const k = Object.keys(bekleyenCevaplar);
+    k.forEach(q => portalaGonder(bekleyenCevaplar[q]));
+    if (!k.length && cevapZamanlayici) { clearInterval(cevapZamanlayici); cevapZamanlayici = null; }
+  }
+  function cevapGonder(x) {
+    if (!meta || x.r || !x.m || kayitliCevaplar[x.m] || bekleyenCevaplar[x.m]) return;
+    bekleyenCevaplar[x.m] = { type: '4d:answer', schemaVersion: 1, activityId: meta.oyunId, questionId: x.m,
+      correct: !x.c, firstTry: !!x.i && !x.c };
+    portalaGonder(bekleyenCevaplar[x.m]);
+    if (!cevapZamanlayici && window.parent !== window) cevapZamanlayici = setInterval(bekleyenleriGonder, 5000);
+  }
+  try {
+    window.addEventListener('message', ev => {
+      const d = ev.data;
+      if (ev.source !== window.parent || !d || typeof d !== 'object' || !meta || d.activityId !== meta.oyunId) return;
+      if (d.type === '4d:saved-answers' && Array.isArray(d.answers)) {
+        d.answers.forEach(a => { if (a && typeof a.questionId === 'string') kayitliCevaplar[a.questionId] = { correct: !!a.correct, firstTry: !!a.firstTry, answer: String(a.answer || '') }; });
+        Object.keys(kayitliCevaplar).forEach(q => { delete bekleyenCevaplar[q]; });
+        kayitliDinleyiciler.forEach(fn => { try { fn(Object.assign({}, kayitliCevaplar)); } catch (e) { /* etkinlik hatası */ } });
+      } else if (d.type === '4d:answer-ack' && typeof d.questionId === 'string') {
+        delete bekleyenCevaplar[d.questionId];
+        if (d.saved && typeof d.saved === 'object') kayitliCevaplar[d.questionId] = { correct: !!d.saved.correct, firstTry: !!d.saved.firstTry, answer: String(d.saved.answer || '') };
+      }
+    });
+  } catch (e) { /* tarayıcı mesaj dinleyemiyor */ }
+  /** Daha önce kaydedilmiş madde: {correct, firstTry, answer} ya da null. */
+  function kayitli(madde) { return kayitliCevaplar[String(madde)] || null; }
+  /** Portal kayıtlı cevapları verdiğinde çağrılır: fn({maddeId: {correct, firstTry, answer}}). */
+  function onKayitli(fn) { if (typeof fn === 'function') kayitliDinleyiciler.push(fn); }
+
+  /** m = {oyunId, oyunAdi, kazanimlar:[{kod, ad}]}  (kod = MEB kazanım kodu, ör. "M.4.1.2.3") */
+  function init(m) {
+    meta = { oyunId: String(m.oyunId), oyunAdi: String(m.oyunAdi), kazanimlar: m.kazanimlar.map(k => ({ kod: String(k.kod), ad: String(k.ad) })) };
+    kayit = []; t0 = Date.now(); denemeKimligi = yeniKimlik(); bitisGonderildi = false;
+    bekleyenCevaplar = {}; hazirGonder();
+  }
+
+  /** r = {kazanim:kod, madde:id, yanilgi:'etiket'|'', ilkDenemeDogru:bool, deneme:n, ipucu:0-3,
+   *       cozumGoruldu:bool, sureMs:n, tekrar:bool}   tekrar=true → seviye hesabına katılmaz */
+  function kaydet(r) {
+    const i = meta ? meta.kazanimlar.findIndex(k => k.kod === r.kazanim) : -1;
+    if (i < 0) { console.warn('RaporMotoru: bilinmeyen kazanım', r.kazanim); return false; }
+    const x = {
+      k: i, m: String(r.madde || '').slice(0, 40), y: String(r.yanilgi || '').slice(0, 40),
+      i: r.ilkDenemeDogru ? 1 : 0, d: Math.max(1, r.deneme | 0), h: Math.max(0, Math.min(3, r.ipucu | 0)),
+      c: r.cozumGoruldu ? 1 : 0, s: Math.max(0, Math.round((r.sureMs || 0) / 1000)), r: r.tekrar ? 1 : 0
+    };
+    kayit.push(x);
+    portalaGonder({ type: '4d:item-result', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      kazanim: meta.kazanimlar[i].kod, madde: x.m, yanilgi: x.y, ilkDogru: x.i, deneme: x.d, ipucu: x.h,
+      cozum: x.c, sureSn: x.s, tekrar: x.r });
+    cevapGonder(x);
+    return true;
+  }
+
+  function seviye(a) {            // a: ilk kez sorulan madde kayıtları
+    const n = a.length;
+    if (n < ESIK.minMadde) return 'veri-az';
+    const p = a.filter(x => x.i).length / n, h = a.filter(x => x.h > 0).length / n;
+    if (p >= ESIK.ustalik && h <= ESIK.ipucuUst) return 'ustalasti';
+    if (p >= ESIK.gelisiyor) return 'gelisiyor';
+    return 'destek';
+  }
+
+  function ozet() {
+    return meta.kazanimlar.map((k, idx) => {
+      const hepsi = kayit.filter(x => x.k === idx), a = hepsi.filter(x => !x.r);
+      const yan = {};
+      hepsi.forEach(x => { if (x.y) yan[x.y] = (yan[x.y] || 0) + 1; });
+      return {
+        kod: k.kod, ad: k.ad, n: a.length, dogru: a.filter(x => x.i).length,
+        p: a.length ? a.filter(x => x.i).length / a.length : null,
+        ipucuOran: a.length ? a.filter(x => x.h > 0).length / a.length : 0,
+        seviye: seviye(a), yanilgilar: yan
+      };
+    });
+  }
+
+  /** Oyun sonu: portaldaki mevcut sonuç kaydı için tek mesaj (çift gönderim yok). */
+  function bitir() {
+    if (!meta || bitisGonderildi) return;
+    const a = kayit.filter(x => !x.r);
+    if (!a.length) return;
+    bitisGonderildi = true;
+    const toplam = a.length, ilk = a.filter(x => x.i).length, cozulen = a.filter(x => !x.c).length;
+    portalaGonder({ type: '4d:activity-finished', schemaVersion: 1, activityId: meta.oyunId, attemptId: denemeKimligi,
+      correct: cozulen, wrong: toplam - cozulen, total: toplam,
+      wrongAttempts: a.reduce((t, x) => t + (x.d - 1), 0), firstTry: Math.min(ilk, cozulen),
+      durationSeconds: Math.min(86400, Math.round((Date.now() - t0) / 1000)) });
+  }
+
+  const ETIKET = {
+    ustalasti: ['Harika! Bu konuyu iyi biliyorsun.', '#1b7f4b'],
+    gelisiyor: ['Gelişiyorsun. Biraz daha tekrar iyi gelir.', '#b26a00'],
+    destek: ['Bu konuyu birlikte tekrar edelim.', '#b3261e'],
+    'veri-az': ['Bu konuda daha fazla soru çözmen gerek.', '#5b6470']
+  };
+
+  /** Öğrenciye olumlu dilli "Kazanım Karnem" ekranı; sonucu portala da gönderir. */
+  function ekranCiz(el) {
+    bitir();
+    if (!document.getElementById('rm-css')) {
+      const st = document.createElement('style'); st.id = 'rm-css';
+      st.textContent = '.rm{font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:inherit}' +
+        '.rm h2{margin:0 0 4px;font-size:1.5rem}.rm p{margin:4px 0 12px;opacity:.85}' +
+        '.rm-k{border:1px solid #c9d1dc;border-radius:14px;padding:12px 14px;margin:10px 0}' +
+        '.rm-k b{display:block;font-size:1.05rem}.rm-bar{height:14px;background:#e8ebf0;border-radius:8px;overflow:hidden;margin:8px 0}' +
+        '.rm-bar i{display:block;height:100%;border-radius:8px}.rm-m{font-size:.95rem;font-weight:700}.rm-d{font-size:.9rem;opacity:.8}';
+      document.head.appendChild(st);
+    }
+    const o = ozet();
+    const guclu = o.filter(x => x.seviye === 'ustalasti').length, tekrar = o.filter(x => x.seviye === 'destek' || x.seviye === 'gelisiyor').length;
+    let h = '<div class="rm"><h2>Kazanım Karnem</h2><p>' + esc(meta.oyunAdi) + '</p><p>' + guclu + ' konuda güçlüsün' +
+      (tekrar ? ', ' + tekrar + ' konuyu tekrar edeceksin.' : '.') + '</p>';
+    o.forEach(x => {
+      const e = ETIKET[x.seviye], yuzde = x.p === null ? 0 : Math.round(x.p * 100);
+      h += '<div class="rm-k"><b>' + esc(x.ad) + '</b><div class="rm-bar" role="img" aria-label="ilk denemede doğru: %' + yuzde + '"><i style="width:' + yuzde + '%;background:' + e[1] + '"></i></div>' +
+        '<span class="rm-m" style="color:' + e[1] + '">' + e[0] + '</span> <span class="rm-d">(' + x.dogru + '/' + x.n + ' ilk denemede doğru)</span></div>';
+    });
+    h += '<p class="rm-d">' + (window.parent !== window ? 'Sonucun öğretmenine gönderildi.' : 'Sonucunun öğretmenine gitmesi için etkinliği öğrenci portalından aç.') + '</p></div>';
+    el.innerHTML = h;
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+  return { init, kaydet, ozet, bitir, ekranCiz, seviye, kayitli, onKayitli, ESIK, SURUM };
+})();
+
+</script>
 <script>
 'use strict';
 /* HESAP MOTORU: DOM'a, arayüz durumuna veya saklamaya erişmez.
@@ -137,6 +315,45 @@ const SEVIYE=['2 basamak × 1 basamak','3 basamak × 1 basamak','2 basamak × 2 
 const KAYMA='Burası boş kalır, çünkü orada görünmeyen bir 0 var. Şimdi ONLAR basamağıyla çarpıyoruz, bu yüzden bir basamak sola kayarız.';
 const ELDE="Çarpım 10 veya daha büyükse birler rakamını kutuya yaz, onlar rakamını bir sol sütundaki elde kutusuna koy. Sonraki çarpmada, çarpımın üstüne bu eldeyi ekle.";
 let tab=0,seviye=0,oturumlar=[null,null,null,null],durum=null,secili=null,hazirRakam=null,basarili=0,seri=0,suruk=null,hayalet=null,vurgulu=null;
+const OYUN={id:'mat-carpma-atolyesi',ad:'Matematik • Çarpma Atölyesi',kazanimlar:[{kod:'M.4.1.4.1',ad:'Üç basamaklı doğal sayılarla iki basamaklı doğal sayıları çarpar.'}]};
+const GOREV=[null,{ad:'Tablo',on:'tablo',adet:3},{ad:'Alıştırma',on:'alistirma',adet:5},{ad:'Hatayı Bul',on:'hata',adet:2}];
+const gorevYerel=new Map(), cevapBekleyen=new Map();
+let gorevBitti=false;
+function gorevIdler(t){return Array.from({length:GOREV[t].adet},(_,i)=>GOREV[t].on+'-'+(i+1))}
+function gorevKayit(id){return RaporMotoru.kayitli(id)||gorevYerel.get(id)}
+function gorevSiradaki(t){return !gorevBitti&&t?gorevIdler(t).find(id=>!gorevKayit(id)):null}
+function gorevGoster(){
+ const toplam=[1,2,3].flatMap(gorevIdler).filter(gorevKayit).length;
+ $('#gorev').innerHTML='<div class="gorev-satir"><b>Görev: '+toplam+'/10</b>'+[1,2,3].map(t=>'<span>'+GOREV[t].ad+' '+gorevIdler(t).filter(gorevKayit).length+'/'+GOREV[t].adet+'</span>').join('')+(gorevBitti?'<span>Serbest alıştırma</span>':'<button class="dugme" id="goreviBitir">Görevi bitir</button>')+'</div><div id="gorevMaddeler">'+[1,2,3].flatMap(t=>gorevIdler(t).map(id=>{const k=gorevKayit(id);return '<span data-gorev-id="'+id+'" data-kilitli="'+!!k+'"'+(k?.answer?' title="'+k.answer.replace(/[^0-9x]/g,'')+'"':'')+'>'+id+(k?' ✓':'')+'</span>'})).join('')+'</div>';
+ $('#goreviBitir')?.addEventListener('click',gorevBitir);
+ if(toplam===10&&!gorevBitti)gorevBitir();
+}
+function gorevBitir(){
+ if(gorevBitti)return;gorevBitti=true;RaporMotoru.bitir();
+ const yer=$('#gorevSonuc');yer.hidden=false;yer.innerHTML='<h2>Görev tamamlandı</h2><div id="gorevKarne"></div><button class="dugme" id="serbestDevam">Serbest alıştırmaya devam</button>';
+ RaporMotoru.ekranCiz($('#gorevKarne'));
+ $('#serbestDevam').onclick=()=>{yer.hidden=true;baslat(false)};gorevGoster();
+}
+// Cevap defteri mesajını (4d:answer) yalnız rapor motoru gönderir; etkinlik ayrıca göndermez (çift kayıt olmasın).
+
+function gorevCevapGonder(m){if(window.parent!==window)window.parent.postMessage(m,'*')}
+
+window.addEventListener('message',e=>{const d=e.data;if(e.source!==window.parent||d?.activityId!==OYUN.id)return;if(d.type==='4d:answer-ack')cevapBekleyen.delete(d.questionId);if(d.type==='4d:saved-answers')for(const a of d.answers||[])cevapBekleyen.delete(a.questionId)});
+function gorevKaydet(){
+ const d=durum,id=d.gorevId;if(gorevBitti||!id||d.gorevSayildi||gorevKayit(id))return;
+ const dogru=!d.gosterildi,ilk=dogru&&d.yanlis===0;
+ const answer=d.op.a+'x'+d.op.b;
+ d.gorevSayildi=true;gorevYerel.set(id,{correct:dogru,firstTry:ilk,answer});
+ 
+ 
+ RaporMotoru.kaydet({kazanim:OYUN.kazanimlar[0].kod,madde:id,ilkDenemeDogru:ilk,deneme:d.yanlis+1,dogru,answer,cozumGoruldu:d.gosterildi,sureMs:Date.now()-d.gorevT0});
+ gorevGoster();
+}
+RaporMotoru.onKayitli(()=>{
+ for(let t=1;t<=3;t++){const d=oturumlar[t];if(d?.gorevId&&RaporMotoru.kayitli(d.gorevId)&&!d.gorevSayildi)d.gorevId=gorevSiradaki(t)}
+ gorevGoster();
+});
+RaporMotoru.init({oyunId:OYUN.id,oyunAdi:OYUN.ad,kazanimlar:OYUN.kazanimlar});
 function soyle(m,uyari=false){$('#balon').innerHTML='<span>'+m+'</span>';$('#balon').classList.toggle('uyari',uyari)}
 function dialog(baslik,icerik){$('#dialogBaslik').textContent=baslik;$('#dialogIcerik').innerHTML=icerik;$('#bilgiDialog').showModal()}
 function kutla(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;for(let i=0;i<24;i++){const e=document.createElement('i');e.className='konfeti';e.style.cssText=`--x:${(Math.random()-.5)*600}px;--y:${60+Math.random()*300}px;background:${['#ff7a45','#2ec4b6','#ffd166'][i%3]};left:${40+Math.random()*20}%;animation-delay:${Math.random()*.15}s`;document.body.append(e);setTimeout(()=>e.remove(),1300)}}
@@ -169,6 +386,7 @@ function baslat(yeni=true){
   if(tab===1&&String(op.a).includes('0')){let deneme=0;do{op=uret(kullan,op)}while(String(op.a).includes('0')&&++deneme<100);if(String(op.a).includes('0'))op={a:kullan===3?687:87,b:op.b}}
   const c=coz(op);
   durum={op,c,giris:{},isaret:{},kontrol:0,yanlis:0,tamam:false,sayildi:false,gosterildi:false,adim:0,adimlar:adimlariYap(c),kaymaDenendi:false,tabloGiris:{},tabloDogru:{},tabloYanlis:{},taslak:'',hata,bulundu:false};
+  durum.gorevId=gorevSiradaki(tab);durum.gorevT0=Date.now();
   oturumlar[tab]=durum;
  }
  secili=null;hazirRakam=null;ciz();
@@ -248,7 +466,7 @@ function satirDegeri(pre){let sayi=0;for(const [id,v] of Object.entries(durum.gi
 function kontrol(){
  if(tab!==2||durum.tamam)return;durum.kontrol++;const exp=beklenen(durum.c);let ok=true;
  for(const [id,v] of Object.entries(exp)){const dogru=durum.giris[id]===v;durum.isaret[id]=dogru?'dogru':'yanlis';if(!dogru)ok=false}
- if(ok){durum.tamam=true;if(!durum.sayildi&&!durum.gosterildi){basarili++;seri=durum.kontrol===1?seri+1:0;durum.sayildi=true}ciz();soyle('Hepsi doğru! ✓ Sağdan sola, adım adım başardın.');kutla();return}
+ if(ok){durum.tamam=true;gorevKaydet();if(!durum.sayildi&&!durum.gosterildi){basarili++;seri=durum.kontrol===1?seri+1:0;durum.sayildi=true}ciz();soyle('Hepsi doğru! ✓ Sağdan sola, adım adım başardın.');kutla();return}
  durum.yanlis++;seri=0;const c=durum.c,son=satirDegeri('t'),ilk=satirDegeri('r0'),ikinci=satirDegeri('r1');
  const unuttu=c.satirlar.some((s,r)=>s.adimlar.some(t=>t.gelen>0&&durum.giris[`r${r}-${t.k+r}`]!==undefined&&durum.giris[`r${r}-${t.k+r}`]===t.ham%10&&exp[`r${r}-${t.k+r}`]!==t.ham%10));
  let msg='✗ işaretli kutulara yeniden bak. ✓ işaretliler doğru. Yazdıkların silinmedi.';
@@ -256,17 +474,19 @@ function kontrol(){
  else if(unuttu||(ilk===c.p1&&c.b>=10&&c.p2-ikinci>=1&&c.p2-ikinci<=8))msg='Eldeyi eklemeyi unutmuş olabilir misin? '+msg;
  ciz();soyle(msg,true);
 }
-function cevap(){if(tab!==2||durum.yanlis<2||durum.tamam)return;durum.giris={...durum.giris,...beklenen(durum.c)};durum.gosterildi=true;durum.tamam=true;seri=0;durum.isaret={};ciz();soyle('Çözümü açtık. Her satırı sağdan sola incele. Bu işlem sayaca eklenmedi; yeni bir işlemde sen dene.')}
+function cevap(){if(tab!==2||durum.yanlis<2||durum.tamam)return;durum.giris={...durum.giris,...beklenen(durum.c)};durum.gosterildi=true;durum.tamam=true;gorevKaydet();seri=0;durum.isaret={};ciz();soyle('Çözümü açtık. Her satırı sağdan sola incele. Bu işlem sayaca eklenmedi; yeni bir işlemde sen dene.')}
 function tabloSec(id){if(durum.tabloDogru[id])return;secili=id;durum.taslak=String(durum.tabloGiris[id]??'');if(hazirRakam!==null){const d=hazirRakam;hazirRakam=null;yaz(d)}else ciz()}
 function tabloTamam(){
  if(tab!==1||!secili)return;const [r,col]=secili.slice(1).split('-'),row=durum.c.tablo[Number(r)],top=col==='top',v=top?row.toplam:row.hucreler[Number(col)].deger;
  if(durum.taslak!==''&&Number(durum.taslak)===v){
-  durum.tabloDogru[secili]=true;durum.tabloGiris[secili]=String(v);delete durum.isaret[secili];const ikinci=secili==='b1-top';secili=null;durum.taslak='';ciz();
+  durum.tabloDogru[secili]=true;durum.tabloGiris[secili]=String(v);delete durum.isaret[secili];if(Object.keys(durum.tabloDogru).length===2*(String(durum.c.a).length+1)){durum.tamam=true;gorevKaydet()}const ikinci=secili==='b1-top';secili=null;durum.taslak='';ciz();
   if(ikinci){soyle(`Bak! ${durum.c.a} × ${row.carpan} = ${v}. Alt alta çarparken ${durum.c.a} × ${row.carpan/10} yazar, satırı bir basamak sola kaydırırız. Kayınca birler basamağına bir 0 gelir; onu yazmayız, boş bırakırız. Sola kaymak, sonuna 0 koymakla aynı şeydir.`);requestAnimationFrame(()=>$('#balon').scrollIntoView({block:'nearest'}))}
   else if(Object.keys(durum.tabloDogru).length===2*(String(durum.c.a).length+1)){soyle(`${durum.c.p1} + ${durum.c.p2} = ${durum.c.sonuc}. İki yöntem aynı sonucu verdi! ✓`);kutla()}
   else soyle(`Doğru! ✓ ${top?'Bu sayı, alt alta işlemin '+(Number(r)+1)+'. satırı.':'Şimdi başka bir kutuyu bul.'}`);
  }else{
+  durum.yanlis++;
   const yanlis=durum.tabloYanlis[secili]=(durum.tabloYanlis[secili]||0)+1;
+  if(yanlis>=2)durum.gosterildi=true;
   durum.isaret[secili]='yanlis';ciz();
   if(top)soyle(`Bu satırdaki sayıları topla: ${row.hucreler.map(h=>h.deger).join(' + ')}${yanlis>=2?` = ${v}`:''}.`,true);
   else soyle(tabloIpucu(row.hucreler[Number(col)],yanlis>=2),true)
@@ -286,10 +506,10 @@ function tabloIpucu(h,tam=true){
 function ilkHataliKutu(){const h=durum.hata;for(let k=0;k<h.dogru.sutun;k++)if(Math.floor(h.p1/10**k)%10!==Math.floor(h.dogru.p1/10**k)%10)return k;return -1}
 function hataKutuSec(k){
  if(tab!==3||durum.hata.b>=10||durum.bulundu)return;
- if(Number(k)===ilkHataliKutu()){durum.bulundu=true;ciz();soyle('Buldun! ✓ '+durum.hata.aciklama);kutla()}
- else soyle(Number(k)<ilkHataliKutu()?'Bu kutu doğru. İlk hata daha solda.':'Bu kutudan önce başka bir hata var. Sağdan başla, her kutuyu kendin hesapla; eldeyi unutma.',true);
+ if(Number(k)===ilkHataliKutu()){durum.bulundu=true;gorevKaydet();ciz();soyle('Buldun! ✓ '+durum.hata.aciklama);kutla()}
+ else {durum.yanlis++;soyle(Number(k)<ilkHataliKutu()?'Bu kutu doğru. İlk hata daha solda.':'Bu kutudan önce başka bir hata var. Sağdan başla, her kutuyu kendin hesapla; eldeyi unutma.',true);}
 }
-function hataSec(r){if(tab!==3||durum.bulundu)return;if(Number(r)===durum.hata.hataSatiri){durum.bulundu=true;ciz();soyle('Buldun! ✓ '+durum.hata.aciklama);kutla()}else soyle(Number(r)<durum.hata.hataSatiri?'Bu satır doğru. Sonraki satırlara bak.':'Bundan önce başka bir hata var. İlk hatayı bul: 1. satırdan başla.',true)}
+function hataSec(r){if(tab!==3||durum.bulundu)return;if(Number(r)===durum.hata.hataSatiri){durum.bulundu=true;gorevKaydet();ciz();soyle('Buldun! ✓ '+durum.hata.aciklama);kutla()}else {durum.yanlis++;soyle(Number(r)<durum.hata.hataSatiri?'Bu satır doğru. Sonraki satırlara bak.':'Bundan önce başka bir hata var. İlk hatayı bul: 1. satırdan başla.',true)}}
 function eylem(a){({elde:()=>dialog('Elde ne işe yarar?',`<p>${ELDE}</p><p>Alıştırmada elde kutularını boş bırakabilirsin. Kontrol edilmez.</p>`),yeni:()=>{if(tab===2&&!durum.tamam){seri=0}baslat()},temizle,sil,kontrol,cevap,tamam:tabloTamam,kay:()=>{if(tab===0&&mevcutAdim()?.tur==='kay')ilerle()}}[a]||(()=>{}))()}
 document.addEventListener('click',e=>{
  if(performance.now()<tikEngel)return;const el=e.target.closest('button,[data-error-row]');if(!el)return;
@@ -353,6 +573,7 @@ function surukBitir(e,iptal=false){
 document.addEventListener('pointerup',e=>surukBitir(e));document.addEventListener('pointercancel',e=>surukBitir(e,true));
 const rakamBoyutu=new ResizeObserver(([entry])=>document.documentElement.style.setProperty('--rakam-yukseklik',`${entry.target.getBoundingClientRect().height}px`));
 rakamBoyutu.observe($('.rakamlik'));
+gorevGoster();
 baslat();
 window.CARPMA = {uret, coz, hataliUret};
 </script>
