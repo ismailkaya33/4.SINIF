@@ -90,6 +90,16 @@ Claude'un kendi kotası bitince öğretmen `Promptlar/` klasöründeki hazır pr
 | 6 | `CLAUDE.md`'ye tek satır yönlendirme (bu belgeye) | 5 ile birlikte |
 | 7 | Sonraki haftalık hazırlıkta (12. hafta) bu düzenle ilk gerçek kullanım | — |
 
+## Antigravity masaüstü uygulaması (IDE) ile görev paylaşımı (2026-11-27)
+- Öğretmen Antigravity masaüstü uygulamasını kurdu. Kuralları kök dizindeki `GEMINI.md` (Antigravity bunu kendiliğinden okur;
+  Codex okumaz). Görev panosu: `docs/antigravity/GOREVLER.md`.
+- Öğretmenin kararı (2026-11-27): Antigravity, öğretmen başındayken `main`'den açtığı **`antigravity/<kisa-ad>`** dallarında
+  çalışır, yalnız bu dallara commit/push eder (canlıya çıkmazlar). §4'teki "dış araçlar commit/push yapmaz" kuralının tek istisnası budur.
+- İşi: görsel düzeltme, dosya küçültme, tarayıcıda deneme, küçük hata, Türkçe dil denetimi. `portal/` ve canlı dallar yasak.
+- **Denetim:** bulut otonom görevi her çalışmada yeni `antigravity/*` dallarını inceler, sonucu
+  `claude/ogretmen-paneli-gelistirme` dalında `docs/autodev/ANTIGRAVITY-DENETIM.md`'ye yazar (ONAYA HAZIR / DÜZELTİLMELİ / REDDEDİLDİ).
+  Birleştirme yapmaz. `main`'e alma öğretmen onayıyla, Claude ile sohbetten yapılır.
+
 ## Antigravity CLI (Gemini Pro) nasıl çağrılır? (2026-11-21)
 - Program: `C:\Users\ismai\AppData\Local\Microsoft\WinGet\Packages\Google.AntigravityCLI_Microsoft.Winget.Source_8wekyb3d8bbwe\agy.exe`
   (winget `Google.AntigravityCLI`, sürüm 1.5.13). Giriş öğretmenin Google hesabıyla bir kez yapıldı.

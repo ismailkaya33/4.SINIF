@@ -21,6 +21,10 @@ hesabı) yapar; çizim ChatGPT/Gemini web'de. Claude yalnız kısa brif yazar, �
 `html_kontrol.py`, hesap denetimi), düzeltme turunu yine Codex'e verir ve yayınlar. Çağrı yolu ve sınırlar:
 `docs/yapay-zeka-is-bolumu.md`. Codex çalışmazsa öğretmene söylenir, iş sessizce Claude'a kaymaz.
 
+**Antigravity masaüstü (2026-11-27):** kuralları `GEMINI.md`, görevleri `docs/antigravity/GOREVLER.md`; yalnız
+`antigravity/` dallarına gönderir. **Bulut otonom görevi her çalışmada önce `docs/antigravity/DENETIM-TALIMATI.md`'yi
+uygular** (öğretmenin isteği; bu dallara push/birleştirme yok, sonuç `docs/autodev/ANTIGRAVITY-DENETIM.md`). `main`'e alma yine öğretmen onayıyla.
+
 **Kota bitince başka yapay zekâ:** her iş türü için hazır prompt `Promptlar/` klasöründe (`00-OKU-BENI.txt`). Öğretmen dışarıda
 yaptırdığı işi getirince `4d-icerik-uret` bölüm 9'a göre kontrol edilip sisteme alınır; portal kodu için dış prompt yoktur (bilerek).
 
