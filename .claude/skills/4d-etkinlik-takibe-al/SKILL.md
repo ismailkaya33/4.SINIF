@@ -33,6 +33,12 @@ Bu dala `portal/appsscript/**` veya `portal/ogretmen-rapor/**` değişikliği g�
 uygulamasını **hemen canlıya** alır. Göndermeden önce kullanıcıya ne değişeceğini sade dille söyle ve açık "evet" al.
 Göndermeden sonra `4d-canli-kontrol` skill'ini izle.
 
+**Sıra (2026-11-27 dersi):** main'deki "İçerik bekçisi" (`.github/workflows/icerik-bekcisi.yml`) sonuç kodu olup portalda
+takipsiz yeni etkinliği HATA sayar. Bu yüzden önce **portal kaydını**, sonra **etkinlik dosyasını (main)** gönder.
+Ters sırada gönderildiyse bekçi kırmızı olur: portal kaydı yayına çıkınca `gh run rerun <id>` ile yeniden çalıştır.
+Portal testleri: `node tools/portal-sonuc-testi.mjs --dosya <kopya>/portal/appsscript/OgrenciGiris_Guncel.html`
+(Playwright gerekir; bu bilgisayarda yoksa `$env:NODE_PATH` Codex'in `...\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\node_modules` klasörü).
+
 ## Bilinmesi gerekenler
 - Öğretmen raporu `Sayfa1` içinde `Tur=TEST` olan öğrencileri (ör. TEST40) göstermez; TEST40 sonucu yalnız
   `ETKINLIK_SONUCLARI` tablosunda görünür.
