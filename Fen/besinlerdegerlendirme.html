@@ -177,7 +177,7 @@ dortdRecord=function(id,answers){
     if(window.parent!==window)window.parent.postMessage({
       type:'4d:activity-finished',schemaVersion:1,activityId:'fen-besinlerdegerlendirme',
       attemptId:dortdAttemptId,correct,wrong:total-correct,total,
-      wrongAttempts:all.length-correct,firstTry:[...dortdHistory.values()].filter(h=>h[0]==='correct').length,
+      wrongAttempts:all.length-correct,firstTry:Math.min(correct,[...dortdHistory.values()].filter(h=>h[0]==='correct'&&h[h.length-1]==='correct').length),
       durationSeconds:Math.max(0,Math.round((Date.now()-dortdStartedAt)/1000))
     },'*');
     const tot=document.getElementById('tot');

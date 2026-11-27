@@ -535,6 +535,29 @@
         results: {}, // stores status for each task
     };
 
+    /* 4/D PORTAL SONUÇ MESAJI (MIMARI.md): rapor ekranı açılınca deneme başına bir kez gider.
+       Portal dışında (kodsuz) açıldıysa mesaj kimseye gitmez; oyun aynen çalışır. */
+    const ACTIVITY_ID = 'insan-bilincli-vatandas';
+    let attemptId = '', attemptStart = Date.now(), finishSent = false;
+    function newAttemptId() {
+        let r = '';
+        try { const a = new Uint8Array(12); crypto.getRandomValues(a); a.forEach(x => { r += x.toString(16).padStart(2, '0'); }); }
+        catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+        return 'bv_' + r;
+    }
+    function sendFinish(total, completed, firstTry) {
+        if (finishSent || total < 1) return;
+        finishSent = true;
+        try {
+            if (window.parent && window.parent !== window) window.parent.postMessage({
+                type: '4d:activity-finished', schemaVersion: 1, activityId: ACTIVITY_ID, attemptId,
+                correct: completed, wrong: total - completed, total,
+                wrongAttempts: Math.min(10000, state.wrongCount), firstTry: Math.min(firstTry, completed),
+                durationSeconds: Math.min(86400, Math.max(0, Math.round((Date.now() - attemptStart) / 1000)))
+            }, '*');
+        } catch (e) { /* portal yok */ }
+    }
+
     // --- Data ---
     // 16 Tasks covering Hak (Right), Özgürlük (Freedom), Sorumluluk (Responsibility)
     const baseTasks = [
@@ -774,6 +797,7 @@
         state.skippedCount = 0;
         state.hintCount = 0;
         state.results = {};
+        attemptId = newAttemptId(); attemptStart = Date.now(); finishSent = false;
         
         tasks.forEach(t => {
             state.results[t.id] = { status: 'pending', firstTry: true, attempts: 0 };
@@ -1232,6 +1256,7 @@
         document.getElementById('r-skipped').textContent = state.skippedCount;
         document.getElementById('r-hints').textContent = state.hintCount;
         document.getElementById('r-score').textContent = state.score;
+        sendFinish(tasks.length, completed, firstTry);
     }
 
     function reviewTask(taskId) {
