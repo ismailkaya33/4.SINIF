@@ -80,6 +80,7 @@
     {"yol":"Trafik/ulasimaraclari.html","ad":"Ulaşım Araçları Karşılaştırma","ders":"Trafik Güvenliği","eklenme":"2026-11-20","gizli":false,"unite":"1. Ünite: Trafikte Güvenlik"},
     {"yol":"Turkce/bilgidedektifi.html","ad":"Bilgi Dedektifi: Güvenilir Kaynak","ders":"Türkçe","eklenme":"2026-11-20","gizli":false,"unite":"Okuma ve Anlama"},
     {"yol":"Turkce/gercekmihayalmi.html","ad":"Gerçek mi Hayal mi? Hikâye Atölyesi","ders":"Türkçe","eklenme":"2026-11-20","gizli":false,"unite":"Okuma ve Anlama"},
-    {"yol":"Matematik/carpmaatolyesi.html","ad":"Çarpma Atölyesi — Alt Alta Çarpma","ders":"Matematik","eklenme":"2026-11-26","gizli":false,"unite":"3. Ünite: Çarpma ve Bölme"}
+    {"yol":"Matematik/carpmaatolyesi.html","ad":"Çarpma Atölyesi — Alt Alta Çarpma","ders":"Matematik","eklenme":"2026-11-26","gizli":false,"unite":"3. Ünite: Çarpma ve Bölme"},
+    {"yol":"Matematik/kisayoldancarpma.html","ad":"Kısa Yoldan Çarpma: 5, 25 ve 50","ders":"Matematik","eklenme":"2026-11-27","gizli":false}
   ]
 }
