@@ -139,3 +139,46 @@ Bunlar korunduğu sürece arka taraf (Google, Firebase…) değişse bile etkinl
 | `main` | Etkinlik sitesi | Her değişiklik birkaç dakikada GitHub Pages'te yayında |
 | `hazirlik/kazanim-takibi-20261101` | Öğrenci portalı + öğretmen raporu kaynakları | Bu dala gönderilen portal değişikliği **otomatik olarak canlıya** çıkar |
 | `yedek/…`, `backup/…` | Eski hallerin yedekleri | Yayın yok |
+| `claude/…` | Bulut otonom görevinin çalışma dalları | Yayın yok; canlıya alma öğretmen onayıyla |
+| `antigravity/…` | Antigravity masaüstünün küçük işleri | Yayın yok; "yayınla" denince Claude denetler |
+
+## 8. Araçlar, ajanlar ve yapay zekâlar (envanter — 2026-11-27)
+
+**Yapay zekâlar (dört rol, öğretmenin kararı 2026-11-27).** Ayrıntı: `docs/yapay-zeka-is-bolumu.md`.
+
+| Rol | Araç | Görev |
+|---|---|---|
+| Karar ve yayın | Claude Code (bu klasör) | Brif, kazanım kararı, denetim, portal kodu, test, yayın |
+| Uzun üretim | Codex CLI (ChatGPT Plus) | Etkinlik HTML'i, düzeltme turları |
+| Dil ve küçük iş | Antigravity CLI + masaüstü (Gemini Pro) | Türkçe dil denetimi, uzun okuma; `antigravity/` dallarında küçük düzeltme |
+| Resim | ChatGPT web (yedek: Gemini web) | Sahne/nesne çizimi; Claude indirir |
+
+**Claude ajanları** (`.claude/agents/`): `pedagojik-denetci` (yayından önce içerik denetimi, salt okunur),
+`repo-kasifi` (ücretsiz açık kaynak araç keşfi, salt okunur).
+
+**Skill'ler** (`.claude/skills/`, iş tarifleri): `4d-icerik-uret`, `4d-etkinlik-takibe-al`, `4d-canli-kontrol`,
+`4d-haftalik-hatirlatma`, `4d-kaynak-kitap-odev`.
+
+**Zamanlanmış görevler**
+
+| Görev | Ne zaman | Nerede | Ne yapar |
+|---|---|---|---|
+| Haftalık hatırlatma | Cuma 16:00 | bu bilgisayar | Sıradaki haftanın konuları, eksik etkinlik/defter notu |
+| Repo keşfi | Cumartesi 10:00 | bu bilgisayar | `docs/repo-kesif/` raporu (commit yok) |
+| İyileştirme listesi takip ajanı | Pazar 22:13 | bulut | `IYILESTIRME-LISTESI.md`'yi günceller |
+| İyileştirme listesini gönder | Pazar 23:00 | bu bilgisayar | Yalnız o dosyayı `main`'e gönderir |
+| Otonom proje geliştirme | Pazartesi 03:00 (haftada 1) | bulut | Yalnız `claude/` dallarında; kayıt `docs/autodev/` |
+
+**Komut araçları** (`tools/`, model gerektirmez)
+
+| Grup | Araçlar |
+|---|---|
+| İçerik üretimi | `sketchnote-yap.mjs` (defter notu, kavram haritası), `etkinlik-sayfasi-yap.mjs` (A4 etkinlik sayfası), `defter-bas.mjs`, `gorsel-uret.mjs --pdf-yap` |
+| Liste ve kontrol | `icerik-katalogu-guncelle.mjs`, `icerik-denetle.mjs`, `sonuc-takip-kontrol.mjs`, `portal-sonuc-testi.mjs`, `kazanim-haritasi.mjs` |
+| Plan | `yillik-plan-oku.mjs`, `haftalik-hatirlatma.mjs`, `kaynak-odev-oner.mjs` |
+| Rapor | `classdojo-rapor.py` (aylık ClassDojo → tablo satırları) |
+| Portal dalında | `tools/katalog-esitle.mjs` (takipli etkinlik listesi) |
+
+**Belgeler:** asıl kaynak `CLAUDE.md` + skill'ler + bu dosya. Kararlar `IYILESTIRME-LISTESI.md` → "Öğretmen kararları".
+Diğer yapay zekâlar için kopyalar: `GEMINI.md`, `docs/antigravity/`, `Promptlar/`, `SOHBET-BASLANGIC.md`,
+`docs/PORTAL-OZETI-YAPAY-ZEKA-ICIN.md` — kural değişince bunlar da güncellenir.

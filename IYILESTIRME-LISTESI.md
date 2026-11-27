@@ -16,6 +16,55 @@ Son tarama: 2026-11-22 (pazar; dosya/katalog okuma + `haftalik-hatirlatma.mjs`; 
   Yeni etkinlik sonuç kodsuz/takipsiz yayınlanmaz; geçilen görev sonucu engellemez; portal değişikliği `tools/portal-sonuc-testi.mjs`'ten geçmeden yayınlanmaz.
 - 2026-11-23: Trafik (TG.4.1.6 ve TG.4.1.7) için defter notu artık üretilmeyecek; eksik sayılmaz, önerilmez (öğretmen kararı).
 
+### Tüm öğretmen kararları (tek defter — 2026-11-27'de dağınık yerlerden toplandı)
+Kural: yeni karar buraya tarihle yazılır; değişen kararın eskisi silinmez, `~~üstü çizilir~~`. Ayrıntılı uygulama CLAUDE.md ve skill'lerde.
+
+**Çalışma düzeni**
+- 2026-11-10: Her şey tek yerden: bu klasör + Claude Code. Kural kopyası tutulmaz.
+- 2026-11-17: Bulut otonom görevi yalnız `claude/` dallarına onaysız gönderir; `main` ve portal dalı her zaman onaylı.
+- 2026-11-20: Haftalık hazırlıkta onaylar başta tek seferde alınır, iş sırasında sorulmaz.
+- 2026-11-20: Aynı anda en çok 1–2 alt ajan; tasarruf anlatılmaz, uygulanır; kalite düşmez.
+- 2026-11-21: Uzun üretim önce Codex'te; Claude brif + denetim + yayın.
+- 2026-11-27: Antigravity yalnız `antigravity/` dallarında; denetimi öğretmen "yayınla" deyince Claude bir kez yapar.
+- 2026-11-27: **Dört rol:** Claude (karar, denetim, portal, yayın) · Codex (uzun HTML) · Antigravity (Türkçe denetim, küçük düzeltme) · ChatGPT web (resim). Gemini CLI emekli.
+- 2026-11-27: **"Bitti" = canlıda TEST40 ile denendi.** Denenmeyenler aşağıdaki "TEST40 deneme listesi"ne yazılır; öğretmen cuma dener.
+- 2026-11-27: **11 Aralık'a kadar yeni özellik molası** (takip boşluğu, deneme, KVKK, temizlik ve haftalık içerik sürer).
+- 2026-11-27: **KVKK 3 soru** (gizlilik metni? veli onayı? silme tarihi?) — biri "hayır"sa yapılmaz.
+- 2026-11-27: **C bölümünde en çok 10 açık fikir.** Yeni fikir ancak biri arşive inince ya da B'ye geçince eklenir; 4 hafta karar verilmeyen fikir arşive iner.
+- 2026-11-27: Bulut otonom görevi haftada 1 (Pazartesi 03:00) çalışır. ~~Günde 2 kez (03:00/13:00), 2026-11-17~~
+- 2026-11-27 reddedildi (bir daha önerilmez): kopya belgelere "asıl kaynak" başlığı; eski yedek/test dallarının silinmesi; "klasörde tek yazan oturum" kuralı.
+
+**İçerik**
+- 2026-11-10: "X sayfalık" = basılacak A4 PDF. Baskı materyali (ödev, etkinlik kâğıdı) siteye/portala gitmez; yalnız defter notu gider.
+- 2026-11-12: Defter notu iki parça: not sayfası + kes-yapıştır görselleri. Basit liste/tablo/soru akışı görsel olmaz, öğrenci yazar (2026-11-14, 2026-11-27).
+- 2026-11-13: Sorular kolay olmasın: kazanımın üst sınırı, çok adımlı, tersine çalışma, hata bulma; en kolayı da iki adımlı.
+- 2026-11-13: Büyük eski dosyalar şimdilik küçültülmez; yeni etkinlik < 500 KB.
+- 2026-11-13: Kavram haritası/şema kodla çizilir (`sketchnote-yap.mjs`), ChatGPT'ye değil.
+- 2026-11-14: Resmi ChatGPT çizer (yedek Gemini web), Claude indirir. 2026-11-21: tarz karikatür; kes-yapıştır varsayılan siyah-beyaz.
+- 2026-11-20: İnsan Hakları ve Trafik için defter notu yok.
+- 2026-11-21: Her defter notu konusuna 2 sayfa A4 etkinlik sayfası + cevap anahtarı; sayfa dolu, satır arası sıkı.
+- 2026-11-22: Tahta sorularında gerçek öğrenci adı (yalnız ad) + okul no, yalnız `Baski/` altında, olumlu rolde.
+- 2026-11-23: Oyun = canlı aksiyon (Ördek Avcısı, Çarpma Kahramanları); soru + şık + puan oyun değildir. Yeni oyunda mekanik önce onaylanır.
+- 2026-11-26: Etkinliklerde okul/öğretmen/öğrenci adı geçmez; açık kütüphane anonim.
+
+**Portal, veri, KVKK**
+- 2026-11-10: Öğrenci 6 haneli kodla girer; EKR1/kod kopyalama yolu yok.
+- 2026-11-11: ClassDojo raporu portalda; öğrenci başına PDF bölünmez.
+- 2026-11-11: Konu değerlendirme puanı ClassDojo'da kalır; Ayın Yıldızları ilk üçü yemek ısmarlama hakkı kazanır.
+- 2026-11-12: Portal görsel değişikliğinde önce önizleme gösterilir (V7).
+- 2026-11-23: Drive yalnız `Baski/` klasörünü eşitler; tahtaya gidecek dosya `Baski/tahta/`'ya, tek dosya ve internetsiz.
+- 2026-11-26: Sosyometri portaldan kaldırıldı; yeniden istenirse kâğıt + rehber öğretmen.
+- 2026-11-26: Kaynak kitap: ödev = o gün ders programındaki dersin işlenen konusu; portal yalnız liste gösterir, "yaptım" işareti yok.
+- 2026-11-27: Sonuç kuralı ve cevap defteri (soru soru kayıt, ilk kayıt kesin) — yukarıda ve `MIMARI.md` 2.
+
+## TEST40 deneme listesi (öğretmen cuma dener; denenince [x] ve tarih)
+Nasıl: telefonda portala TEST40 koduyla girin → maddeyi açın → sonunu getirin → Claude'a "denedim" deyin; Claude tabloda satırı kontrol eder.
+- [ ] T1. Yeni öğrenci ana sayfası (12 Kasım): kısayollar, arama, ders süzgeci, "Bu Haftanın Etkinlikleri" şeridi görünüyor mu?
+- [ ] T2. Türkçe Kantin Dedektifi bitince `ETKINLIK_SONUCLARI`'na satır düşüyor mu?
+- [ ] T3. 10 Kasım'da yayına çıkan 4 etkinlik (Konum Kâşifi, Metin Dedektifi, Güvenli Sürüş, Tahmin Ustası) sonuç yazıyor mu?
+- [ ] T4. "Kaynak Kitap Ödevlerim" ve "Ders Programım" kartları doğru görünüyor mu?
+- [ ] T5. Cevap defteri (27 Kasım): bir soruyu cevaplayıp etkinliği kapatın, yeniden açın — kaldığı yerden devam ediyor mu?
+
 ## A. Eksikler (tespit edildi)
 - [ ] A1. (2026-11-22 güncel) Portal dalında takipli kayıt 24; katalogdaki 74 ders etkinliğinin (Oyunlar hariç) ~51'i takipsiz (yol karşılaştırması, doğrulanmalı). En acil: A22 (bu haftanın şeridindeki 7 yeni etkinlik). (skill: 4d-etkinlik-takibe-al)
 - [ ] A2-eski. `Turkce/sozavcıları.html` ~4 MB → yalnız görselleri küçült (ad değişmez, bkz. öğretmen kararları)
@@ -85,39 +134,41 @@ YOK (öncelik sırası; hafta = yıllık plandaki ilk geçtiği hafta):
 - [ ] D7. Sınav sonrası yanlış yapılan konuya yönlendirme (B6 ile birlikte)
 
 ## C. Ajanın yeni fikirleri
-(Ajan her hafta buraya tarihli yeni fikir ekler. Öğretmen beğendiğini B'ye taşıtır.)
-- [ ] C1. (2026-11-11) **Sınıf ortak hedefi (iş birliği):** Portalda "4/D bu hafta 150 etkinlik tamamlasın" gibi tek bir ortak ilerleme çubuğu. Öğrenci adı/sıralaması göstermez, yarış yerine takım duygusu verir; çekingen öğrenciyi de motive eder. Portal dalı → onay şart.
-- [ ] C2. (2026-11-11) **"Bugün şunu öğreniyorum" cümlesi:** Her etkinliğin açılışında kazanımın çocuk diliyle tek cümlesi (ör. "Metne başlık bulmayı öğreniyorum"). Kazanım kodu uydurmadan; cümleler öğretmen onayıyla yazılır. A8 ile birlikte yürür.
-- [ ] C3. (2026-11-11) **Yazdırılabilir "Evde 5 Dakika" veli kartı:** Yıllık plandan haftalık otomatik hazırlanan tek sayfalık A5 kart: haftanın konusu, evde yapılacak 1 etkinlik, portal adresi için QR kod. Öğrenci verisi içermez (KVKK metni beklerken de güvenli). B4'ün yazdırılabilir, bekleme gerektirmeyen sürümü.
-- [ ] C4. (2026-11-11) **Renk körlüğü dostu doğru/yanlış:** Doğru-yanlış geri bildirimi yalnız yeşil/kırmızı değil, ✓ / ✗ simgesi ve kısa yazıyla da verilsin. Etkinliklerde bu durumun nasıl olduğu taranmadı → önce örnek 5 etkinlikte kontrol edilmeli (doğrulanmalı).
-- [ ] C5. (2026-11-11) **Sonuç tablosunun haftalık yedeği:** ETKINLIK_SONUCLARI ve ETKINLIK_TAMAMLAMA sayfalarının haftada bir otomatik kopyası (Google tablosunda zaman tetikleyicisi). Yanlışlıkla silme/bozulmada öğrenci verisi kaybolmaz. Apps Script tarafı → onay şart; Claude canlı siteye kod girmez, kurulumu öğretmen adım adım yapar.
+(En çok 10 açık fikir — öğretmenin kararı 2026-11-27. Ajan yeni fikri ancak yer varsa ekler; 4 hafta karar verilmeyen fikir C-arşiv'e iner. Öğretmen beğendiğini B'ye taşıtır.)
 - [ ] C6. (2026-11-11) **Hafta başı 1 dakikalık "uyarı kartı" raporu:** Raporun en üstünde "Bu hafta hiç etkinlik açmayan öğrenci sayısı" ve "en çok yanlış yapılan 3 kazanım" (isim değil, sayı; ayrıntıya öğretmen girer). B1 ile birlikte yapılabilir.
 - [ ] C7. (2026-11-12) **"Hatırlama Köprüsü" mini etkinliği:** Her hafta, 2–3 hafta önce işlenen konudan 3 soruluk kısa etkinlik. Aralıklı tekrar, öğrenileni kalıcı yapar (genel eğitim ilkesi); yeni içerik yazmadan mevcut etkinlik sorularından derlenebilir. Öğretmen hangi konuların tekrar edileceğini seçer.
 - [ ] C8. (2026-11-12) **"Çıkış bileti" kartı:** Ders sonunda öğrencinin tek soruluk, yazdırılabilir küçük kartı (günün kazanımı, 1 soru, "anladım / yarım anladım / anlamadım" kutusu). Elle toplanır, teknik kurulum gerekmez; öğretmen ertesi gün hangi konuyu tekrar edeceğini 2 dakikada görür. `Baski/tahta/` günün sorusu düzenine eklenebilir.
 - [ ] C9. (2026-11-12) **Büyük dosya bekçisi:** Ders klasörüne 1 MB üstü .html gelince GitHub Actions uyarı yazsın (A14'teki 12 MB gibi sorunlar baştan yakalansın). B11 ile aynı yerde yürür, içeriği değiştirmez, yalnız uyarır.
-- [ ] C10. (2026-11-12) **Dönem sonu "İşlediğimiz Konular" veli sayfası:** Kazanım haritası aracının çıktısından öğrenci verisi içermeyen tek sayfalık özet: dönemde işlenen konular + evde tekrar önerisi. Veli toplantısı/karne günü için; KVKK metni beklerken de güvenli. C3 ile aynı altyapı.
 
-- [ ] C11. (2026-11-12) **20 Kasım Dünya Çocuk Hakları Günü ile İnsan Hakları Y.4.2.4 etkinliği:** Eksik olan Y.4.2.4 etkinliğini (hak kısıtlanınca hissedilenleri ifade etme) bu güne denk getir; sonunda sınıfça yazdırılabilir "Haklarım" panosu. 20 Kasım takvim bilgisidir; MEB 2026-27 çalışma takvimi doğrulanmalı.
-- [ ] C12. (2026-11-12) **24 Kasım Öğretmenler Günü "Teşekkür Kartı" (yazdırılabilir):** Öğrencinin doldurup süsleyeceği tek sayfalık A5 kart (3 cümle başlangıcı). Öğrenci verisi yok, portal dalına dokunmaz; 10. hafta içinde yetişir. Yazma kazanımı kodu doğrulanmalı.
 
-- [ ] C13. (2026-11-15) **Sigara/alkol haftası (F.4.2.1.5–6) için "Hayır Diyebilirim" senaryo kartları:** Duygusal olarak hassas konu; puansız, kısa rol canlandırma kartları (arkadaşın teklif etmesi, evde duman, "ne yapabilirim?"). Dil kapsayıcı olmalı: hiçbir çocuğun ailesini işaret etmez, sonuçta öğrenci verisi alınmaz. Yazdırılabilir kart + tahta sunumu olarak Baski/ altında üretilebilir; portal dalına dokunmaz. Kazanım adı yıllık plandan alındı.
-- [ ] C14. (2026-11-15) **"Sınıfımın Krokisi" yazdırma paketi (SB.4.3.2):** Kareli A4 çalışma kâğıdı + simge/işaret kutusu (kapı, pencere, sıra) + tahtada örnek kroki. Öğrenci kendi sırasından çizer; ölçek/yön (Konum Kâşifi'nde işlenen yönler) pekişir. Kroki çizme bilgisayarda değil kâğıtta daha doğal olduğu için etkinlik yerine baskı önerilir.
 - [ ] C15. (2026-11-15) **`bu-hafta.json` kırık bağlantı bekçisi:** GitHub Actions'ta dosyadaki her yolun sitede gerçekten var olduğunu ve en çok 12 olduğunu denetleyen küçük kontrol; hata varsa uyarı yazar, içeriği değiştirmez. Haftalık şeridin yanlış yazılan bir yol yüzünden boş/kırık görünmesini önler. C9 ile aynı yerde yürür.
-- [ ] C16. (2026-11-15) **Veli WhatsApp grubu için "Bu hafta" hazır metin:** Yıllık plandan her hafta 4–5 satırlık, çocuk diliyle yazılmış kısa mesaj taslağı (konular + evde sorulacak tek soru + portal adresi). Öğretmen kopyalayıp gönderir; öğrenci adı/puanı içermez. C3'teki basılı karttan farkı: ek baskı gerektirmez, her hafta 1 dakikada hazır.
-- [ ] C17. (2026-11-15) **Etkinlikte "Soruda hata var" bildirimi:** Öğrenci ya da öğretmen şüpheli soruyu tek dokunuşla işaretlesin; kayıt yalnız etkinlik adı + soru numarası içersin (öğrenci kodu yok). İçerik hatası daha hızlı yakalanır. Portal/Apps Script tarafı → onay şart.
-- [ ] C18. (2026-11-15 akşam) **"Okuma Akıcılığı" 1 dakikalık çizelge (kâğıt):** Öğrenci haftada bir kısa özgün metni 1 dakika okur, öğretmen okunan sözcük sayısını sınıf listesine yazar; dönem boyunca küçük bir ilerleme çizgisi çıkar. Okuma stratejisi kazanımlarını (T.4.3.1, T.4.3.6; kodlar yıllık plan çıktısından alındı, doğrulanmalı) somut izler. Elle tutulur, portala/öğrenci verisi dijitale girmez.
 - [ ] C19. (2026-11-15 akşam) **Ortak "Yazıyı büyüt / yüksek kontrast" düğmesi:** Tek küçük ortak dosya (örn. `ortak/erisim.js`) her etkinliğe 2 düğme ekler: yazıyı büyüt, yüksek kontrast. Tahtada arka sıradakiler ve okuma güçlüğü olanlar için işe yarar. A7/B8'den farkı: etkinlikleri tek tek yeniden yazmadan toplu eklenebilmesi. Yeni dosya + etkinlik dosyalarına tek satır eklemek gerekir → onay şart; önce 3 etkinlikte denenmeli (doğrulanmalı).
 - [ ] C20. (2026-11-15 akşam) **Haftalık hatırlatmaya "takipsiz etkinlik" bölümü:** `node tools/haftalik-hatirlatma.mjs` çıktısına, o haftanın konusuna ait olup portalda takipli (sonuç gönderen) olmayan etkinliklerin adı eklensin. A1'deki "~43" kaba sayım elle değil araçla ve her hafta aynı yöntemle çıksın. Yalnız araç çıktısı değişir; içerik ve portal dalı etkilenmez.
-- [ ] C21. (2026-11-15 akşam) **Çevrimdışı önbellek sürüm kontrolü:** Yeni etkinlik eklenince `sw.js` eski önbelleği gösteriyor mu? Telefonda/tahtada öğrencinin eski sürümü görmesi riskini (özellikle düzeltilen soru) azaltmak için önbellek adına tarih/sürüm eklenmesi düşünülebilir. Henüz `sw.js` incelenmedi → önce okunup durum doğrulanmalı.
 - [ ] A21. (YENİ 2026-11-18) `Turkce/dogrusunuyaz.html`: "yeraltı / yer altı" ve "kuru yemiş / kuruyemiş" çiftleri TDK'den doğrulanmalı (oyun şu an yeraltı ve kuru yemiş'i doğru sayıyor). TDK sözlük sitesi bulut bilgisayara cevap vermiyor; öğretmen sozluk.gov.tr'den bakıp söyleyecek.
 - [!] A22. (YENİ 2026-11-22) **Bu haftanın şeridindeki 12 etkinliğin 7'si takipsiz** (sonucu öğretmen raporuna düşmez): Türkçe Gerçek mi Hayal mi, Türkçe Bilgi Dedektifi, Matematik Çarpma Ustaları, Fen Sağlığımı Ben Korurum, Sosyal Kroki Atölyesi, İnsan Hakları Haklarımızın Peşinde, Trafik Ulaşım Araçları. Hepsi 20 Kasım'da eklendi. Öğretmen: pazartesi 23 Kasım'dan önce takibe alınsın mı? (Portal dalı → onay şart; Claude Code'da `4d-etkinlik-takibe-al`.) Doğrulanmalı: aynı işi mevcut takipliler kapsıyor olabilir. (2026-11-23 hazırlık notu) Etkinlik sayfaları sonuç mesajını gönderiyor; kimlikler: tur-gercek-hayal, tur-bilgi-kaynagi, mat-carpma, fen-alkol-sigara, sos-kroki, insan-hak-kisitlama, trafik-ulasim-araclari; kazanım kodları sayfalardan: T.4.3.26/27, T.4.3.36, M.4.1.4.1–2, F.4.2.1.5, SB.4.3.2, Y.4.2.4–5, TG.4.1.7 (hepsi doğrulanmalı); maxTotal 200 (diğerleriyle aynı). Kayıt YAPILMADI: bu bilgisayardaki portal dalı kopyası GitHub'dan 12 değişiklik geride ve güncelleme indirilemedi (bağlantı yarım kaldı); eski kopya üstüne yazmak canlıyı bozabilir. Claude Code'da `git pull` ile güncelleyip `4d-etkinlik-takibe-al` ile yapılmalı, önce öğretmene gösterilip onay alınmalı.
 - [x] A23 / A17 → 2026-11-27 öğretmen kararı: `ozdeyis.PNG` fazlalıktı, silindi (`ozdeyisler.png` kalır); repo keşfi dosyaları gönderildi. `Oyunlar/sayikosucusu.html` silindi; reddedilen "Kısa Yol Kervanı" `Yerel/taslaklar/`'da (git dışı), ileride Matematik etkinliğine çevrilebilir.
 - [x] A23-eski. (YENİ 2026-11-22) `Turkce/DefterNotlari/ozdeyis.PNG` hâlâ git'te takipsiz (A17) ve `docs/repo-kesif/2026-11-21.md` ile `incelenenler.md` değişikliği commit edilmemiş görünüyor; öğretmen kararı: ozdeyis.PNG mi ozdeyisler.png mi kalsın?
 - [ ] C22. (2026-11-22) **Pazartesi "Tek Sayfa Hafta Özeti" çıktısı:** `haftalik-hatirlatma.mjs` çıktısına ek olarak yazdırılabilir tek A4: haftanın kazanımları, her derste tahtada açılacak etkinlik sırası, hazır defter notu, takipli/takipsiz işareti. Öğretmen sabah 1 dakikada bakar. C20'den farkı: ekran çıktısı değil, sınıfa götürülecek kâğıt. Yalnız araç + `Baski/` (git dışı), portal dalı etkilenmez.
 - [ ] C23. (2026-11-22) **"Yönerge Dedektifi" planı (T.4.3.25, 13. hafta):** Türkçe boşluk analizi 4. madde hâlâ açık: yönergeyi okuyup adım sırasını doğru dizme etkinliği (özgün kısa yönergeler: oyun kuralı, deney adımı, tarif). Yönerge yazma (T.4.4.2) için kâğıt eki. Kazanım kodları yıllık plan çıktısından, doğrulanmalı. Önce Codex'e brif (iş bölümü kuralı).
-- [ ] C24. (2026-11-22) **Okuma güçlüğü dostu yazı seçeneği:** Ortak erişim düğmesine (C19) üçüncü seçenek: geniş harf/satır aralığı + açık krem zemin; OFL lisanslı bir okunaklı yazı tipi yerel gömülürse çevrimdışı da çalışır. Tahtada arka sıra ve okuma güçlüğü olan öğrenciler için. Önce 2 etkinlikte denenmeli, yazı tipi lisansı ve dosya boyutu (hedef < 500 KB) doğrulanmalı. Onay şart (etkinlik dosyalarına satır eklenir).
-- [ ] C25. (2026-11-22) **Etkinlik sonunda "Nasıl geçti?" 3 yüzlü yoklama (puansız):** Kolay / tam kıvamında / zor — tek dokunuş. Öğrenci kodu eklenmeden etkinlik başına sayı olarak toplanır; öğretmen hangi etkinliğin fazla zor/kolay hissedildiğini görür, kazanım temelli zorluk (B7) için veri olur. Portal/Apps Script → onay şart; KVKK metnine yeni veri türü sayılır, önce `gizlilik.html` güncellenmeli.
 - [ ] C26. (2026-11-22) **"Çarpma Hız Kartları" yazdırma paketi (M.4.1.4.x, 11. hafta):** 2–5'lik çarpım tabloları için kesilip katlanan kart ve 1 dakikalık "kaç doğru?" çizelgesi; öğrenci kendi ilerlemesini kâğıtta işaretler (öğrenci verisi dijitale girmez). Çarpma Ustaları etkinliğini tamamlar; `Baski/Matematik/` altında, portal dalına dokunmaz. Kazanım kodları doğrulanmalı.
+
+### C-arşiv (2026-11-27; öğretmen "geri al" derse C'ye döner)
+- [arşiv] C1. (2026-11-11) **Sınıf ortak hedefi (iş birliği):** Portalda "4/D bu hafta 150 etkinlik tamamlasın" gibi tek bir ortak ilerleme çubuğu. Öğrenci adı/sıralaması göstermez, yarış yerine takım duygusu verir; çekingen öğrenciyi de motive eder. Portal dalı → onay şart. _(Arşiv nedeni: Yeni portal özelliği (mola).)_
+- [arşiv] C2. (2026-11-11) **"Bugün şunu öğreniyorum" cümlesi:** Her etkinliğin açılışında kazanımın çocuk diliyle tek cümlesi (ör. "Metne başlık bulmayı öğreniyorum"). Kazanım kodu uydurmadan; cümleler öğretmen onayıyla yazılır. A8 ile birlikte yürür.
+- [arşiv] C3. (2026-11-11) **Yazdırılabilir "Evde 5 Dakika" veli kartı:** Yıllık plandan haftalık otomatik hazırlanan tek sayfalık A5 kart: haftanın konusu, evde yapılacak 1 etkinlik, portal adresi için QR kod. Öğrenci verisi içermez (KVKK metni beklerken de güvenli). B4'ün yazdırılabilir, bekleme gerektirmeyen sürümü.
+- [arşiv] C4. (2026-11-11) **Renk körlüğü dostu doğru/yanlış:** Doğru-yanlış geri bildirimi yalnız yeşil/kırmızı değil, ✓ / ✗ simgesi ve kısa yazıyla da verilsin. Etkinliklerde bu durumun nasıl olduğu taranmadı → önce örnek 5 etkinlikte kontrol edilmeli (doğrulanmalı). _(Arşiv nedeni: Antigravity görevi AG3 olarak açık.)_
+- [arşiv] C5. (2026-11-11) **Sonuç tablosunun haftalık yedeği:** ETKINLIK_SONUCLARI ve ETKINLIK_TAMAMLAMA sayfalarının haftada bir otomatik kopyası (Google tablosunda zaman tetikleyicisi). Yanlışlıkla silme/bozulmada öğrenci verisi kaybolmaz. Apps Script tarafı → onay şart; Claude canlı siteye kod girmez, kurulumu öğretmen adım adım yapar. _(Arşiv nedeni: Apps Script tarafı (mola).)_
+- [arşiv] C10. (2026-11-12) **Dönem sonu "İşlediğimiz Konular" veli sayfası:** Kazanım haritası aracının çıktısından öğrenci verisi içermeyen tek sayfalık özet: dönemde işlenen konular + evde tekrar önerisi. Veli toplantısı/karne günü için; KVKK metni beklerken de güvenli. C3 ile aynı altyapı.
+- [arşiv] C11. (2026-11-12) **20 Kasım Dünya Çocuk Hakları Günü ile İnsan Hakları Y.4.2.4 etkinliği:** Eksik olan Y.4.2.4 etkinliğini (hak kısıtlanınca hissedilenleri ifade etme) bu güne denk getir; sonunda sınıfça yazdırılabilir "Haklarım" panosu. 20 Kasım takvim bilgisidir; MEB 2026-27 çalışma takvimi doğrulanmalı. _(Arşiv nedeni: Tarihi geçti (20 Kasım).)_
+- [arşiv] C12. (2026-11-12) **24 Kasım Öğretmenler Günü "Teşekkür Kartı" (yazdırılabilir):** Öğrencinin doldurup süsleyeceği tek sayfalık A5 kart (3 cümle başlangıcı). Öğrenci verisi yok, portal dalına dokunmaz; 10. hafta içinde yetişir. Yazma kazanımı kodu doğrulanmalı. _(Arşiv nedeni: Tarihi geçti (24 Kasım).)_
+- [arşiv] C13. (2026-11-15) **Sigara/alkol haftası (F.4.2.1.5–6) için "Hayır Diyebilirim" senaryo kartları:** Duygusal olarak hassas konu; puansız, kısa rol canlandırma kartları (arkadaşın teklif etmesi, evde duman, "ne yapabilirim?"). Dil kapsayıcı olmalı: hiçbir çocuğun ailesini işaret etmez, sonuçta öğrenci verisi alınmaz. Yazdırılabilir kart + tahta sunumu olarak Baski/ altında üretilebilir; portal dalına dokunmaz. Kazanım adı yıllık plandan alındı.
+- [arşiv] C14. (2026-11-15) **"Sınıfımın Krokisi" yazdırma paketi (SB.4.3.2):** Kareli A4 çalışma kâğıdı + simge/işaret kutusu (kapı, pencere, sıra) + tahtada örnek kroki. Öğrenci kendi sırasından çizer; ölçek/yön (Konum Kâşifi'nde işlenen yönler) pekişir. Kroki çizme bilgisayarda değil kâğıtta daha doğal olduğu için etkinlik yerine baskı önerilir.
+- [arşiv] C16. (2026-11-15) **Veli WhatsApp grubu için "Bu hafta" hazır metin:** Yıllık plandan her hafta 4–5 satırlık, çocuk diliyle yazılmış kısa mesaj taslağı (konular + evde sorulacak tek soru + portal adresi). Öğretmen kopyalayıp gönderir; öğrenci adı/puanı içermez. C3'teki basılı karttan farkı: ek baskı gerektirmez, her hafta 1 dakikada hazır.
+- [arşiv] C17. (2026-11-15) **Etkinlikte "Soruda hata var" bildirimi:** Öğrenci ya da öğretmen şüpheli soruyu tek dokunuşla işaretlesin; kayıt yalnız etkinlik adı + soru numarası içersin (öğrenci kodu yok). İçerik hatası daha hızlı yakalanır. Portal/Apps Script tarafı → onay şart. _(Arşiv nedeni: Portal özelliği (mola).)_
+- [arşiv] C18. (2026-11-15 akşam) **"Okuma Akıcılığı" 1 dakikalık çizelge (kâğıt):** Öğrenci haftada bir kısa özgün metni 1 dakika okur, öğretmen okunan sözcük sayısını sınıf listesine yazar; dönem boyunca küçük bir ilerleme çizgisi çıkar. Okuma stratejisi kazanımlarını (T.4.3.1, T.4.3.6; kodlar yıllık plan çıktısından alındı, doğrulanmalı) somut izler. Elle tutulur, portala/öğrenci verisi dijitale girmez.
+- [arşiv] C21. (2026-11-15 akşam) **Çevrimdışı önbellek sürüm kontrolü:** Yeni etkinlik eklenince `sw.js` eski önbelleği gösteriyor mu? Telefonda/tahtada öğrencinin eski sürümü görmesi riskini (özellikle düzeltilen soru) azaltmak için önbellek adına tarih/sürüm eklenmesi düşünülebilir. Henüz `sw.js` incelenmedi → önce okunup durum doğrulanmalı. _(Arşiv nedeni: sw.js etkinlikleri saklamıyor (MIMARI 4); önbellek sürümü 27 Kasım'da yenilendi.)_
+- [arşiv] C24. (2026-11-22) **Okuma güçlüğü dostu yazı seçeneği:** Ortak erişim düğmesine (C19) üçüncü seçenek: geniş harf/satır aralığı + açık krem zemin; OFL lisanslı bir okunaklı yazı tipi yerel gömülürse çevrimdışı da çalışır. Tahtada arka sıra ve okuma güçlüğü olan öğrenciler için. Önce 2 etkinlikte denenmeli, yazı tipi lisansı ve dosya boyutu (hedef < 500 KB) doğrulanmalı. Onay şart (etkinlik dosyalarına satır eklenir).
+- [arşiv] C25. (2026-11-22) **Etkinlik sonunda "Nasıl geçti?" 3 yüzlü yoklama (puansız):** Kolay / tam kıvamında / zor — tek dokunuş. Öğrenci kodu eklenmeden etkinlik başına sayı olarak toplanır; öğretmen hangi etkinliğin fazla zor/kolay hissedildiğini görür, kazanım temelli zorluk (B7) için veri olur. Portal/Apps Script → onay şart; KVKK metnine yeni veri türü sayılır, önce `gizlilik.html` güncellenmeli. _(Arşiv nedeni: Yeni veri türü (mola + KVKK 3 soru).)_
 
 ## D. Tamamlananlar
 - [x] 2026-11-22 (A9'dan taşındı; kısmen) 9–10. hafta etkinlikleri ve İnsan Hakları `haklarimizinpesinde.html` (20 Kasım; Y.4.2.4 eşleşmesi doğrulanmalı) katalogda; defter notu eksikleri A5/A18'de.

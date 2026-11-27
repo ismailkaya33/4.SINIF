@@ -13,7 +13,7 @@ Hazırlanma: 2026-11-20. Neden: 7 paralel Opus alt ajanı 5 saatlik Claude kotas
 | ChatGPT Plus | Codex CLI (`codex exec`) | Codex kod modeli; akıl yürütme düşük/orta/yüksek | Uzun HTML/JS yazma, brife göre düzeltme | Plus'ın kendi 5 saatlik pencereleri |
 | ChatGPT Plus | ChatGPT web (Chrome) | Görsel üretimi | Sahne/nesne resmi | Görsel başına birkaç dakika |
 | Gemini Pro | **Antigravity CLI (`agy`)** — 2026-11-21 kuruldu, öğretmenin Google AI Pro girişiyle | Gemini 4 Neon (high) | Türkçe dil/yazım denetimi, uzun okuma, metin/soru üretimi | Abonelik kotası |
-| Gemini (ücretsiz anahtar) | Gemini CLI (`gemini -p`) | yalnız Flash | Çok hafif işler (artık gerek yok) | Ücretsiz katman |
+| ~~Gemini (ücretsiz anahtar)~~ | ~~Gemini CLI~~ | — | **Emekli (öğretmenin kararı 2026-11-27)**; kullanılmaz | — |
 | Gemini Pro | Gemini web (Chrome) | Görsel (yedek) | ChatGPT kotası bitince | — |
 | — | Komutlar (node/python) | Model yok | Test, sayı doğrulama, katalog, baskı | — |
 
@@ -28,7 +28,7 @@ Hazırlanma: 2026-11-20. Neden: 7 paralel Opus alt ajanı 5 saatlik Claude kotas
 | İkinci göz: cevap doğruluğu, ipucu sızıntısı (salt okuma) | **Codex** | orta | Denemede güvenilir çıktı |
 | Türkçe yazım/dil denetimi | **Antigravity (Gemini 4 Neon)** | high | 2026-11-21 denemesi: 3 tuzaklı hatanın 3'ünü buldu, doğruya dokunmadı. Flash bu işe verilmez. Claude son kararı verir |
 | Uzun belge karşılaştırması (yıllık plan, çok dosya) | **Antigravity** | Neon high | Dosya içeriği istemin içine gömülür |
-| Kısa metin taslağı (yönerge, ipucu metni çeşitlemesi) | **Gemini CLI** | Flash | Claude seçer ve düzeltir |
+| Kısa metin taslağı (yönerge, ipucu metni çeşitlemesi) | **Antigravity** ya da Codex | — | Claude seçer ve düzeltir (Gemini CLI emekli) |
 | Defter notu kaynağı (`tools/sketchnote/notlar/*.js`) | Claude ana | Opus | Kısa ama doğruluk kritik; kod çizim kurallarına bağlı |
 | Sahne/nesne görseli (gerçekten gerekiyorsa) | ChatGPT web | — | Basit kutu, cümle, liste için görsel yok |
 | Test (Edge headless), `html_kontrol.py`, `dogrula.mjs`, `katalog-esitle` | Komut | yok | Claude çalıştırır, yalnız sonucu okur |
@@ -43,7 +43,7 @@ Hazırlanma: 2026-11-20. Neden: 7 paralel Opus alt ajanı 5 saatlik Claude kotas
 1. Bir komut yetiyorsa model çalışmaz (test, sayım, JSON doğrulama, dosya listesi).
 2. Birkaç satırlık düzenleme ana oturumda doğrudan yapılır; alt ajan açılmaz (ajan dosyaları baştan okur, daha pahalıdır).
 3. Uzun kod üretimi Codex'e; Claude Opus brif yazar ve sonucu denetler, kodu kendisi baştan yazmaz.
-4. Uzun belge okuma/karşılaştırma Gemini Pro'ya; kısa metin çeşitlemesi Gemini Flash'a.
+4. Uzun belge okuma/karşılaştırma ve kısa metin çeşitlemesi Antigravity'ye (Gemini Pro).
 5. Aynı anda en çok 1–2 Claude alt ajanı. Denetçi her taslağa değil, son sürüme bir kez.
 6. Görsel yalnız sahne/nesne gerektiğinde. İnsan Hakları ve Trafik için defter notu yok.
 7. Ters yönde de kural: hassas ya da canlıya çıkan işte hafif model kullanılmaz (kazanım kararı, sağlık/hak konuları, portal kodu).
@@ -58,8 +58,12 @@ Hazırlanma: 2026-11-20. Neden: 7 paralel Opus alt ajanı 5 saatlik Claude kotas
 
 ## 5. Kota bitince sıra
 
-Etkinlik yazımı: Codex → (Codex bitti) Gemini CLI Pro → Claude Sonnet alt ajanı → Claude Opus (son çare).
-İnceleme: Gemini Pro → Claude Sonnet. Görsel: ChatGPT web → Gemini web.
+Etkinlik yazımı: Codex → (Codex bitti) Antigravity → Claude Sonnet alt ajanı → Claude Opus (son çare).
+İnceleme: Antigravity → Claude Sonnet. Görsel: ChatGPT web → Gemini web.
+
+**Dört rol (öğretmenin kararı 2026-11-27):** Claude = karar, denetim, portal kodu, yayın · Codex = uzun HTML ·
+Antigravity = Türkçe dil denetimi, uzun okuma, küçük düzeltme dalları · ChatGPT web = resim (Gemini web yedek).
+Gemini CLI emekli. Aşağıdaki 5a bölümü kurulum geçmişidir.
 Claude'un kendi kotası bitince öğretmen `Promptlar/` klasöründeki hazır promptlarla çalışmaya devam eder (bugünkü düzen).
 
 ## 5a. Kurulum sonrası gerçek durum (2026-11-20)

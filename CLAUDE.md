@@ -20,6 +20,9 @@ HTML'i, etkinlik sayfası konu dosyaları, çok sayıda soru/metin, toplu düzel
 hesabı) yapar; çizim ChatGPT/Gemini web'de. Claude yalnız kısa brif yazar, çıktıyı araçla denetler (`etkinlik-sayfasi-yap.mjs`,
 `html_kontrol.py`, hesap denetimi), düzeltme turunu yine Codex'e verir ve yayınlar. Çağrı yolu ve sınırlar:
 `docs/yapay-zeka-is-bolumu.md`. Codex çalışmazsa öğretmene söylenir, iş sessizce Claude'a kaymaz.
+**Dört rol (öğretmenin kararı 2026-11-27):** Claude = karar, denetim, portal kodu, yayın · Codex = uzun HTML ·
+Antigravity = Türkçe dil denetimi + küçük düzeltme dalları · ChatGPT web = resim (Gemini web yalnız yedek).
+Gemini CLI (ücretsiz Flash) emekli; kullanılmaz.
 
 **Antigravity masaüstü (2026-11-27):** kuralları `GEMINI.md`, görevleri `docs/antigravity/GOREVLER.md`; yalnız
 `antigravity/` dallarına gönderir. Denetim **yalnız öğretmen sohbette "yayınla" deyince**, tek sefer, `docs/antigravity/DENETIM-TALIMATI.md`'ye
@@ -97,6 +100,14 @@ Neden: 27 Kasım'da portaldaki bir tıklama değişikliği bütün takipli etkin
 - Sır (anahtar, tablo kimliği, öğrenci adı/kodu) depoya yazılmaz; öğrenci verisi herkese açık sayfaya gömülmez.
 - TEST40 öğretmen raporunda bilerek görünmez; Claude canlı Google sitesine kod girmez, girişi öğretmen yapar.
 - Test etmediğin şeyi "çalışıyor" deme. Önizleme: Edge headless + sahte veri.
+- **"Bitti" = canlıda TEST40 ile bir kez denendi** (öğretmenin kararı 2026-11-27). Denenmeyen iş "hazır, denenmedi" diye
+  söylenir ve iyileştirme listesindeki **"TEST40 deneme listesi"**ne yazılır; öğretmen her cuma ~10 dakikada dener.
+- **Yeni özellik molası 11 Aralık 2026'ya kadar** (öğretmenin kararı 2026-11-27): yalnız takip boşluğu, canlı deneme, KVKK
+  kapanışı, temizlik ve haftalık içerik üretimi. Yeni portal özelliği/modülü önerilmez, başlanmaz.
+- **KVKK 3 soru:** kişisel veri işleyen her yeni fikirde önce: gizlilik metninde var mı? veli onay formunda var mı?
+  ne zaman silinecek? Biri "hayır"sa yapılmaz (öğretmenin kararı 2026-11-27).
+- **Öğretmen kararlarının tek yeri** `IYILESTIRME-LISTESI.md` → "Öğretmen kararları". Yeni karar oraya tarihle yazılır;
+  değişen kararın eskisi silinmez, `~~üstü çizilir~~`. CLAUDE.md ve skill'ler yalnız kuralın kendisini taşır.
 - Kazanım kodunu uydurma; emin değilsen "doğrulanmalı" yaz ve sor.
 - **KVKK:** aydınlatma metni `gizlilik.html`, veli onay formu `veli-onay-formu.html` (site kökü; yazdırmalık PDF'ler yerelde
   `KVKK/`, GitHub'a gitmez). Velinin "HAYIR" cevabı özel tablodaki `VELI_ONAYLARI` sayfasına yazılır; portal sosyometri,

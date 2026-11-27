@@ -155,7 +155,12 @@ Kervan `Yerel/taslaklar/`'a taşındı; bekleyenler main'e gönderildi. Açık k
 3. `CLAUDE.md`'deki görsel tarz cümlesini skill ile aynı yap (siyah-beyaz varsayılan).
 4. Klasörü `main`'de, temiz bırak.
 
-### Aşama 1 — Tek kaynak ve sade araç takımı (1. hafta)
+### Aşama 1 — Tek kaynak ve sade araç takımı — 27 Kasım'da yapıldı
+Kararlar: K1, K2 (11 Aralık'a kadar), K3, K4 (Pazartesi 03:00), K5, K7, K8 kabul; K6, K9 ve "tek yazan oturum" **reddedildi**.
+Yapılanlar: kurallar CLAUDE.md'ye; bütün kararlar ve TEST40 deneme listesi `IYILESTIRME-LISTESI.md`'ye; fikirler 26 → 10 açık
+(16'sı C-arşiv'de); iş bölümünde Gemini CLI emekli; envanter `MIMARI.md` 8. bölümde; bulut ajanı haftalık.
+Aşağıdaki özgün adımlar kayıt için duruyor.
+
 1. Bu belgedeki envanteri `MIMARI.md`'ye "Araçlar ve ajanlar" bölümü olarak taşı; bu belge arşive iner.
 2. Kopya belgelerin başına "asıl kaynak / tarih" satırı; `PORTAL-OZETI`'ni yeniden üretmeyi tek komut yap.
 3. Dağınık kararları `IYILESTIRME-LISTESI.md` → "Öğretmen kararları"na topla (K7); hafıza notları yalnız oraya işaret etsin.
