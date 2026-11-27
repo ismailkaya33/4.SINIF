@@ -885,7 +885,7 @@ function takipliOyunAc(id){
  oyunDurum.textContent="Oyun açılıyor. Bitirdiğinde sonucun otomatik gönderilecek.";
  /* Adresin sonuna dakikalık bir ek: tarayıcı eski kopyayı göstermesin, düzeltilen etkinlik hemen gelsin. */
  const adres=takipliOyunlar[id];
- oyunCer.src=adres+(adres.indexOf("?")<0?"?":"&")+"v="+Math.floor(Date.now()/60000);
+ oyunCer.removeAttribute("srcdoc");oyunCer.src=adres+(adres.indexOf("?")<0?"?":"&")+"v="+Math.floor(Date.now()/60000);
 }
 oyunButonu.addEventListener("click",function(){takipliOyunAc("mat-kayipsayilar")});
 oruntulerButonu.addEventListener("click",function(){takipliOyunAc("mat-oruntuler")});
@@ -929,6 +929,18 @@ window.addEventListener("message",function(e){
 document.addEventListener("click",function(e){
  const a=e.target.closest&&e.target.closest("a[href]");if(!a||oturumAlani.hidden)return;
  if(e.ctrlKey||e.metaKey||e.shiftKey||e.button!==0)return;
+ const n=/^https:\/\/ismailkaya33\.github\.io\/4\.SINIF\/[A-Za-z]+\/DefterNotlari\/[^?#]+\.(?:png|jpe?g|webp)(?:\?[^#]*)?$/i.exec(a.href);
+ if(n){
+  e.preventDefault();aktifEtkinlik=null;gonderiliyor=false;
+  oyunPanel.hidden=false;document.body.classList.add("oyunda");
+  oyunButonu.disabled=true;oruntulerButonu.disabled=true;
+  const kart=a.closest(".noteCard"),bas=kart&&kart.querySelector("strong");
+  document.querySelector("#oyunUst strong").textContent=bas?bas.textContent.trim():"📒 Defter Notu";
+  oyunDurum.textContent="Notu defterine yaz. Bitirince «Portala Dön» tuşuna bas, sonra «Defterime yazdım» kutusunu işaretle.";
+  oyunCer.removeAttribute("src");
+  oyunCer.srcdoc='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><body style="margin:0;background:#fff"><img src="'+a.href.replace(/"/g,"&quot;")+'" alt="Defter notu" style="display:block;width:100%;height:auto">';
+  return;
+ }
  const m=/^https:\/\/ismailkaya33\.github\.io\/4\.SINIF\/(Turkce|Matematik|Fen|Sosyal|Insanhaklari|Trafik|Oyunlar)\/[^?#]+\.html(?:[?#].*)?$/.exec(a.href);if(!m)return;
  e.preventDefault();
  aktifEtkinlik=null;gonderiliyor=false;
@@ -936,9 +948,9 @@ document.addEventListener("click",function(e){
  oyunButonu.disabled=true;oruntulerButonu.disabled=true;
  document.querySelector("#oyunUst strong").textContent=(a.textContent||"Etkinlik").trim();
  oyunDurum.textContent="Bitirince üstteki «Portala Dön» tuşuna bas.";
- oyunCer.src=a.href;
+ oyunCer.removeAttribute("srcdoc");oyunCer.src=a.href;
 });
-document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunCer.removeAttribute("src");});
+document.getElementById("oyundanDon").addEventListener("click",function(){oyunPanel.hidden=true;document.body.classList.remove("oyunda");oyunButonu.disabled=false;oruntulerButonu.disabled=false;aktifEtkinlik=null;oyunCer.removeAttribute("srcdoc");oyunCer.removeAttribute("src");});
 
 /* Ders alt sayfasi: etkinlikler / defter notlari / degerlendirmeler. */
 /* KATALOG BASLA: portal-defter-notlari — elle değiştirmeyin, portal/etkinlik-kayitlari.json dosyasını düzenleyin */
@@ -1050,7 +1062,7 @@ function defterKartiOlustur(dir,filename,label,recordId){
  const card=document.createElement("article");card.className="noteCard";
  const title=document.createElement("strong");title.textContent="📒 "+label;
  const link=document.createElement("a");link.href=baseNotes+encodeURI(dir+"/DefterNotlari/"+filename)+(DEFTER_SURUMLERI[dir+"/"+filename]?"?v="+DEFTER_SURUMLERI[dir+"/"+filename]:"");
- link.target="_blank";link.rel="noopener noreferrer";link.textContent="Notu Aç ↗";link.setAttribute("aria-label",label+" defter notunu yeni sekmede aç");
+ link.textContent="Notu Aç";link.setAttribute("aria-label",label+" defter notunu aç");
  const choice=document.createElement("label");choice.className="noteCheckbox";
  const input=document.createElement("input");input.type="checkbox";input.dataset.noteId=id;
  const caption=document.createElement("span");
