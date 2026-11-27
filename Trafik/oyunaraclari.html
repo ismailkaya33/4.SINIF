@@ -364,7 +364,7 @@ function soru() {
   if (idx >= sira.length) {
     if (!tekrarEklendi) {
       tekrarEklendi = true;
-      const zor = sira.slice(0, ilkTur).filter(x => !x.ilkDogru);
+      const zor = sira.slice(0, ilkTur).filter(x => !x.ilkDogru && (!defterPortal || !defterKayit(x.m.id)));
       const ek = [1, 2, 3].flatMap(a => shuffle(zor.filter(x => x.m.asama === a)).slice(0, 2))
         .concat(shuffle(zor)).filter((x, i, d) => d.indexOf(x) === i).slice(0, 6).map(x => ({ m: x.m, tekrar: true }));
       if (ek.length) {
@@ -412,6 +412,7 @@ function ipucuVer() {
 }
 
 function sec_(i) {
+  defterYanit(i);
   if (!durum || durum.kilit || durum.m.tur === 'coklu') return;
   const btns = app.querySelectorAll('.sec button'), btn = btns[i];
   if (!btn || btn.disabled) return;
@@ -433,6 +434,7 @@ function degistir(i) {
   btn.classList.remove('eksik', 'yanlis');
 }
 function kontrolEt() {
+  defterYanit();
   if (!durum || durum.kilit || durum.m.tur !== 'coklu') return;
   const gb = document.getElementById('gb');
   if (!durum.secili.size) { gb.className = 'gb hata'; gb.textContent = 'Önce en az bir seçenek seç.'; return; }
@@ -459,7 +461,7 @@ function bitir(cozumGoruldu, sinif, mesaj) {
   durum.kilit = true;
   const ilkDogru = durum.deneme === 1 && !cozumGoruldu;
   durum.x.ilkDogru = ilkDogru;
-  RaporMotoru.kaydet({ kazanim: OYUN.kazanimlar[0].kod, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
+  defterKaydet({ kazanim: OYUN.kazanimlar[0].kod, madde: durum.m.id, yanilgi: durum.ilkYanilgi,
     ilkDenemeDogru: ilkDogru, deneme: durum.deneme, ipucu: durum.ipucu,
     cozumGoruldu, sureMs: Date.now() - durum.t0, tekrar: durum.x.tekrar });
   const gb = document.getElementById('gb'); gb.className = 'gb ' + sinif; gb.textContent = mesaj;
@@ -491,6 +493,106 @@ document.addEventListener('keydown', e => {
   if (e.key >= '1' && e.key <= String(Math.min(9, n))) { const i = +e.key - 1; if (durum.m.tur === 'coklu') degistir(i); else sec_(i); }
   else if (e.key === 'Enter' && durum.m.tur === 'coklu' && document.activeElement && !document.activeElement.closest('.sec')) { e.preventDefault(); kontrolEt(); }
 });
+
+/* Cevap defteri: etkinlik katmanı. Gömülü RaporMotoru değiştirilmez. */
+const defterPortal = window.parent !== window;
+const defterMaddeler = OYUN.maddeler || OYUN.vakalar.flatMap(v => v.adimlar).filter(m => m.tur !== 'duygu');
+const defterIlk = new Map(), defterBekleyen = new Map();
+let defterBasladi = false, defterBitti = false;
+function defterKayit(id) { return RaporMotoru.kayitli(id) || defterIlk.get(id) || null; }
+function defterGonder(m) { if (defterPortal) window.parent.postMessage(m, '*'); }
+function defterMetin(v) { return typeof v === 'object' && v ? (v.ad || v.t || JSON.stringify(v)) : String(v ?? ''); }
+// Kontrolden önce alınır: çözüm gösteren kod öğrencinin yerleşimini değiştirebilir.
+function defterYanit(i) {
+  if (!durum || durum.kilit) return;
+  const d = durum, m = d.m;
+  let a = '';
+  if (m.tur === 'secim' || d.sec && m.tur !== 'coklu') a = defterMetin(d.sec?.[i]?.[0]);
+  else if (m.tur === 'harita') a = yapiAdi(i);
+  else if (m.tur === 'dokun') a = String(i);
+  else if (m.tur === 'coklu') a = [...d.secili].map(j => defterMetin(d.sec[j][0])).join(' | ');
+  else if (m.tur === 'sirala') a = d.secilen.map(j => d.kartlar[j][0]).join(' → ');
+  else if (m.tur === 'siralama') a = d.yuva.map(j => j === null ? 'boş' : m.dogruSira[j].t).join(' → ');
+  else if (m.tur === 'siniflama') a = d.yer.map((v,j) => defterMetin(m.kartlar[j].t || m.kartlar[j].ad || j+1) + ':' + (v || 'boş')).join(';');
+  else if (m.tur === 'kur') a = d.yer.map((v,j) => v ? (j+1) + ':' + v : '').filter(Boolean).join(';');
+  d.defterYanit = a.slice(0, 80);
+}
+function defterKaydet(r) {
+  if (defterPortal) {
+    if (defterKayit(r.madde) || r.tekrar) return false;
+    const a = { correct: !r.cozumGoruldu, firstTry: !!r.ilkDenemeDogru && !r.cozumGoruldu, answer: durum.defterYanit || '' };
+    defterIlk.set(r.madde, a);
+    // Motorun answer alanı yoktur. Aynı sabit kimlik için zengin cevap önce gider;
+    // motorun mesajı ve tekrarları portalın ilk-kayıt kuralıyla aynı kayda aittir.
+    const mesaj = { type:'4d:answer', schemaVersion:1, activityId:OYUN.id, questionId:r.madde, ...a };
+    defterBekleyen.set(r.madde, { mesaj, deneme:1 });
+    defterGonder(mesaj);
+  }
+  const sonuc = RaporMotoru.kaydet(r);
+  defterCiz();
+  return sonuc;
+}
+function defterCiz() {
+  let el = document.getElementById('cevapDefteri');
+  if (!el) {
+    el = document.createElement('section'); el.id = 'cevapDefteri'; el.className = 'kart';
+    el.setAttribute('aria-label', 'Cevap defterim'); app.insertAdjacentElement('afterend', el);
+  }
+  const kayitlar = defterMaddeler.filter(m => defterKayit(m.id));
+  el.hidden = !kayitlar.length && (!defterBasladi || defterBitti);
+  el.innerHTML = (kayitlar.length ? '<h2>🔒 Cevap defterim · ' + kayitlar.length + ' / ' + defterMaddeler.length + ' tamamlandı</h2><ul>' + kayitlar.map(m => {
+    const a = defterKayit(m.id);
+    return '<li data-kilitli="true" data-question-id="' + m.id + '"><b>' + esc(m.soru) + '</b><br>' + (a.correct ? '✅ Doğru' : '❌ Yanlış') + ' · Cevabın: ' + esc(a.answer || 'Cevap metni önceki kayıtta bulunmuyor') + ' · 🔒 Tamamlandı</li>';
+  }).join('') + '</ul>' : '') + (defterBasladi && !defterBitti ? '<button id="defterBitir" class="buyuk dolu">Bitir / karnemi gör</button>' : '');
+  const b = document.getElementById('defterBitir'); if (b) b.onclick = () => { durum = null; bitisEkrani(); };
+}
+const defterAsilSoru = soru;
+soru = function() {
+  // Kayıtlı sorular tekrar listelerine de giremez; soru sayısı ve sıra kimliği değişmez.
+  while (defterPortal && idx < sira.length && defterKayit(sira[idx].m.id)) {
+    const x = sira[idx], a = defterKayit(x.m.id);
+    x.bitti = true; x.ilkDogru = a.firstTry; x.sonuc = a.firstTry ? 'yildiz' : a.correct ? 'yarim' : 'ogrendi';
+    idx++;
+  }
+  defterAsilSoru(); defterCiz();
+};
+const defterAsilBaslangic = baslangic;
+baslangic = function() {
+  defterBasladi = false; defterBitti = false; durum = null;
+  defterAsilBaslangic();
+  const b = document.getElementById('basla'), basla = b.onclick;
+  b.onclick = () => { defterBasladi = true; defterBitti = false; basla(); defterCiz(); };
+  defterCiz();
+};
+const defterAsilBitis = bitisEkrani;
+bitisEkrani = function() { defterBitti = true; defterAsilBitis(); defterCiz(); };
+RaporMotoru.onKayitli(() => {
+  if (!defterPortal) return;
+  if (defterBasladi && !defterBitti && idx < sira.length && RaporMotoru.kayitli(sira[idx].m.id)) {
+    if (durum) durum.kilit = true;
+    durum = null; soru();
+  }
+  defterCiz();
+});
+window.addEventListener('message', ev => {
+  const d = ev.data;
+  if (!defterPortal || ev.source !== window.parent || !d || d.activityId !== OYUN.id) return;
+  if (d.type === '4d:answer-ack') {
+    defterBekleyen.delete(d.questionId);
+    if (d.saved && defterMaddeler.some(m => m.id === d.questionId)) {
+      defterIlk.set(d.questionId, { correct:!!d.saved.correct, firstTry:!!d.saved.firstTry, answer:String(d.saved.answer || '') });
+    }
+    defterCiz();
+  } else if (d.type === '4d:saved-answers' && Array.isArray(d.answers)) {
+    d.answers.forEach(a => defterBekleyen.delete(a.questionId));
+  }
+});
+if (defterPortal) setInterval(() => {
+  defterBekleyen.forEach((x,id) => { if (x.deneme >= 10) defterBekleyen.delete(id); else { x.deneme++; defterGonder(x.mesaj); } });
+}, 5000);
+// Açılışta hazır: portalın cevabı Başla düğmesinden önce de gelebilir.
+RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+
 baslangic();
 </script>
 </body>

@@ -661,7 +661,7 @@ function yeniSinav() {
   const sira = OYUN.maddeler.slice();   /* soru sırası sabit: kolaydan zora */
   const sec = {};
   sira.forEach(m => { sec[m.id] = shuffle([[m.dogru, '']].concat(m.yanlislar)); });
-  S = { sira, sec, cevap: {}, sure: {}, i: 0, t: Date.now() };
+  S = { sira, sec, cevap: {}, canli: {}, sure: {}, i: 0, t: Date.now() };
 }
 function kaydetDevam() {
   if (!S) return;
@@ -673,7 +673,7 @@ function devamYukle() {
     if (!v || !v.sec) return false;
     const ok = OYUN.maddeler.every(m => Array.isArray(v.sec[m.id]) && v.sec[m.id].length === 4);
     if (!ok) return false;
-    S = { sira: OYUN.maddeler.slice(), sec: v.sec, cevap: v.cevap || {}, sure: v.sure || {}, i: Math.min(+v.i || 0, OYUN.maddeler.length - 1), t: Date.now() };
+    S = { sira: OYUN.maddeler.slice(), sec: v.sec, cevap: v.cevap || {}, canli: {}, sure: v.sure || {}, i: Math.min(+v.i || 0, OYUN.maddeler.length - 1), t: Date.now() };
     return true;
   } catch (e) { return false; }
 }
@@ -685,11 +685,14 @@ function sureTopla() {   /* şu anki sorada geçen süreyi biriktir */
 function baslangic() {
   const var_ = (() => { try { const v = JSON.parse(depo.oku(DEVAM) || 'null'); return v && Object.keys(v.cevap || {}).length; } catch (e) { return 0; } })();
   app.innerHTML = '<div class="kart"><h1>' + esc(OYUN.ad) + '</h1>' +
-    '<p>' + OYUN.maddeler.length + ' soru var. İstediğin soruya dönebilir, cevabını değiştirebilirsin. Acele etme; süre sınırı yok.</p>' +
+    '<p>' + OYUN.maddeler.length + ' soru var. İstediğin soruya dönebilirsin. Portalda ilk cevabın kaydedilir ve kilitlenir. Acele etme; süre sınırı yok.</p>' +
     '<p>Sonucunu öğretmenin görecek.</p>' +
     (var_ ? '<div class="uyari">Yarım kalan bir sınavın var (' + var_ + ' soru cevaplı).</div><p><button class="dolu" id="devam">Kaldığım yerden devam et</button> <button class="ikincil" id="yeni">Baştan başla</button></p>'
           : '<p><button class="dolu" id="basla">Başla</button></p>') + '</div>';
-  const git = () => { RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar }); soruCiz(); };
+  const git = () => { RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar }); CevapDefteri.baslat();
+    const ilkBos = S.sira.findIndex(m => !CevapDefteri.kayitli(m.id));
+    if (ilkBos >= 0) S.i = ilkBos;
+    soruCiz(); };
   if (var_) {
     document.getElementById('devam').onclick = () => { if (devamYukle()) git(); else { yeniSinav(); git(); } };
     document.getElementById('yeni').onclick = () => { depo.sil(DEVAM); yeniSinav(); git(); };
@@ -698,11 +701,13 @@ function baslangic() {
 
 function gezginHtml() {
   return '<div class="gezgin" role="group" aria-label="Soru listesi">' + S.sira.map((m, k) =>
-    '<button data-k="' + k + '" class="' + (S.cevap[m.id] !== undefined ? 'cevapli ' : '') + (k === S.i ? 'simdi' : '') + '" aria-label="Soru ' + (k + 1) + (S.cevap[m.id] !== undefined ? ', cevaplandı' : ', boş') + '"' + (k === S.i ? ' aria-current="true"' : '') + '>' + (k + 1) + '</button>').join('') + '</div>';
+    '<button data-k="' + k + '"' + (CevapDefteri.kayitli(m.id) ? ' data-cd-nav-locked aria-description="Tamamlandı ve kilitli"' : '') + ' class="' + (S.cevap[m.id] !== undefined ? 'cevapli ' : '') + (k === S.i ? 'simdi' : '') + '" aria-label="Soru ' + (k + 1) + (S.cevap[m.id] !== undefined ? ', cevaplandı' : ', boş') + '"' + (k === S.i ? ' aria-current="true"' : '') + '>' + (k + 1) + '</button>').join('') + '</div>';
 }
 
 function soruCiz() {
+  S.sira.forEach(m => { const a = CevapDefteri.kayitli(m.id); if (a) S.cevap[m.id] = a.answer; });
   const m = S.sira[S.i], sec = S.sec[m.id], son = S.i === S.sira.length - 1;
+  const kayit = CevapDefteri.kayitli(m.id);
   S.t = Date.now();
   app.innerHTML = '<div class="ust"><span>Soru ' + (S.i + 1) + ' / ' + S.sira.length + '</span><span>' + Object.keys(S.cevap).length + ' soru cevaplı</span></div>' +
     '<div class="kart">' + (m.gorsel && GORSEL[m.gorsel] ? '<div class="gorsel">' + GORSEL[m.gorsel] + '</div>' : '') + '<div class="soru" id="soru">' + esc(m.soru) + '</div>' +
@@ -715,10 +720,18 @@ function soruCiz() {
   const o = document.getElementById('onceki'); if (o) o.onclick = () => git(S.i - 1);
   const s = document.getElementById('sonraki'); if (s) s.onclick = () => git(S.i + 1);
   const bt = document.getElementById('bitir'); if (bt) bt.onclick = bitisOnayi;
+  if (kayit) {
+    app.querySelectorAll('.sec button').forEach(b => { b.disabled = true; });
+    const p = document.createElement('p'); p.textContent = (kayit.correct ? '✔ Doğru' : '✖ Yanlış') + ' · Tamamlandı 🔒 · Cevabın: ' + (kayit.answer || 'Cevap metni önceki kayıtta bulunmuyor.');
+    app.querySelector('.sec').after(p);
+  }
+  CevapDefteri.ciz();
 }
 function git(k) { if (k < 0 || k >= S.sira.length) return; sureTopla(); S.i = k; kaydetDevam(); soruCiz(); }
 function isaretle(k) {
-  const m = S.sira[S.i]; S.cevap[m.id] = S.sec[m.id][k][0]; kaydetDevam();
+  const m = S.sira[S.i]; if (CevapDefteri.kayitli(m.id)) return; if (!Object.hasOwn(S.canli, m.id)) S.canli[m.id] = S.sec[m.id][k][0];
+  S.cevap[m.id] = S.sec[m.id][k][0]; kaydetDevam();
+  if (CevapDefteri.portal) { sureTopla(); soruKaydet(m); soruCiz(); return; }
   app.querySelectorAll('.sec button').forEach((b, j) => { const a = j === k; b.classList.toggle('secili', a); b.setAttribute('aria-checked', a); });
   const g = app.querySelectorAll('.gezgin button')[S.i]; if (g) { g.classList.add('cevapli'); }
   const ust = app.querySelector('.ust span:last-child'); if (ust) ust.textContent = Object.keys(S.cevap).length + ' soru cevaplı';
@@ -736,15 +749,18 @@ function bitisOnayi() {
   document.getElementById('evet').onclick = bitir;
 }
 
+function soruKaydet(m) {
+  const c = window.parent !== window && Object.hasOwn(S.canli, m.id) ? S.canli[m.id] : S.cevap[m.id];
+  if (c === undefined || CevapDefteri.kayitli(m.id) || (window.parent !== window && !S.canli[m.id])) return;
+  const dogru = c === m.dogru;
+  const yan = dogru ? '' : ((m.yanlislar.find(y => y[0] === c) || [0, ''])[1] || 'yanlis');
+  CevapDefteri.kaydet({ kazanim: m.kaz, madde: m.id, yanilgi: yan, ilkDenemeDogru: dogru,
+    deneme: 1, ipucu: 0, cozumGoruldu: !dogru, sureMs: S.sure[m.id] || 0 }, c);
+}
+
 function bitir() {
-  /* Her soru sonuç olarak gönderilir. Doğru: ilk denemede doğru. Yanlış/boş: ilkDenemeDogru=false, deneme=2, cozumGoruldu=true
-     (rapor motorunda "çözemedi" anlamında kullanılır; öğrenciye hiçbir çözüm gösterilmez). */
-  S.sira.forEach(m => {
-    const c = S.cevap[m.id], dogru = c === m.dogru;
-    const yan = c === undefined ? 'bos' : (dogru ? '' : ((m.yanlislar.find(y => y[0] === c) || [0, ''])[1] || 'yanlis'));
-    RaporMotoru.kaydet({ kazanim: m.kaz, madde: m.id, yanilgi: yan, ilkDenemeDogru: dogru, deneme: dogru ? 1 : 2, ipucu: 0,
-      cozumGoruldu: !dogru, sureMs: S.sure[m.id] || 0 });
-  });
+  CevapDefteri.bitis();
+  S.sira.forEach(soruKaydet);
   RaporMotoru.bitir();
   depo.sil(DEVAM);
   const portalda = window.parent !== window;
@@ -761,6 +777,154 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'ArrowRight') git(S.i + 1);
   else if (e.key === 'ArrowLeft') git(S.i - 1);
 });
+const CD_SINAV = true;
+/* Etkinlik katmanı: gömülü RaporMotoru v3 değiştirilmez. */
+const CevapDefteri = (() => {
+  let portal = false, basladi = false, gorunuyor = false;
+  const yerel = new Map(), kayitlar = new Map(), bekleyen = new Map(), raporBekleyen = new Map();
+  const buTur = new Set();
+  const gecerli = new Set(OYUN.maddeler.map(m => m.id));
+  function kayitli(id) {
+    return RaporMotoru.kayitli(id) || kayitlar.get(id) || (portal ? yerel.get(id) : null) || null;
+  }
+  function ciz() {
+    let kutu = document.getElementById('cevapDefteri');
+    if (!kutu) {
+      kutu = document.createElement('section'); kutu.id = 'cevapDefteri';
+      kutu.setAttribute('aria-label', 'Cevap defterim');
+      kutu.style.cssText = 'max-width:900px;margin:16px auto;padding:12px;font:inherit';
+      app.insertAdjacentElement('afterend', kutu);
+    }
+    kutu.hidden = !portal && !(basladi && gorunuyor);
+    const kayit = OYUN.maddeler.filter(m => kayitli(m.id));
+    kutu.innerHTML = portal ? '<h2>Cevap defterim</h2><p>' + kayit.length + ' / ' + OYUN.maddeler.length + ' soru tamamlandı ve kilitli.</p><ol>' +
+      kayit.map(m => {
+        const a = kayitli(m.id);
+        return '<li data-cd-locked data-question-id="' + esc(m.id) + '"><b>' + (a.correct ? '✔ Doğru' : '✖ Yanlış') +
+          ' · Tamamlandı 🔒</b> ' + esc(m.soru) + '<br>Cevabın: ' + esc(cevapMetni(m, a.answer) || 'Cevap metni önceki kayıtta bulunmuyor.') + '</li>';
+      }).join('') + '</ol>' : '';
+    if (basladi && gorunuyor) {
+      const b = document.createElement('button'); b.id = 'cdBitir'; b.textContent = 'Bitir / karnemi gör';
+      b.onclick = () => { CD_SINAV ? bitisOnayi() : bitisEkrani(); ciz(); };
+      kutu.appendChild(b);
+    }
+  }
+  function baslat() {
+    buTur.clear();
+    if (window.parent === window) yerel.clear();
+    if (CD_SINAV && portal && S) Object.keys(S.cevap).forEach(id => { if (!S.canli[id] && !kayitli(id)) delete S.cevap[id]; });
+    basladi = true; gorunuyor = true; ciz();
+  }
+  function cevapMetni(m, answer) {
+    if (!answer) return '';
+    const ids = answer.slice(2).split(',');
+    if (m.tur === 'sirala' && answer.startsWith('s:')) return ids.map(id => (m.kartlar.find(k => k.id === id) || {}).metin || id).join(' → ');
+    if (m.tur === 'coklu' && answer.startsWith('c:')) return ids.map(i => (m.secenekler[+i] || [i])[0]).join('; ');
+    if (m.tur === 'eslestir' && answer.startsWith('o:')) return ids.map((id, i) => (i + 1) + ': ' + (ORGAN[id] ? ORGAN[id].ad : id)).join('; ');
+    if (m.tur === 'kova' && answer.startsWith('k:')) return ids.map((id, i) => { const k = kovalarOf(m).find(k => k.id === id); return (i + 1) + ': ' + (k ? k.ad : id); }).join('; ');
+    return answer;
+  }
+  function atla() {
+    sira.forEach((x, i) => {
+      const a = kayitli((x.m || x).id); if (!a || x.tekrar) return;
+      if (buTur.has((x.m || x).id)) return;
+      if (x.m) { x.kayitli = true; x.ilkDogru = a.firstTry; x.sonuc = a.correct ? 'kayitliDogru' : 'kayitliYanlis'; }
+      else sonuclar[i] = a.correct ? 'kayitliDogru' : 'kayitliYanlis';
+    });
+    while (idx < sira.length) {
+      const x = sira[idx], m = x.m || x, a = kayitli(m.id);
+      if (!a || x.tekrar) break;
+      if (!buTur.has(m.id)) {
+        if (x.m) { x.kayitli = true; x.ilkDogru = a.firstTry; x.sonuc = a.correct ? 'kayitliDogru' : 'kayitliYanlis'; }
+        else sonuclar[idx] = a.correct ? 'kayitliDogru' : 'kayitliYanlis';
+      }
+      idx++;
+    }
+    ciz();
+  }
+  function yenile() {
+    ciz();
+    if (!basladi || !gorunuyor) return;
+    if (CD_SINAV) {
+      if (S && document.querySelector('.sec')) {
+        Object.keys(S.cevap).forEach(id => { if (!S.canli[id] && !kayitli(id)) delete S.cevap[id]; });
+        S.sira.filter(m => Object.hasOwn(S.canli, m.id)).forEach(m => {
+          if (!kayitli(m.id)) S.cevap[m.id] = S.canli[m.id];
+          soruKaydet(m);
+        }); soruCiz();
+      }
+    } else {
+      const x = sira[idx], m = x && (x.m || x);
+      if (m && kayitli(m.id) && !x.tekrar) { durum = null; soru(); }
+      else if (typeof yolCiz === 'function') {
+        sira.forEach((x, i) => { const id = (x.m || x).id, a = kayitli(id); if (a && !buTur.has(id)) sonuclar[i] = a.correct ? 'kayitliDogru' : 'kayitliYanlis'; });
+        const yol = app.querySelector('.yol'); if (yol) yol.outerHTML = yolCiz();
+      }
+    }
+  }
+  function gonder(a) { if (window.parent !== window) window.parent.postMessage(a, '*'); }
+  // v3 answer alanını taşımıyor. Cevaplı zarf anında gönderilir; onaydan
+  // sonra motorun rapor kaydı eklenir. Motor kayitli(id)'yi gördüğünden
+  // ikinci bir 4d:answer üretmez. Onay gecikirse karne açılırken rapor tamamlanır.
+  function raporaYaz(id) {
+    const r = raporBekleyen.get(id); if (!r) return;
+    raporBekleyen.delete(id); RaporMotoru.kaydet(r);
+  }
+  function kaydet(r, answer) {
+    const id = String(r.madde);
+    if (r.tekrar || yerel.has(id) || kayitli(id)) {
+      if (r.tekrar) RaporMotoru.kaydet(r);
+      return false;
+    }
+    const a = { correct: !r.cozumGoruldu, firstTry: !!r.ilkDenemeDogru && !r.cozumGoruldu, answer: String(answer || '').slice(0, 80) };
+    yerel.set(id, a); buTur.add(id);
+    const mesaj = { type: '4d:answer', schemaVersion: 1, activityId: OYUN.id, questionId: id, ...a };
+    if (window.parent !== window) {
+      raporBekleyen.set(id, r); bekleyen.set(id, { mesaj, sayi: 1 }); gonder(mesaj);
+    } else RaporMotoru.kaydet(r);
+    ciz(); return true;
+  }
+  const zamanlayici = window.parent !== window ? setInterval(() => {
+    bekleyen.forEach((b, id) => { if (b.sayi >= 10) bekleyen.delete(id); else { b.sayi++; gonder(b.mesaj); } });
+  }, 5000) : null;
+  window.addEventListener('pagehide', () => clearInterval(zamanlayici));
+  RaporMotoru.onKayitli(answers => {
+    portal = true;
+    Object.entries(answers).forEach(([id, a]) => {
+      if (!gecerli.has(id)) return;
+      const r = raporBekleyen.get(id);
+      if (r) buTur.delete(id);
+      // Geç gelen eski cevap, henüz onaylanmamış yerel sonucun önüne geçer.
+      if (r && typeof puan !== 'undefined') {
+        puan = Math.max(0, puan - (r.ilkDenemeDogru ? 10 : r.cozumGoruldu ? 0 : 5));
+        const p = document.getElementById('puanSayi'); if (p) p.textContent = puan;
+      }
+      raporBekleyen.delete(id); kayitlar.set(id, a); bekleyen.delete(id);
+    });
+    yenile();
+  });
+  window.addEventListener('message', ev => {
+    const d = ev.data;
+    if (ev.source !== window.parent || window.parent === window || !d || d.activityId !== OYUN.id) return;
+    if (d.type === '4d:answer-ack' && gecerli.has(d.questionId)) {
+      bekleyen.delete(d.questionId);
+      if (d.saved && typeof d.saved === 'object') {
+        const a = { correct: !!d.saved.correct, firstTry: !!d.saved.firstTry, answer: String(d.saved.answer || '') };
+        const ilk = yerel.get(d.questionId);
+        kayitlar.set(d.questionId, a);
+        if (ilk && ilk.correct === a.correct && ilk.firstTry === a.firstTry && ilk.answer === a.answer) raporaYaz(d.questionId);
+        else raporBekleyen.delete(d.questionId);
+        if (portal && ilk && (ilk.correct !== a.correct || ilk.firstTry !== a.firstTry || ilk.answer !== a.answer)) yenile();
+        else ciz();
+      }
+    }
+  });
+  function bitis() { [...raporBekleyen.keys()].forEach(raporaYaz); gorunuyor = false; ciz(); }
+  return { kayitli, kaydet, atla, baslat, ciz, bitis, get portal() { return portal; } };
+})();
+
+RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
+
 baslangic();
 </script>
 </body>

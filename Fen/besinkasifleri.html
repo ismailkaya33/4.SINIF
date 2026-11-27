@@ -96,13 +96,102 @@ function makeDraggable(chip,handleDrop){
     addEventListener('pointermove',onMove);addEventListener('pointerup',onUp);addEventListener('pointercancel',onUp)})}
 function makeDropZone(zone,handleDrop){zone.classList.add('zone');zone.addEventListener('click',()=>{if(selectedChip){const chip=selectedChip;selectedChip=null;chip.classList.remove('selected');handleDrop(chip,zone)}})}
 
+
+/* Cevap defteri: kimlikler kaynak dizilerde, karıştırmadan önce atanır.
+   İçerik kartları/laboratuvar gözlemleri soru değildir; 70 ölçme maddesi vardır.
+   Final, allQuestions havuzunun aynı kimliklerini kullanır (ek 18 madde değildir). */
+const AnswerBook=(()=>{
+  const activityId='fen-besinkasifleri', records=new Map(), pending=new Map(), catalog=new Map(), provisional=new Map();
+  const embedded=window.parent!==window;
+  let connected=false, refresh=()=>{}, timer=null;
+  const post=data=>{if(embedded)window.parent.postMessage(data,'*')};
+  const register=(list,prefix,label)=>list.forEach((item,index)=>{
+    item.qid=prefix+'-'+(index+1);
+    catalog.set(item.qid,{title:item.question||item.label,label,
+      answer:value=>item.options&&/^\d+$/.test(value)?item.options[Number(value)]:value});
+  });
+  register(CONTENT.preQuestions,'pre','Isınma');
+  register(CONTENT.allQuestions,'q','Kaşif / final');
+  register(CONTENT.labelQuestions,'label','Etiket avcısı');
+  register(CONTENT.trueFalseQuestions,'tf','Doğru / yanlış');
+  register(CONTENT.pairItems,'pair','İçerik eşleştirme');
+  register(CONTENT.storageItems,'store','Saklama dolabı');
+  register(CONTENT.groupItems,'group','Besin grupları');
+  catalog.set('plate-1',{title:'Dengeli tabağını hazırla',label:'Dengeli tabak',answer:value=>{
+    try{return JSON.parse(value).map(i=>CONTENT.plateFoods[i].label).join(', ')}catch(e){return value}
+  }});
+  const get=id=>connected?records.get(id):undefined;
+  const render=()=>{
+    let box=document.getElementById('answer-book');
+    if(!box){box=document.createElement('details');box.id='answer-book';box.className='card';box.open=true;
+      document.querySelector('#view').before(box)}
+    box.hidden=!connected;
+    box.replaceChildren();
+    const summary=document.createElement('summary');
+    summary.textContent='🔒 Tamamlanan sorular: '+records.size+' / '+catalog.size;
+    box.append(summary);
+    for(const [qid,saved] of records){
+      const item=catalog.get(qid),row=document.createElement('p');
+      row.dataset.savedQuestion=qid;row.dataset.correct=String(saved.correct);
+      row.textContent=(saved.correct?'✔ ':'✘ ')+item.label+' · '+item.title+' — '+
+        (item.answer(String(saved.answer??''))||'Cevap kaydedildi')+' · 🔒';
+      box.append(row);
+    }
+  };
+  const sendPending=()=>{
+    for(const [qid,entry] of pending){
+      if(entry.attempts>=10){pending.delete(qid);continue}
+      post(entry.message);entry.attempts++;
+    }
+    if(!pending.size&&timer){clearInterval(timer);timer=null}
+  };
+  const record=(qid,correct,firstTry,answer)=>{
+    if(!embedded||records.has(qid)||provisional.has(qid))return;
+    const saved={questionId:qid,correct:!!correct,firstTry:!!correct&&!!firstTry,
+      answer:String(answer).slice(0,80)};
+    // Geç gelen portal yanıtına kadar serbest oyun sürer; ilk biten cevap korunur.
+    if(!connected){provisional.set(qid,saved);return}
+    records.set(qid,saved);
+    const message={type:'4d:answer',schemaVersion:1,activityId,...saved};
+    pending.set(qid,{message,attempts:1});post(message);
+    if(!timer)timer=setInterval(sendPending,5000);
+    render();
+  };
+  const valid=saved=>saved&&catalog.has(saved.questionId)&&typeof saved.correct==='boolean';
+  window.addEventListener('message',ev=>{
+    const data=ev.data;
+    if(!embedded||ev.source!==window.parent||!data||data.activityId!==activityId)return;
+    if(data.type==='4d:saved-answers'&&Array.isArray(data.answers)){
+      connected=true;
+      data.answers.filter(valid).forEach(saved=>{records.set(saved.questionId,saved);pending.delete(saved.questionId)});
+      const completed=[...provisional.values()];provisional.clear();
+      completed.forEach(saved=>record(saved.questionId,saved.correct,saved.firstTry,saved.answer));
+      selectedChip=null;render();refresh();
+    }else if(data.type==='4d:answer-ack'&&pending.has(data.questionId)){
+      pending.delete(data.questionId);
+      if(valid(data.saved)&&data.saved.questionId===data.questionId){
+        const previous=records.get(data.questionId);
+        records.set(data.questionId,data.saved);render();
+        if(previous.correct!==data.saved.correct||String(previous.answer)!==String(data.saved.answer))refresh();
+      }
+    }
+  });
+  return {get,record,render,active:()=>connected, watch:fn=>{refresh=fn},
+    ready:()=>post({type:'4d:ready',schemaVersion:1,activityId})};
+})();
+
 /* ---------- Çoktan seçmeli soru motoru (kimlik tabanlı kontrol, karışık şıklar) ---------- */
-function runQuiz(container,questions,onFinish){
+function runQuiz(container,questions,onFinish,assessment=false){
   let position=0;const results=[];
   const showQuestion=()=>{
+    // Kayıtlı sorular yeniden puanlanmaz; cevapları defterde görünür.
+    while(position<questions.length&&AnswerBook.get(questions[position].qid))position++;
     container.innerHTML='';
-    if(position>=questions.length){onFinish(results);return}
+    if(position>=questions.length){
+      if(!results.length){container.append(createNode('p','feedback','🔒 Bu bölümdeki sorular tamamlandı. Cevaplarını cevap defterinde görebilirsin.'));return}
+      onFinish(results);return}
     const question=questions[position],card=createNode('div','card'),feedback=createNode('p','feedback');let attempts=0;feedback.setAttribute('role','status');
+    card.dataset.questionId=question.qid;
     progressBar(container,position,questions.length);
     card.append(createNode('p','tag','Soru '+(position+1)+'/'+questions.length),createNode('h2','',question.question));
     if(question.rows){const table=createNode('table');question.rows.forEach(([heading,value])=>{const row=createNode('tr');row.append(createNode('th','',heading),createNode('td','',value));table.append(row)});card.append(table)}
@@ -110,40 +199,80 @@ function runQuiz(container,questions,onFinish){
     nextButton.onclick=()=>{position++;showQuestion()};
     const optionBox=createNode('div','options'),buttons=shuffle(question.options.map((text,originalIndex)=>({text,originalIndex}))).map((option,shownIndex)=>{
       const button=createNode('button','btn',String.fromCharCode(65+shownIndex)+') '+option.text);
-      button.onclick=()=>{attempts++;
-        if(option.originalIndex===question.answerIndex){buttons.forEach(other=>other.disabled=true);button.classList.add('good');button.textContent='✔ '+option.text;results.push({outcome:question.outcome,question:question.question,firstTry:attempts===1,wrongAttempts:attempts-1});feedback.textContent=(attempts===1?'Harika, ilk denemede bildin! ★ ':'Doğru! ')+question.explanation;celebrate(button);nextButton.hidden=false;nextButton.focus()}
-        else{button.classList.add('bad');button.disabled=true;feedback.textContent='Henüz değil. Soruyu yeniden oku ve başka bir şık dene.'}};
+      button.dataset.option=option.originalIndex;
+      button.onclick=()=>{if(AnswerBook.get(question.qid)){showQuestion();return}attempts++;
+        if(option.originalIndex===question.answerIndex){buttons.forEach(other=>other.disabled=true);button.classList.add('good');button.textContent='✔ '+option.text;results.push({outcome:question.outcome,question:question.question,firstTry:attempts===1,wrongAttempts:attempts-1});AnswerBook.record(question.qid,true,attempts===1,option.originalIndex);feedback.textContent=(attempts===1?'Harika, ilk denemede bildin! ★ ':'Doğru! ')+question.explanation;celebrate(button);nextButton.hidden=false;nextButton.focus()}
+        else{button.classList.add('bad');button.disabled=true;feedback.textContent='Henüz değil. Soruyu yeniden oku ve başka bir şık dene.';
+          if(assessment)AnswerBook.record(question.qid,false,false,option.originalIndex);
+          if(assessment&&AnswerBook.active()){
+            buttons.forEach(other=>other.disabled=true);
+            results.push({outcome:question.outcome,question:question.question,firstTry:false,wrongAttempts:1});
+            nextButton.hidden=false;nextButton.focus();
+          }}
+        if(AnswerBook.get(question.qid))card.dataset.lockedQuestion=question.qid;};
       optionBox.append(button);return button});
     card.append(optionBox,feedback,nextButton);container.append(card)};
-  showQuestion()}
-const starsFromResults=results=>{const ratio=results.filter(result=>result.firstTry).length/results.length;return ratio>=.8?3:ratio>=.5?2:1};
+  AnswerBook.watch(()=>{if(position<questions.length&&AnswerBook.get(questions[position].qid))showQuestion()});showQuestion()}
+const starsFromResults=results=>{if(!results.length)return 0;const ratio=results.filter(result=>result.firstTry).length/results.length;return ratio>=.8?3:ratio>=.5?2:1};
 
 /* ---------- Sürükle-bırak sınıflandırma ---------- */
 function runSorter(container,{items,bins,finishNote},onFinish){
   const pool=createNode('div','chips'),zones=createNode('div','zones'),feedback=createNode('p','feedback');let remaining=items.length,firstTryCount=0;const wrongCounts={};feedback.setAttribute('role','status');
   const dropOnZone=(chip,zone)=>{const item=items[chip.dataset.index],binIndex=Number(zone.dataset.bin);
-    if(item.bin===binIndex){chip.dataset.locked='1';chip.classList.add('placed');zone.append(chip);if(!wrongCounts[item.label])firstTryCount++;feedback.textContent='Doğru! '+(item.tip||'“'+item.label+'” bu kutuya uygun.');celebrate(chip);progressBar(container,items.length-remaining+1,items.length);
+    if(chip.dataset.locked||AnswerBook.get(item.qid))return;
+    if(item.bin===binIndex){AnswerBook.record(item.qid,true,!wrongCounts[item.label],bins[binIndex]);chip.dataset.locked='1';chip.dataset.lockedQuestion=AnswerBook.active()?item.qid:'';chip.classList.add('placed');zone.append(chip);if(!wrongCounts[item.label])firstTryCount++;feedback.textContent='Doğru! '+(item.tip||'“'+item.label+'” bu kutuya uygun.');celebrate(chip);progressBar(container,items.length-remaining+1,items.length);
       if(!--remaining){feedback.textContent='Bitti! İlk denemede '+firstTryCount+'/'+items.length+' doğru. '+(finishNote||'');onFinish(firstTryCount/items.length>=.8?3:firstTryCount/items.length>=.5?2:1)}}
-    else{wrongCounts[item.label]=(wrongCounts[item.label]||0)+1;zone.classList.add('shake');setTimeout(()=>zone.classList.remove('shake'),450);feedback.textContent=wrongCounts[item.label]>1?'Bu kutu olmadı. Doğru kutu: “'+bins[item.bin]+'”. '+(item.tip||''):'Bu kutu uygun değil. Düşün ve başka bir kutu dene.'}};
-  shuffle(items.map((item,index)=>({item,index}))).forEach(({item,index})=>{const chip=createNode('button','chip');chip.dataset.index=index;chip.append(item.icon?labelWithIcon(item.icon,item.label,32):item.label);makeDraggable(chip,dropOnZone);pool.append(chip)});
+    else{wrongCounts[item.label]=(wrongCounts[item.label]||0)+1;zone.classList.add('shake');setTimeout(()=>zone.classList.remove('shake'),450);feedback.textContent=wrongCounts[item.label]>1?'Bu kutu olmadı. Doğru kutu: “'+bins[item.bin]+'”. '+(item.tip||''):'Bu kutu uygun değil. Düşün ve başka bir kutu dene.';
+      if(wrongCounts[item.label]>1)AnswerBook.record(item.qid,false,false,bins[binIndex]);
+      if(wrongCounts[item.label]>1&&AnswerBook.active()){
+        chip.dataset.locked='1';chip.dataset.lockedQuestion=item.qid;chip.disabled=true;
+        chip.classList.add('bad');zone.append(chip);
+        progressBar(container,items.length-remaining+1,items.length);
+        if(!--remaining)onFinish(firstTryCount/items.length>=.8?3:firstTryCount/items.length>=.5?2:1);
+      }}};
+  shuffle(items.map((item,index)=>({item,index}))).forEach(({item,index})=>{const chip=createNode('button','chip');chip.dataset.index=index;chip.dataset.questionId=item.qid;chip.append(item.icon?labelWithIcon(item.icon,item.label,32):item.label);makeDraggable(chip,dropOnZone);pool.append(chip)});
   bins.forEach((name,binIndex)=>{const zone=createNode('div');zone.dataset.bin=binIndex;zone.append(createNode('b','',name));makeDropZone(zone,dropOnZone);zones.append(zone)});
-  container.append(createNode('p','tag','Kartı sürükleyip doğru kutuya bırak. Sürüklemek zorsa karta dokun, sonra kutuya dokun.'),pool,zones,feedback);progressBar(container,0,items.length)}
+  container.append(createNode('p','tag','Kartı sürükleyip doğru kutuya bırak. Sürüklemek zorsa karta dokun, sonra kutuya dokun.'),pool,zones,feedback);progressBar(container,0,items.length);
+  const restore=()=>{
+    items.forEach((item,index)=>{
+      const saved=AnswerBook.get(item.qid),chip=container.querySelector('[data-index="'+index+'"]');
+      if(!saved||!chip)return;
+      const zone=[...zones.children].find(zone=>bins[Number(zone.dataset.bin)]===saved.answer);
+      if(!chip.dataset.locked)remaining--;
+      chip.dataset.locked='1';chip.dataset.lockedQuestion=item.qid;chip.disabled=true;
+      chip.classList.remove('good','bad','selected');chip.classList.add(saved.correct?'good':'bad','placed');
+      chip.title=(saved.correct?'✔ Doğru':'✘ Yanlış')+' · 🔒 '+saved.answer;
+      if(zone)zone.append(chip);
+    });
+    progressBar(container,items.length-remaining,items.length);
+    if(!remaining)feedback.textContent='🔒 Bu bölümdeki sorular tamamlandı. Cevaplarını cevap defterinde görebilirsin.';
+  };
+  AnswerBook.watch(restore);restore();}
 
 /* ---------- Dengeli Tabak ---------- */
 function runPlate(container,onFinish){
   const colors=['#4aa8e0','#e8833a','#e0a458','#4b9a4c','#e9604f'],placed=[],pool=createNode('div','chips'),plate=createNode('div','plate'),legend=createNode('div'),feedback=createNode('p','feedback'),check=createNode('button','btn go','Tabağımı değerlendir');
-  feedback.setAttribute('role','status');
+  feedback.setAttribute('role','status');let plateAttempts=0,plateLocked=false;
   const coveredGroups=()=>CONTENT.groups.map((name,group)=>placed.some(foodIndex=>CONTENT.plateFoods[foodIndex].group===group));
   const redraw=()=>{const covered=coveredGroups();plate.style.background='conic-gradient('+covered.map((isCovered,group)=>(isCovered?colors[group]:'#e6e6e6')+' '+group*20+'% '+(group+1)*20+'%').join(',');
-    plate.innerHTML='';placed.forEach((foodIndex,position)=>{const chip=createNode('button','chip placed');chip.append(labelWithIcon(CONTENT.plateFoods[foodIndex].icon,CONTENT.plateFoods[foodIndex].label,26));chip.title='Çıkarmak için dokun';chip.onclick=clickEvent=>{clickEvent.stopPropagation();placed.splice(position,1);redraw()};plate.append(chip)});
+    plate.innerHTML='';placed.forEach((foodIndex,position)=>{const chip=createNode('button','chip placed');chip.append(labelWithIcon(CONTENT.plateFoods[foodIndex].icon,CONTENT.plateFoods[foodIndex].label,26));chip.title='Çıkarmak için dokun';chip.disabled=plateLocked;chip.onclick=clickEvent=>{if(plateLocked)return;clickEvent.stopPropagation();placed.splice(position,1);redraw()};plate.append(chip)});
     legend.innerHTML=CONTENT.groups.map((name,group)=>`<span style="color:${colors[group]}">■</span> ${name} ${covered[group]?'✔':'—'}`).join('<br>')};
-  CONTENT.plateFoods.forEach((food,foodIndex)=>{const chip=createNode('button','chip');chip.append(labelWithIcon(food.icon,food.label,32));makeDraggable(chip,()=>{placed.push(foodIndex);redraw()});pool.append(chip)});
-  makeDropZone(plate,chipOrNothing=>{placed.push(Number(chipOrNothing.dataset.plateIndex));redraw()});
+  CONTENT.plateFoods.forEach((food,foodIndex)=>{const chip=createNode('button','chip');chip.append(labelWithIcon(food.icon,food.label,32));makeDraggable(chip,()=>{if(plateLocked)return;placed.push(foodIndex);redraw()});pool.append(chip)});
+  makeDropZone(plate,chipOrNothing=>{if(plateLocked)return;placed.push(Number(chipOrNothing.dataset.plateIndex));redraw()});
   pool.querySelectorAll('.chip').forEach((chip,foodIndex)=>{chip.dataset.plateIndex=foodIndex});
-  check.onclick=()=>{const covered=coveredGroups(),count=covered.filter(Boolean).length,missing=CONTENT.groups.filter((name,group)=>!covered[group]);
-    if(count>=4){feedback.textContent=count===5?'Harika! Tabağın çok çeşitli.':'Çok iyi! Eksik grup: '+missing.join(', ')+'.';celebrate(check);onFinish(count===5?3:2)}
+  check.onclick=()=>{if(plateLocked)return;plateAttempts++;const covered=coveredGroups(),count=covered.filter(Boolean).length,missing=CONTENT.groups.filter((name,group)=>!covered[group]);
+    if(count>=4){AnswerBook.record('plate-1',true,plateAttempts===1,JSON.stringify([...new Set(placed)]));if(AnswerBook.active())restorePlate();feedback.textContent=count===5?'Harika! Tabağın çok çeşitli.':'Çok iyi! Eksik grup: '+missing.join(', ')+'.';celebrate(check);onFinish(count===5?3:2)}
     else feedback.textContent='Çeşitlilik: '+count+'/5 grup. Eksik gruplar: '+missing.join(', ')+'. Bu gruplardan besin sürükle.'};
-  container.append(createNode('p','tag','Besinleri tabağa sürükle. Tabağın dilimleri besin gruplarını gösterir. Çıkarmak için tabaktaki besine dokun. Su içmeyi de unutma!'),pool,plate,legend,feedback,check);redraw()}
+  container.append(createNode('p','tag','Besinleri tabağa sürükle. Tabağın dilimleri besin gruplarını gösterir. Çıkarmak için tabaktaki besine dokun. Su içmeyi de unutma!'),pool,plate,legend,feedback,check);redraw();
+  function restorePlate(){
+    const saved=AnswerBook.get('plate-1');if(!saved)return;
+    plateLocked=true;
+    try{const indices=JSON.parse(saved.answer);placed.splice(0,placed.length,...indices.filter(i=>Number.isInteger(i)&&CONTENT.plateFoods[i]))}catch(e){}
+    pool.querySelectorAll('.chip').forEach(chip=>{chip.disabled=true;chip.dataset.locked='1'});
+    check.disabled=true;plate.dataset.lockedQuestion='plate-1';
+    feedback.textContent=(saved.correct?'✔ Doğru':'✘ Yanlış')+' · 🔒 Tamamlandı';redraw();
+  }
+  AnswerBook.watch(restorePlate);restorePlate();}
 
 /* ---------- Diğer istasyonlar ---------- */
 function runContentCards(container,onFinish){
@@ -158,14 +287,14 @@ function runLab(container,onFinish){
 function runFinalTest(container,onFinish){
   const pool=shuffle(CONTENT.allQuestions).slice(0,18);
   const finalStarted=Date.now();
-  runQuiz(container,pool,results=>{if(results.length===18){const correctFirst=results.filter(x=>x.firstTry).length;window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"fen-besinkasifleri",attemptId:"bk_"+(window.crypto&&typeof window.crypto.randomUUID==='function'?window.crypto.randomUUID().replace(/-/g,''):Date.now().toString(36)+Math.random().toString(36).slice(2)),correct:correctFirst,wrong:18-correctFirst,total:18,wrongAttempts:results.reduce((sum,result)=>sum+result.wrongAttempts,0),firstTry:correctFirst,durationSeconds:Math.floor((Date.now()-finalStarted)/1000)},"*");}container.innerHTML='';const correct=results.filter(result=>result.firstTry).length,percent=Math.round(100*correct/results.length),card=createNode('div','card'),rows=[];
+  runQuiz(container,pool,results=>{if(results.length===18&&window.parent!==window){const correctFirst=results.filter(x=>x.firstTry).length;window.parent.postMessage({type:"4d:activity-finished",schemaVersion:1,activityId:"fen-besinkasifleri",attemptId:"bk_"+(window.crypto&&typeof window.crypto.randomUUID==='function'?window.crypto.randomUUID().replace(/-/g,''):Date.now().toString(36)+Math.random().toString(36).slice(2)),correct:correctFirst,wrong:18-correctFirst,total:18,wrongAttempts:results.reduce((sum,result)=>sum+result.wrongAttempts,0),firstTry:correctFirst,durationSeconds:Math.floor((Date.now()-finalStarted)/1000)},"*");}container.innerHTML='';const correct=results.filter(result=>result.firstTry).length,percent=Math.round(100*correct/(results.length||1)),card=createNode('div','card'),rows=[];
     for(let outcome=1;outcome<=6;outcome++){const group=results.filter(result=>result.outcome===outcome);if(group.length){const good=group.filter(result=>result.firstTry).length;rows.push([CONTENT.outcomes[outcome],good+'/'+group.length+(good/group.length>=.7?' ✔':' → tekrar')])}}
     card.append(createNode('h2','','Ünite Sonucu: %'+percent+' ('+correct+'/'+results.length+' ilk denemede doğru)'));
     const table=createNode('table');rows.forEach(([name,value])=>{const row=createNode('tr');row.append(createNode('td','',name),createNode('td','',value));table.append(row)});card.append(table);
-    const again=createNode('button','btn go','Yeni soru setiyle dene');again.onclick=()=>{container.innerHTML='';runFinalTest(container,onFinish)};card.append(again);container.append(card);onFinish(percent>=85?3:percent>=60?2:1)})}
+    const again=createNode('button','btn go','Yeni soru setiyle dene');again.onclick=()=>{container.innerHTML='';runFinalTest(container,onFinish)};card.append(again);container.append(card);if(results.length)onFinish(percent>=85?3:percent>=60?2:1)},true)}
 
 /* ---------- Görev tanımları ---------- */
-const quizStation=(id,title,questions)=>({id,title,run:(container,finish)=>runQuiz(container,questions,results=>finish(starsFromResults(results)))});
+const quizStation=(id,title,questions)=>({id,title,questionIds:questions.map(q=>q.qid),run:(container,finish)=>runQuiz(container,questions,results=>finish(starsFromResults(results)))});
 const questionsFor=outcome=>CONTENT.allQuestions.filter(question=>question.outcome===outcome);
 const MISSIONS=[
  {title:'Keşif Kampı',icon:'su',goal:'Neler biliyorsun? Puan yok, merak var!',stations:[quizStation('m0-quiz','Isınma soruları',CONTENT.preQuestions)]},
@@ -176,16 +305,22 @@ const MISSIONS=[
  {title:'5. Sigara ve Alkol',icon:'havuc',goal:CONTENT.outcomes[5],stations:[quizStation('m5-tf','Doğru mu, yanlış mı?',CONTENT.trueFalseQuestions),quizStation('m5-quiz','Kaşif soruları',questionsFor(5))]},
  {title:'6. Çevrede Sorumluluk',icon:'ceviz',goal:CONTENT.outcomes[6],stations:[quizStation('m6-quiz','Güvenli davranış soruları',questionsFor(6))]},
  {title:'Büyük Final',icon:'muz',goal:'Bütün kazanımlardan karışık görev!',stations:[{id:'final',title:'Ünite değerlendirmesi (18 soru)',run:runFinalTest}]}];
+const idsForStation=station=>station.questionIds||({
+  'm1-match':CONTENT.pairItems.map(x=>x.qid),'m3-store':CONTENT.storageItems.map(x=>x.qid),
+  'm4-groups':CONTENT.groupItems.map(x=>x.qid),'m4-plate':['plate-1'],
+  final:CONTENT.allQuestions.map(x=>x.qid)
+}[station.id]||[]);
+const bookCount=station=>idsForStation(station).filter(id=>AnswerBook.get(id)).length;
 const missionStars=mission=>mission.stations.reduce((total,station)=>total+(progress.stars[station.id]||0),0);
 const missionDone=mission=>mission.stations.every(station=>progress.stars[station.id]);
 
 function updateHud(){const total=MISSIONS.reduce((sum,mission)=>sum+missionStars(mission),0),done=MISSIONS.filter(missionDone).length;queryOne('#hud').textContent='★ '+total+' · Rozet '+done+'/'+MISSIONS.length}
-function showMap(){const view=queryOne('#view');view.innerHTML='';view.append(createNode('h2','','Görev Haritası'),createNode('p','','Bir görev seç ve besin kaşifi ol! Görevleri istediğin sırayla yapabilirsin.'));
-  const map=createNode('div','map');MISSIONS.forEach(mission=>{const node=createNode('button','node'+(missionDone(mission)?' done':''));node.append(labelWithIcon(mission.icon,'',64),createNode('b','',mission.title),createNode('span','stars',missionDone(mission)?'🏅 '+starText(Math.min(3,Math.round(missionStars(mission)/mission.stations.length))):'Görev'));node.onclick=()=>showMission(mission);map.append(node)});view.append(map);updateHud();scrollTo(0,0)}
-function showMission(mission){const view=queryOne('#view');view.innerHTML='';const back=createNode('button','btn','⬅ Haritaya dön');back.onclick=showMap;view.append(back,createNode('h2','',mission.title),createNode('p','tag',mission.goal));
-  mission.stations.forEach(station=>{const stars=progress.stars[station.id]||0,button=createNode('button','btn'+(stars?' good':''),(stars?'✔ ':'▶ ')+station.title+'  '+starText(stars));button.style.cssText='display:block;width:100%;margin:12px 0';button.onclick=()=>showStation(mission,station);view.append(button)});updateHud()}
-function showStation(mission,station){const view=queryOne('#view');view.innerHTML='';const back=createNode('button','btn','⬅ '+mission.title),stage=createNode('div');back.onclick=()=>showMission(mission);view.append(back,createNode('h2','',station.title),stage);
-  station.run(stage,stars=>{const wasDone=missionDone(mission);progress.stars[station.id]=Math.max(progress.stars[station.id]||0,stars);saveProgress();updateHud();
+function showMap(){AnswerBook.watch(showMap);const view=queryOne('#view');view.innerHTML='';view.append(createNode('h2','','Görev Haritası'),createNode('p','','Bir görev seç ve besin kaşifi ol! Görevleri istediğin sırayla yapabilirsin.'));
+  const map=createNode('div','map');MISSIONS.forEach(mission=>{const node=createNode('button','node'+(missionDone(mission)?' done':''));node.append(labelWithIcon(mission.icon,'',64),createNode('b','',mission.title),createNode('span','stars',missionDone(mission)?'🏅 '+starText(Math.min(3,Math.round(missionStars(mission)/mission.stations.length))):'Görev'));const ids=mission.stations.flatMap(idsForStation),count=ids.filter(id=>AnswerBook.get(id)).length;if(count)node.append(createNode('span','','🔒 '+count+'/'+ids.length+' tamamlandı'));node.onclick=()=>showMission(mission);map.append(node)});view.append(map);updateHud();scrollTo(0,0)}
+function showMission(mission){AnswerBook.watch(()=>showMission(mission));const view=queryOne('#view');view.innerHTML='';const back=createNode('button','btn','⬅ Haritaya dön');back.onclick=showMap;view.append(back,createNode('h2','',mission.title),createNode('p','tag',mission.goal));
+  mission.stations.forEach(station=>{const stars=progress.stars[station.id]||0,button=createNode('button','btn'+(stars?' good':''),(stars?'✔ ':'▶ ')+station.title+'  '+starText(stars));button.style.cssText='display:block;width:100%;margin:12px 0';const count=bookCount(station),ids=idsForStation(station);button.dataset.station=station.id;if(count)button.append(' · 🔒 '+count+'/'+ids.length+' tamamlandı');button.onclick=()=>showStation(mission,station);view.append(button)});updateHud()}
+function showStation(mission,station){AnswerBook.watch(()=>{});const view=queryOne('#view');view.innerHTML='';const back=createNode('button','btn','⬅ '+mission.title),stage=createNode('div');back.onclick=()=>showMission(mission);view.append(back,createNode('h2','',station.title),stage);
+  station.run(stage,stars=>{if(!stars)return;const wasDone=missionDone(mission);progress.stars[station.id]=Math.max(progress.stars[station.id]||0,stars);saveProgress();updateHud();
     const next=createNode('button','btn go','Görev tamamlandı! Devam ➜');next.onclick=()=>{if(!wasDone&&missionDone(mission))showBadge(mission);else showMission(mission)};stage.append(next);next.scrollIntoView({block:'center'})});scrollTo(0,0)}
 function showBadge(mission){const overlay=createNode('div','badge'),card=createNode('div','card');card.innerHTML=`<div style="font-size:72px">🏅</div><h2>Rozet kazandın!</h2><p><b>${mission.title}</b> görevini tamamladın.</p>`;const close=createNode('button','btn go','Harika!');close.onclick=()=>{overlay.remove();showMission(mission)};card.append(close);overlay.append(card);document.body.append(overlay);celebrate(close);close.focus()}
 
@@ -198,4 +333,5 @@ queryOne('#mapButton').onclick=()=>printSheet('<section class="sheet"><h2>Besinl
 queryOne('#resetButton').onclick=()=>{if(confirm('Tüm yıldızlar ve rozetler silinecek. Emin misin?')){progress={stars:{}};saveProgress();showMap()}};
 document.addEventListener('keydown',keyEvent=>{if(keyEvent.key==='Escape')document.body.classList.remove('presenting')});
 showMap();
+AnswerBook.ready();
 </script></body></html>
