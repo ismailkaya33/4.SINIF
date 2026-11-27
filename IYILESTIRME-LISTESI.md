@@ -59,14 +59,24 @@ Kural: yeni karar buraya tarihle yazılır; değişen kararın eskisi silinmez, 
 - 2026-11-26: Kaynak kitap: ödev = o gün ders programındaki dersin işlenen konusu; portal yalnız liste gösterir, "yaptım" işareti yok.
 - 2026-11-27: Sonuç kuralı ve cevap defteri (soru soru kayıt, ilk kayıt kesin) — yukarıda ve `MIMARI.md` 2.
 
+## KVKK durumu (2026-11-27)
+- [x] Veli onayları: öğretmen bildirdi, velilerin hepsi yazılı onay verdi. `VELI_ONAYLARI` sayfası panel düğmesiyle açıldı; 39 öğrencinin Portal / Sosyometri / DavranisRaporu / AyinYildizlari sütunları EVET, Not sütununda "Yazılı onay formu (öğretmen bildirdi 27.11.2026)".
+- [!] Sosyometri: portaldan kaldırıldı ama `SOSYOMETRI` sayfasında 35 eski cevap satırı DURUYOR. Silmek kalıcıdır → öğretmen karar verir (panel → Sosyometri → "cevapları kalıcı sil"). Rapor `KVKK/` klasöründe.
+- [ ] e-Okul bilgi formu: e-Okul girişi bitince form + "4/D Öğrenci Bilgi Formu — Cevaplar (GİZLİ)" tablosu Drive'dan silinecek (veliye söz verildi). Girişin bitip bitmediği bilinmiyor.
+- [ ] Gizlilik metninin okul idaresince onayı.
+
+## Bulunan sorun (2026-11-27)
+- [!] Öğretmen paneli "Öğrenci takip özeti": 160 geçerli sonuç varken öğrenci kartlarında "Tamamladığı etkinlik: 0 / 26" ve "Geride kalan 37" görünüyor (eşleşme hatası olabilir). Portal dalındaki `tests/ogrenci-ozet.cjs` de değişikliksiz hâlde başarısız. İncelenmeli; düzeltme portal dalına gider (canlı) → öğretmen başındayken.
+
 ## TEST40 deneme listesi (öğretmen cuma dener; denenince [x] ve tarih)
 Nasıl: telefonda portala TEST40 koduyla girin → maddeyi açın → sonunu getirin → Claude'a "denedim" deyin; Claude tabloda satırı kontrol eder.
-- [ ] T1. Yeni öğrenci ana sayfası (12 Kasım): kısayollar, arama, ders süzgeci, "Bu Haftanın Etkinlikleri" şeridi görünüyor mu?
-- [ ] T2. Türkçe Kantin Dedektifi bitince `ETKINLIK_SONUCLARI`'na satır düşüyor mu?
-- [ ] T3. 10 Kasım'da yayına çıkan 4 etkinlik (Konum Kâşifi, Metin Dedektifi, Güvenli Sürüş, Tahmin Ustası) sonuç yazıyor mu?
-- [ ] T4. "Kaynak Kitap Ödevlerim" ve "Ders Programım" kartları doğru görünüyor mu?
-- [ ] T6. Matematik Çarpma Atölyesi (27 Kasım, 10 işlemlik görev): görev göstergesi, bitince karne, panelde sonuç; kapatıp açınca ✓'ler duruyor mu?
-- [ ] T5. Cevap defteri (27 Kasım): bir soruyu cevaplayıp etkinliği kapatın, yeniden açın — kaldığı yerden devam ediyor mu?
+Not: TEST40 öğretmen panelinde bilerek görünmez. Sonuç satırı Google tablosunda (`ETKINLIK_SONUCLARI`, soru soru kayıt `ETKINLIK_CEVAPLARI`) kontrol edilir; Claude da okuyabilir.
+- [x] T1. Yeni öğrenci ana sayfası (12 Kasım): kısayollar, arama, ders süzgeci, "Bu Haftanın Etkinlikleri" şeridi görünüyor mu? — 2026-11-27 öğretmen denedi, tamam.
+- [x] T2. Türkçe Kantin Dedektifi bitince `ETKINLIK_SONUCLARI`'na satır düşüyor mu? — 2026-11-27 öğretmen "tamam" dedi.
+- [x] T3. (2026-11-27 TAMAM: öğretmenin açtığı TEST40 oturumunda Claude denedi; Güvenli Sürüş 20:55, Metin Dedektifi 20:56, Tahmin Ustası 20:59 sonuç satırları tabloda.) 10 Kasım'da yayına çıkan 4 etkinlik (Konum Kâşifi, Metin Dedektifi, Güvenli Sürüş, Tahmin Ustası) sonuç yazıyor mu? (bakılacak yer: tablo → `ETKINLIK_SONUCLARI`, en alttaki TEST40 satırları) — 2026-11-27 tablo okundu: Konum Kâşifi ✓ (10 Kasım satırı var); Metin Dedektifi, Güvenli Sürüş, Tahmin Ustası için TEST40 satırı HİÇ yok → bu üçü denenecek.
+- [x] T4. "Kaynak Kitap Ödevlerim" ve "Ders Programım" kartları doğru görünüyor mu? — 2026-11-27 öğretmen denedi, tamam.
+- [x] T6. (2026-11-27 TAMAM: görev göstergesi canlıda görünüyor, Hatayı Bul 1 işlem ✓, "Görevi bitir" → karne + sonuç satırı 20:59.) Matematik Çarpma Atölyesi (27 Kasım, 10 işlemlik görev): görev göstergesi, bitince karne, panelde sonuç; kapatıp açınca ✓'ler duruyor mu?
+- [x] T5. (2026-11-27 TAMAM: Güvenli Sürüş'te 1 soru cevaplandı → Portala Dön → yeniden açınca "Daha önce 1 soruyu cevaplamışsın; kaldığın yerden devam edebilirsin" + Cevap defterim 1/12 kilitli.) Cevap defteri (27 Kasım; ayrı sayfa değil, etkinliklerin içinde): ör. Türkçe "Gerçek mi Hayal mi"de 2 soru cevaplayın → "Portala Dön" → aynı etkinliği yeniden açın: o 2 soru kilitli ve ✓/✗ işaretli mi, kalanlardan devam ediyor mu? (tabloda `ETKINLIK_CEVAPLARI` sayfasına 2 satır düşer) — 2026-11-27 tablo okundu: kayıt yarısı ÇALIŞIYOR (TEST40'ın bu akşamki soru satırları var: Kantin Dedektifi 9, Kuvvet Parkı 16, Mıknatıs 2, Cümle Kasabası 2, Çarpma Ustaları 1). Kalan: yeniden açınca kilitli görünme — öğretmen ekranda bakacak.
 
 ## A. Eksikler (tespit edildi)
 - [~] A1. **2026-11-27 ölçüm (`node tools/sonuc-takip-kontrol.mjs --hepsi`):** sonuç kodu olan her etkinlik takipte; A22'deki 7 etkinlik 27 Kasım'da takibe alındı. KALAN: 45 eski etkinlikte sonuç kodu hiç yok (yalnız "bitirdim" bildirimi) ; `Matematik/carpmaatolyesi.html` 27 Kasım'da 10 işlemlik görevle takibe alındı (site 9d8ff9b, portal 05f38aa). Not: portal dalında `tests/ogrenci-ozet.cjs` değişikliksiz hâlde de başarısız (önceden var, incelenmeli). Bundan sonra `.github/workflows/icerik-bekcisi.yml` her gönderimde denetler. Eski not: (2026-11-22 güncel) Portal dalında takipli kayıt 24; katalogdaki 74 ders etkinliğinin (Oyunlar hariç) ~51'i takipsiz (yol karşılaştırması, doğrulanmalı). En acil: A22 (bu haftanın şeridindeki 7 yeni etkinlik). (skill: 4d-etkinlik-takibe-al)
