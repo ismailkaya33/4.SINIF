@@ -540,6 +540,7 @@ function devamDugmesi(metin, fn) {
 
 /* --- Başlangıç ve kasaba haritası --- */
 function baslangic() {
+  if (basladi) CevapDefteri.gizle();
   renkAyarla();
   const rekor = depo.oku(DEPO_REKOR);
   app.innerHTML = '<div class="ust"><span></span><span class="sag">' + sesDugmesi() + '</span></div><div class="kart gir">' + sahneSVG() +
@@ -550,10 +551,14 @@ function baslangic() {
   sesBagla();
   document.getElementById('basla').onclick = () => {
     cal('tik'); RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
-    puan = 0; sonuc = {}; basladi = true; bitti = false; harita();
+    puan = 0; sonuc = {}; basladi = true; bitti = false;
+    CevapDefteri.baslat();
+    const ilk = OYUN.istasyonlar.findIndex(s => s.gorevler.some(g => !sonuc[g.id]));
+    if (CevapDefteri.portal && Object.keys(sonuc).length && ilk >= 0) istasyonAc(ilk); else harita();
   };
 }
 function harita() {
+  CevapDefteri.goster();
   renkAyarla(); durum = null;
   const biten = OYUN.istasyonlar.filter(s => s.gorevler.every(g => sonuc[g.id])).length, herhangi = Object.keys(sonuc).length > 0;
   app.innerHTML = ustCiz(false) + '<div class="kart gir"><h2>🗺️ Kasaba haritası</h2>' +
@@ -561,12 +566,13 @@ function harita() {
     '<div class="harita">' + OYUN.istasyonlar.map((s, i) => {
       const tamam = s.gorevler.every(g => sonuc[g.id]);
       return '<button class="ev-kart' + (tamam ? ' bitti' : '') + '" style="--r:' + s.renk + '" data-i="' + i + '"><span class="ikon">' + s.ikon + '</span><b>' + (i + 1) + '. ' + esc(s.ad) + '</b><small>' + esc(s.kisa) + '</small>' +
-        '<span class="durum">' + s.gorevler.map(g => sembol(sonuc[g.id]) || '◯').join(' ') + '</span></button>'; }).join('') + '</div>' +
+        '<span class="durum">' + s.gorevler.map(g => '<span data-question-id="' + g.id + '"' + (CevapDefteri.kilitli(g.id) ? ' data-cd-map-locked title="Tamamlandı ve kilitli"' : '') + '>' + (CevapDefteri.kilitli(g.id) ? '🔒' : '') + (sembol(sonuc[g.id]) || '◯') + '</span>').join(' ') + '</span></button>'; }).join('') + '</div>' +
     (biten === OYUN.istasyonlar.length ? '<button class="buyuk" id="bitir">🏆 Rozetimi ve karnemi gör</button>' :
       herhangi ? '<button class="ikincil" id="bitir">Bugünlük bitir, karnemi gör</button>' : '') + '</div>' +
     karakterSatir(biten ? 'mutlu' : '', biten === OYUN.istasyonlar.length ? 'Bütün evleri gezdin! Rozetini almaya hazır mısın?' :
       biten ? 'Harika gidiyorsun! Sıradaki evi seç.' : 'Defterindeki sırayla 1. evden başlayabilirsin ya da istediğin evi seçebilirsin.') ;
   sesBagla();
+  CevapDefteri.ciz();
   app.querySelectorAll('.ev-kart').forEach(b => { b.onclick = () => { cal('tik'); istasyonAc(+b.dataset.i); }; });
   const bt = document.getElementById('bitir'); if (bt) bt.onclick = bitisEkrani;
   window.scrollTo(0, 0);
@@ -575,7 +581,7 @@ function istasyonAc(i) {
   ist = OYUN.istasyonlar[i]; renkAyarla(ist.renk);
   gi = ist.gorevler.findIndex(g => !sonuc[g.id]); if (gi < 0) gi = 0;   // kaldığı yerden; bittiyse baştan (tekrar)
   app.innerHTML = ustCiz(true) + '<div class="kart gir"><span class="etiket">' + ist.ikon + ' ' + (i + 1) + '. ev · Hatırla</span><h2>' + esc(ist.ad) + '</h2>' +
-    '<div class="hatirla">' + ist.hatirla + '</div><button class="buyuk" id="gorevBasla">Görevlere başla →</button></div>' +
+    '<div class="hatirla">' + ist.hatirla + '</div><button class="buyuk" id="gorevBasla"' + (ist.gorevler.every(g => CevapDefteri.kilitli(g.id)) ? ' disabled' : '') + '>Görevlere başla →</button></div>' +
     karakterSatir('mutlu', 'Önce bu kartı dikkatle oku; defterindeki notla aynı. Sonra 4 görev seni bekliyor!');
   sesBagla();
   document.getElementById('gorevBasla').onclick = () => { cal('tik'); gorev(); };
@@ -588,6 +594,11 @@ function yolCiz() {
 
 /* --- Görev ekranı --- */
 function gorev() {
+  if (CevapDefteri.kilitli(ist.gorevler[gi].id)) {
+    const ilk = ist.gorevler.findIndex(g => !sonuc[g.id] && !CevapDefteri.kilitli(g.id));
+    if (ilk < 0) { harita(); return; }
+    gi = ilk;
+  }
   const g = ist.gorevler[gi];
   const tekrar = !!sonuc[g.id];
   durum = { g, deneme: 0, ipucu: 0, ilkYanilgi: '', kilit: false, t0: Date.now(), tekrar };
@@ -616,7 +627,7 @@ function ipucuVer() { if (!durum || durum.kilit || !durum.g.ipucu) return; durum
 function cevap(i) {
   const d = durum; if (!d || d.kilit || d.g.tip === 'adimli') return;
   const btns = app.querySelectorAll('.sec-kap button'), btn = btns[i]; if (!btn || btn.disabled) return;
-  const [metin, yan] = d.sec[i], g = d.g; d.deneme++;
+  const [metin, yan] = d.sec[i], g = d.g; d.deneme++; d.cevapMetni = metin;
   if (metin === g.dogru) {
     btn.classList.add('dogru'); const r = btn.getBoundingClientRect(), ilk = d.deneme === 1;
     if (g.tip === 'noktalama') document.getElementById('bosluk').textContent = g.dogru;
@@ -637,15 +648,16 @@ function cevap(i) {
 }
 function gorevBitti(sonucTur, cozum, mod, hareket, mesaj) {
   const d = durum; d.kilit = true;
-  RaporMotoru.kaydet({ kazanim: ist.kaz, madde: d.g.id, yanilgi: d.ilkYanilgi, ilkDenemeDogru: sonucTur === 'yildiz', deneme: d.deneme,
-    ipucu: d.ipucu, cozumGoruldu: cozum, sureMs: Date.now() - d.t0, tekrar: d.tekrar });
+  CevapDefteri.kaydet({ kazanim: ist.kaz, madde: d.g.id, yanilgi: d.ilkYanilgi, ilkDenemeDogru: sonucTur === 'yildiz', deneme: d.deneme,
+    ipucu: d.ipucu, cozumGoruldu: cozum, sureMs: Date.now() - d.t0, tekrar: d.tekrar }, d.cevapMetni);
   if (!d.tekrar) sonuc[d.g.id] = sonucTur;
   ruh(mod, hareket, mesaj);
   app.querySelectorAll('.sec-kap button, #ip, .karar button').forEach(b => { b.disabled = true; });
   const y = app.querySelector('.yol'); if (y) y.outerHTML = yolCiz();
-  const son = gi + 1 >= ist.gorevler.length;
+  const sonraki = ist.gorevler.findIndex((g, i) => i > gi && !CevapDefteri.kilitli(g.id));
+  const son = sonraki < 0;
   devamDugmesi(son ? '🏠 Ev tamam! Haritaya dön' : 'Devam →', () => {
-    if (son) { cal('kutlama'); konfeti(50); harita(); } else { gi++; gorev(); window.scrollTo(0, 0); }
+    if (son) { cal('kutlama'); konfeti(50); harita(); } else { gi = sonraki; gorev(); window.scrollTo(0, 0); }
   });
 }
 
@@ -657,7 +669,7 @@ const KARAR = [
 ];
 function adimliGorev(g) {
   const yol = { 'iş': [true], 'hareket': [false, true], 'oluş': [false, false, true], 'durum': [false, false, false] }[g.tur];
-  Object.assign(durum, { yol, adim: 0, hata: false, cevaplar: [] });
+  Object.assign(durum, { yol, adim: 0, hata: false, cevaplar: [], secilenler: [] });
   app.innerHTML = ustCiz(true) + '<div class="kart gir"><span class="etiket">' + ist.ikon + ' ' + esc(ist.ad) + ' · Görev ' + (gi + 1) + ' / ' + ist.gorevler.length + '</span>' + yolCiz() +
     '<div class="sahne" aria-hidden="true">' + g.sahne + '</div><div class="yonerge">Yükleme soruları sırayla sor ve cümlenin türünü bul.</div>' +
     '<div class="serit">' + esc(g.cumle) + '</div><ul class="adimlar" id="adimlar"></ul><div id="karar"></div><div id="turYer" style="text-align:center"></div></div>' +
@@ -676,6 +688,7 @@ function adimliCiz() {
 }
 function adimliCevap(v) {
   const d = durum; if (!d || d.kilit || d.g.tip !== 'adimli') return;
+  d.secilenler.push(v ? 'Evet' : 'Hayır'); d.cevapMetni = d.secilenler.join(' → ');
   const dogruV = d.yol[d.adim]; d.deneme++;
   if (v !== dogruV) {
     d.hata = true; if (!d.ilkYanilgi) d.ilkYanilgi = ['nesne-' + (dogruV ? 'gormedi' : 'uydurdu'), 'hareket-' + (dogruV ? 'gormedi' : 'karisti'), 'olus-durum-karisti'][d.adim];
@@ -698,6 +711,7 @@ function adimliCevap(v) {
 function yildizYol(cx0, cy0, R, r) { let d = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, u = i % 2 ? r : R;
   d += (i ? 'L' : 'M') + (cx0 + Math.cos(a) * u).toFixed(1) + ' ' + (cy0 + Math.sin(a) * u).toFixed(1); } return d + 'Z'; }
 function bitisEkrani() {
+  CevapDefteri.bitis();
   renkAyarla(); durum = null;
   const degerler = Object.values(sonuc), yildiz = degerler.filter(x => x === 'yildiz').length, oran = yildiz / TOPLAM;
   const hepsi = degerler.length === TOPLAM;
@@ -710,7 +724,7 @@ function bitisEkrani() {
     karakterSatir('mutlu', 'Tebrikler! ' + degerler.length + ' görevden ' + yildiz + ' tanesini ilk denemede çözdün ve ' + puan + ' kalem topladın.') +
     '<div id="karne"></div>' + (hepsi ? '' : '<button class="ikincil" id="geri">🗺️ Haritaya dön (sonuç gönderildi)</button>') + '<button class="buyuk" id="yeniden">↻ Baştan oyna</button></div>';
   sesBagla();
-  if (!bitti) { RaporMotoru.ekranCiz(document.getElementById('karne')); bitti = true; }   // sonuç portala bir kez gider
+  if (!bitti) { CevapDefteri.karneCiz(document.getElementById('karne')); bitti = true; }   // sonuç portala bir kez gider
   else document.getElementById('karne').innerHTML = '<p style="color:var(--soluk)">Karnen bu oyunda bir kez gönderildi.</p>';
   const eski = parseInt(depo.oku(DEPO_REKOR), 10) || 0; if (hepsi && yildiz > eski) depo.yaz(DEPO_REKOR, String(yildiz));
   document.getElementById('yeniden').onclick = baslangic;
@@ -726,6 +740,134 @@ document.addEventListener('keydown', e => {   // 1-9 seçenek, İ ipucu, Enter d
   } else if ((e.key === 'i' || e.key === 'İ' || e.key === 'ı') && document.getElementById('ip')) ipucuVer();
   else if (e.key === 'Enter') { const d = document.getElementById('dev'); if (d && document.activeElement !== d) { e.preventDefault(); d.click(); } }
 });
+/* Etkinlik katmanı: gömülü v3 motoru değiştirmeden cevap metnini de taşır.
+ * Kimlikler veri içindeki c1-1 … c7-4 değerleridir; seçenek sırası kullanılmaz. */
+const CevapDefteri = (() => {
+  let portal = false, gorunuyor = false, karneBekliyor = false;
+  const gorevler = OYUN.istasyonlar.flatMap(s => s.gorevler);
+  const gecerli = new Set(gorevler.map(g => g.id));
+  const yerel = new Map(), kayitlar = new Map(), bekleyen = new Map(), raporBekleyen = new Map(), oduller = new Map();
+  function kayitli(id) { return RaporMotoru.kayitli(id) || kayitlar.get(id) || (portal ? yerel.get(id) : null) || null; }
+  function kilitli(id) { return portal && !!kayitli(id); }
+  function sonucTur(a) { return !a.correct ? 'ogrendi' : a.firstTry ? 'yildiz' : 'yarim'; }
+  function geriYukle() {
+    gorevler.forEach(g => { const a = kayitli(g.id); if (a) sonuc[g.id] = sonucTur(a); });
+  }
+  function ciz() {
+    let kutu = document.getElementById('cevapDefteri');
+    if (!kutu) {
+      kutu = document.createElement('section'); kutu.id = 'cevapDefteri'; kutu.className = 'kart';
+      kutu.setAttribute('aria-label', 'Cevap defterim');
+      kutu.style.cssText = 'max-width:768px;margin:16px auto;padding:18px';
+      app.insertAdjacentElement('afterend', kutu);
+    }
+    kutu.hidden = !portal && !gorunuyor;
+    const kayit = gorevler.filter(g => kayitli(g.id));
+    kutu.innerHTML = portal ? '<h2>Cevap defterim</h2><p>' + kayit.length + ' / ' + TOPLAM + ' görev tamamlandı ve kilitli.</p><ol>' +
+      kayit.map(g => {
+        const a = kayitli(g.id);
+        return '<li data-cd-locked data-question-id="' + g.id + '"><b>' + (a.correct ? '✔ Doğru' : '✖ Yanlış') +
+          ' · Tamamlandı 🔒</b> ' + esc(g.cumle || g.yonerge) + '<br>Cevabın: ' +
+          esc(a.answer || 'Cevap metni önceki kayıtta bulunmuyor.') + '</li>';
+      }).join('') + '</ol>' : '';
+    if (gorunuyor) {
+      const b = document.createElement('button'); b.id = 'cdBitir'; b.className = 'ikincil';
+      b.textContent = 'Bitir / karnemi gör'; b.onclick = bitisEkrani; kutu.appendChild(b);
+    }
+  }
+  function baslat() {
+    if (window.parent === window) yerel.clear();
+    oduller.clear(); gorunuyor = true; karneBekliyor = false; geriYukle(); ciz();
+  }
+  function goster() { gorunuyor = true; }
+  function gizle() { gorunuyor = false; ciz(); }
+  function yenile() {
+    geriYukle(); ciz();
+    const p = document.getElementById('puanSayi'); if (p) p.textContent = puan;
+    if (!basladi || !gorunuyor) return;
+    if (document.querySelector('.harita')) harita();
+    else if (durum && kilitli(durum.g.id)) {
+      // Geç gelen ilk kayıt, ekrandaki yarım kalmış ya da yeni bitmiş görevi de kapatır.
+      durum = null;
+      const ilk = ist.gorevler.findIndex(g => !sonuc[g.id]);
+      if (ilk < 0) harita(); else { gi = ilk; gorev(); }
+    } else if (document.getElementById('gorevBasla')) istasyonAc(OYUN.istasyonlar.indexOf(ist));
+    else {
+      const yol = app.querySelector('.yol'); if (yol) yol.outerHTML = yolCiz();
+    }
+  }
+  function gonder(mesaj) { if (window.parent !== window) window.parent.postMessage(mesaj, '*'); }
+  function raporaYaz(id) {
+    const r = raporBekleyen.get(id); if (!r) return;
+    raporBekleyen.delete(id); RaporMotoru.kaydet(r);
+  }
+  function karneCiz(el) {
+    if (!el) return;
+    karneBekliyor = raporBekleyen.size > 0;
+    if (karneBekliyor) el.textContent = 'Cevapların gönderildi; kazanım karnen portal onayı bekliyor.';
+    else RaporMotoru.ekranCiz(el);
+  }
+  function karneYenile() {
+    if (karneBekliyor && !raporBekleyen.size) karneCiz(document.getElementById('karne'));
+  }
+  function kaydet(r, answer) {
+    const id = r.madde;
+    if (r.tekrar) { RaporMotoru.kaydet(r); return; }
+    if (yerel.has(id) || kayitli(id)) return;
+    const a = { correct: !r.cozumGoruldu, firstTry: !!r.ilkDenemeDogru && !r.cozumGoruldu, answer: String(answer || '').slice(0, 80) };
+    yerel.set(id, a);
+    oduller.set(id, a.correct ? (a.firstTry ? 10 : 5) : 0);
+    if (window.parent !== window) {
+      // v3 answer alanını taşımaz. Örnekteki gibi cevaplı zarfı gönder,
+      // onaydan sonra motor kaydını ekle; böylece ikinci, cevapsız zarf üretilmez.
+      const mesaj = { type: '4d:answer', schemaVersion: 1, activityId: OYUN.id, questionId: id, ...a };
+      raporBekleyen.set(id, r); bekleyen.set(id, { mesaj, sayi: 1 }); gonder(mesaj);
+    } else RaporMotoru.kaydet(r);
+    ciz();
+  }
+  function al(id, a, eskiKayit) {
+    if (!gecerli.has(id)) return;
+    const ilk = yerel.get(id);
+    const ayni = ilk && ilk.correct === a.correct && ilk.firstTry === a.firstTry && ilk.answer === a.answer;
+    kayitlar.set(id, a); bekleyen.delete(id);
+    if ((eskiKayit && raporBekleyen.has(id)) || !ayni) {
+      // İlk kayıt esas: geç gelen eski sonuç yerelde kazanılan puanı geri alır.
+      puan = Math.max(0, puan - (oduller.get(id) || 0)); oduller.delete(id);
+      raporBekleyen.delete(id);
+    } else raporaYaz(id);
+  }
+  RaporMotoru.onKayitli(answers => {
+    portal = true;
+    Object.entries(answers).forEach(([id, a]) => al(id, a, true));
+    yenile(); karneYenile();
+  });
+  window.addEventListener('message', ev => {
+    const d = ev.data;
+    if (ev.source !== window.parent || window.parent === window || !d || d.activityId !== OYUN.id) return;
+    if (d.type !== '4d:answer-ack' || !gecerli.has(d.questionId)) return;
+    bekleyen.delete(d.questionId);
+    if (d.saved && typeof d.saved === 'object') {
+      portal = true;
+      al(d.questionId, { correct: !!d.saved.correct, firstTry: !!d.saved.firstTry, answer: String(d.saved.answer || '') }, false);
+      // Kendi cevabının onayı devam düğmesini kaldırmasın; farklı ilk kayıt hemen uygulanır.
+      const ilk = yerel.get(d.questionId), a = kayitli(d.questionId);
+      if (ilk && (ilk.correct !== a.correct || ilk.firstTry !== a.firstTry || ilk.answer !== a.answer)) yenile();
+      else ciz();
+      karneYenile();
+    }
+  });
+  const zamanlayici = window.parent !== window ? setInterval(() => {
+    bekleyen.forEach((b, id) => {
+      if (b.sayi >= 10) bekleyen.delete(id);
+      else { b.sayi++; gonder(b.mesaj); }
+    });
+  }, 5000) : null;
+  window.addEventListener('pagehide', () => clearInterval(zamanlayici));
+  function bitis() { gorunuyor = false; ciz(); }
+  return { baslat, kaydet, kilitli, ciz, bitis, goster, gizle, karneCiz, get portal() { return portal; } };
+})();
+
+RaporMotoru.init({ oyunId: OYUN.id, oyunAdi: OYUN.ad, kazanimlar: OYUN.kazanimlar });
 baslangic();
 </script>
 </body>
