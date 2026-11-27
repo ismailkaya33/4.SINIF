@@ -1,0 +1,40 @@
+name: 4D İçerik bekçisi — yalnız kontrol eder
+# main'e her gönderimde çalışır. Hiçbir dosyayı DEĞİŞTİRMEZ; sorun görürse kırmızı çarpı ve açıklama gösterir.
+#   1. İçerik denetimi (tools/icerik-denetle.mjs): kırık bağlantı, listede olup dosyası olmayan etkinlik,
+#      bu-hafta.json'da olmayan dosya / 12'den fazla etkinlik, bozuk JSON → HATA.
+#   2. Sonuç kuralı (tools/sonuc-takip-kontrol.mjs): yeni etkinlik sonuç kodsuz ya da portalda takipsiz → HATA.
+#   3. Büyük dosya: bu gönderimle gelen 1 MB üstü .html/.png/.jpg için UYARI (yayını durdurmaz).
+# Öğretmenin kararı 2026-11-27 (düzen planı, Aşama 2; IYILESTIRME-LISTESI C9 ve C15).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: İçerik denetimi
+        run: node tools/icerik-denetle.mjs
+      - name: Sonuç kuralı (portal takip listesi)
+        run: node tools/sonuc-takip-kontrol.mjs
+      - name: Büyük dosya uyarısı (1 MB üstü)
+        env:
+          ONCEKI: ${{ github.event.before }}
+        run: |
+          set -u
+          if [ -z "${ONCEKI:-}" ] || ! git cat-file -e "$ONCEKI^{commit}" 2>/dev/null; then ONCEKI="HEAD~1"; fi
+          git diff --name-only --diff-filter=AM "$ONCEKI" HEAD -- '*.html' '*.png' '*.PNG' '*.jpg' '*.jpeg' '*.JPG' | while IFS= read -r f; do
+            [ -f "$f" ] || continue
+            b=$(stat -c %s "$f")
+            if [ "$b" -gt 1048576 ]; then
+              echo "::warning file=$f::Dosya $((b / 1024)) KB (1 MB üstü) → telefonda ve tahtada yavaş açılır; yeni dosya hedefi 500 KB altı."
+            fi
+          done
