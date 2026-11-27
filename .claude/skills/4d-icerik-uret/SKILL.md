@@ -198,6 +198,17 @@ indirme adımı yoktur, tek HTML dosyası internetsiz açılır. Simgeler basit 
 - **Oyunlar klasörü için sonuç kaydı gerekmez** (öğretmenin kararı); rapor motoru eklenmeyebilir.
 - **Oyunlar bölümüne defter notu ve değerlendirme (test) yapılmaz, önerilmez, eksik sayılmaz** (öğretmenin kararı).
   Oyunlar yalnız oyundur; `Oyunlar/DefterNotlari/` klasörü açılmaz.
+- **"Oyun" tanımı (öğretmenin kararı, 2026-11-23):** Oyunlar bölümü öğrencinin **eğlenmesi için açılan alandır**; ölçü
+  `carpmakahramanlari`, `carpmaordekvurma`, `toplamaoyun`. Bir oyunda:
+  1. Ekran **canlı ve hareketlidir** (Canvas/animasyon); öğrenci bir şeyi **yönetir**: gemi sürer, nişan alır, koşar, zıplar.
+  2. Cevap bir şık düğmesi değil, oyun dünyasındaki **bir nesnedir**: vurulur, yakalanır, içinden geçilir, toplanır.
+  3. İşlem **kısa ve hızlıdır** (kafadan 2–3 saniye: çarpım tablosu, toplama, ×10/100/1000 gibi). Uzun sözel problem,
+     tablo okuma, ipucu çantası, adım adım çözüm, açıklama ekranı **yoktur**.
+  4. **Can, skor, kombo, hızlanma, rekor** vardır; kaybedince tek tıkla "Tekrar oyna". Zorluk seçimi (kolay/orta/zor),
+     birden çok mod/dünya olabilir.
+  5. **Yazı azdır:** kural bir iki cümle, oyun bir tıkla başlar; kazanım kodu, öğretmen paneli, ders havası yoktur.
+  Soru + şık + puan düzeni (tema giydirilse bile) oyun değildir; o bir etkinliktir ve ders klasörüne gider
+  (ör. reddedilen "Kısa Yol Kervanı", 2026-11-23). Yeni oyunda önce mekaniği bir cümleyle öğretmene söyle, onay al.
 - Seviye kuralı: ilk denemede doğru ≥%85 ve ipucu ≤%25 → Ustalaştı; ≥%60 → Gelişiyor; altı → Destek gerekli; <3 madde → Veri az; `tekrar` maddeleri seviyeye katılmaz.
 - Madde bazlı mesaj (`4d:item-result`) motor tarafından gönderilir ama **portal bunu henüz dinlemiyor ve kaydetmiyor**
   (2026-11-13 kontrolü). Portal yalnız Fen Besinler için ayrı bir mesajı (`4d:question-answer`) kaydeder. Madde bazlı
