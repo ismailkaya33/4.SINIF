@@ -28,7 +28,7 @@ th{background:var(--soft);color:var(--brand-d);font-size:13px;font-weight:800}
 tbody tr:hover{background:#fafbfd}
 .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap}
 .badge.ok{background:var(--ok-bg);color:var(--ok)}.badge.none{background:var(--none-bg);color:var(--none)}
-.badge.wrong{background:var(--bad-bg);color:var(--bad)}
+.badge.wrong{background:var(--bad-bg);color:var(--bad)}.badge.half{background:#fff4d6;color:#8a5a00}
 .meter{display:flex;align-items:center;gap:10px;min-width:130px}
 .meter b{flex:none;min-width:48px;font-weight:700;text-align:right}
 .progress{flex:1;height:8px;min-width:60px;background:var(--none-bg);border-radius:9px;overflow:hidden}
@@ -173,7 +173,7 @@ function tone(rate){return rate===null||rate===undefined?'':rate>=.75?'ok':rate>
 function progressBar(rate,neutral){const p=document.createElement('div'),s=document.createElement('span');p.className='progress'+(neutral?'':' '+tone(rate));s.style.width=Math.max(0,Math.min(1,rate||0))*100+'%';p.appendChild(s);return p}
 function meter(rate,text,neutral){if(rate===null||rate===undefined||isNaN(rate))return '—';const m=document.createElement('div'),b=document.createElement('b');m.className='meter';b.textContent=text;m.append(progressBar(rate,neutral),b);return m}
 function ratioMeter(a,b){return b?meter(a/b,ratio(a,b)):'—'}
-function badge(text){const s=document.createElement('span');s.textContent=text;s.className='badge '+(/^(Tamamlandı|Tamamladım|En az|Doğru)/.test(text)?'ok':text==='Yanlış'?'wrong':'none');return s}
+function badge(text){const s=document.createElement('span');s.textContent=text;s.className='badge '+(/^(Tamamlandı|Tamamladım|En az|Doğru)/.test(text)?'ok':text==='Yanlış'?'wrong':/^Yarım/.test(text)?'half':'none');return s}
 function progressSummary(title,done,total,verb){
  const summary=document.createElement('summary'),t=document.createElement('span'),c=document.createElement('span');
  t.textContent=title;c.className='sumCount';c.textContent=done+'/'+total+' '+verb+' ('+ratio(done,total)+')';
@@ -646,7 +646,7 @@ google.script.run.withSuccessHandler(function(r){
  acts.forEach(function(a){
   const wrap=document.createElement('details');
   wrap.appendChild(progressSummary(activityName(a.id),a.completed,r.studentCount,'tamamlandı'));
-  wrap.appendChild(makeTable(['Öğrenci','Sonuç durumu','Doğru oranı'],a.students.map(st=>[st.ad,badge(st.status),ratioMeter(st.correct,st.total)])));
+  wrap.appendChild(makeTable(['Öğrenci','Sonuç durumu','Doğru · Yanlış · Boş','Doğru oranı'],a.students.map(st=>[st.ad,badge(st.status),st.total?(st.correct+' · '+(st.wrong!=null?st.wrong:st.total-st.correct)+' · '+(st.blank||0)):'—',ratioMeter(st.correct,st.total)])));
   document.getElementById('activitySections').appendChild(wrap);
  });
  emptyNote('activitySections','Henüz takip edilen etkinlik yok.');emptyNote('declarationSections','Henüz tamamlama bildirimi yok.');emptyNote('notebookSections','Henüz defter notu yok.');

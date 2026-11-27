@@ -47,6 +47,8 @@ export function katalogYukle() {
     if (!/^[A-Za-zÇĞİÖŞÜçğıöşü0-9_\/-]+\.html$/.test(e.yol)) throw Error('Geçersiz dosya yolu: ' + e.yol);
     if (!e.ad || !e.konu || !e.kazanim) throw Error('Eksik ad/konu/kazanım: ' + e.id);
     if (!Number.isSafeInteger(e.maxTotal) || e.maxTotal < 1 || e.maxTotal > 1000) throw Error('maxTotal 1-1000 olmalı: ' + e.id);
+    if (e.tur !== undefined && !['etkinlik', 'degerlendirme'].includes(e.tur)) throw Error('tur "etkinlik" ya da "degerlendirme" olmalı: ' + e.id);
+    if (e.soruSayisi !== undefined && (!Number.isSafeInteger(e.soruSayisi) || e.soruSayisi < 1 || e.soruSayisi > e.maxTotal)) throw Error('soruSayisi 1-maxTotal olmalı: ' + e.id);
     idler.add(e.id); yollar.add(e.yol);
   }
   const secili = new Set();
@@ -107,7 +109,7 @@ function bolumler(k) {
       ad: 'sunucu-izin-listesi',
       eski: /const SONUC_IZINLI_ETKINLIKLER_ = Object\.freeze\(\{[\s\S]*?\n\}\);/,
       yeni: 'const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({\n' +
-        ic('  ', oto.map(e => `${tekTirnak(e.id)}: Object.freeze({konu:${tekTirnak(e.konu)},kazanim:${tekTirnak(e.kazanim)},maxTotal:${e.maxTotal}})`)) + '\n});'
+        ic('  ', oto.map(e => `${tekTirnak(e.id)}: Object.freeze({konu:${tekTirnak(e.konu)},kazanim:${tekTirnak(e.kazanim)},maxTotal:${e.maxTotal},tur:${tekTirnak(e.tur || 'etkinlik')},soruSayisi:${e.soruSayisi || 0}})`)) + '\n});'
     }],
     'portal/appsscript/EtkinlikSonuclari.gs': [{
       ad: 'ilerleme-yollari',
@@ -131,6 +133,10 @@ function bolumler(k) {
       yeni: 'const seciliEtkinlikler=new Set(' + js(k.seciliEtkinlikler.map(s => s.yol)) + ');'
     }],
     'portal/ogretmen-rapor/OgretmenRapor.gs': [{
+      ad: 'rapor-cevap-ayarlari',
+      eski: /const CEVAP_AYARLARI_=\{.*?\};/,
+      yeni: 'const CEVAP_AYARLARI_=' + js(Object.fromEntries(oto.map(e => [e.id, {tur: e.tur || 'etkinlik', soru: e.soruSayisi || 0, kaz: e.kazanim}]))) + ';'
+    }, {
       ad: 'rapor-etkinlik-kimlikleri',
       eski: /const allIds=\[.*?\]; \/\/ İzlenebilir etkinlikler/,
       yeni: 'const allIds=' + js(oto.map(e => e.id)) + '; // İzlenebilir etkinlikler'

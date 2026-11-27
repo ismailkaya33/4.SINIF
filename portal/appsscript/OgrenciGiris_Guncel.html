@@ -304,7 +304,8 @@ body.lessonView :is(.dashboardTitle,#oturumAlani>.hint,.progressCompact,.starsCa
 #oyundanDon{min-height:48px;padding:8px 16px;background:var(--turuncu);color:#2d2414;font-size:17px}
 #oyundanDon:hover:not(:disabled){background:#f7ae3a}
 #oyunCer{display:block;flex:1;width:100%;min-height:0;border:0;background:#fff}
-#oyunDurum{margin:0;padding:8px 14px;background:#173a52;color:#fff;font-size:17px}
+#oyunDurum{order:1;margin:0;padding:8px 14px;background:#173a52;color:#fff;font-size:17px;font-weight:700}
+#oyunCer{order:2}
 #oyunDurum:empty{display:none}
 
 /* ---------- Tablet ---------- */
@@ -878,7 +879,7 @@ let gonderiliyor=false;
 function takipliOyunAc(id){
  if(!sessionStorage.getItem(anahtarAdi)){oyunDurum.textContent="Önce giriş yap.";return}
  if(!Object.prototype.hasOwnProperty.call(takipliOyunlar,id))return;
- aktifEtkinlik=id;gonderiliyor=false;
+ aktifEtkinlik=id;gonderiliyor=false;cevapSayaci=0;
  oyunPanel.hidden=false;document.body.classList.add("oyunda");
  oyunButonu.disabled=true;oruntulerButonu.disabled=true;
  document.querySelector("#oyunUst strong").textContent=trackedNames[id]||(id==="mat-oruntuler"?"🧩 Matematik • Sayı Örüntüleri":"🎮 Matematik • Kayıp Sayılar");
@@ -890,9 +891,39 @@ function takipliOyunAc(id){
 oyunButonu.addEventListener("click",function(){takipliOyunAc("mat-kayipsayilar")});
 oruntulerButonu.addEventListener("click",function(){takipliOyunAc("mat-oruntuler")});
 const soruKayitlariBekleyen = new Set();
+const cevapKayitlariBekleyen = new Set();
+let cevapSayaci = 0;
 window.addEventListener("message",function(e){
  if(oturumAlani.hidden||e.origin!=="https://ismailkaya33.github.io"||e.source!==oyunCer.contentWindow)return;
  const d=e.data;if(!d||typeof d!=="object")return;
+ /* Cevap defteri: etkinlik açılınca kayıtlı cevaplarını ister (4d:ready), her bitirdiği soruyu tek tek gönderir (4d:answer).
+  * İlk kayıt kilitlidir; sunucu kayıtlı olanı döndürür, etkinlik ona uyar. */
+ if(d.type==="4d:ready"){
+  if(d.schemaVersion!==1||d.activityId!==aktifEtkinlik)return;
+  const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
+  const id=d.activityId,pencere=oyunCer.contentWindow;
+  google.script.run.withSuccessHandler(function(r){
+   if(sessionStorage.getItem(anahtarAdi)!==token||aktifEtkinlik!==id||oyunCer.contentWindow!==pencere||!r||!r.basarili)return;
+   const n=(r.cevaplar||[]).length;
+   pencere.postMessage({type:"4d:saved-answers",schemaVersion:1,activityId:id,answers:r.cevaplar||[]},"https://ismailkaya33.github.io");
+   if(n)oyunDurum.textContent="Daha önce "+n+" soruyu cevaplamışsın; kaldığın yerden devam edebilirsin.";
+  }).etkinlikCevaplarim(token,id);
+  return;
+ }
+ if(d.type==="4d:answer"){
+  if(d.schemaVersion!==1||d.activityId!==aktifEtkinlik||typeof d.questionId!=="string"||!/^[A-Za-z0-9_.:-]{1,60}$/.test(d.questionId)||
+     typeof d.correct!=="boolean"||typeof d.firstTry!=="boolean"||(d.answer!==undefined&&(typeof d.answer!=="string"||d.answer.length>80)))return;
+  const token=sessionStorage.getItem(anahtarAdi);if(!token)return;
+  const key=d.activityId+":"+d.questionId;if(cevapKayitlariBekleyen.has(key))return;cevapKayitlariBekleyen.add(key);
+  const pencere=oyunCer.contentWindow;
+  const veri={activityId:d.activityId,questionId:d.questionId,correct:d.correct,firstTry:d.firstTry};if(typeof d.answer==="string")veri.answer=d.answer;
+  google.script.run.withSuccessHandler(function(r){
+   cevapKayitlariBekleyen.delete(key);if(sessionStorage.getItem(anahtarAdi)!==token||!r||!r.basarili)return;
+   if(oyunCer.contentWindow===pencere)pencere.postMessage({type:"4d:answer-ack",schemaVersion:1,activityId:d.activityId,questionId:d.questionId,locked:!!r.kilitli,saved:r.kayit||null},"https://ismailkaya33.github.io");
+   if(!r.kilitli){kaydedilenEtkinlikler.add(d.activityId);cevapSayaci++;if(aktifEtkinlik===d.activityId)oyunDurum.textContent="✅ Cevapların öğretmenine kaydediliyor ("+cevapSayaci+" soru).";}
+  }).withFailureHandler(function(){cevapKayitlariBekleyen.delete(key);}).etkinlikCevabiKaydet(token,veri);
+  return;
+ }
  if(d.type==="4d:question-answer"){
   if(d.schemaVersion!==1||d.activityId!==aktifEtkinlik||d.activityId!=="fen-besinlerdegerlendirme"||
      typeof d.attemptId!=="string"||!/^[A-Za-z0-9_-]{12,80}$/.test(d.attemptId)||

@@ -190,3 +190,96 @@ function etkinlikSoruSonucuKaydet(token, veri) {
   } catch (e) { return {basarili:false}; }
   finally { lock.releaseLock(); }
 }
+
+
+/* ==== Cevap defteri (öğretmenin kararı 2026-11-27) ====
+ * Öğrencinin bitirdiği HER soru tek satır olarak yazılır; aynı öğrenci+etkinlik+soru için İLK kayıt geçerlidir,
+ * sonradan değiştirilemez. Öğrenci etkinliği yeniden açınca kayıtlı cevaplar geri verilir, kalanları çözer.
+ * Cevaplanmayan soru "boş" sayılır (öğretmen raporu etkinliğin soru sayısından hesaplar).
+ * Öğrenci numarası yalnız oturumdan çözülür; token tabloya yazılmaz. */
+const CEVAP_SAYFASI_ADI_ = 'ETKINLIK_CEVAPLARI';
+const CEVAP_SORU_KIMLIGI_ = /^[A-Za-z0-9_.:-]{1,60}$/;
+
+function cevapSayfasi_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let s = ss.getSheetByName(CEVAP_SAYFASI_ADI_);
+  if (!s) {
+    s = ss.insertSheet(CEVAP_SAYFASI_ADI_);
+    s.appendRow(['KayitKimligi', 'OgrenciNo', 'Etkinlik', 'Soru', 'Cozuldu', 'IlkDenemede', 'Cevap', 'KayitZamani']);
+    s.getRange('A:A').setNumberFormat('@');
+    s.getRange('D:D').setNumberFormat('@');
+  }
+  return s;
+}
+
+/** Tarayıcıdan gelen tek soru cevabını denetler. Geçersizse null. */
+function etkinlikCevabiDogrula_(veri) {
+  if (!veri || typeof veri !== 'object' || Array.isArray(veri)) return null;
+  const id = String(veri.activityId || '');
+  const izin = etkinlikTanimi_(id);
+  if (!izin) return null;
+  if (typeof veri.questionId !== 'string' || !CEVAP_SORU_KIMLIGI_.test(veri.questionId)) return null;
+  if (typeof veri.correct !== 'boolean' || typeof veri.firstTry !== 'boolean') return null;
+  if (veri.firstTry && !veri.correct) return null;
+  let cevap = '';
+  if (veri.answer !== undefined && veri.answer !== null) {
+    if (typeof veri.answer !== 'string' || veri.answer.length > 80 || /[\u0000-\u001f<>]/.test(veri.answer)) return null;
+    cevap = veri.answer;
+  }
+  return {id, izin, soru: veri.questionId, cozuldu: veri.correct, ilk: veri.firstTry, cevap};
+}
+
+function cevapSatiri_(r) {
+  return {questionId: String(r[3]), correct: String(r[4]) === '1', firstTry: String(r[5]) === '1', answer: String(r[6] || '')};
+}
+
+/** Kendi cevaplarım: yalnız oturumdaki öğrencinin, istenen etkinlikteki kayıtları. */
+function etkinlikCevaplarim(token, activityId) {
+  if (typeof token !== 'string' || token.length !== 73 || !etkinlikTanimi_(String(activityId || ''))) return {basarili: false};
+  try {
+    const oturum = oturumKaydi_(token);
+    if (!oturum) return {basarili: false, mesaj: 'Oturum geçersiz.'};
+    const ogrenci = kayitNoIle_(oturum.no);
+    if (!ogrenci || !ogrenci.no) return {basarili: false};
+    const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CEVAP_SAYFASI_ADI_);
+    if (!s || s.getLastRow() < 2) return {basarili: true, cevaplar: []};
+    const onEk = String(ogrenci.no) + ':' + activityId + ':';
+    const bulunan = s.getRange(2, 1, s.getLastRow() - 1, 1).createTextFinder(onEk).matchCase(true).findAll();
+    const cevaplar = bulunan.map(function(h) { return s.getRange(h.getRow(), 1, 1, 8).getDisplayValues()[0]; })
+      .filter(function(r) { return r[0].indexOf(onEk) === 0; }).map(cevapSatiri_);
+    return {basarili: true, cevaplar: cevaplar};
+  } catch (e) {
+    return {basarili: false, mesaj: 'Cevaplar okunamadı.'};
+  }
+}
+
+/** Tek soru cevabını kaydeder. Daha önce kaydedildiyse DEĞİŞTİRMEZ, kayıtlı olanı döndürür (kilitli). */
+function etkinlikCevabiKaydet(token, veri) {
+  if (typeof token !== 'string' || token.length !== 73) return {basarili: false};
+  const c = etkinlikCevabiDogrula_(veri);
+  if (!c) return {basarili: false, mesaj: 'Geçersiz cevap.'};
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return {basarili: false, mesaj: 'Sistem meşgul.'};
+  try {
+    const oturum = oturumKaydi_(token);
+    if (!oturum) return {basarili: false, mesaj: 'Oturum geçersiz.'};
+    const ogrenci = kayitNoIle_(oturum.no);
+    if (!ogrenci || !ogrenci.no) return {basarili: false, mesaj: 'Öğrenci bulunamadı.'};
+    const s = cevapSayfasi_();
+    const onEk = String(ogrenci.no) + ':' + c.id + ':', anahtar = onEk + c.soru;
+    if (s.getLastRow() > 1) {
+      const bulunan = s.getRange(2, 1, s.getLastRow() - 1, 1).createTextFinder(onEk).matchCase(true).findAll()
+        .filter(function(h) { return String(h.getValue()).indexOf(onEk) === 0; });
+      const ayni = bulunan.find(function(h) { return String(h.getValue()) === anahtar; });
+      if (ayni) return {basarili: true, kilitli: true, kayit: cevapSatiri_(s.getRange(ayni.getRow(), 1, 1, 8).getDisplayValues()[0])};
+      const sinir = c.izin.soruSayisi || c.izin.maxTotal;
+      if (bulunan.length >= sinir) return {basarili: false, mesaj: 'Soru sayısı sınırı.'};
+    }
+    s.appendRow([anahtar, String(ogrenci.no), c.id, c.soru, c.cozuldu ? 1 : 0, c.ilk ? 1 : 0, c.cevap, new Date()]);
+    return {basarili: true, kilitli: false, kayit: {questionId: c.soru, correct: c.cozuldu, firstTry: c.ilk, answer: c.cevap}};
+  } catch (e) {
+    return {basarili: false, mesaj: 'Kayıt sırasında hata oluştu.'};
+  } finally {
+    lock.releaseLock();
+  }
+}
