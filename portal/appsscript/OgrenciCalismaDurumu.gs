@@ -120,7 +120,9 @@ const SECILI_ETKINLIKLER_ = Object.freeze([
  'Matematik/carpmaustalari.html',
  'Sosyal/krokiatolyesi.html',
  'Trafik/ulasimaraclari.html',
- 'Fen/sagligimibenkorurum.html'
+ 'Fen/sagligimibenkorurum.html',
+ 'Turkce/cumlekasabasi.html',
+ 'Insanhaklari/hakozgurluksorumluluk2.html'
 ]);
 /* KATALOG BITIR: secili-etkinlikler */
 const ETKINLIK_BEYAN_SAYFASI_='ETKINLIK_TAMAMLAMA';

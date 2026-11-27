@@ -127,7 +127,9 @@ const paths = {
     'mat-carpma':'Matematik/carpmaustalari.html',
     'sos-kroki':'Sosyal/krokiatolyesi.html',
     'trafik-ulasim-araclari':'Trafik/ulasimaraclari.html',
-    'fen-alkol-sigara':'Fen/sagligimibenkorurum.html'
+    'fen-alkol-sigara':'Fen/sagligimibenkorurum.html',
+    'tur-cumle-bilgisi':'Turkce/cumlekasabasi.html',
+    'insan-bilincli-vatandas':'Insanhaklari/hakozgurluksorumluluk2.html'
   };
 /* KATALOG BITIR: ilerleme-yollari */
   const available = new Set(SECILI_ETKINLIKLER_);

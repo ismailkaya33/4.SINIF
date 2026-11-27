@@ -34,7 +34,9 @@ const SONUC_IZINLI_ETKINLIKLER_ = Object.freeze({
   'mat-carpma': Object.freeze({konu:'Matematik',kazanim:'M.4.1.4.1 / M.4.1.4.2 Çarpma işlemi',maxTotal:200}),
   'sos-kroki': Object.freeze({konu:'Sosyal Bilgiler',kazanim:'SB.4.3.2 Kroki çizme',maxTotal:200}),
   'trafik-ulasim-araclari': Object.freeze({konu:'Trafik Güvenliği',kazanim:'TG.4.1.7 Ulaşım araçlarını karşılaştırma',maxTotal:200}),
-  'fen-alkol-sigara': Object.freeze({konu:'Fen Bilimleri',kazanim:'F.4.2.1.5 Alkol ve sigaranın zararları',maxTotal:200})
+  'fen-alkol-sigara': Object.freeze({konu:'Fen Bilimleri',kazanim:'F.4.2.1.5 Alkol ve sigaranın zararları',maxTotal:200}),
+  'tur-cumle-bilgisi': Object.freeze({konu:'Türkçe',kazanim:'Cümle bilgisi (kazanım kodu doğrulanmalı)',maxTotal:200}),
+  'insan-bilincli-vatandas': Object.freeze({konu:'İnsan Hakları, Yurttaşlık ve Demokrasi',kazanim:'Hak, özgürlük ve sorumluluk (kazanım kodu doğrulanmalı)',maxTotal:200})
 });
 /* KATALOG BITIR: sunucu-izin-listesi */
 function etkinlikTanimi_(id) {
